@@ -1,3 +1,28 @@
+######################
+# Compilation files
+######################
+
+*Makefile
+*transcript
+*make_*
+*_history
+
+######################
+# Modelsim
+######################
+
+*.wlf
+work/
+*modelsim.ini
+*vish_stacktrace.vstf
 *.vcd
 *.ghw
-Makefile
+
+######################
+# Temporary files
+######################
+
+*#*
+*~
+*.swp
+*.orig
