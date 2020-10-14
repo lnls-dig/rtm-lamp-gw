@@ -17,6 +17,7 @@ work/
 *vish_stacktrace.vstf
 *.vcd
 *.ghw
+*.log
 
 ######################
 # Temporary files
@@ -26,3 +27,9 @@ work/
 *~
 *.swp
 *.orig
+
+######################
+# GHDL
+######################
+*.o
+*.cf
