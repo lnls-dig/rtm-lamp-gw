@@ -24,7 +24,8 @@ use ieee.numeric_std.all;
 entity ltc232x_model is
   generic (
     reference: real := 4.096;
-    channels: integer := 8
+    channels: integer := 8;
+    ddr_mode: boolean := true
     );
   port (
     cnv_n_i: in std_logic;
@@ -88,7 +89,7 @@ begin
       end loop;
       bit_indx <= 15;
       chn_off <= 1;
-    elsif falling_edge(clk_o) or rising_edge(clk_o) then
+    elsif falling_edge(clk_o) or (rising_edge(clk_o) and ddr_mode) then
       if bit_indx > 0 then
         bit_indx <= bit_indx - 1;
       else
