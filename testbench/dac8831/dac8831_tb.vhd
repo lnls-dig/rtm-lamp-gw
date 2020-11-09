@@ -20,16 +20,16 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity dac8831_tb is
+entity dac8831_model_tb is
   generic(
     ref: real := 4.0
     );
   port(
     vout_o : out real
     );
-end dac8831_tb;
+end dac8831_model_tb;
 
-architecture dac8831_tb_arch of dac8831_tb is
+architecture dac8831_model_tb_arch of dac8831_model_tb is
   constant dac_val1 : std_logic_vector(15 downto 0) := x"8000";
   constant dac_val2 : std_logic_vector(15 downto 0) := x"4000";
   signal cs : std_logic := '1';
@@ -38,7 +38,7 @@ architecture dac8831_tb_arch of dac8831_tb is
   signal sdi : std_logic := '0';
 begin
 
-  dac8831_inst: entity work.dac8831
+  dac8831_model_inst: entity work.dac8831_model
     generic map(ref)
     port map(
       cs_i => cs,
@@ -86,4 +86,4 @@ begin
     std.env.finish;
   end process;
 
-end dac8831_tb_arch;
+end dac8831_model_tb_arch;

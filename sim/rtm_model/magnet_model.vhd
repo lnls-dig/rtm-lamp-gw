@@ -16,7 +16,7 @@
 -- 2020-09-26  1.0      augusto.fraga   Created
 -------------------------------------------------------------------------------
 
-entity magnet is
+entity magnet_model is
   generic(
     r: real := 1.0;                     -- Series resistance [Ohms]
     l: real := 3.5e-3;                  -- Inductance [H]
@@ -26,9 +26,9 @@ entity magnet is
     volt_in: in real;
     cur_out: out real := 0.0
     );
-end magnet;
+end magnet_model;
 
-architecture magnet_arch of magnet is
+architecture magnet_model_arch of magnet_model is
   signal current: real := 0.0;
 begin
 
@@ -42,4 +42,4 @@ begin
     end loop;
   end process;
 
-end magnet_arch;
+end magnet_model_arch;

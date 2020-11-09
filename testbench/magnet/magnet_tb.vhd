@@ -1,12 +1,12 @@
 ------------------------------------------------------------------------------
--- Title      : Magnet test bench
+-- Title      : Magnet model test bench
 ------------------------------------------------------------------------------
 -- Author     : Augusto Fraga Giachero
 -- Company    : CNPEM LNLS-DIG
 -- Created    : 2020-09-26
 -- Platform   : Simulation only
 -------------------------------------------------------------------------------
--- Description: Vary the voltage applied to the magnet model (resistor -
+-- Description: Vary the voltage applied to the magnet_model model (resistor -
 --              inductor) to show the resulting current waveform.
 -------------------------------------------------------------------------------
 -- Copyright (c) 2020 CNPEM
@@ -17,17 +17,17 @@
 -- 2020-09-26  1.0      augusto.fraga   Created
 -------------------------------------------------------------------------------
 
-entity magnet_tb is
+entity magnet_model_tb is
   port (
     cur_out: out real
     );
-end magnet_tb;
+end magnet_model_tb;
 
-architecture magnet_tb_arch of magnet_tb is
+architecture magnet_model_tb_arch of magnet_model_tb is
   signal volt_in: real := 0.0;
 begin
 
-  magnet_inst: entity work.magnet
+  magnet_model_inst: entity work.magnet_model
     generic map (
       r => 1.0,
       l => 3.5e-3,
@@ -48,4 +48,4 @@ begin
     std.env.finish;
   end process;
 
-end magnet_tb_arch;
+end magnet_model_tb_arch;

@@ -5,7 +5,7 @@ vsim -l output.log \
     +vcd \
     -voptargs="+acc" \
     -t 10us \
-    work.magnet_tb
+    work.magnet_model_tb
 do wave.do
 log -r /*
 -- run sim

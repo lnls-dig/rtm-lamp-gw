@@ -5,7 +5,7 @@ vsim -l output.log \
     +vcd \
     -voptargs="+acc" \
     -t 1ns \
-    work.dac8831_tb
+    work.dac8831_model_tb
 do wave.do
 log -r /*
 -- run sim

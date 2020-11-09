@@ -21,7 +21,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity rtm_lamp is
+entity rtm_lamp_model is
   generic(
     adc_ref: real := 4.096;             -- ADC voltage reference [V]
     dac_ref: real := 4.0;               -- DAC voltage reference [V]
@@ -52,9 +52,9 @@ entity rtm_lamp is
     dac_sck_i: in std_logic;           -- DAC data clock
     dac_sdi_i: in std_logic_vector (0 to 11) -- DAC data input (12 channels)
     );
-end rtm_lamp;
+end rtm_lamp_model;
 
-architecture rtm_lamp_arch of rtm_lamp is
+architecture rtm_lamp_model_arch of rtm_lamp_model is
   signal voltages: real_vector(0 to 11) := (others => 0.0);
   signal voltages_dac: real_vector(0 to 11) := (others => 0.0);
   signal currents: real_vector(0 to 11) := (others => 0.0);
@@ -94,7 +94,7 @@ begin
 
   dac_and_magnets:
   for i in 0 to 11 generate
-    magnet: entity work.magnet
+    magnet: entity work.magnet_model
       generic map(
         r => mag_res,
         l => mag_ind,
@@ -105,7 +105,7 @@ begin
         cur_out => currents(i)
         );
 
-    dac: entity work.dac8831
+    dac: entity work.dac8831_model
       generic map(
         ref => dac_ref
         )
@@ -118,7 +118,7 @@ begin
         );
   end generate;
 
-  ltc2320: entity work.ltc232x
+  ltc2320: entity work.ltc232x_model
     generic map(
       reference => adc_ref,
       channels => 8
@@ -134,7 +134,7 @@ begin
       analog_i => currents_adc(0 to 7)
       );
 
-    ltc2324: entity work.ltc232x
+    ltc2324: entity work.ltc232x_model
     generic map(
       reference => adc_ref,
       channels => 4
@@ -149,4 +149,4 @@ begin
       sdod_o => open,
       analog_i => currents_adc(8 to 11)
       );
-end rtm_lamp_arch;
+end rtm_lamp_model_arch;

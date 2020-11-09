@@ -5,7 +5,7 @@ vsim -l output.log \
     +vcd \
     -voptargs="+acc" \
     -t 1ns \
-    work.ltc232x_tb
+    work.ltc232x_model_tb
 do wave.do
 log -r /*
 -- run sim

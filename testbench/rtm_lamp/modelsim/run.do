@@ -5,7 +5,7 @@ vsim -l output.log \
     +vcd \
     -voptargs="+acc" \
     -t 1ns \
-    work.rtm_lamp_tb
+    work.rtm_lamp_model_tb
 do wave.do
 log -r /*
 -- run sim

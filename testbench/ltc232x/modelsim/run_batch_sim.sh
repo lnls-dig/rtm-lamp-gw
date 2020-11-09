@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 set -euo pipefail
 
@@ -6,4 +6,4 @@ set -euo pipefail
 hdlmake makefile
 make
 vsim -c -do run.do
-wlf2vcd -o ltc232x_tb.vcd vsim.wlf
+wlf2vcd -o ltc232x_model_tb.vcd vsim.wlf

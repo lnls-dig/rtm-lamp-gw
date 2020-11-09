@@ -1,6 +1,6 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
-add wave -r /rtm_lamp_tb/*
+add wave -r /rtm_lamp_model_tb/*
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {0 fs} 0}
 quietly wave cursor active 0

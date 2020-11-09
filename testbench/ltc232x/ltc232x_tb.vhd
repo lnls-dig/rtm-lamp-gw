@@ -21,7 +21,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity ltc232x_tb is
+entity ltc232x_model_tb is
   port (
     sdoa_o: out std_logic;
     sdob_o: out std_logic;
@@ -30,9 +30,9 @@ entity ltc232x_tb is
     clk_o: out std_logic;
     signal ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8: out std_logic_vector(15 downto 0)
     );
-end ltc232x_tb;
+end ltc232x_model_tb;
 
-architecture ltc232x_tb_arch of ltc232x_tb is
+architecture ltc232x_model_tb_arch of ltc232x_model_tb is
   signal cnv_n: std_logic := '0';
   signal clk_i: std_logic := '0';
   signal analog_i: real_vector (1 to 8) :=
@@ -42,7 +42,7 @@ architecture ltc232x_tb_arch of ltc232x_tb is
   signal ch5_buf, ch6_buf, ch7_buf, ch8_buf: std_logic_vector(15 downto 0);
 begin
 
-  ltc2320_inst: entity work.ltc232x
+  ltc2320_inst: entity work.ltc232x_model
     port map (
       cnv_n_i => cnv_n,
       clk_i => clk_i,
@@ -112,4 +112,4 @@ begin
     end if;
   end process;
 
-end ltc232x_tb_arch;
+end ltc232x_model_tb_arch;

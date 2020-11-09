@@ -1,6 +1,6 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
-add wave -r /dac8831_tb/*
+add wave -r /dac8831_model_tb/*
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {0 fs} 0}
 quietly wave cursor active 0

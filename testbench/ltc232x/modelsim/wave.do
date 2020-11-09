@@ -1,6 +1,6 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
-add wave -r /ltc232x_tb/*
+add wave -r /ltc232x_model_tb/*
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {0 fs} 0}
 quietly wave cursor active 0

@@ -21,10 +21,10 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity rtm_lamp_tb is
-end rtm_lamp_tb;
+entity rtm_lamp_model_tb is
+end rtm_lamp_model_tb;
 
-architecture rtm_lamp_tb_arch of rtm_lamp_tb is
+architecture rtm_lamp_model_tb_arch of rtm_lamp_model_tb is
   type sample_vector is array(11 downto 0) of std_logic_vector(15 downto 0);
   signal adc_dac_100mhz_clk: std_logic := '0';
   signal dac_50mhz_clk     : std_logic := '0';
@@ -56,7 +56,7 @@ architecture rtm_lamp_tb_arch of rtm_lamp_tb is
   signal dac_sck           : std_logic := '0';
   signal dac_sdi           : std_logic_vector(11 downto 0) := x"000";
 begin
-  rtm_lamp_inst: entity work.rtm_lamp
+  rtm_lamp_model_inst: entity work.rtm_lamp_model
     port map(
       rtm_lamp_sync_clk_i => rtm_lamp_sync_clk, -- ADC and DAC synchronization clock
                                                 -- for conversion start
@@ -341,4 +341,4 @@ begin
 
   end process;
 
-end rtm_lamp_tb_arch;
+end rtm_lamp_model_tb_arch;

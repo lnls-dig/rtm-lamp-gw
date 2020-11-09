@@ -21,7 +21,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity ltc232x is
+entity ltc232x_model is
   generic (
     reference: real := 4.096;
     channels: integer := 8
@@ -37,9 +37,9 @@ entity ltc232x is
 
     analog_i: in real_vector (1 to channels)
     );
-end ltc232x;
+end ltc232x_model;
 
-architecture ltc232x_arch of ltc232x is
+architecture ltc232x_model_arch of ltc232x_model is
   type acq_vector is array(1 to channels) of std_logic_vector(15 downto 0);
   signal analog_aq: acq_vector := (others => x"0000");
   signal delayed_cnv_n: std_logic;
@@ -102,4 +102,4 @@ begin
     end if;
   end process;
 
-end ltc232x_arch;
+end ltc232x_model_arch;

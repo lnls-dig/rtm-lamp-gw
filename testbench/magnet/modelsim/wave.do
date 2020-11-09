@@ -1,15 +1,6 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
-add wave -noupdate -divider magnet_tb
-add wave -noupdate /magnet_tb/cur_out
-add wave -noupdate /magnet_tb/volt_in
-add wave -noupdate -divider magnet_tb_inst
-add wave -noupdate /magnet_tb/magnet_inst/r
-add wave -noupdate /magnet_tb/magnet_inst/l
-add wave -noupdate /magnet_tb/magnet_inst/time_step
-add wave -noupdate /magnet_tb/magnet_inst/volt_in
-add wave -noupdate /magnet_tb/magnet_inst/cur_out
-add wave -noupdate /magnet_tb/magnet_inst/current
+add wave -r /magnet_model_tb/*
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {0 fs} 0}
 quietly wave cursor active 0

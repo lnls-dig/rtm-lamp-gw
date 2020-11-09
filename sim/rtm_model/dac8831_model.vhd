@@ -21,7 +21,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity dac8831 is
+entity dac8831_model is
   generic(
     ref    : real := 4.0);
   port(
@@ -30,9 +30,9 @@ entity dac8831 is
     sdi_i  : in  std_logic;
     ldac_i : in  std_logic;
     vout_o : out real := 0.0);
-end dac8831;
+end dac8831_model;
 
-architecture dac8831_arch of dac8831 is
+architecture dac8831_model_arch of dac8831_model is
   signal data_buf : std_logic_vector(15 downto 0);
   signal vout_buf: real := 0.0;
 
@@ -66,4 +66,4 @@ begin
     vout_buf when '0',
     vout_o when others;
 
-end dac8831_arch;
+end dac8831_model_arch;
