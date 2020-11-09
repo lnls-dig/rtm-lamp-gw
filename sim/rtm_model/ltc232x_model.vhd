@@ -63,7 +63,7 @@ begin
   assert (channels = 8 or channels = 4) report "LTC232x can only have 8 or 4 channels" severity error;
 
   delayed_cnv_n <= transport cnv_n_i after (channels / 4) * 220 ns;
-  clk_o <= transport clk_i after 3 ns;
+  clk_o <= transport clk_i after 2 ns;
 
   process(chn_off, bit_indx, analog_aq)
   begin
@@ -80,7 +80,7 @@ begin
     end if;
   end process;
 
-  process(delayed_cnv_n, clk_i)
+  process(delayed_cnv_n, clk_o)
   begin
     if falling_edge(delayed_cnv_n) then
       for i in 1 to channels loop
@@ -88,7 +88,7 @@ begin
       end loop;
       bit_indx <= 15;
       chn_off <= 1;
-    elsif falling_edge(clk_i) or rising_edge(clk_i) then
+    elsif falling_edge(clk_o) or rising_edge(clk_o) then
       if bit_indx > 0 then
         bit_indx <= bit_indx - 1;
       else

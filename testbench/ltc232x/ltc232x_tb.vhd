@@ -28,7 +28,8 @@ entity ltc232x_model_tb is
     sdoc_o: out std_logic;
     sdod_o: out std_logic;
     clk_o: out std_logic;
-    signal ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8: out std_logic_vector(15 downto 0)
+    signal ch1_o, ch2_o, ch3_o, ch4_o: out std_logic_vector(15 downto 0);
+    signal ch5_o, ch6_o, ch7_o, ch8_o: out std_logic_vector(15 downto 0)
     );
 end ltc232x_model_tb;
 
@@ -38,8 +39,7 @@ architecture ltc232x_model_tb_arch of ltc232x_model_tb is
   signal analog_i: real_vector (1 to 8) :=
     (2.735, 2.048, 4.096, -1.024, -2.048, -4.096, 3.000, 2.0);
   signal samp_start: std_logic := '0';
-  signal ch1_buf, ch2_buf, ch3_buf, ch4_buf: std_logic_vector(15 downto 0);
-  signal ch5_buf, ch6_buf, ch7_buf, ch8_buf: std_logic_vector(15 downto 0);
+  signal sdoa_delay, sdob_delay, sdoc_delay, sdod_delay: std_logic;
 begin
 
   ltc2320_inst: entity work.ltc232x_model
@@ -53,6 +53,13 @@ begin
       sdod_o => sdod_o,
       analog_i => analog_i
       );
+
+  -- The datalines should be delayed in relation to the returned adc
+  -- clock when reading in DDR mode
+  sdoa_delay <= transport sdoa_o after 1 ns;
+  sdob_delay <= transport sdob_o after 1 ns;
+  sdoc_delay <= transport sdoc_o after 1 ns;
+  sdod_delay <= transport sdod_o after 1 ns;
 
   process
   begin
@@ -73,42 +80,17 @@ begin
     std.env.finish;
   end process;
 
-  process(cnv_n, clk_i, clk_o)
-    variable bit_indx: integer := 15;
-    variable chn_off: std_logic := '0';
+  process(clk_o)
   begin
-    if falling_edge(cnv_n) then
-      bit_indx := 15;
-      chn_off := '0';
-    elsif clk_o'event then
-      if bit_indx = 0 then
-        bit_indx := 15;
-        chn_off := not chn_off;
-        ch1 <= ch1_buf;
-        ch2 <= ch2_buf;
-        ch3 <= ch3_buf;
-        ch4 <= ch4_buf;
-        ch5 <= ch5_buf;
-        ch6 <= ch6_buf;
-        ch7 <= ch7_buf;
-        ch8 <= ch8_buf;
-      else
-        bit_indx := bit_indx - 1;
-      end if;
-    end if;
-
-    if clk_i'event then
-      if chn_off = '0' then
-        ch1_buf(bit_indx) <= sdoa_o;
-        ch3_buf(bit_indx) <= sdob_o;
-        ch5_buf(bit_indx) <= sdoc_o;
-        ch7_buf(bit_indx) <= sdod_o;
-      else
-        ch2_buf(bit_indx) <= sdoa_o;
-        ch4_buf(bit_indx) <= sdob_o;
-        ch6_buf(bit_indx) <= sdoc_o;
-        ch8_buf(bit_indx) <= sdod_o;
-      end if;
+    if clk_o'event then
+        ch1_o <= ch1_o(14 downto 0) & ch2_o(15);
+        ch3_o <= ch3_o(14 downto 0) & ch4_o(15);
+        ch5_o <= ch5_o(14 downto 0) & ch6_o(15);
+        ch7_o <= ch7_o(14 downto 0) & ch8_o(15);
+        ch2_o <= ch2_o(14 downto 0) & sdoa_delay;
+        ch4_o <= ch4_o(14 downto 0) & sdob_delay;
+        ch6_o <= ch6_o(14 downto 0) & sdoc_delay;
+        ch8_o <= ch8_o(14 downto 0) & sdod_delay;
     end if;
   end process;
 

@@ -37,7 +37,6 @@ architecture rtm_lamp_model_tb_arch of rtm_lamp_model_tb is
   signal adc_data_c7c8     : std_logic_vector(31 downto 0);
   signal adc_data_c9c10    : std_logic_vector(31 downto 0);
   signal adc_data_c11c12   : std_logic_vector(31 downto 0);
-  signal adc_msb_sample    : std_logic_vector(5 downto 0);
   signal adc_read_latch    : std_logic := '0';
   signal rtm_lamp_sync_clk : std_logic := '0';
   signal adc_cnv           : std_logic := '0';
@@ -47,10 +46,16 @@ architecture rtm_lamp_model_tb_arch of rtm_lamp_model_tb is
   signal adc_octo_sdob     : std_logic;
   signal adc_octo_sdoc     : std_logic;
   signal adc_octo_sdod     : std_logic;
+  signal adc_octo_sdoa_dl  : std_logic;
+  signal adc_octo_sdob_dl  : std_logic;
+  signal adc_octo_sdoc_dl  : std_logic;
+  signal adc_octo_sdod_dl  : std_logic;
   signal adc_quad_clk      : std_logic := '0';
   signal adc_quad_clk_out  : std_logic;
   signal adc_quad_sdoa     : std_logic;
   signal adc_quad_sdoc     : std_logic;
+  signal adc_quad_sdoa_dl  : std_logic;
+  signal adc_quad_sdoc_dl  : std_logic;
   signal dac_ldac          : std_logic := '0';
   signal dac_cs            : std_logic := '1';
   signal dac_sck           : std_logic := '0';
@@ -81,6 +86,15 @@ begin
       dac_sdi_i => dac_sdi             -- DAC data input (12 channels)
       );
 
+  -- The datalines should be delayed in relation to the returned adc
+  -- clock when reading in DDR mode
+  adc_octo_sdoa_dl <= transport adc_octo_sdoa after 1 ns;
+  adc_octo_sdob_dl <= transport adc_octo_sdob after 1 ns;
+  adc_octo_sdoc_dl <= transport adc_octo_sdoc after 1 ns;
+  adc_octo_sdod_dl <= transport adc_octo_sdod after 1 ns;
+  adc_quad_sdoa_dl <= transport adc_quad_sdoa after 1 ns;
+  adc_quad_sdoc_dl <= transport adc_quad_sdoc after 1 ns;
+
   ddr_des_c1c2: entity work.ddr_des
     generic map(
       bits => 32,
@@ -89,7 +103,7 @@ begin
       )
     port map(
       clk_ddr_i => adc_octo_clk_out,
-      data_ddr_i => adc_octo_sdoa,
+      data_ddr_i => adc_octo_sdoa_dl,
       data_latch_i => adc_read_latch,
       parallel_o => adc_data_c1c2
       );
@@ -102,7 +116,7 @@ begin
       )
     port map(
       clk_ddr_i => adc_octo_clk_out,
-      data_ddr_i => adc_octo_sdob,
+      data_ddr_i => adc_octo_sdob_dl,
       data_latch_i => adc_read_latch,
       parallel_o => adc_data_c3c4
       );
@@ -115,7 +129,7 @@ begin
       )
     port map(
       clk_ddr_i => adc_octo_clk_out,
-      data_ddr_i => adc_octo_sdoc,
+      data_ddr_i => adc_octo_sdoc_dl,
       data_latch_i => adc_read_latch,
       parallel_o => adc_data_c5c6
       );
@@ -128,7 +142,7 @@ begin
       )
     port map(
       clk_ddr_i => adc_octo_clk_out,
-      data_ddr_i => adc_octo_sdod,
+      data_ddr_i => adc_octo_sdod_dl,
       data_latch_i => adc_read_latch,
       parallel_o => adc_data_c7c8
       );
@@ -141,7 +155,7 @@ begin
       )
     port map(
       clk_ddr_i => adc_quad_clk_out,
-      data_ddr_i => adc_quad_sdoa,
+      data_ddr_i => adc_quad_sdoa_dl,
       data_latch_i => adc_read_latch,
       parallel_o => adc_data_c9c10
       );
@@ -154,7 +168,7 @@ begin
       )
     port map(
       clk_ddr_i => adc_quad_clk_out,
-      data_ddr_i => adc_quad_sdoc,
+      data_ddr_i => adc_quad_sdoc_dl,
       data_latch_i => adc_read_latch,
       parallel_o => adc_data_c11c12
       );
@@ -296,12 +310,6 @@ begin
         if cyc_cnt = 50 then
           state := adc_read;
           cyc_cnt := 0;
-          adc_msb_sample(0) <= adc_octo_sdoa;
-          adc_msb_sample(1) <= adc_octo_sdob;
-          adc_msb_sample(2) <= adc_octo_sdoc;
-          adc_msb_sample(3) <= adc_octo_sdod;
-          adc_msb_sample(4) <= adc_quad_sdoa;
-          adc_msb_sample(5) <= adc_quad_sdoc;
         else
           cyc_cnt := cyc_cnt + 1;
         end if;
@@ -320,25 +328,20 @@ begin
       when adc_copy_data =>
         adc_read_latch <= '0';
         state := adc_idle;
-
-        adc_samples(0) <= adc_msb_sample(0) & adc_data_c1c2(31 downto 17);
-        adc_samples(1) <= adc_data_c1c2(16 downto 1);
-        adc_samples(2) <= adc_msb_sample(1) & adc_data_c3c4(31 downto 17);
-        adc_samples(3) <= adc_data_c3c4(16 downto 1);
-        adc_samples(4) <= adc_msb_sample(2) & adc_data_c5c6(31 downto 17);
-        adc_samples(5) <= adc_data_c5c6(16 downto 1);
-        adc_samples(6) <= adc_msb_sample(3) & adc_data_c7c8(31 downto 17);
-        adc_samples(7) <= adc_data_c7c8(16 downto 1);
-        adc_samples(8) <= adc_msb_sample(4) & adc_data_c9c10(31 downto 17);
-        adc_samples(9) <= adc_data_c9c10(16 downto 1);
-        adc_samples(10) <= adc_msb_sample(5) & adc_data_c11c12(31 downto 17);
-        adc_samples(11) <= adc_data_c11c12(16 downto 1);
-
-
+        adc_samples(0) <= adc_data_c1c2(31 downto 16);
+        adc_samples(1) <= adc_data_c1c2(15 downto 0);
+        adc_samples(2) <= adc_data_c3c4(31 downto 16);
+        adc_samples(3) <= adc_data_c3c4(15 downto 0);
+        adc_samples(4) <= adc_data_c5c6(31 downto 16);
+        adc_samples(5) <= adc_data_c5c6(15 downto 0);
+        adc_samples(6) <= adc_data_c7c8(31 downto 16);
+        adc_samples(7) <= adc_data_c7c8(15 downto 0);
+        adc_samples(8) <= adc_data_c9c10(31 downto 16);
+        adc_samples(9) <= adc_data_c9c10(15 downto 0);
+        adc_samples(10) <= adc_data_c11c12(31 downto 16);
+        adc_samples(11) <= adc_data_c11c12(15 downto 0);
       end case;
-
     end if;
-
   end process;
 
 end rtm_lamp_model_tb_arch;
