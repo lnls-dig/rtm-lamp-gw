@@ -23,11 +23,11 @@ use ieee.std_logic_1164.all;
 
 entity rtm_lamp_model is
   generic(
-    adc_ref: real := 4.096;             -- ADC voltage reference [V]
-    dac_ref: real := 4.0;               -- DAC voltage reference [V]
-    mag_res: real := 1.0;               -- Magnet resistance [Ohms]
-    mag_ind: real := 3.5e-3;            -- Magnet inductance [H]
-    mag_time_step: real := 1.0e-6       -- Magnet simulation time step [s]
+    g_adc_ref: real := 4.096;          -- ADC voltage reference [V]
+    g_dac_ref: real := 4.0;            -- DAC voltage reference [V]
+    g_mag_res: real := 1.0;            -- Magnet resistance [Ohms]
+    g_mag_ind: real := 3.5e-3;         -- Magnet inductance [H]
+    g_mag_time_step: real := 1.0e-6    -- Magnet simulation time step [s]
     );
   port(
     rtm_lamp_sync_clk_i: in std_logic; -- ADC and DAC synchronization clock
@@ -62,22 +62,22 @@ architecture rtm_lamp_model_arch of rtm_lamp_model is
   signal adc_cnv_sync: std_logic; -- ADC conversion start (synchronized)
   signal dac_ldac_sync: std_logic; -- DAC load (synchronized)
 begin
-  dac_ff: entity work.ffd               -- DAC LDAC synchronization flip-flop
+  cmp_dac_ff: entity work.ffd             -- DAC LDAC synchronization flip-flop
     port map(
-      clk => rtm_lamp_sync_clk_i,
-      d => '1',
-      clr_n => adc_cnv_i,
-      q_n => adc_cnv_sync,
-      q => open
+      clk_i => rtm_lamp_sync_clk_i,
+      d_i => '1',
+      clr_n_i => adc_cnv_i,
+      q_n_o => adc_cnv_sync,
+      q_o => open
       );
 
-  adc_ff: entity work.ffd               -- ADC CNV synchronization flip-flop
+  cmp_adc_ff: entity work.ffd             -- ADC CNV synchronization flip-flop
     port map(
-      clk => rtm_lamp_sync_clk_i,
-      d => '1',
-      clr_n => dac_ldac_i,
-      q_n => dac_ldac_sync,
-      q => open
+      clk_i => rtm_lamp_sync_clk_i,
+      d_i => '1',
+      clr_n_i => dac_ldac_i,
+      q_n_o => dac_ldac_sync,
+      q_o => open
       );
 
   dac_to_voltage:                       -- Map dac output voltage from 0.0 <-> 4.0V to
@@ -94,20 +94,20 @@ begin
 
   dac_and_magnets:
   for i in 0 to 11 generate
-    magnet: entity work.magnet_model
+    cmp_magnet: entity work.magnet_model
       generic map(
-        r => mag_res,
-        l => mag_ind,
-        time_step => mag_time_step
+        g_res => g_mag_res,
+        g_ind => g_mag_ind,
+        g_time_step => g_mag_time_step
         )
       port map(
-        volt_in => voltages(i),
-        cur_out => currents(i)
+        volt_i => voltages(i),
+        cur_o => currents(i)
         );
 
-    dac: entity work.dac8831_model
+    cmp_dac: entity work.dac8831_model
       generic map(
-        ref => dac_ref
+        g_ref => g_dac_ref
         )
       port map(
         cs_i => dac_cs_i,
@@ -118,10 +118,10 @@ begin
         );
   end generate;
 
-  ltc2320: entity work.ltc232x_model
+  cmp_ltc2320: entity work.ltc232x_model
     generic map(
-      reference => adc_ref,
-      channels => 8
+      g_ref => g_adc_ref,
+      g_channels => 8
       )
     port map(
       cnv_n_i => adc_cnv_sync,
@@ -134,10 +134,10 @@ begin
       analog_i => currents_adc(0 to 7)
       );
 
-    ltc2324: entity work.ltc232x_model
+  cmp_ltc2324: entity work.ltc232x_model
     generic map(
-      reference => adc_ref,
-      channels => 4
+      g_ref => g_adc_ref,
+      g_channels => 4
       )
     port map(
       cnv_n_i => adc_cnv_sync,

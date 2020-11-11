@@ -22,7 +22,7 @@ use ieee.numeric_std.all;
 
 entity dac8831_model_tb is
   generic(
-    ref: real := 4.0
+    g_ref: real := 4.0
     );
   port(
     vout_o : out real
@@ -38,8 +38,8 @@ architecture dac8831_model_tb_arch of dac8831_model_tb is
   signal sdi : std_logic := '0';
 begin
 
-  dac8831_model_inst: entity work.dac8831_model
-    generic map(ref)
+  cmp_dac8831_model: entity work.dac8831_model
+    generic map(g_ref)
     port map(
       cs_i => cs,
       sck_i => sck,
@@ -48,7 +48,7 @@ begin
       vout_o => vout_o
       );
 
-  process
+  p_drive_dac: process
   begin
     wait for 10 ns;
     cs <= '0';

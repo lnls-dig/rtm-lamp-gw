@@ -21,26 +21,26 @@ use ieee.std_logic_1164.all;
 
 entity ffd is
   port (
-    d: in std_logic;
-    clk: in std_logic;
-    clr_n: in std_logic;
-    q: out std_logic;
-    q_n: out std_logic
+    d_i:     in  std_logic;
+    clk_i:   in  std_logic;
+    clr_n_i: in  std_logic;
+    q_o:     out std_logic;
+    q_n_o:   out std_logic
     );
 end ffd;
 
 architecture ffd_arch of ffd is
   signal q_state: std_logic := '0';
 begin
-  q <= q_state;
-  q_n <= not q_state;
+  q_o <= q_state;
+  q_n_o <= not q_state;
 
-  process(clr_n, clk)
+  p_ffd: process(clr_n_i, clk_i)
   begin
-    if clr_n = '0' then
+    if clr_n_i = '0' then
       q_state <= '0';
-    elsif rising_edge(clk) then
-      q_state <= d;
+    elsif rising_edge(clk_i) then
+      q_state <= d_i;
     end if;
   end process;
 

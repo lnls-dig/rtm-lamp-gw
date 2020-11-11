@@ -19,31 +19,31 @@
 
 entity magnet_model_tb is
   port (
-    cur_out: out real
+    cur_o: out real
     );
 end magnet_model_tb;
 
 architecture magnet_model_tb_arch of magnet_model_tb is
-  signal volt_in: real := 0.0;
+  signal volt_i: real := 0.0;
 begin
 
   magnet_model_inst: entity work.magnet_model
     generic map (
-      r => 1.0,
-      l => 3.5e-3,
-      time_step => 1.0e-5
+      g_res => 1.0,
+      g_ind => 3.5e-3,
+      g_time_step => 1.0e-5
       )
     port map (
-      volt_in => volt_in,
-      cur_out => cur_out
+      volt_i => volt_i,
+      cur_o => cur_o
       );
 
-  process
+  p_drive_magnet: process
   begin
     wait for 1 ms;
-    volt_in <= 4.0;
+    volt_i <= 4.0;
     wait for 5 ms;
-    volt_in <= 1.0;
+    volt_i <= 1.0;
     wait for 5 ms;
     std.env.finish;
   end process;

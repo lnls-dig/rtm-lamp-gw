@@ -42,7 +42,7 @@ architecture ltc232x_model_tb_arch of ltc232x_model_tb is
   signal sdoa_delay, sdob_delay, sdoc_delay, sdod_delay: std_logic;
 begin
 
-  ltc2320_inst: entity work.ltc232x_model
+  cmp_ltc2320: entity work.ltc232x_model
     port map (
       cnv_n_i => cnv_n,
       clk_i => clk_i,
@@ -61,7 +61,7 @@ begin
   sdoc_delay <= transport sdoc_o after 1 ns;
   sdod_delay <= transport sdod_o after 1 ns;
 
-  process
+  p_drive_adc: process
   begin
     wait for 10 ns;
     cnv_n <= '1';
@@ -80,7 +80,7 @@ begin
     std.env.finish;
   end process;
 
-  process(clk_o)
+  p_read_adc: process(clk_o)
   begin
     if clk_o'event then
         ch1_o <= ch1_o(14 downto 0) & ch2_o(15);

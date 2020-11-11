@@ -50,9 +50,9 @@ architecture ltc232x_acq_tb_arch of ltc232x_acq_tb is
     (2.735, 2.048, 4.096, -1.024, -2.048, -4.096, 3.000, 2.0);
 begin
 
-  ltc2320_inst: entity work.ltc232x_model
+  cmp_ltc2320: entity work.ltc232x_model
     generic map(
-      ddr_mode => false
+      g_ddr_mode => false
       )
     port map(
       cnv_n_i => cnv,
@@ -65,7 +65,7 @@ begin
       analog_i => analog_i
       );
 
-  process
+  p_gen_200mhz_clk: process
   begin
     loop
       clk <= not clk;
@@ -73,7 +73,7 @@ begin
     end loop;
   end process;
 
-  process
+  p_start_cnv: process
   begin
     wait for 1 ns;
     rst <= '0';

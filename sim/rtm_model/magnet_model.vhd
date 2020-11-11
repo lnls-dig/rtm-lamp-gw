@@ -18,13 +18,13 @@
 
 entity magnet_model is
   generic(
-    r: real := 1.0;                     -- Series resistance [Ohms]
-    l: real := 3.5e-3;                  -- Inductance [H]
-    time_step: real := 1.0e-5           -- Time step [s]
+    g_res:       real := 1.0;           -- Series resistance [Ohms]
+    g_ind:       real := 3.5e-3;        -- Inductance [H]
+    g_time_step: real := 1.0e-5         -- Time step [s]
     );
   port(
-    volt_in: in real;
-    cur_out: out real := 0.0
+    volt_i: in  real;
+    cur_o:  out real := 0.0
     );
 end magnet_model;
 
@@ -32,13 +32,13 @@ architecture magnet_model_arch of magnet_model is
   signal current: real := 0.0;
 begin
 
-  cur_out <= current;
+  cur_o <= current;
 
-  process
+  p_calc_cur: process
   begin
     loop
-      wait for time_step * 1 sec;
-      current <= current + (time_step / l) * (volt_in - r * current);
+      wait for g_time_step * 1 sec;
+      current <= current + (g_time_step / g_ind) * (volt_i - g_res * current);
     end loop;
   end process;
 

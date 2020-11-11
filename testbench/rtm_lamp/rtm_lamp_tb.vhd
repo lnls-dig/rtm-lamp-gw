@@ -61,7 +61,7 @@ architecture rtm_lamp_model_tb_arch of rtm_lamp_model_tb is
   signal dac_sck           : std_logic := '0';
   signal dac_sdi           : std_logic_vector(11 downto 0) := x"000";
 begin
-  rtm_lamp_model_inst: entity work.rtm_lamp_model
+  cmp_rtm_lamp_model: entity work.rtm_lamp_model
     port map(
       rtm_lamp_sync_clk_i => rtm_lamp_sync_clk, -- ADC and DAC synchronization clock
                                                 -- for conversion start
@@ -95,11 +95,11 @@ begin
   adc_quad_sdoa_dl <= transport adc_quad_sdoa after 1 ns;
   adc_quad_sdoc_dl <= transport adc_quad_sdoc after 1 ns;
 
-  ddr_des_c1c2: entity work.ddr_des
+  cmp_ddr_des_c1c2: entity work.ddr_des
     generic map(
-      bits => 32,
-      polarity => true,
-      msb_first => true
+      g_bits => 32,
+      g_polarity => true,
+      g_msb_first => true
       )
     port map(
       clk_ddr_i => adc_octo_clk_out,
@@ -108,11 +108,11 @@ begin
       parallel_o => adc_data_c1c2
       );
 
-  ddr_des_c3c4: entity work.ddr_des
+  cmp_ddr_des_c3c4: entity work.ddr_des
     generic map(
-      bits => 32,
-      polarity => true,
-      msb_first => true
+      g_bits => 32,
+      g_polarity => true,
+      g_msb_first => true
       )
     port map(
       clk_ddr_i => adc_octo_clk_out,
@@ -121,11 +121,11 @@ begin
       parallel_o => adc_data_c3c4
       );
 
-  ddr_des_c5c6: entity work.ddr_des
+  cmp_ddr_des_c5c6: entity work.ddr_des
     generic map(
-      bits => 32,
-      polarity => true,
-      msb_first => true
+      g_bits => 32,
+      g_polarity => true,
+      g_msb_first => true
       )
     port map(
       clk_ddr_i => adc_octo_clk_out,
@@ -134,11 +134,11 @@ begin
       parallel_o => adc_data_c5c6
       );
 
-  ddr_des_c7c8: entity work.ddr_des
+  cmp_ddr_des_c7c8: entity work.ddr_des
     generic map(
-      bits => 32,
-      polarity => true,
-      msb_first => true
+      g_bits => 32,
+      g_polarity => true,
+      g_msb_first => true
       )
     port map(
       clk_ddr_i => adc_octo_clk_out,
@@ -147,11 +147,11 @@ begin
       parallel_o => adc_data_c7c8
       );
 
-  ddr_des_c9c10: entity work.ddr_des
+  cmp_ddr_des_c9c10: entity work.ddr_des
     generic map(
-      bits => 32,
-      polarity => true,
-      msb_first => true
+      g_bits => 32,
+      g_polarity => true,
+      g_msb_first => true
       )
     port map(
       clk_ddr_i => adc_quad_clk_out,
@@ -160,11 +160,11 @@ begin
       parallel_o => adc_data_c9c10
       );
 
-  ddr_des_c11c12: entity work.ddr_des
+  cmp_ddr_des_c11c12: entity work.ddr_des
     generic map(
-      bits => 32,
-      polarity => true,
-      msb_first => true
+      g_bits => 32,
+      g_polarity => true,
+      g_msb_first => true
       )
     port map(
       clk_ddr_i => adc_quad_clk_out,
@@ -173,7 +173,7 @@ begin
       parallel_o => adc_data_c11c12
       );
 
-  process
+  p_gen_rf_clock: process
   begin
     loop
       wait for 8 ns;
@@ -181,7 +181,7 @@ begin
     end loop;
   end process;
 
-  process
+  p_gen_main_clk: process
   begin
     loop
       wait for 5 ns;
@@ -189,14 +189,14 @@ begin
     end loop;
   end process;
 
-  process(adc_dac_100mhz_clk)
+  p_gen_dac_clk: process(adc_dac_100mhz_clk)
   begin
     if rising_edge(adc_dac_100mhz_clk) then
       dac_50mhz_clk <= not dac_50mhz_clk;
     end if;
   end process;
 
-  process
+  p_set_vout: process
   begin
     wait for 1 ms;
     dac_samples <= (x"0000", x"1000", x"3000", x"4000",
@@ -212,7 +212,7 @@ begin
     std.env.finish;
   end process;
 
-  process(dac_50mhz_clk)
+  p_drive_dac: process(dac_50mhz_clk)
     type state_t is (cs_idle, data_send, delay_ldac, ldac);
     variable state : state_t := cs_idle;
     variable cyc_cnt : integer range 0 to 31 := 0;
@@ -278,7 +278,7 @@ begin
     end if;
   end process;
 
-  process(adc_dac_100mhz_clk, adc_octo_clk_out, adc_quad_clk_out)
+  p_read_adc: process(adc_dac_100mhz_clk, adc_octo_clk_out, adc_quad_clk_out)
     type state_t is (adc_idle, adc_cnv_hold, adc_cnv_wait,
                      adc_read, adc_copy_data);
     variable state : state_t := adc_idle;

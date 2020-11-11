@@ -21,7 +21,8 @@ use ieee.std_logic_1164.all;
 
 entity ffd_tb is
   port (
-    q, q_n: out std_logic
+    q_o   : out std_logic;
+    q_n_o : out std_logic
     );
 end ffd_tb;
 
@@ -30,16 +31,16 @@ architecture ffd_tb_arch of ffd_tb is
   signal clr_n: std_logic := '1';
   signal d: std_logic := '0';
 begin
-  ffd_inst: entity work.ffd
+  cmp_ffd: entity work.ffd
     port map (
-      clk => clk,
-      q => q,
-      q_n => q_n,
-      d => d,
-      clr_n => clr_n
+      clk_i => clk,
+      q_o => q_o,
+      q_n_o => q_n_o,
+      d_i => d,
+      clr_n_i => clr_n
       );
 
-  process
+  p_drive_ffd: process
   begin
     d <= '1';
     wait for 1 ns;
