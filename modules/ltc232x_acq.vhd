@@ -132,13 +132,13 @@ entity ltc232x_acq is
     sck_ret_i:  in  std_logic;                           -- ADC return clock
     finished_o: out std_logic := '0';                    -- Conversion finished
     sdo1a_i:    in  std_logic;                           -- ADC output SDO1/SDOA
-    sdo2_i:     in  std_logic;                           -- ADC output SDO2
-    sdo3b_i:    in  std_logic;                           -- ADC output SDO3/SDOB
-    sdo4_i:     in  std_logic;                           -- ADC output SDO4
-    sdo5c_i:    in  std_logic;                           -- ADC output SDO5/SDOC
-    sdo6_i:     in  std_logic;                           -- ADC output SDO6
-    sdo7d_i:    in  std_logic;                           -- ADC output SDO7/SDOD
-    sdo8_i:     in  std_logic;                           -- ADC output SDO8
+    sdo2_i:     in  std_logic := '0';                    -- ADC output SDO2
+    sdo3b_i:    in  std_logic := '0';                    -- ADC output SDO3/SDOB
+    sdo4_i:     in  std_logic := '0';                    -- ADC output SDO4
+    sdo5c_i:    in  std_logic := '0';                    -- ADC output SDO5/SDOC
+    sdo6_i:     in  std_logic := '0';                    -- ADC output SDO6
+    sdo7d_i:    in  std_logic := '0';                    -- ADC output SDO7/SDOD
+    sdo8_i:     in  std_logic := '0';                    -- ADC output SDO8
     ch1_o:      out std_logic_vector(g_bits-1 downto 0); -- CH1 parallel output
     ch2_o:      out std_logic_vector(g_bits-1 downto 0); -- CH2 parallel output
     ch3_o:      out std_logic_vector(g_bits-1 downto 0); -- CH3 parallel output
