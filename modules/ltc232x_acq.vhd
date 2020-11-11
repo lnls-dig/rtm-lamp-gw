@@ -177,36 +177,14 @@ begin
                                         -- the generic_async_fifo instance
   sck_o <= sck_o_s;
 
-  ltc_8_channels:
-  if g_channels = 8 generate
-    ch1_o <= ch1_o_s;
-    ch2_o <= ch2_o_s;
-    ch3_o <= ch3_o_s;
-    ch4_o <= ch4_o_s;
-    ch5_o <= ch5_o_s;
-    ch6_o <= ch6_o_s;
-    ch7_o <= ch7_o_s;
-    ch8_o <= ch8_o_s;
-  end generate;
-
-  ltc_4_channels:
-  if g_channels = 4 generate
-    ch1_o <= ch1_o_s;
-    ch2_o <= ch2_o_s;
-    ch3_o <= ch3_o_s;
-    ch4_o <= ch4_o_s;
-  end generate;
-
-  ltc_2_channels:
-  if g_channels = 2 generate
-    ch1_o <= ch1_o_s;
-    ch2_o <= ch2_o_s;
-  end generate;
-
-  ltc_1_channels:
-  if g_channels = 1 generate
-    ch1_o <= ch1_o_s;
-  end generate;
+  ch1_o <= ch1_o_s;
+  ch2_o <= ch2_o_s;
+  ch3_o <= ch3_o_s;
+  ch4_o <= ch4_o_s;
+  ch5_o <= ch5_o_s;
+  ch6_o <= ch6_o_s;
+  ch7_o <= ch7_o_s;
+  ch8_o <= ch8_o_s;
 
   ltc_8_datalines:
   if g_data_lines = 8 generate
