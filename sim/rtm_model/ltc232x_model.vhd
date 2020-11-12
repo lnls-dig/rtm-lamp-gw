@@ -65,20 +65,21 @@ begin
   delayed_cnv_n <= transport cnv_n_i after (g_channels / 4) * 220 ns;
   clk_o <= transport clk_i after 2 ns;
 
-  process(chn_off, bit_indx, analog_aq)
-  begin
-    if g_channels = 8 then
-      sdoa_o <= analog_aq(chn_off)(bit_indx);
-      sdob_o <= analog_aq(((chn_off + 1) mod g_channels) + 1)(bit_indx);
-      sdoc_o <= analog_aq(((chn_off + 3) mod g_channels) + 1)(bit_indx);
-      sdod_o <= analog_aq(((chn_off + 5) mod g_channels) + 1)(bit_indx);
-    elsif g_channels = 4 then
-      sdoa_o <= analog_aq(chn_off)(bit_indx);
-      sdob_o <= analog_aq(((chn_off) mod g_channels) + 1)(bit_indx);
-      sdoc_o <= analog_aq(((chn_off + 1) mod g_channels) + 1)(bit_indx);
-      sdod_o <= analog_aq(((chn_off + 2) mod g_channels) + 1)(bit_indx);
-    end if;
-  end process;
+  ltc_8ch:
+  if g_channels = 8 generate
+    sdoa_o <= analog_aq(chn_off)(bit_indx);
+    sdob_o <= analog_aq(((chn_off + 1) mod g_channels) + 1)(bit_indx);
+    sdoc_o <= analog_aq(((chn_off + 3) mod g_channels) + 1)(bit_indx);
+    sdod_o <= analog_aq(((chn_off + 5) mod g_channels) + 1)(bit_indx);
+  end generate;
+
+  ltc_4ch:
+  if g_channels = 4 generate
+    sdoa_o <= analog_aq(chn_off)(bit_indx);
+    sdob_o <= analog_aq(((chn_off) mod g_channels) + 1)(bit_indx);
+    sdoc_o <= analog_aq(((chn_off + 1) mod g_channels) + 1)(bit_indx);
+    sdod_o <= analog_aq(((chn_off + 2) mod g_channels) + 1)(bit_indx);
+  end generate;
 
   p_conv_clk_data: process(delayed_cnv_n, clk_o)
   begin
