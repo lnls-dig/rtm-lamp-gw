@@ -124,7 +124,7 @@ entity ltc232x_acq is
     g_cnv_wait:   real := 450.0e-9        -- Conversion wait time
     );
   port(
-    rst_i:      in  std_logic;                           -- Reset
+    rst_n_i:    in  std_logic;                           -- Reset
     clk_i:      in  std_logic;                           -- Core clock
     start_i:    in  std_logic;                           -- Start the conversion
     cnv_o:      out std_logic := '0';                    -- Drives the CNV signal
@@ -160,7 +160,6 @@ architecture ltc232x_acq_arch of ltc232x_acq is
   signal sck_o_s: std_logic := '0';
   signal fifo_rd: std_logic := '0';
   signal fifo_rd_empty: std_logic;
-  signal rst_n: std_logic;
   signal fifo_in: std_logic_vector(g_data_lines-1 downto 0);
   signal fifo_out: std_logic_vector(g_data_lines-1 downto 0);
   signal ch1_o_s: std_logic_vector(g_bits-1 downto 0);
@@ -173,8 +172,6 @@ architecture ltc232x_acq_arch of ltc232x_acq is
   signal ch8_o_s: std_logic_vector(g_bits-1 downto 0);
 begin
 
-  rst_n <= not rst_i;                   -- Inverted reset signal for
-                                        -- the generic_async_fifo instance
   sck_o <= sck_o_s;
 
   ch1_o <= ch1_o_s;
@@ -213,7 +210,7 @@ begin
       g_size => 8
       )
     port map(
-      rst_n_i => rst_n,
+      rst_n_i => rst_n_i,
       clk_wr_i => sck_ret_i,
       we_i => '1',
       d_i => fifo_in,
@@ -223,7 +220,7 @@ begin
       q_o => fifo_out
       );
 
-  p_read_ltc232x: process(clk_i, rst_i)
+  p_read_ltc232x: process(clk_i, rst_n_i)
     type state_t is (idle, conv_high, wait_conv, read_data);
     variable state: state_t := idle;
     variable bit_cnt: integer range 0 to c_sck_total_cycles := 0;
@@ -232,162 +229,163 @@ begin
     variable sck_div_cnt: integer range 0 to c_wait_conv_cycles := 0;
     variable delayed_read_fifo: boolean := false;
   begin
-    if rst_i = '1' then                 -- Reset the state machine
-      state := idle;
-      bit_cnt := 0;
-      bit_read_cnt := 0;
-      wait_cnt := 0;
-      sck_div_cnt := 0;
-      delayed_read_fifo := false;
-      cnv_o <= '0';
-      sck_o_s <= '0';
-      finished_o <= '0';
-    elsif rising_edge(clk_i) then
-      -- The FSM has 4 states:
-      --
-      -- idle:
-      --   Wait for a high level in start_i;
-      --
-      -- conv_high:
-      --   Hold the CNV signal high for 30ns minimum to start the
-      --   conversion;
-      --
-      -- wait_conv:
-      --   Wait for the conversion to finish, conversion time is set
-      --   by g_cnv_wait;
-      --
-      -- read_data:
-      --   Read the converted data through the serial lines.
-      case state is
-        when idle =>
-          finished_o <= '0';
-          if start_i = '0' then
-            state := idle;
-          else
-            cnv_o <= '1';
-            state := conv_high;
-          end if;
+    if rising_edge(clk_i) then
+      if rst_n_i = '0' then               -- Reset the state machine
+        state := idle;
+        bit_cnt := 0;
+        bit_read_cnt := 0;
+        wait_cnt := 0;
+        sck_div_cnt := 0;
+        delayed_read_fifo := false;
+        cnv_o <= '0';
+        sck_o_s <= '0';
+        finished_o <= '0';
+      else
+        -- The FSM has 4 states:
+        --
+        -- idle:
+        --   Wait for a high level in start_i;
+        --
+        -- conv_high:
+        --   Hold the CNV signal high for 30ns minimum to start the
+        --   conversion;
+        --
+        -- wait_conv:
+        --   Wait for the conversion to finish, conversion time is set
+        --   by g_cnv_wait;
+        --
+        -- read_data:
+        --   Read the converted data through the serial lines.
+        case state is
+          when idle =>
+            finished_o <= '0';
+            if start_i = '0' then
+              state := idle;
+            else
+              cnv_o <= '1';
+              state := conv_high;
+            end if;
 
-        when conv_high =>
-          if wait_cnt = c_conv_high_cycles then
-            wait_cnt := 0;
-            cnv_o <= '0';
-            state := wait_conv;
-          else
-            wait_cnt := wait_cnt + 1;
-          end if;
+          when conv_high =>
+            if wait_cnt = c_conv_high_cycles then
+              wait_cnt := 0;
+              cnv_o <= '0';
+              state := wait_conv;
+            else
+              wait_cnt := wait_cnt + 1;
+            end if;
 
-        when wait_conv =>
-          if wait_cnt = c_wait_conv_cycles then
-            wait_cnt := 0;
-            state := read_data;
-          else
-            wait_cnt := wait_cnt + 1;
-          end if;
+          when wait_conv =>
+            if wait_cnt = c_wait_conv_cycles then
+              wait_cnt := 0;
+              state := read_data;
+            else
+              wait_cnt := wait_cnt + 1;
+            end if;
 
-        when read_data =>
-          -- ADC clock generation logic
-          if sck_div_cnt = c_sck_clk_ratio then
-            sck_div_cnt := 0;
-            sck_o_s <= not sck_o_s;
-            if sck_o_s = '1' or c_ddr_mode then
-              if bit_cnt /= c_sck_total_cycles then
-                bit_cnt := bit_cnt + 1;
+          when read_data =>
+            -- ADC clock generation logic
+            if sck_div_cnt = c_sck_clk_ratio then
+              sck_div_cnt := 0;
+              sck_o_s <= not sck_o_s;
+              if sck_o_s = '1' or c_ddr_mode then
+                if bit_cnt /= c_sck_total_cycles then
+                  bit_cnt := bit_cnt + 1;
+                end if;
+              end if;
+            else
+              sck_div_cnt := sck_div_cnt + 1;
+            end if;
+
+            -- Check if there is data to be read from the FIFO
+            if delayed_read_fifo then
+              -- Each combination of the number of data lines and input
+              -- channels requires a different capture logic.
+              if g_data_lines = 8 and g_channels = 8 then
+                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & fifo_out(7);
+                ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & fifo_out(6);
+                ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & fifo_out(5);
+                ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & fifo_out(4);
+                ch5_o_s <= ch5_o_s(g_bits-2 downto 0) & fifo_out(3);
+                ch6_o_s <= ch6_o_s(g_bits-2 downto 0) & fifo_out(2);
+                ch7_o_s <= ch7_o_s(g_bits-2 downto 0) & fifo_out(1);
+                ch8_o_s <= ch8_o_s(g_bits-2 downto 0) & fifo_out(0);
+              elsif g_data_lines = 4 and g_channels = 8 then
+                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & ch2_o_s(g_bits-1);
+                ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & fifo_out(3);
+                ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & ch4_o_s(g_bits-1);
+                ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & fifo_out(2);
+                ch5_o_s <= ch5_o_s(g_bits-2 downto 0) & ch6_o_s(g_bits-1);
+                ch6_o_s <= ch6_o_s(g_bits-2 downto 0) & fifo_out(1);
+                ch7_o_s <= ch7_o_s(g_bits-2 downto 0) & ch8_o_s(g_bits-1);
+                ch8_o_s <= ch8_o_s(g_bits-2 downto 0) & fifo_out(0);
+              elsif g_data_lines = 2 and g_channels = 8 then
+                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & ch2_o_s(g_bits-1);
+                ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & ch3_o_s(g_bits-1);
+                ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & ch4_o_s(g_bits-1);
+                ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & fifo_out(1);
+                ch5_o_s <= ch5_o_s(g_bits-2 downto 0) & ch6_o_s(g_bits-1);
+                ch6_o_s <= ch6_o_s(g_bits-2 downto 0) & ch7_o_s(g_bits-1);
+                ch7_o_s <= ch7_o_s(g_bits-2 downto 0) & ch8_o_s(g_bits-1);
+                ch8_o_s <= ch8_o_s(g_bits-2 downto 0) & fifo_out(0);
+              elsif g_data_lines = 1 and g_channels = 8 then
+                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & ch2_o_s(g_bits-1);
+                ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & ch3_o_s(g_bits-1);
+                ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & ch4_o_s(g_bits-1);
+                ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & ch5_o_s(g_bits-1);
+                ch5_o_s <= ch5_o_s(g_bits-2 downto 0) & ch6_o_s(g_bits-1);
+                ch6_o_s <= ch6_o_s(g_bits-2 downto 0) & ch7_o_s(g_bits-1);
+                ch7_o_s <= ch7_o_s(g_bits-2 downto 0) & ch8_o_s(g_bits-1);
+                ch8_o_s <= ch8_o_s(g_bits-2 downto 0) & fifo_out(0);
+              elsif g_data_lines = 4 and g_channels = 4 then
+                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & fifo_out(3);
+                ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & fifo_out(2);
+                ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & fifo_out(1);
+                ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & fifo_out(0);
+              elsif g_data_lines = 2 and g_channels = 4 then
+                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & ch2_o_s(g_bits-1);
+                ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & fifo_out(1);
+                ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & ch4_o_s(g_bits-1);
+                ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & fifo_out(0);
+              elsif g_data_lines = 1 and g_channels = 4 then
+                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & ch2_o_s(g_bits-1);
+                ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & ch3_o_s(g_bits-1);
+                ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & ch4_o_s(g_bits-1);
+                ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & fifo_out(0);
+              elsif g_data_lines = 2 and g_channels = 2 then
+                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & fifo_out(1);
+                ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & fifo_out(0);
+              elsif g_data_lines = 1 and g_channels = 2 then
+                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & ch2_o_s(g_bits-1);
+                ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & fifo_out(0);
+              elsif g_data_lines = 1 and g_channels = 1 then
+                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & fifo_out(0);
+              end if;
+
+              -- Count the amount of bits read in a single dataline
+              -- until all data is transfered
+              if bit_read_cnt = c_sck_total_cycles then
+                bit_read_cnt := 0;
+                bit_cnt := 0;
+                state := idle;
+                finished_o <= '1';        -- Signals that the data can
+                                          -- be read from the CHx outputs
+                fifo_rd <= '0';
+                sck_o_s <= '0';
+                delayed_read_fifo := false;
+              else
+                bit_read_cnt := bit_read_cnt + 1;
               end if;
             end if;
-          else
-            sck_div_cnt := sck_div_cnt + 1;
-          end if;
 
-          -- Check if there is data to be read from the FIFO
-          if delayed_read_fifo then
-            -- Each combination of the number of data lines and input
-            -- channels requires a different capture logic.
-            if g_data_lines = 8 and g_channels = 8 then
-              ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & fifo_out(7);
-              ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & fifo_out(6);
-              ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & fifo_out(5);
-              ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & fifo_out(4);
-              ch5_o_s <= ch5_o_s(g_bits-2 downto 0) & fifo_out(3);
-              ch6_o_s <= ch6_o_s(g_bits-2 downto 0) & fifo_out(2);
-              ch7_o_s <= ch7_o_s(g_bits-2 downto 0) & fifo_out(1);
-              ch8_o_s <= ch8_o_s(g_bits-2 downto 0) & fifo_out(0);
-            elsif g_data_lines = 4 and g_channels = 8 then
-              ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & ch2_o_s(g_bits-1);
-              ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & fifo_out(3);
-              ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & ch4_o_s(g_bits-1);
-              ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & fifo_out(2);
-              ch5_o_s <= ch5_o_s(g_bits-2 downto 0) & ch6_o_s(g_bits-1);
-              ch6_o_s <= ch6_o_s(g_bits-2 downto 0) & fifo_out(1);
-              ch7_o_s <= ch7_o_s(g_bits-2 downto 0) & ch8_o_s(g_bits-1);
-              ch8_o_s <= ch8_o_s(g_bits-2 downto 0) & fifo_out(0);
-            elsif g_data_lines = 2 and g_channels = 8 then
-              ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & ch2_o_s(g_bits-1);
-              ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & ch3_o_s(g_bits-1);
-              ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & ch4_o_s(g_bits-1);
-              ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & fifo_out(1);
-              ch5_o_s <= ch5_o_s(g_bits-2 downto 0) & ch6_o_s(g_bits-1);
-              ch6_o_s <= ch6_o_s(g_bits-2 downto 0) & ch7_o_s(g_bits-1);
-              ch7_o_s <= ch7_o_s(g_bits-2 downto 0) & ch8_o_s(g_bits-1);
-              ch8_o_s <= ch8_o_s(g_bits-2 downto 0) & fifo_out(0);
-            elsif g_data_lines = 1 and g_channels = 8 then
-              ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & ch2_o_s(g_bits-1);
-              ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & ch3_o_s(g_bits-1);
-              ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & ch4_o_s(g_bits-1);
-              ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & ch5_o_s(g_bits-1);
-              ch5_o_s <= ch5_o_s(g_bits-2 downto 0) & ch6_o_s(g_bits-1);
-              ch6_o_s <= ch6_o_s(g_bits-2 downto 0) & ch7_o_s(g_bits-1);
-              ch7_o_s <= ch7_o_s(g_bits-2 downto 0) & ch8_o_s(g_bits-1);
-              ch8_o_s <= ch8_o_s(g_bits-2 downto 0) & fifo_out(0);
-            elsif g_data_lines = 4 and g_channels = 4 then
-              ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & fifo_out(3);
-              ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & fifo_out(2);
-              ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & fifo_out(1);
-              ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & fifo_out(0);
-            elsif g_data_lines = 2 and g_channels = 4 then
-              ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & ch2_o_s(g_bits-1);
-              ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & fifo_out(1);
-              ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & ch4_o_s(g_bits-1);
-              ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & fifo_out(0);
-            elsif g_data_lines = 1 and g_channels = 4 then
-              ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & ch2_o_s(g_bits-1);
-              ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & ch3_o_s(g_bits-1);
-              ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & ch4_o_s(g_bits-1);
-              ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & fifo_out(0);
-            elsif g_data_lines = 2 and g_channels = 2 then
-              ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & fifo_out(1);
-              ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & fifo_out(0);
-            elsif g_data_lines = 1 and g_channels = 2 then
-              ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & ch2_o_s(g_bits-1);
-              ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & fifo_out(0);
-            elsif g_data_lines = 1 and g_channels = 1 then
-              ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & fifo_out(0);
-            end if;
+            -- Reading the FIFO output should be delayed by 1 clock
+            -- cycle
+            delayed_read_fifo := (fifo_rd_empty = '0' and fifo_rd = '1');
 
-            -- Count the amount of bits read in a single dataline
-            -- until all data is transfered
-            if bit_read_cnt = c_sck_total_cycles then
-              bit_read_cnt := 0;
-              bit_cnt := 0;
-              state := idle;
-              finished_o <= '1';        -- Signals that the data can
-                                        -- be read from the CHx outputs
-              fifo_rd <= '0';
-              sck_o_s <= '0';
-              delayed_read_fifo := false;
-            else
-              bit_read_cnt := bit_read_cnt + 1;
-            end if;
-          end if;
-
-          -- Reading the FIFO output should be delayed by 1 clock
-          -- cycle
-          delayed_read_fifo := (fifo_rd_empty = '0' and fifo_rd = '1');
-
-          -- Only enable reading if the FIFO isn't empty
-          fifo_rd <= not fifo_rd_empty;
-      end case;
+            -- Only enable reading if the FIFO isn't empty
+            fifo_rd <= not fifo_rd_empty;
+        end case;
+      end if;
     end if;
   end process;
-
 end ltc232x_acq_arch;

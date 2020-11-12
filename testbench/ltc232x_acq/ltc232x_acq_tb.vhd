@@ -36,7 +36,7 @@ entity ltc232x_acq_tb is
 end ltc232x_acq_tb;
 
 architecture ltc232x_acq_tb_arch of ltc232x_acq_tb is
-  signal rst: std_logic := '1';
+  signal rst_n: std_logic := '0';
   signal clk: std_logic := '0';
   signal start: std_logic := '0';
   signal sck: std_logic := '0';
@@ -75,8 +75,8 @@ begin
 
   p_start_cnv: process
   begin
-    wait for 1 ns;
-    rst <= '0';
+    wait for 10 ns;
+    rst_n <= '1';
     wait for 10 ns;
     start <= '1';
     wait for 20 ns;
@@ -93,7 +93,7 @@ begin
       g_data_lines => 4
       )
     port map(
-      rst_i => rst,
+      rst_n_i => rst_n,
       start_i => start,
       cnv_o => cnv,
       clk_i => clk,
