@@ -220,7 +220,7 @@ begin
       q_o => fifo_out
       );
 
-  p_read_ltc232x: process(clk_i, rst_n_i)
+  p_read_ltc232x: process(clk_i)
     type state_t is (idle, conv_high, wait_conv, read_data);
     variable state: state_t := idle;
     variable bit_cnt: integer range 0 to c_sck_total_cycles := 0;
