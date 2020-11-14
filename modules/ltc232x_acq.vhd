@@ -155,7 +155,6 @@ architecture ltc232x_acq_arch of ltc232x_acq is
   constant c_wait_conv_cycles: natural := integer(ceil(g_cnv_wait * real(g_clk_freq)));
   constant c_conv_high_cycles: natural := integer(ceil(30.0e-9 * real(g_clk_freq)));
   constant c_bits_per_line: natural := ((g_bits * g_channels) / g_data_lines);
-  constant c_sck_total_cycles: natural := c_bits_per_line - 1;
   constant c_sck_clk_ratio: natural := (g_clk_freq / g_sclk_freq) - 2;
   signal sck_o_s: std_logic := '0';
   signal fifo_rd: std_logic := '0';
@@ -223,8 +222,8 @@ begin
   p_read_ltc232x: process(clk_i)
     type state_t is (idle, conv_high, wait_conv, read_data);
     variable state: state_t := idle;
-    variable bit_cnt: integer range 0 to c_sck_total_cycles := 0;
-    variable bit_read_cnt: integer range 0 to c_sck_total_cycles := 0;
+    variable bit_cnt: integer range 0 to c_bits_per_line := 0;
+    variable bit_read_cnt: integer range 0 to c_bits_per_line := 0;
     variable wait_cnt: integer range 0 to c_wait_conv_cycles := 0;
     variable sck_div_cnt: integer range 0 to c_wait_conv_cycles := 0;
     variable delayed_read_fifo: boolean := false;
@@ -287,12 +286,12 @@ begin
             -- ADC clock generation logic
             if sck_div_cnt = c_sck_clk_ratio then
               sck_div_cnt := 0;
-              sck_o_s <= not sck_o_s;
-              if sck_o_s = '1' or c_ddr_mode then
-                if bit_cnt /= c_sck_total_cycles then
-                  bit_cnt := bit_cnt + 1;
+                if bit_cnt /= c_bits_per_line then
+                  if sck_o_s = '1' or c_ddr_mode then
+                    bit_cnt := bit_cnt + 1;
+                  end if;
+                  sck_o_s <= not sck_o_s;
                 end if;
-              end if;
             else
               sck_div_cnt := sck_div_cnt + 1;
             end if;
@@ -364,7 +363,8 @@ begin
 
               -- Count the amount of bits read in a single dataline
               -- until all data is transfered
-              if bit_read_cnt = c_sck_total_cycles then
+              if bit_read_cnt = c_bits_per_line-1 then
+                sck_div_cnt := 0;
                 bit_read_cnt := 0;
                 bit_cnt := 0;
                 state := idle;

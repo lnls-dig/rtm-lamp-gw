@@ -82,6 +82,10 @@ begin
     wait for 20 ns;
     start <= '0';
     wait for 1 us;
+    start <= '1';
+    wait for 20 ns;
+    start <= '0';
+    wait for 1 us;
     std.env.finish;
   end process;
 
