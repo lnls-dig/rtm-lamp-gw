@@ -27,7 +27,8 @@ entity rtm_lamp_model is
     g_dac_ref: real := 4.0;            -- DAC voltage reference [V]
     g_mag_res: real := 1.0;            -- Magnet resistance [Ohms]
     g_mag_ind: real := 3.5e-3;         -- Magnet inductance [H]
-    g_mag_time_step: real := 1.0e-6    -- Magnet simulation time step [s]
+    g_mag_time_step: real := 1.0e-6;   -- Magnet simulation time step [s]
+    g_adc_ddr_mode: boolean := true
     );
   port(
     rtm_lamp_sync_clk_i: in std_logic; -- ADC and DAC synchronization clock
@@ -121,7 +122,8 @@ begin
   cmp_ltc2320: entity work.ltc232x_model
     generic map(
       g_ref => g_adc_ref,
-      g_channels => 8
+      g_channels => 8,
+      g_ddr_mode => g_adc_ddr_mode
       )
     port map(
       cnv_n_i => adc_cnv_sync,
@@ -137,7 +139,8 @@ begin
   cmp_ltc2324: entity work.ltc232x_model
     generic map(
       g_ref => g_adc_ref,
-      g_channels => 4
+      g_channels => 4,
+      g_ddr_mode => g_adc_ddr_mode
       )
     port map(
       cnv_n_i => adc_cnv_sync,
