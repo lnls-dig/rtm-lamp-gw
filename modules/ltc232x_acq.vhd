@@ -156,7 +156,7 @@ architecture ltc232x_acq_arch of ltc232x_acq is
   constant c_conv_high_cycles: natural := integer(ceil(30.0e-9 * real(g_clk_freq)));
   constant c_bits_per_line: natural := ((g_bits * g_channels) / g_data_lines);
   constant c_sck_clk_ratio: natural := (g_clk_freq / g_sclk_freq);
-  constant c_sck_clk_div_cnt: natural := c_sck_clk_ratio - 2;
+  constant c_sck_clk_div_cnt: natural := (c_sck_clk_ratio / 2) - 1;
   signal sck_o_s: std_logic := '0';
   signal fifo_rd: std_logic := '0';
   signal fifo_rd_empty: std_logic;
