@@ -155,7 +155,8 @@ architecture ltc232x_acq_arch of ltc232x_acq is
   constant c_wait_conv_cycles: natural := integer(ceil(g_cnv_wait * real(g_clk_freq)));
   constant c_conv_high_cycles: natural := integer(ceil(30.0e-9 * real(g_clk_freq)));
   constant c_bits_per_line: natural := ((g_bits * g_channels) / g_data_lines);
-  constant c_sck_clk_ratio: natural := (g_clk_freq / g_sclk_freq) - 2;
+  constant c_sck_clk_ratio: natural := (g_clk_freq / g_sclk_freq);
+  constant c_sck_clk_div_cnt: natural := c_sck_clk_ratio - 2;
   signal sck_o_s: std_logic := '0';
   signal fifo_rd: std_logic := '0';
   signal fifo_rd_empty: std_logic;
@@ -225,7 +226,7 @@ begin
     variable bit_cnt: integer range 0 to c_bits_per_line := 0;
     variable bit_read_cnt: integer range 0 to c_bits_per_line := 0;
     variable wait_cnt: integer range 0 to c_wait_conv_cycles := 0;
-    variable sck_div_cnt: integer range 0 to c_wait_conv_cycles := 0;
+    variable sck_div_cnt: integer range 0 to c_sck_clk_div_cnt := 0;
     variable delayed_read_fifo: boolean := false;
   begin
     if rising_edge(clk_i) then
@@ -284,7 +285,7 @@ begin
 
           when read_data =>
             -- ADC clock generation logic
-            if sck_div_cnt = c_sck_clk_ratio then
+            if sck_div_cnt = c_sck_clk_div_cnt then
               sck_div_cnt := 0;
                 if bit_cnt /= c_bits_per_line then
                   if sck_o_s = '1' or c_ddr_mode then
