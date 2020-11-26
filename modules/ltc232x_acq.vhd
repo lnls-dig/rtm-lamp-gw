@@ -130,7 +130,8 @@ entity ltc232x_acq is
     cnv_o:      out std_logic := '0';                    -- Drives the CNV signal
     sck_o:      out std_logic := '0';                    -- ADC input clock
     sck_ret_i:  in  std_logic;                           -- ADC return clock
-    finished_o: out std_logic := '0';                    -- Conversion finished
+    ready_o:    out std_logic := '0';                    -- '0': conversion finished
+                                                         -- '1': ongoing conversion
     sdo1a_i:    in  std_logic;                           -- ADC output SDO1/SDOA
     sdo2_i:     in  std_logic := '0';                    -- ADC output SDO2
     sdo3b_i:    in  std_logic := '0';                    -- ADC output SDO3/SDOB
@@ -157,6 +158,8 @@ architecture ltc232x_acq_arch of ltc232x_acq is
   constant c_bits_per_line: natural := ((g_bits * g_channels) / g_data_lines);
   constant c_sck_clk_ratio: natural := (g_clk_freq / g_sclk_freq);
   constant c_sck_clk_div_cnt: natural := (c_sck_clk_ratio / 2) - 1;
+  type state_t is (idle, conv_high, wait_conv, read_data);
+  signal state: state_t := idle;
   signal sck_o_s: std_logic := '0';
   signal fifo_rd: std_logic := '0';
   signal fifo_rd_empty: std_logic;
@@ -172,6 +175,7 @@ architecture ltc232x_acq_arch of ltc232x_acq is
   signal ch8_o_s: std_logic_vector(g_bits-1 downto 0);
 begin
 
+  ready_o <= '1' when (state = idle and start_i = '0') else '0';
   sck_o <= sck_o_s;
 
   ch1_o <= ch1_o_s;
@@ -221,8 +225,6 @@ begin
       );
 
   p_read_ltc232x: process(clk_i)
-    type state_t is (idle, conv_high, wait_conv, read_data);
-    variable state: state_t := idle;
     variable bit_cnt: integer range 0 to c_bits_per_line := 0;
     variable bit_read_cnt: integer range 0 to c_bits_per_line := 0;
     variable wait_cnt: integer range 0 to c_wait_conv_cycles := 0;
@@ -231,7 +233,7 @@ begin
   begin
     if rising_edge(clk_i) then
       if rst_n_i = '0' then               -- Reset the state machine
-        state := idle;
+        state <= idle;
         bit_cnt := 0;
         bit_read_cnt := 0;
         wait_cnt := 0;
@@ -239,7 +241,7 @@ begin
         delayed_read_fifo := false;
         cnv_o <= '0';
         sck_o_s <= '0';
-        finished_o <= '0';
+        ready_o <= '1';
       else
         -- The FSM has 4 states:
         --
@@ -258,19 +260,19 @@ begin
         --   Read the converted data through the serial lines.
         case state is
           when idle =>
-            finished_o <= '0';
             if start_i = '0' then
-              state := idle;
+              state <= idle;
             else
               cnv_o <= '1';
-              state := conv_high;
+              state <= conv_high;
+              ready_o <= '0';
             end if;
 
           when conv_high =>
             if wait_cnt = c_conv_high_cycles then
               wait_cnt := 0;
               cnv_o <= '0';
-              state := wait_conv;
+              state <= wait_conv;
             else
               wait_cnt := wait_cnt + 1;
             end if;
@@ -278,7 +280,7 @@ begin
           when wait_conv =>
             if wait_cnt = c_wait_conv_cycles then
               wait_cnt := 0;
-              state := read_data;
+              state <= read_data;
             else
               wait_cnt := wait_cnt + 1;
             end if;
@@ -368,9 +370,9 @@ begin
                 sck_div_cnt := 0;
                 bit_read_cnt := 0;
                 bit_cnt := 0;
-                state := idle;
-                finished_o <= '1';        -- Signals that the data can
-                                          -- be read from the CHx outputs
+                state <= idle;
+                ready_o <= '1';        -- Signals that the data can
+                                       -- be read from the CHx outputs
                 fifo_rd <= '0';
                 sck_o_s <= '0';
                 delayed_read_fifo := false;
