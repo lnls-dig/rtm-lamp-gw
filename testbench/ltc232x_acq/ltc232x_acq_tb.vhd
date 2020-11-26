@@ -19,6 +19,9 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+library work;
+use work.rtm_lamp_pkg.all;
+
 entity ltc232x_acq_tb is
   generic(
     g_bits: natural := 16
@@ -89,7 +92,7 @@ begin
     std.env.finish;
   end process;
 
-  ltc232x_acq_inst: entity work.ltc232x_acq
+  cmp_ltc232x_acq: ltc232x_acq
     generic map(
       g_clk_freq => 200_000_000,
       g_sclk_freq => 100_000_000,
