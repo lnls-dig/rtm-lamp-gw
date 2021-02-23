@@ -175,7 +175,6 @@ architecture ltc232x_acq_arch of ltc232x_acq is
   signal ch8_o_s: std_logic_vector(g_bits-1 downto 0) := (others =>'0');
 begin
 
-  ready_o <= '1' when (state = idle and start_i = '0') else '0';
   sck_o <= sck_o_s;
 
   ch1_o <= ch1_o_s;
