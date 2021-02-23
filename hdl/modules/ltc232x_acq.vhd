@@ -147,7 +147,8 @@ entity ltc232x_acq is
     ch5_o:      out std_logic_vector(g_bits-1 downto 0); -- CH5 parallel output
     ch6_o:      out std_logic_vector(g_bits-1 downto 0); -- CH6 parallel output
     ch7_o:      out std_logic_vector(g_bits-1 downto 0); -- CH7 parallel output
-    ch8_o:      out std_logic_vector(g_bits-1 downto 0)  -- CH8 parallel output
+    ch8_o:      out std_logic_vector(g_bits-1 downto 0); -- CH8 parallel output
+    valid_o:    out std_logic                            -- data valid output
     );
 end ltc232x_acq;
 
@@ -241,7 +242,11 @@ begin
         cnv_o <= '0';
         sck_o_s <= '0';
         ready_o <= '1';
+        valid_o <= '0';
       else
+        -- valid signal is only asserted for 1 clock cycle
+        valid_o <= '0';
+
         -- The FSM has 4 states:
         --
         -- idle:
@@ -372,6 +377,8 @@ begin
                 state <= idle;
                 ready_o <= '1';        -- Signals that the module is ready
                                        -- to start a new conversion
+
+                valid_o <= '1';
                 fifo_rd <= '0';
                 sck_o_s <= '0';
                 delayed_read_fifo := false;

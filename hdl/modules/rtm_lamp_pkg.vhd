@@ -73,7 +73,8 @@ package rtm_lamp_pkg is
     ch5_o:      out std_logic_vector(g_bits-1 downto 0);
     ch6_o:      out std_logic_vector(g_bits-1 downto 0);
     ch7_o:      out std_logic_vector(g_bits-1 downto 0);
-    ch8_o:      out std_logic_vector(g_bits-1 downto 0)
+    ch8_o:      out std_logic_vector(g_bits-1 downto 0);
+    valid_o:    out std_logic
     );
   end component;
 end rtm_lamp_pkg;
