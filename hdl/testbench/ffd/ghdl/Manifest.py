@@ -6,4 +6,4 @@ modules = {"local" : ["../"]}
 
 ghdl_opt = "--std=08"
 
-sim_post_cmd = "ghdl -r ffd_tb --wave=ffd_tb.ghw"
+sim_post_cmd = "ghdl -r --std=08 ffd_tb --wave=ffd_tb.ghw"

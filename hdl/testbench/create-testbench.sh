@@ -9,6 +9,8 @@ read TB_FILENAME
 printf "Testbench toplevel: "
 read TB_TOP_LEVEL
 
+TB_GHDL_OPTS="--std=08"
+
 mkdir "$TB_NAME"
 cd "$TB_NAME"
 
@@ -25,9 +27,9 @@ top_module = \"${TB_TOP_LEVEL}\"
 
 modules = {\"local\" : [\"../\"]}
 
-ghdl_opt = \"--std=08\"
+ghdl_opt = \"${TB_GHDL_OPTS}\"
 
-sim_post_cmd = \"ghdl -r ${TB_TOP_LEVEL} --wave=${TB_TOP_LEVEL}.ghw\"
+sim_post_cmd = \"ghdl -r ${TB_GHDL_OPTS} ${TB_TOP_LEVEL} --wave=${TB_TOP_LEVEL}.ghw\"
 " > ghdl/Manifest.py
 
 printf "action = \"simulation\"
