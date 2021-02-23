@@ -165,14 +165,14 @@ architecture ltc232x_acq_arch of ltc232x_acq is
   signal fifo_rd_empty: std_logic;
   signal fifo_in: std_logic_vector(g_data_lines-1 downto 0);
   signal fifo_out: std_logic_vector(g_data_lines-1 downto 0);
-  signal ch1_o_s: std_logic_vector(g_bits-1 downto 0);
-  signal ch2_o_s: std_logic_vector(g_bits-1 downto 0);
-  signal ch3_o_s: std_logic_vector(g_bits-1 downto 0);
-  signal ch4_o_s: std_logic_vector(g_bits-1 downto 0);
-  signal ch5_o_s: std_logic_vector(g_bits-1 downto 0);
-  signal ch6_o_s: std_logic_vector(g_bits-1 downto 0);
-  signal ch7_o_s: std_logic_vector(g_bits-1 downto 0);
-  signal ch8_o_s: std_logic_vector(g_bits-1 downto 0);
+  signal ch1_o_s: std_logic_vector(g_bits-1 downto 0) := (others =>'0');
+  signal ch2_o_s: std_logic_vector(g_bits-1 downto 0) := (others =>'0');
+  signal ch3_o_s: std_logic_vector(g_bits-1 downto 0) := (others =>'0');
+  signal ch4_o_s: std_logic_vector(g_bits-1 downto 0) := (others =>'0');
+  signal ch5_o_s: std_logic_vector(g_bits-1 downto 0) := (others =>'0');
+  signal ch6_o_s: std_logic_vector(g_bits-1 downto 0) := (others =>'0');
+  signal ch7_o_s: std_logic_vector(g_bits-1 downto 0) := (others =>'0');
+  signal ch8_o_s: std_logic_vector(g_bits-1 downto 0) := (others =>'0');
 begin
 
   ready_o <= '1' when (state = idle and start_i = '0') else '0';
