@@ -130,8 +130,8 @@ entity ltc232x_acq is
     cnv_o:      out std_logic := '0';                    -- Drives the CNV signal
     sck_o:      out std_logic := '0';                    -- ADC input clock
     sck_ret_i:  in  std_logic;                           -- ADC return clock
-    ready_o:    out std_logic := '0';                    -- '0': conversion finished
-                                                         -- '1': ongoing conversion
+    ready_o:    out std_logic := '0';                    -- '0': ongoing conversion
+                                                         -- '1': ready to start conversion
     sdo1a_i:    in  std_logic;                           -- ADC output SDO1/SDOA
     sdo2_i:     in  std_logic := '0';                    -- ADC output SDO2
     sdo3b_i:    in  std_logic := '0';                    -- ADC output SDO3/SDOB
@@ -371,8 +371,8 @@ begin
                 bit_read_cnt := 0;
                 bit_cnt := 0;
                 state <= idle;
-                ready_o <= '1';        -- Signals that the data can
-                                       -- be read from the CHx outputs
+                ready_o <= '1';        -- Signals that the module is ready
+                                       -- to start a new conversion
                 fifo_rd <= '0';
                 sck_o_s <= '0';
                 delayed_read_fifo := false;
