@@ -159,8 +159,8 @@ architecture ltc232x_acq_arch of ltc232x_acq is
   constant c_BITS_PER_LINE: natural := ((g_BITS * g_CHANNELS) / g_DATA_LINES);
   constant c_SCK_CLK_RATIO: natural := (g_CLK_FREQ / g_SCLK_FREQ);
   constant c_SCK_CLK_DIV_CNT: natural := (c_sck_clk_ratio / 2) - 1;
-  type state_t is (idle, conv_high, wait_conv, read_data);
-  signal state: state_t := idle;
+  type t_state is (IDLE, CONV_HIGH, WAIT_CONV, READ_DATA);
+  signal state: t_state := IDLE;
   signal sck_o_s: std_logic := '0';
   signal fifo_rd: std_logic := '0';
   signal fifo_rd_empty: std_logic;
@@ -233,7 +233,7 @@ begin
   begin
     if rising_edge(clk_i) then
       if rst_n_i = '0' then               -- Reset the state machine
-        state <= idle;
+        state <= IDLE;
         bit_cnt := 0;
         bit_read_cnt := 0;
         wait_cnt := 0;
@@ -249,47 +249,47 @@ begin
 
         -- The FSM has 4 states:
         --
-        -- idle:
+        -- IDLE:
         --   Wait for a high level in start_i;
         --
-        -- conv_high:
+        -- CONV_HIGH:
         --   Hold the CNV signal high for 30ns minimum to start the
         --   conversion;
         --
-        -- wait_conv:
+        -- WAIT_CONV:
         --   Wait for the conversion to finish, conversion time is set
         --   by g_CNV_WAIT;
         --
-        -- read_data:
+        -- READ_DATA:
         --   Read the converted data through the serial lines.
         case state is
-          when idle =>
+          when IDLE =>
             if start_i = '0' then
-              state <= idle;
+              state <= IDLE;
             else
               cnv_o <= '1';
-              state <= conv_high;
+              state <= CONV_HIGH;
               ready_o <= '0';
             end if;
 
-          when conv_high =>
+          when CONV_HIGH =>
             if wait_cnt = c_CONV_HIGH_CYCLES then
               wait_cnt := 0;
               cnv_o <= '0';
-              state <= wait_conv;
+              state <= WAIT_CONV;
             else
               wait_cnt := wait_cnt + 1;
             end if;
 
-          when wait_conv =>
+          when WAIT_CONV =>
             if wait_cnt = c_WAIT_CONV_CYCLES then
               wait_cnt := 0;
-              state <= read_data;
+              state <= READ_DATA;
             else
               wait_cnt := wait_cnt + 1;
             end if;
 
-          when read_data =>
+          when READ_DATA =>
             -- ADC clock generation logic
             if sck_div_cnt = c_SCK_CLK_DIV_CNT then
               sck_div_cnt := 0;
@@ -374,7 +374,7 @@ begin
                 sck_div_cnt := 0;
                 bit_read_cnt := 0;
                 bit_cnt := 0;
-                state <= idle;
+                state <= IDLE;
                 ready_o <= '1';        -- Signals that the module is ready
                                        -- to start a new conversion
 

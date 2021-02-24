@@ -51,8 +51,8 @@ end multi_dac_spi;
 architecture multi_dac_spi_arch of multi_dac_spi is
   constant c_SCK_DIV_CNT: natural := (g_CLK_FREQ / (2*g_sclk_freq)) - 1;
   constant c_NUM_DATA_BITS: natural := 16;
-  type state_t is (idle, cs_delay, transfering);
-  signal state: state_t := idle;
+  type t_state is (IDLE, CS_DELAY, TRANSFERING);
+  signal state: t_state := IDLE;
   signal dac_sck: std_logic := '0';
   signal data_buf: array_16b_word(g_NUM_DACS-1 downto 0);
   signal bit_cnt: natural range 0 to c_NUM_DATA_BITS := c_NUM_DATA_BITS-1;
@@ -70,7 +70,7 @@ begin
   begin
     if rising_edge(clk_i) then
       if rst_n_i = '0' then
-        state <= idle;
+        state <= IDLE;
         dac_cs_o <= '1';
         bit_cnt <= c_NUM_DATA_BITS-1;
         sck_div_cnt := 0;
@@ -78,29 +78,29 @@ begin
         ready_o <= '1';
       else
         case state is
-          when idle =>
+          when IDLE =>
             if start_i = '1' then
               dac_cs_o <= '0';
-              state <= cs_delay;
+              state <= CS_DELAY;
               data_buf <= data_i;
               ready_o <= '0';
             end if;
 
-          when cs_delay =>
+          when CS_DELAY =>
             if sck_div_cnt = c_SCK_DIV_CNT then
               sck_div_cnt := 0;
-              state <= transfering;
+              state <= TRANSFERING;
             else
               sck_div_cnt := sck_div_cnt + 1;
             end if;
 
-          when transfering =>
+          when TRANSFERING =>
             if sck_div_cnt = c_SCK_DIV_CNT then
               sck_div_cnt := 0;
 
               if dac_sck = '1' then
                 if bit_cnt = 0 then
-                  state <= idle;
+                  state <= IDLE;
                   ready_o <= '1';        -- Signals that the module is ready
                                          -- to start a new transfer
                   dac_cs_o <= '1';
