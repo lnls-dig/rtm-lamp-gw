@@ -225,20 +225,20 @@ begin
       );
 
   p_read_ltc232x: process(clk_i)
-    variable bit_cnt: integer range 0 to c_BITS_PER_LINE := 0;
-    variable bit_read_cnt: integer range 0 to c_BITS_PER_LINE := 0;
-    variable wait_cnt: integer range 0 to c_WAIT_CONV_CYCLES := 0;
-    variable sck_div_cnt: integer range 0 to c_SCK_CLK_DIV_CNT := 0;
-    variable delayed_read_fifo: boolean := false;
+    variable v_bit_cnt: integer range 0 to c_BITS_PER_LINE := 0;
+    variable v_bit_read_cnt: integer range 0 to c_BITS_PER_LINE := 0;
+    variable v_wait_cnt: integer range 0 to c_WAIT_CONV_CYCLES := 0;
+    variable v_sck_div_cnt: integer range 0 to c_SCK_CLK_DIV_CNT := 0;
+    variable v_delayed_read_fifo: boolean := false;
   begin
     if rising_edge(clk_i) then
       if rst_n_i = '0' then               -- Reset the state machine
         state <= IDLE;
-        bit_cnt := 0;
-        bit_read_cnt := 0;
-        wait_cnt := 0;
-        sck_div_cnt := 0;
-        delayed_read_fifo := false;
+        v_bit_cnt := 0;
+        v_bit_read_cnt := 0;
+        v_wait_cnt := 0;
+        v_sck_div_cnt := 0;
+        v_delayed_read_fifo := false;
         cnv_o <= '0';
         sck_o_s <= '0';
         ready_o <= '1';
@@ -273,38 +273,38 @@ begin
             end if;
 
           when CONV_HIGH =>
-            if wait_cnt = c_CONV_HIGH_CYCLES then
-              wait_cnt := 0;
+            if v_wait_cnt = c_CONV_HIGH_CYCLES then
+              v_wait_cnt := 0;
               cnv_o <= '0';
               state <= WAIT_CONV;
             else
-              wait_cnt := wait_cnt + 1;
+              v_wait_cnt := v_wait_cnt + 1;
             end if;
 
           when WAIT_CONV =>
-            if wait_cnt = c_WAIT_CONV_CYCLES then
-              wait_cnt := 0;
+            if v_wait_cnt = c_WAIT_CONV_CYCLES then
+              v_wait_cnt := 0;
               state <= READ_DATA;
             else
-              wait_cnt := wait_cnt + 1;
+              v_wait_cnt := v_wait_cnt + 1;
             end if;
 
           when READ_DATA =>
             -- ADC clock generation logic
-            if sck_div_cnt = c_SCK_CLK_DIV_CNT then
-              sck_div_cnt := 0;
-                if bit_cnt /= c_BITS_PER_LINE then
+            if v_sck_div_cnt = c_SCK_CLK_DIV_CNT then
+              v_sck_div_cnt := 0;
+                if v_bit_cnt /= c_BITS_PER_LINE then
                   if sck_o_s = '1' or c_DDR_MODE then
-                    bit_cnt := bit_cnt + 1;
+                    v_bit_cnt := v_bit_cnt + 1;
                   end if;
                   sck_o_s <= not sck_o_s;
                 end if;
             else
-              sck_div_cnt := sck_div_cnt + 1;
+              v_sck_div_cnt := v_sck_div_cnt + 1;
             end if;
 
             -- Check if there is data to be read from the FIFO
-            if delayed_read_fifo then
+            if v_delayed_read_fifo then
               -- Each combination of the number of data lines and input
               -- channels requires a different capture logic.
               if g_DATA_LINES = 8 and g_CHANNELS = 8 then
@@ -370,10 +370,10 @@ begin
 
               -- Count the amount of bits read in a single dataline
               -- until all data is transfered
-              if bit_read_cnt = c_BITS_PER_LINE-1 then
-                sck_div_cnt := 0;
-                bit_read_cnt := 0;
-                bit_cnt := 0;
+              if v_bit_read_cnt = c_BITS_PER_LINE-1 then
+                v_sck_div_cnt := 0;
+                v_bit_read_cnt := 0;
+                v_bit_cnt := 0;
                 state <= IDLE;
                 ready_o <= '1';        -- Signals that the module is ready
                                        -- to start a new conversion
@@ -381,15 +381,15 @@ begin
                 valid_o <= '1';
                 fifo_rd <= '0';
                 sck_o_s <= '0';
-                delayed_read_fifo := false;
+                v_delayed_read_fifo := false;
               else
-                bit_read_cnt := bit_read_cnt + 1;
+                v_bit_read_cnt := v_bit_read_cnt + 1;
               end if;
             end if;
 
             -- Reading the FIFO output should be delayed by 1 clock
             -- cycle
-            delayed_read_fifo := (fifo_rd_empty = '0' and fifo_rd = '1');
+            v_delayed_read_fifo := (fifo_rd_empty = '0' and fifo_rd = '1');
 
             -- Only enable reading if the FIFO isn't empty
             fifo_rd <= not fifo_rd_empty;

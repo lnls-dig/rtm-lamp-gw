@@ -66,14 +66,14 @@ begin
   end generate;
 
   p_dac_ctrl: process(clk_i)
-    variable sck_div_cnt: integer range 0 to c_SCK_DIV_CNT := 0;
+    variable v_sck_div_cnt: integer range 0 to c_SCK_DIV_CNT := 0;
   begin
     if rising_edge(clk_i) then
       if rst_n_i = '0' then
         state <= IDLE;
         dac_cs_o <= '1';
         bit_cnt <= c_NUM_DATA_BITS-1;
-        sck_div_cnt := 0;
+        v_sck_div_cnt := 0;
         dac_sck <= '0';
         ready_o <= '1';
       else
@@ -87,16 +87,16 @@ begin
             end if;
 
           when CS_DELAY =>
-            if sck_div_cnt = c_SCK_DIV_CNT then
-              sck_div_cnt := 0;
+            if v_sck_div_cnt = c_SCK_DIV_CNT then
+              v_sck_div_cnt := 0;
               state <= TRANSFERING;
             else
-              sck_div_cnt := sck_div_cnt + 1;
+              v_sck_div_cnt := v_sck_div_cnt + 1;
             end if;
 
           when TRANSFERING =>
-            if sck_div_cnt = c_SCK_DIV_CNT then
-              sck_div_cnt := 0;
+            if v_sck_div_cnt = c_SCK_DIV_CNT then
+              v_sck_div_cnt := 0;
 
               if dac_sck = '1' then
                 if bit_cnt = 0 then
@@ -105,7 +105,7 @@ begin
                                          -- to start a new transfer
                   dac_cs_o <= '1';
                   bit_cnt <= c_NUM_DATA_BITS-1;
-                  sck_div_cnt := 0;
+                  v_sck_div_cnt := 0;
                   dac_sck <= '0';
                 else
                   bit_cnt <= bit_cnt - 1;
@@ -114,7 +114,7 @@ begin
 
               dac_sck <= not dac_sck;
             else
-              sck_div_cnt := sck_div_cnt + 1;
+              v_sck_div_cnt := v_sck_div_cnt + 1;
             end if;
         end case;
       end if;
