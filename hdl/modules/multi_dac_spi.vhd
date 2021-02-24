@@ -58,7 +58,6 @@ architecture multi_dac_spi_arch of multi_dac_spi is
   signal bit_cnt: natural range 0 to c_num_data_bits := c_num_data_bits-1;
 begin
 
-  ready_o <= '1' when (state = idle and start_i = '0') else '0';
   dac_sck_o <= not dac_sck when g_cpol else dac_sck;
 
   gen_dac_sdi:
@@ -76,6 +75,7 @@ begin
         bit_cnt <= c_num_data_bits-1;
         sck_div_cnt := 0;
         dac_sck <= '0';
+        ready_o <= '1';
       else
         case state is
           when idle =>
@@ -83,6 +83,7 @@ begin
               dac_cs_o <= '0';
               state <= cs_delay;
               data_buf <= data_i;
+              ready_o <= '0';
             end if;
 
           when cs_delay =>
@@ -100,6 +101,8 @@ begin
               if dac_sck = '1' then
                 if bit_cnt = 0 then
                   state <= idle;
+                  ready_o <= '1';        -- Signals that the module is ready
+                                         -- to start a new transfer
                   dac_cs_o <= '1';
                   bit_cnt <= c_num_data_bits-1;
                   sck_div_cnt := 0;
