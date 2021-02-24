@@ -42,7 +42,7 @@ package rtm_lamp_pkg is
   end component;
 
   component ltc232x_acq is
-      generic(
+  generic(
     g_CLK_FREQ:   natural := 100_000_000;
     g_SCLK_FREQ:  natural := 50_000_000;
     g_BITS:       natural := 16;
