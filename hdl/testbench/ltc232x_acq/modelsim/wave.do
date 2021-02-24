@@ -1,7 +1,7 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider ltc232x_acq_tb
-add wave -noupdate /ltc232x_acq_tb/g_bits
+add wave -noupdate /ltc232x_acq_tb/g_BITS
 add wave -noupdate /ltc232x_acq_tb/ch1_o
 add wave -noupdate /ltc232x_acq_tb/ch2_o
 add wave -noupdate /ltc232x_acq_tb/ch3_o
@@ -22,18 +22,18 @@ add wave -noupdate /ltc232x_acq_tb/sdoc
 add wave -noupdate /ltc232x_acq_tb/sdod
 add wave -noupdate /ltc232x_acq_tb/analog_i
 add wave -noupdate -divider ltc232x_acq
-add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/c_ddr_mode
-add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/c_wait_conv_cycles
-add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/c_conv_high_cycles
-add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/c_bits_per_line
-add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/c_sck_clk_ratio
-add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/c_sck_clk_div_cnt
-add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_clk_freq
-add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_sclk_freq
-add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_bits
-add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_channels
-add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_data_lines
-add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_cnv_wait
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/c_DDR_MODE
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/c_WAIT_CONV_CYCLES
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/c_CONV_HIGH_CYCLES
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/c_BITS_PER_LINE
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/c_SCK_CLK_RATIO
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/c_SCK_CLK_DIV_CNT
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_CLK_FREQ
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_SCLK_FREQ
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_BITS
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_CHANNELS
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_DATA_LINES
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_CNV_WAIT
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/rst_n_i
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/clk_i
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/start_i
@@ -124,9 +124,9 @@ add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/cmp_fifo/U_Inferred_FIFO/almo
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/cmp_fifo/U_Inferred_FIFO/q_int
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/cmp_fifo/U_Inferred_FIFO/c_counter_bits
 add wave -noupdate -divider ltc2320_model
-add wave -noupdate /ltc232x_acq_tb/cmp_ltc2320/g_ref
-add wave -noupdate /ltc232x_acq_tb/cmp_ltc2320/g_channels
-add wave -noupdate /ltc232x_acq_tb/cmp_ltc2320/g_ddr_mode
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc2320/g_REF
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc2320/g_CHANNELS
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc2320/g_DDR_MODE
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc2320/cnv_n_i
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc2320/clk_i
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc2320/clk_o
@@ -140,7 +140,7 @@ add wave -noupdate /ltc232x_acq_tb/cmp_ltc2320/delayed_cnv_n
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc2320/chn_off
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc2320/bit_indx
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {411700 ps} 0}
+WaveRestoreCursors {{Cursor 1} {1915400 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 150
 configure wave -valuecolwidth 100
@@ -156,4 +156,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {711600 ps} {967500 ps}
+WaveRestoreZoom {1816900 ps} {2072800 ps}
