@@ -153,12 +153,12 @@ entity ltc232x_acq is
 end ltc232x_acq;
 
 architecture ltc232x_acq_arch of ltc232x_acq is
-  constant c_ddr_mode: boolean := false; -- DDR mode not supported yet
-  constant c_wait_conv_cycles: natural := integer(ceil(g_cnv_wait * real(g_clk_freq)));
-  constant c_conv_high_cycles: natural := integer(ceil(30.0e-9 * real(g_clk_freq)));
-  constant c_bits_per_line: natural := ((g_bits * g_channels) / g_data_lines);
-  constant c_sck_clk_ratio: natural := (g_clk_freq / g_sclk_freq);
-  constant c_sck_clk_div_cnt: natural := (c_sck_clk_ratio / 2) - 1;
+  constant c_DDR_MODE: boolean := false; -- DDR mode not supported yet
+  constant c_WAIT_CONV_CYCLES: natural := integer(ceil(g_cnv_wait * real(g_clk_freq)));
+  constant c_CONV_HIGH_CYCLES: natural := integer(ceil(30.0e-9 * real(g_clk_freq)));
+  constant c_BITS_PER_LINE: natural := ((g_bits * g_channels) / g_data_lines);
+  constant c_SCK_CLK_RATIO: natural := (g_clk_freq / g_sclk_freq);
+  constant c_SCK_CLK_DIV_CNT: natural := (c_sck_clk_ratio / 2) - 1;
   type state_t is (idle, conv_high, wait_conv, read_data);
   signal state: state_t := idle;
   signal sck_o_s: std_logic := '0';
@@ -225,10 +225,10 @@ begin
       );
 
   p_read_ltc232x: process(clk_i)
-    variable bit_cnt: integer range 0 to c_bits_per_line := 0;
-    variable bit_read_cnt: integer range 0 to c_bits_per_line := 0;
-    variable wait_cnt: integer range 0 to c_wait_conv_cycles := 0;
-    variable sck_div_cnt: integer range 0 to c_sck_clk_div_cnt := 0;
+    variable bit_cnt: integer range 0 to c_BITS_PER_LINE := 0;
+    variable bit_read_cnt: integer range 0 to c_BITS_PER_LINE := 0;
+    variable wait_cnt: integer range 0 to c_WAIT_CONV_CYCLES := 0;
+    variable sck_div_cnt: integer range 0 to c_SCK_CLK_DIV_CNT := 0;
     variable delayed_read_fifo: boolean := false;
   begin
     if rising_edge(clk_i) then
@@ -273,7 +273,7 @@ begin
             end if;
 
           when conv_high =>
-            if wait_cnt = c_conv_high_cycles then
+            if wait_cnt = c_CONV_HIGH_CYCLES then
               wait_cnt := 0;
               cnv_o <= '0';
               state <= wait_conv;
@@ -282,7 +282,7 @@ begin
             end if;
 
           when wait_conv =>
-            if wait_cnt = c_wait_conv_cycles then
+            if wait_cnt = c_WAIT_CONV_CYCLES then
               wait_cnt := 0;
               state <= read_data;
             else
@@ -291,10 +291,10 @@ begin
 
           when read_data =>
             -- ADC clock generation logic
-            if sck_div_cnt = c_sck_clk_div_cnt then
+            if sck_div_cnt = c_SCK_CLK_DIV_CNT then
               sck_div_cnt := 0;
-                if bit_cnt /= c_bits_per_line then
-                  if sck_o_s = '1' or c_ddr_mode then
+                if bit_cnt /= c_BITS_PER_LINE then
+                  if sck_o_s = '1' or c_DDR_MODE then
                     bit_cnt := bit_cnt + 1;
                   end if;
                   sck_o_s <= not sck_o_s;
@@ -370,7 +370,7 @@ begin
 
               -- Count the amount of bits read in a single dataline
               -- until all data is transfered
-              if bit_read_cnt = c_bits_per_line-1 then
+              if bit_read_cnt = c_BITS_PER_LINE-1 then
                 sck_div_cnt := 0;
                 bit_read_cnt := 0;
                 bit_cnt := 0;

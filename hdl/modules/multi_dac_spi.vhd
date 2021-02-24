@@ -49,13 +49,13 @@ entity multi_dac_spi is
 end multi_dac_spi;
 
 architecture multi_dac_spi_arch of multi_dac_spi is
-  constant c_sck_div_cnt: natural := (g_clk_freq / (2*g_sclk_freq)) - 1;
-  constant c_num_data_bits: natural := 16;
+  constant c_SCK_DIV_CNT: natural := (g_clk_freq / (2*g_sclk_freq)) - 1;
+  constant c_NUM_DATA_BITS: natural := 16;
   type state_t is (idle, cs_delay, transfering);
   signal state: state_t := idle;
   signal dac_sck: std_logic := '0';
   signal data_buf: array_16b_word(g_num_dacs-1 downto 0);
-  signal bit_cnt: natural range 0 to c_num_data_bits := c_num_data_bits-1;
+  signal bit_cnt: natural range 0 to c_NUM_DATA_BITS := c_NUM_DATA_BITS-1;
 begin
 
   dac_sck_o <= not dac_sck when g_cpol else dac_sck;
@@ -66,13 +66,13 @@ begin
   end generate;
 
   p_dac_ctrl: process(clk_i)
-    variable sck_div_cnt: integer range 0 to c_sck_div_cnt := 0;
+    variable sck_div_cnt: integer range 0 to c_SCK_DIV_CNT := 0;
   begin
     if rising_edge(clk_i) then
       if rst_n_i = '0' then
         state <= idle;
         dac_cs_o <= '1';
-        bit_cnt <= c_num_data_bits-1;
+        bit_cnt <= c_NUM_DATA_BITS-1;
         sck_div_cnt := 0;
         dac_sck <= '0';
         ready_o <= '1';
@@ -87,7 +87,7 @@ begin
             end if;
 
           when cs_delay =>
-            if sck_div_cnt = c_sck_div_cnt then
+            if sck_div_cnt = c_SCK_DIV_CNT then
               sck_div_cnt := 0;
               state <= transfering;
             else
@@ -95,7 +95,7 @@ begin
             end if;
 
           when transfering =>
-            if sck_div_cnt = c_sck_div_cnt then
+            if sck_div_cnt = c_SCK_DIV_CNT then
               sck_div_cnt := 0;
 
               if dac_sck = '1' then
@@ -104,7 +104,7 @@ begin
                   ready_o <= '1';        -- Signals that the module is ready
                                          -- to start a new transfer
                   dac_cs_o <= '1';
-                  bit_cnt <= c_num_data_bits-1;
+                  bit_cnt <= c_NUM_DATA_BITS-1;
                   sck_div_cnt := 0;
                   dac_sck <= '0';
                 else
