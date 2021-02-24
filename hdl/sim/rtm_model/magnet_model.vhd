@@ -18,9 +18,9 @@
 
 entity magnet_model is
   generic(
-    g_res:       real := 1.0;           -- Series resistance [Ohms]
-    g_ind:       real := 3.5e-3;        -- Inductance [H]
-    g_time_step: real := 1.0e-5         -- Time step [s]
+    g_RES:       real := 1.0;           -- Series resistance [Ohms]
+    g_IND:       real := 3.5e-3;        -- Inductance [H]
+    g_TIME_STEP: real := 1.0e-5         -- Time step [s]
     );
   port(
     volt_i: in  real;
@@ -37,8 +37,8 @@ begin
   p_calc_cur: process
   begin
     loop
-      wait for g_time_step * 1 sec;
-      current <= current + (g_time_step / g_ind) * (volt_i - g_res * current);
+      wait for g_TIME_STEP * 1 sec;
+      current <= current + (g_TIME_STEP / g_IND) * (volt_i - g_RES * current);
     end loop;
   end process;
 

@@ -23,7 +23,7 @@ use ieee.numeric_std.all;
 
 entity dac8831_model is
   generic(
-    g_ref  : real := 4.0);
+    g_REF  : real := 4.0);
   port(
     cs_i   : in  std_logic;
     sck_i  : in  std_logic;
@@ -57,7 +57,7 @@ begin
         end if;
       end if;
     elsif rising_edge(cs_i) then
-      vout_buf <= dig_to_ana(data_buf, g_ref);
+      vout_buf <= dig_to_ana(data_buf, g_REF);
     end if;
   end process;
 

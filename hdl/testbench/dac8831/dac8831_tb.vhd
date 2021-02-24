@@ -22,7 +22,7 @@ use ieee.numeric_std.all;
 
 entity dac8831_model_tb is
   generic(
-    g_ref: real := 4.0
+    g_REF: real := 4.0
     );
   port(
     vout_o : out real
@@ -39,7 +39,7 @@ architecture dac8831_model_tb_arch of dac8831_model_tb is
 begin
 
   cmp_dac8831_model: entity work.dac8831_model
-    generic map(g_ref)
+    generic map(g_REF)
     port map(
       cs_i => cs,
       sck_i => sck,

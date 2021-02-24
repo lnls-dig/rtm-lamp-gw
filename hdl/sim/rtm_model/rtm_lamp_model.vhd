@@ -23,12 +23,12 @@ use ieee.std_logic_1164.all;
 
 entity rtm_lamp_model is
   generic(
-    g_adc_ref: real := 4.096;          -- ADC voltage reference [V]
-    g_dac_ref: real := 4.0;            -- DAC voltage reference [V]
-    g_mag_res: real := 1.0;            -- Magnet resistance [Ohms]
-    g_mag_ind: real := 3.5e-3;         -- Magnet inductance [H]
-    g_mag_time_step: real := 1.0e-6;   -- Magnet simulation time step [s]
-    g_adc_ddr_mode: boolean := true
+    g_ADC_REF: real := 4.096;          -- ADC voltage reference [V]
+    g_DAC_REF: real := 4.0;            -- DAC voltage reference [V]
+    g_MAG_RES: real := 1.0;            -- Magnet resistance [Ohms]
+    g_MAG_IND: real := 3.5e-3;         -- Magnet inductance [H]
+    g_MAG_TIME_STEP: real := 1.0e-6;   -- Magnet simulation time step [s]
+    g_ADC_DDR_MODE: boolean := true
     );
   port(
     rtm_lamp_sync_clk_i: in std_logic; -- ADC and DAC synchronization clock
@@ -97,9 +97,9 @@ begin
   for i in 0 to 11 generate
     cmp_magnet: entity work.magnet_model
       generic map(
-        g_res => g_mag_res,
-        g_ind => g_mag_ind,
-        g_time_step => g_mag_time_step
+        g_RES => g_MAG_RES,
+        g_IND => g_MAG_IND,
+        g_TIME_STEP => g_MAG_TIME_STEP
         )
       port map(
         volt_i => voltages(i),
@@ -108,7 +108,7 @@ begin
 
     cmp_dac: entity work.dac8831_model
       generic map(
-        g_ref => g_dac_ref
+        g_REF => g_DAC_REF
         )
       port map(
         cs_i => dac_cs_i,
@@ -121,9 +121,9 @@ begin
 
   cmp_ltc2320: entity work.ltc232x_model
     generic map(
-      g_ref => g_adc_ref,
-      g_channels => 8,
-      g_ddr_mode => g_adc_ddr_mode
+      g_REF => g_ADC_REF,
+      g_CHANNELS => 8,
+      g_DDR_MODE => g_ADC_DDR_MODE
       )
     port map(
       cnv_n_i => adc_cnv_sync,
@@ -138,9 +138,9 @@ begin
 
   cmp_ltc2324: entity work.ltc232x_model
     generic map(
-      g_ref => g_adc_ref,
-      g_channels => 4,
-      g_ddr_mode => g_adc_ddr_mode
+      g_REF => g_ADC_REF,
+      g_CHANNELS => 4,
+      g_DDR_MODE => g_ADC_DDR_MODE
       )
     port map(
       cnv_n_i => adc_cnv_sync,

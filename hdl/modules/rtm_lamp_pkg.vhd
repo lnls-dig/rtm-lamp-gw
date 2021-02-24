@@ -24,31 +24,31 @@ package rtm_lamp_pkg is
   -- Multiple SPI DAC interface
   component multi_dac_spi is
     generic(
-      g_clk_freq:      natural := 100_000_000;
-      g_sclk_freq:     natural := 50_000_000;
-      g_num_dacs:      natural := 8;
-      g_cpol:          boolean := false
+      g_CLK_FREQ:      natural := 100_000_000;
+      g_SCLK_FREQ:     natural := 50_000_000;
+      g_NUM_DACS:      natural := 8;
+      g_CPOL:          boolean := false
       );
     port(
       clk_i:       in  std_logic;
       rst_n_i:     in  std_logic;
       start_i:     in  std_logic;
       ready_o:     out std_logic := '0';
-      data_i:      in  array_16b_word(g_num_dacs-1 downto 0);
+      data_i:      in  array_16b_word(g_NUM_DACS-1 downto 0);
       dac_cs_o:    out std_logic;
       dac_sck_o:   out std_logic;
-      dac_sdi_o:   out std_logic_vector(g_num_dacs-1 downto 0)
+      dac_sdi_o:   out std_logic_vector(g_NUM_DACS-1 downto 0)
       );
   end component;
 
   component ltc232x_acq is
       generic(
-    g_clk_freq:   natural := 100_000_000;
-    g_sclk_freq:  natural := 50_000_000;
-    g_bits:       natural := 16;
-    g_channels:   natural := 8;
-    g_data_lines: natural := 8;
-    g_cnv_wait:   real := 450.0e-9
+    g_CLK_FREQ:   natural := 100_000_000;
+    g_SCLK_FREQ:  natural := 50_000_000;
+    g_BITS:       natural := 16;
+    g_CHANNELS:   natural := 8;
+    g_DATA_LINES: natural := 8;
+    g_CNV_WAIT:   real := 450.0e-9
     );
   port(
     rst_n_i:    in  std_logic;
@@ -66,14 +66,14 @@ package rtm_lamp_pkg is
     sdo6_i:     in  std_logic := '0';
     sdo7d_i:    in  std_logic := '0';
     sdo8_i:     in  std_logic := '0';
-    ch1_o:      out std_logic_vector(g_bits-1 downto 0);
-    ch2_o:      out std_logic_vector(g_bits-1 downto 0);
-    ch3_o:      out std_logic_vector(g_bits-1 downto 0);
-    ch4_o:      out std_logic_vector(g_bits-1 downto 0);
-    ch5_o:      out std_logic_vector(g_bits-1 downto 0);
-    ch6_o:      out std_logic_vector(g_bits-1 downto 0);
-    ch7_o:      out std_logic_vector(g_bits-1 downto 0);
-    ch8_o:      out std_logic_vector(g_bits-1 downto 0);
+    ch1_o:      out std_logic_vector(g_BITS-1 downto 0);
+    ch2_o:      out std_logic_vector(g_BITS-1 downto 0);
+    ch3_o:      out std_logic_vector(g_BITS-1 downto 0);
+    ch4_o:      out std_logic_vector(g_BITS-1 downto 0);
+    ch5_o:      out std_logic_vector(g_BITS-1 downto 0);
+    ch6_o:      out std_logic_vector(g_BITS-1 downto 0);
+    ch7_o:      out std_logic_vector(g_BITS-1 downto 0);
+    ch8_o:      out std_logic_vector(g_BITS-1 downto 0);
     valid_o:    out std_logic
     );
   end component;

@@ -24,12 +24,12 @@ use work.rtm_lamp_pkg.all;
 
 entity multi_dac_spi is
   generic(
-    g_clk_freq:      natural := 100_000_000; -- Core clock frequency [Hz], should
+    g_CLK_FREQ:      natural := 100_000_000; -- Core clock frequency [Hz], should
                                              -- be an integer multiple of
-                                             -- g_sclk_freq, at least double the frequency
-    g_sclk_freq:     natural := 50_000_000;  -- DAC sck frequency [Hz]
-    g_num_dacs:      natural := 8;           -- Number of DACs to control
-    g_cpol:          boolean := false        -- Clock polarity:
+                                             -- g_SCLK_FREQ, at least double the frequency
+    g_SCLK_FREQ:     natural := 50_000_000;  -- DAC sck frequency [Hz]
+    g_NUM_DACS:      natural := 8;           -- Number of DACs to control
+    g_CPOL:          boolean := false        -- Clock polarity:
                                              --   false - bit shifted on
                                              --   falling edge;
                                              --   true - bit shifted on
@@ -41,27 +41,27 @@ entity multi_dac_spi is
     start_i:     in  std_logic;         -- Start the transfer
     ready_o:     out std_logic := '0';  -- '0': there is an ongoing transfer
                                         -- '1': ready to start a new transfer
-    data_i:      in  array_16b_word(g_num_dacs-1 downto 0);
+    data_i:      in  array_16b_word(g_NUM_DACS-1 downto 0);
     dac_cs_o:    out std_logic;  -- DAC chip select
     dac_sck_o:   out std_logic;  -- DAC data clock
-    dac_sdi_o:   out std_logic_vector(g_num_dacs-1 downto 0) -- Serial data outputs
+    dac_sdi_o:   out std_logic_vector(g_NUM_DACS-1 downto 0) -- Serial data outputs
     );
 end multi_dac_spi;
 
 architecture multi_dac_spi_arch of multi_dac_spi is
-  constant c_SCK_DIV_CNT: natural := (g_clk_freq / (2*g_sclk_freq)) - 1;
+  constant c_SCK_DIV_CNT: natural := (g_CLK_FREQ / (2*g_sclk_freq)) - 1;
   constant c_NUM_DATA_BITS: natural := 16;
   type state_t is (idle, cs_delay, transfering);
   signal state: state_t := idle;
   signal dac_sck: std_logic := '0';
-  signal data_buf: array_16b_word(g_num_dacs-1 downto 0);
+  signal data_buf: array_16b_word(g_NUM_DACS-1 downto 0);
   signal bit_cnt: natural range 0 to c_NUM_DATA_BITS := c_NUM_DATA_BITS-1;
 begin
 
-  dac_sck_o <= not dac_sck when g_cpol else dac_sck;
+  dac_sck_o <= not dac_sck when g_CPOL else dac_sck;
 
   gen_dac_sdi:
-  for i in 0 to g_num_dacs-1 generate
+  for i in 0 to g_NUM_DACS-1 generate
     dac_sdi_o(i) <= data_buf(i)(bit_cnt);
   end generate;
 

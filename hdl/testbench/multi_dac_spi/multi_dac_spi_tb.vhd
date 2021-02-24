@@ -45,10 +45,10 @@ begin
 
   cmp_multi_dac: multi_dac_spi
     generic map(
-      g_clk_freq => 200_000_000,
-      g_sclk_freq => 25_000_000,
-      g_num_dacs => 12,
-      g_cpol => false
+      g_CLK_FREQ => 200_000_000,
+      g_SCLK_FREQ => 25_000_000,
+      g_NUM_DACS => 12,
+      g_CPOL => false
       )
     port map(
       clk_i => clk_200mhz,

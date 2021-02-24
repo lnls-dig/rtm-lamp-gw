@@ -23,9 +23,9 @@ use ieee.numeric_std.all;
 
 entity ltc232x_model is
   generic (
-    g_ref:      real := 4.096;
-    g_channels: integer := 8;
-    g_ddr_mode: boolean := true
+    g_REF:      real := 4.096;
+    g_CHANNELS: integer := 8;
+    g_DDR_MODE: boolean := true
     );
   port (
     cnv_n_i: in  std_logic;
@@ -35,15 +35,15 @@ entity ltc232x_model is
     sdob_o:  out std_logic;
     sdoc_o:  out std_logic;
     sdod_o:  out std_logic;
-    analog_i: in real_vector (1 to g_channels)
+    analog_i: in real_vector (1 to g_CHANNELS)
     );
 end ltc232x_model;
 
 architecture ltc232x_model_arch of ltc232x_model is
-  type acq_vector is array(1 to g_channels) of std_logic_vector(15 downto 0);
+  type acq_vector is array(1 to g_CHANNELS) of std_logic_vector(15 downto 0);
   signal analog_aq: acq_vector := (others => x"0000");
   signal delayed_cnv_n: std_logic;
-  signal chn_off: integer range 1 to g_channels := 1; -- Channel offset
+  signal chn_off: integer range 1 to g_CHANNELS := 1; -- Channel offset
   signal bit_indx: integer range 0 to 15 := 15; -- Current output bit index
 
   function ana_to_dig(ain: real; ref: real) return std_logic_vector is
@@ -60,41 +60,41 @@ architecture ltc232x_model_arch of ltc232x_model is
   end function;
 begin
 
-  assert (g_channels = 8 or g_channels = 4) report "LTC232x can only have 8 or 4 g_channels" severity error;
+  assert (g_CHANNELS = 8 or g_CHANNELS = 4) report "LTC232x can only have 8 or 4 g_CHANNELS" severity error;
 
-  delayed_cnv_n <= transport cnv_n_i after (g_channels / 4) * 220 ns;
+  delayed_cnv_n <= transport cnv_n_i after (g_CHANNELS / 4) * 220 ns;
   clk_o <= transport clk_i after 2 ns;
 
   ltc_8ch:
-  if g_channels = 8 generate
+  if g_CHANNELS = 8 generate
     sdoa_o <= analog_aq(chn_off)(bit_indx);
-    sdob_o <= analog_aq(((chn_off + 1) mod g_channels) + 1)(bit_indx);
-    sdoc_o <= analog_aq(((chn_off + 3) mod g_channels) + 1)(bit_indx);
-    sdod_o <= analog_aq(((chn_off + 5) mod g_channels) + 1)(bit_indx);
+    sdob_o <= analog_aq(((chn_off + 1) mod g_CHANNELS) + 1)(bit_indx);
+    sdoc_o <= analog_aq(((chn_off + 3) mod g_CHANNELS) + 1)(bit_indx);
+    sdod_o <= analog_aq(((chn_off + 5) mod g_CHANNELS) + 1)(bit_indx);
   end generate;
 
   ltc_4ch:
-  if g_channels = 4 generate
+  if g_CHANNELS = 4 generate
     sdoa_o <= analog_aq(chn_off)(bit_indx);
-    sdob_o <= analog_aq(((chn_off) mod g_channels) + 1)(bit_indx);
-    sdoc_o <= analog_aq(((chn_off + 1) mod g_channels) + 1)(bit_indx);
-    sdod_o <= analog_aq(((chn_off + 2) mod g_channels) + 1)(bit_indx);
+    sdob_o <= analog_aq(((chn_off) mod g_CHANNELS) + 1)(bit_indx);
+    sdoc_o <= analog_aq(((chn_off + 1) mod g_CHANNELS) + 1)(bit_indx);
+    sdod_o <= analog_aq(((chn_off + 2) mod g_CHANNELS) + 1)(bit_indx);
   end generate;
 
   p_conv_clk_data: process(delayed_cnv_n, clk_o)
   begin
     if falling_edge(delayed_cnv_n) then
-      for i in 1 to g_channels loop
-        analog_aq(i) <= ana_to_dig(analog_i(i), g_ref);
+      for i in 1 to g_CHANNELS loop
+        analog_aq(i) <= ana_to_dig(analog_i(i), g_REF);
       end loop;
       bit_indx <= 15;
       chn_off <= 1;
-    elsif falling_edge(clk_o) or (rising_edge(clk_o) and g_ddr_mode) then
+    elsif falling_edge(clk_o) or (rising_edge(clk_o) and g_DDR_MODE) then
       if bit_indx > 0 then
         bit_indx <= bit_indx - 1;
       else
         bit_indx <= 15;
-        if chn_off < g_channels then
+        if chn_off < g_CHANNELS then
           chn_off <= chn_off + 1;
         else
           chn_off <= 1;

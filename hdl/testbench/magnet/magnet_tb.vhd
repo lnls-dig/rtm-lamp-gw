@@ -29,9 +29,9 @@ begin
 
   magnet_model_inst: entity work.magnet_model
     generic map (
-      g_res => 1.0,
-      g_ind => 3.5e-3,
-      g_time_step => 1.0e-5
+      g_RES => 1.0,
+      g_IND => 3.5e-3,
+      g_TIME_STEP => 1.0e-5
       )
     port map (
       volt_i => volt_i,

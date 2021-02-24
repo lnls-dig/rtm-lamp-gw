@@ -24,17 +24,17 @@ use work.rtm_lamp_pkg.all;
 
 entity ltc232x_acq_tb is
   generic(
-    g_bits: natural := 16
+    g_BITS: natural := 16
     );
   port(
-    ch1_o:      out std_logic_vector(g_bits-1 downto 0);
-    ch2_o:      out std_logic_vector(g_bits-1 downto 0);
-    ch3_o:      out std_logic_vector(g_bits-1 downto 0);
-    ch4_o:      out std_logic_vector(g_bits-1 downto 0);
-    ch5_o:      out std_logic_vector(g_bits-1 downto 0);
-    ch6_o:      out std_logic_vector(g_bits-1 downto 0);
-    ch7_o:      out std_logic_vector(g_bits-1 downto 0);
-    ch8_o:      out std_logic_vector(g_bits-1 downto 0)
+    ch1_o:      out std_logic_vector(g_BITS-1 downto 0);
+    ch2_o:      out std_logic_vector(g_BITS-1 downto 0);
+    ch3_o:      out std_logic_vector(g_BITS-1 downto 0);
+    ch4_o:      out std_logic_vector(g_BITS-1 downto 0);
+    ch5_o:      out std_logic_vector(g_BITS-1 downto 0);
+    ch6_o:      out std_logic_vector(g_BITS-1 downto 0);
+    ch7_o:      out std_logic_vector(g_BITS-1 downto 0);
+    ch8_o:      out std_logic_vector(g_BITS-1 downto 0)
     );
 end ltc232x_acq_tb;
 
@@ -55,7 +55,7 @@ begin
 
   cmp_ltc2320: entity work.ltc232x_model
     generic map(
-      g_ddr_mode => false
+      g_DDR_MODE => false
       )
     port map(
       cnv_n_i => cnv,
@@ -94,10 +94,10 @@ begin
 
   cmp_ltc232x_acq: ltc232x_acq
     generic map(
-      g_clk_freq => 200_000_000,
-      g_sclk_freq => 100_000_000,
-      g_channels => 8,
-      g_data_lines => 4
+      g_CLK_FREQ => 200_000_000,
+      g_SCLK_FREQ => 100_000_000,
+      g_CHANNELS => 8,
+      g_DATA_LINES => 4
       )
     port map(
       rst_n_i => rst_n,

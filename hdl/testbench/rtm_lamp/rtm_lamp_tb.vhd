@@ -97,9 +97,9 @@ begin
 
   cmp_ddr_des_c1c2: entity work.ddr_des
     generic map(
-      g_bits => 32,
-      g_polarity => true,
-      g_msb_first => true
+      g_BITS => 32,
+      g_POLARITY => true,
+      g_MSB_FIRST => true
       )
     port map(
       clk_ddr_i => adc_octo_clk_out,
@@ -110,9 +110,9 @@ begin
 
   cmp_ddr_des_c3c4: entity work.ddr_des
     generic map(
-      g_bits => 32,
-      g_polarity => true,
-      g_msb_first => true
+      g_BITS => 32,
+      g_POLARITY => true,
+      g_MSB_FIRST => true
       )
     port map(
       clk_ddr_i => adc_octo_clk_out,
@@ -123,9 +123,9 @@ begin
 
   cmp_ddr_des_c5c6: entity work.ddr_des
     generic map(
-      g_bits => 32,
-      g_polarity => true,
-      g_msb_first => true
+      g_BITS => 32,
+      g_POLARITY => true,
+      g_MSB_FIRST => true
       )
     port map(
       clk_ddr_i => adc_octo_clk_out,
@@ -136,9 +136,9 @@ begin
 
   cmp_ddr_des_c7c8: entity work.ddr_des
     generic map(
-      g_bits => 32,
-      g_polarity => true,
-      g_msb_first => true
+      g_BITS => 32,
+      g_POLARITY => true,
+      g_MSB_FIRST => true
       )
     port map(
       clk_ddr_i => adc_octo_clk_out,
@@ -149,9 +149,9 @@ begin
 
   cmp_ddr_des_c9c10: entity work.ddr_des
     generic map(
-      g_bits => 32,
-      g_polarity => true,
-      g_msb_first => true
+      g_BITS => 32,
+      g_POLARITY => true,
+      g_MSB_FIRST => true
       )
     port map(
       clk_ddr_i => adc_quad_clk_out,
@@ -162,9 +162,9 @@ begin
 
   cmp_ddr_des_c11c12: entity work.ddr_des
     generic map(
-      g_bits => 32,
-      g_polarity => true,
-      g_msb_first => true
+      g_BITS => 32,
+      g_POLARITY => true,
+      g_MSB_FIRST => true
       )
     port map(
       clk_ddr_i => adc_quad_clk_out,

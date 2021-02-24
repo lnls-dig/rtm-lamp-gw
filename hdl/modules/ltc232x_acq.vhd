@@ -113,15 +113,15 @@ use work.genram_pkg.all;
 
 entity ltc232x_acq is
   generic(
-    g_clk_freq:   natural := 100_000_000; -- Core clock frequency [Hz], should
+    g_CLK_FREQ:   natural := 100_000_000; -- Core clock frequency [Hz], should
                                           -- be an integer multiple of
-                                          -- g_sclk_freq, at least double the frequency
+                                          -- g_SCLK_FREQ, at least double the frequency
                                           --
-    g_sclk_freq:  natural := 50_000_000;  -- ADC sck frequency [Hz]
-    g_bits:       natural := 16;          -- Sample bit size
-    g_channels:   natural := 8;           -- Number of channels
-    g_data_lines: natural := 8;           -- Number of data lines
-    g_cnv_wait:   real := 450.0e-9        -- Conversion wait time
+    g_SCLK_FREQ:  natural := 50_000_000;  -- ADC sck frequency [Hz]
+    g_BITS:       natural := 16;          -- Sample bit size
+    g_CHANNELS:   natural := 8;           -- Number of channels
+    g_DATA_LINES: natural := 8;           -- Number of data lines
+    g_CNV_WAIT:   real := 450.0e-9        -- Conversion wait time
     );
   port(
     rst_n_i:    in  std_logic;                           -- Reset
@@ -140,40 +140,40 @@ entity ltc232x_acq is
     sdo6_i:     in  std_logic := '0';                    -- ADC output SDO6
     sdo7d_i:    in  std_logic := '0';                    -- ADC output SDO7/SDOD
     sdo8_i:     in  std_logic := '0';                    -- ADC output SDO8
-    ch1_o:      out std_logic_vector(g_bits-1 downto 0); -- CH1 parallel output
-    ch2_o:      out std_logic_vector(g_bits-1 downto 0); -- CH2 parallel output
-    ch3_o:      out std_logic_vector(g_bits-1 downto 0); -- CH3 parallel output
-    ch4_o:      out std_logic_vector(g_bits-1 downto 0); -- CH4 parallel output
-    ch5_o:      out std_logic_vector(g_bits-1 downto 0); -- CH5 parallel output
-    ch6_o:      out std_logic_vector(g_bits-1 downto 0); -- CH6 parallel output
-    ch7_o:      out std_logic_vector(g_bits-1 downto 0); -- CH7 parallel output
-    ch8_o:      out std_logic_vector(g_bits-1 downto 0); -- CH8 parallel output
+    ch1_o:      out std_logic_vector(g_BITS-1 downto 0); -- CH1 parallel output
+    ch2_o:      out std_logic_vector(g_BITS-1 downto 0); -- CH2 parallel output
+    ch3_o:      out std_logic_vector(g_BITS-1 downto 0); -- CH3 parallel output
+    ch4_o:      out std_logic_vector(g_BITS-1 downto 0); -- CH4 parallel output
+    ch5_o:      out std_logic_vector(g_BITS-1 downto 0); -- CH5 parallel output
+    ch6_o:      out std_logic_vector(g_BITS-1 downto 0); -- CH6 parallel output
+    ch7_o:      out std_logic_vector(g_BITS-1 downto 0); -- CH7 parallel output
+    ch8_o:      out std_logic_vector(g_BITS-1 downto 0); -- CH8 parallel output
     valid_o:    out std_logic                            -- data valid output
     );
 end ltc232x_acq;
 
 architecture ltc232x_acq_arch of ltc232x_acq is
   constant c_DDR_MODE: boolean := false; -- DDR mode not supported yet
-  constant c_WAIT_CONV_CYCLES: natural := integer(ceil(g_cnv_wait * real(g_clk_freq)));
-  constant c_CONV_HIGH_CYCLES: natural := integer(ceil(30.0e-9 * real(g_clk_freq)));
-  constant c_BITS_PER_LINE: natural := ((g_bits * g_channels) / g_data_lines);
-  constant c_SCK_CLK_RATIO: natural := (g_clk_freq / g_sclk_freq);
+  constant c_WAIT_CONV_CYCLES: natural := integer(ceil(g_CNV_WAIT * real(g_CLK_FREQ)));
+  constant c_CONV_HIGH_CYCLES: natural := integer(ceil(30.0e-9 * real(g_CLK_FREQ)));
+  constant c_BITS_PER_LINE: natural := ((g_BITS * g_CHANNELS) / g_DATA_LINES);
+  constant c_SCK_CLK_RATIO: natural := (g_CLK_FREQ / g_SCLK_FREQ);
   constant c_SCK_CLK_DIV_CNT: natural := (c_sck_clk_ratio / 2) - 1;
   type state_t is (idle, conv_high, wait_conv, read_data);
   signal state: state_t := idle;
   signal sck_o_s: std_logic := '0';
   signal fifo_rd: std_logic := '0';
   signal fifo_rd_empty: std_logic;
-  signal fifo_in: std_logic_vector(g_data_lines-1 downto 0);
-  signal fifo_out: std_logic_vector(g_data_lines-1 downto 0);
-  signal ch1_o_s: std_logic_vector(g_bits-1 downto 0) := (others =>'0');
-  signal ch2_o_s: std_logic_vector(g_bits-1 downto 0) := (others =>'0');
-  signal ch3_o_s: std_logic_vector(g_bits-1 downto 0) := (others =>'0');
-  signal ch4_o_s: std_logic_vector(g_bits-1 downto 0) := (others =>'0');
-  signal ch5_o_s: std_logic_vector(g_bits-1 downto 0) := (others =>'0');
-  signal ch6_o_s: std_logic_vector(g_bits-1 downto 0) := (others =>'0');
-  signal ch7_o_s: std_logic_vector(g_bits-1 downto 0) := (others =>'0');
-  signal ch8_o_s: std_logic_vector(g_bits-1 downto 0) := (others =>'0');
+  signal fifo_in: std_logic_vector(g_DATA_LINES-1 downto 0);
+  signal fifo_out: std_logic_vector(g_DATA_LINES-1 downto 0);
+  signal ch1_o_s: std_logic_vector(g_BITS-1 downto 0) := (others =>'0');
+  signal ch2_o_s: std_logic_vector(g_BITS-1 downto 0) := (others =>'0');
+  signal ch3_o_s: std_logic_vector(g_BITS-1 downto 0) := (others =>'0');
+  signal ch4_o_s: std_logic_vector(g_BITS-1 downto 0) := (others =>'0');
+  signal ch5_o_s: std_logic_vector(g_BITS-1 downto 0) := (others =>'0');
+  signal ch6_o_s: std_logic_vector(g_BITS-1 downto 0) := (others =>'0');
+  signal ch7_o_s: std_logic_vector(g_BITS-1 downto 0) := (others =>'0');
+  signal ch8_o_s: std_logic_vector(g_BITS-1 downto 0) := (others =>'0');
 begin
 
   sck_o <= sck_o_s;
@@ -188,30 +188,30 @@ begin
   ch8_o <= ch8_o_s;
 
   ltc_8_datalines:
-  if g_data_lines = 8 generate
+  if g_DATA_LINES = 8 generate
     fifo_in <= (sdo1a_i, sdo2_i, sdo3b_i, sdo4_i,
                 sdo5c_i, sdo6_i, sdo7d_i, sdo8_i);
   end generate;
 
   ltc_4_datalines:
-  if g_data_lines = 4 generate
+  if g_DATA_LINES = 4 generate
     fifo_in <= (sdo1a_i, sdo3b_i, sdo5c_i, sdo7d_i);
   end generate;
 
   ltc_2_datalines:
-  if g_data_lines = 2 generate
+  if g_DATA_LINES = 2 generate
     fifo_in <= (sdo1a_i, sdo5c_i);
   end generate;
 
   ltc_1_dataline:
-  if g_data_lines = 1 generate
+  if g_DATA_LINES = 1 generate
     fifo_in(0) <= sdo1a_i;
   end generate;
 
   cmp_fifo: generic_async_fifo          -- Dual clocked FIFO buffer to cross
     generic map(                        -- the dada read from sck_ret_i clock
-      g_data_width => g_data_lines,     -- to clk_i
-      g_size => 8
+      g_DATA_WIDTH => g_DATA_LINES,     -- to clk_i
+      g_SIZE => 8
       )
     port map(
       rst_n_i => rst_n_i,
@@ -258,7 +258,7 @@ begin
         --
         -- wait_conv:
         --   Wait for the conversion to finish, conversion time is set
-        --   by g_cnv_wait;
+        --   by g_CNV_WAIT;
         --
         -- read_data:
         --   Read the converted data through the serial lines.
@@ -307,65 +307,65 @@ begin
             if delayed_read_fifo then
               -- Each combination of the number of data lines and input
               -- channels requires a different capture logic.
-              if g_data_lines = 8 and g_channels = 8 then
-                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & fifo_out(7);
-                ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & fifo_out(6);
-                ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & fifo_out(5);
-                ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & fifo_out(4);
-                ch5_o_s <= ch5_o_s(g_bits-2 downto 0) & fifo_out(3);
-                ch6_o_s <= ch6_o_s(g_bits-2 downto 0) & fifo_out(2);
-                ch7_o_s <= ch7_o_s(g_bits-2 downto 0) & fifo_out(1);
-                ch8_o_s <= ch8_o_s(g_bits-2 downto 0) & fifo_out(0);
-              elsif g_data_lines = 4 and g_channels = 8 then
-                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & ch2_o_s(g_bits-1);
-                ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & fifo_out(3);
-                ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & ch4_o_s(g_bits-1);
-                ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & fifo_out(2);
-                ch5_o_s <= ch5_o_s(g_bits-2 downto 0) & ch6_o_s(g_bits-1);
-                ch6_o_s <= ch6_o_s(g_bits-2 downto 0) & fifo_out(1);
-                ch7_o_s <= ch7_o_s(g_bits-2 downto 0) & ch8_o_s(g_bits-1);
-                ch8_o_s <= ch8_o_s(g_bits-2 downto 0) & fifo_out(0);
-              elsif g_data_lines = 2 and g_channels = 8 then
-                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & ch2_o_s(g_bits-1);
-                ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & ch3_o_s(g_bits-1);
-                ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & ch4_o_s(g_bits-1);
-                ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & fifo_out(1);
-                ch5_o_s <= ch5_o_s(g_bits-2 downto 0) & ch6_o_s(g_bits-1);
-                ch6_o_s <= ch6_o_s(g_bits-2 downto 0) & ch7_o_s(g_bits-1);
-                ch7_o_s <= ch7_o_s(g_bits-2 downto 0) & ch8_o_s(g_bits-1);
-                ch8_o_s <= ch8_o_s(g_bits-2 downto 0) & fifo_out(0);
-              elsif g_data_lines = 1 and g_channels = 8 then
-                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & ch2_o_s(g_bits-1);
-                ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & ch3_o_s(g_bits-1);
-                ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & ch4_o_s(g_bits-1);
-                ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & ch5_o_s(g_bits-1);
-                ch5_o_s <= ch5_o_s(g_bits-2 downto 0) & ch6_o_s(g_bits-1);
-                ch6_o_s <= ch6_o_s(g_bits-2 downto 0) & ch7_o_s(g_bits-1);
-                ch7_o_s <= ch7_o_s(g_bits-2 downto 0) & ch8_o_s(g_bits-1);
-                ch8_o_s <= ch8_o_s(g_bits-2 downto 0) & fifo_out(0);
-              elsif g_data_lines = 4 and g_channels = 4 then
-                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & fifo_out(3);
-                ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & fifo_out(2);
-                ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & fifo_out(1);
-                ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & fifo_out(0);
-              elsif g_data_lines = 2 and g_channels = 4 then
-                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & ch2_o_s(g_bits-1);
-                ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & fifo_out(1);
-                ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & ch4_o_s(g_bits-1);
-                ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & fifo_out(0);
-              elsif g_data_lines = 1 and g_channels = 4 then
-                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & ch2_o_s(g_bits-1);
-                ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & ch3_o_s(g_bits-1);
-                ch3_o_s <= ch3_o_s(g_bits-2 downto 0) & ch4_o_s(g_bits-1);
-                ch4_o_s <= ch4_o_s(g_bits-2 downto 0) & fifo_out(0);
-              elsif g_data_lines = 2 and g_channels = 2 then
-                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & fifo_out(1);
-                ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & fifo_out(0);
-              elsif g_data_lines = 1 and g_channels = 2 then
-                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & ch2_o_s(g_bits-1);
-                ch2_o_s <= ch2_o_s(g_bits-2 downto 0) & fifo_out(0);
-              elsif g_data_lines = 1 and g_channels = 1 then
-                ch1_o_s <= ch1_o_s(g_bits-2 downto 0) & fifo_out(0);
+              if g_DATA_LINES = 8 and g_CHANNELS = 8 then
+                ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & fifo_out(7);
+                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & fifo_out(6);
+                ch3_o_s <= ch3_o_s(g_BITS-2 downto 0) & fifo_out(5);
+                ch4_o_s <= ch4_o_s(g_BITS-2 downto 0) & fifo_out(4);
+                ch5_o_s <= ch5_o_s(g_BITS-2 downto 0) & fifo_out(3);
+                ch6_o_s <= ch6_o_s(g_BITS-2 downto 0) & fifo_out(2);
+                ch7_o_s <= ch7_o_s(g_BITS-2 downto 0) & fifo_out(1);
+                ch8_o_s <= ch8_o_s(g_BITS-2 downto 0) & fifo_out(0);
+              elsif g_DATA_LINES = 4 and g_CHANNELS = 8 then
+                ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & ch2_o_s(g_BITS-1);
+                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & fifo_out(3);
+                ch3_o_s <= ch3_o_s(g_BITS-2 downto 0) & ch4_o_s(g_BITS-1);
+                ch4_o_s <= ch4_o_s(g_BITS-2 downto 0) & fifo_out(2);
+                ch5_o_s <= ch5_o_s(g_BITS-2 downto 0) & ch6_o_s(g_BITS-1);
+                ch6_o_s <= ch6_o_s(g_BITS-2 downto 0) & fifo_out(1);
+                ch7_o_s <= ch7_o_s(g_BITS-2 downto 0) & ch8_o_s(g_BITS-1);
+                ch8_o_s <= ch8_o_s(g_BITS-2 downto 0) & fifo_out(0);
+              elsif g_DATA_LINES = 2 and g_CHANNELS = 8 then
+                ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & ch2_o_s(g_BITS-1);
+                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & ch3_o_s(g_BITS-1);
+                ch3_o_s <= ch3_o_s(g_BITS-2 downto 0) & ch4_o_s(g_BITS-1);
+                ch4_o_s <= ch4_o_s(g_BITS-2 downto 0) & fifo_out(1);
+                ch5_o_s <= ch5_o_s(g_BITS-2 downto 0) & ch6_o_s(g_BITS-1);
+                ch6_o_s <= ch6_o_s(g_BITS-2 downto 0) & ch7_o_s(g_BITS-1);
+                ch7_o_s <= ch7_o_s(g_BITS-2 downto 0) & ch8_o_s(g_BITS-1);
+                ch8_o_s <= ch8_o_s(g_BITS-2 downto 0) & fifo_out(0);
+              elsif g_DATA_LINES = 1 and g_CHANNELS = 8 then
+                ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & ch2_o_s(g_BITS-1);
+                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & ch3_o_s(g_BITS-1);
+                ch3_o_s <= ch3_o_s(g_BITS-2 downto 0) & ch4_o_s(g_BITS-1);
+                ch4_o_s <= ch4_o_s(g_BITS-2 downto 0) & ch5_o_s(g_BITS-1);
+                ch5_o_s <= ch5_o_s(g_BITS-2 downto 0) & ch6_o_s(g_BITS-1);
+                ch6_o_s <= ch6_o_s(g_BITS-2 downto 0) & ch7_o_s(g_BITS-1);
+                ch7_o_s <= ch7_o_s(g_BITS-2 downto 0) & ch8_o_s(g_BITS-1);
+                ch8_o_s <= ch8_o_s(g_BITS-2 downto 0) & fifo_out(0);
+              elsif g_DATA_LINES = 4 and g_CHANNELS = 4 then
+                ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & fifo_out(3);
+                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & fifo_out(2);
+                ch3_o_s <= ch3_o_s(g_BITS-2 downto 0) & fifo_out(1);
+                ch4_o_s <= ch4_o_s(g_BITS-2 downto 0) & fifo_out(0);
+              elsif g_DATA_LINES = 2 and g_CHANNELS = 4 then
+                ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & ch2_o_s(g_BITS-1);
+                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & fifo_out(1);
+                ch3_o_s <= ch3_o_s(g_BITS-2 downto 0) & ch4_o_s(g_BITS-1);
+                ch4_o_s <= ch4_o_s(g_BITS-2 downto 0) & fifo_out(0);
+              elsif g_DATA_LINES = 1 and g_CHANNELS = 4 then
+                ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & ch2_o_s(g_BITS-1);
+                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & ch3_o_s(g_BITS-1);
+                ch3_o_s <= ch3_o_s(g_BITS-2 downto 0) & ch4_o_s(g_BITS-1);
+                ch4_o_s <= ch4_o_s(g_BITS-2 downto 0) & fifo_out(0);
+              elsif g_DATA_LINES = 2 and g_CHANNELS = 2 then
+                ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & fifo_out(1);
+                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & fifo_out(0);
+              elsif g_DATA_LINES = 1 and g_CHANNELS = 2 then
+                ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & ch2_o_s(g_BITS-1);
+                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & fifo_out(0);
+              elsif g_DATA_LINES = 1 and g_CHANNELS = 1 then
+                ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & fifo_out(0);
               end if;
 
               -- Count the amount of bits read in a single dataline
