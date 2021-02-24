@@ -1,1 +1,6 @@
-files = ["ltc232x_acq.vhd", "multi_dac_spi.vhd", "rtm_lamp_pkg.vhd"]
+files = ["rtm_lamp_pkg.vhd"]
+
+modules = { "local": [
+        "rtmlamp_ohwr",
+    ]
+}
