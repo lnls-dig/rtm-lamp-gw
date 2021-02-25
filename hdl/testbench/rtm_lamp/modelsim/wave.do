@@ -1,11 +1,156 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
-add wave -r /rtm_lamp_model_tb/*
+add wave -noupdate -divider rtm_lamp_model_tb
+add wave -noupdate /rtm_lamp_model_tb/clk_sys
+add wave -noupdate /rtm_lamp_model_tb/rst_n
+add wave -noupdate /rtm_lamp_model_tb/adc_dac_100mhz_clk
+add wave -noupdate /rtm_lamp_model_tb/dac_50mhz_clk
+add wave -noupdate /rtm_lamp_model_tb/dac_samples
+add wave -noupdate /rtm_lamp_model_tb/dac_samples_buf
+add wave -noupdate /rtm_lamp_model_tb/adc_samples
+add wave -noupdate /rtm_lamp_model_tb/adc_data_c1c2
+add wave -noupdate /rtm_lamp_model_tb/adc_data_c3c4
+add wave -noupdate /rtm_lamp_model_tb/adc_data_c5c6
+add wave -noupdate /rtm_lamp_model_tb/adc_data_c7c8
+add wave -noupdate /rtm_lamp_model_tb/adc_data_c9c10
+add wave -noupdate /rtm_lamp_model_tb/adc_data_c11c12
+add wave -noupdate /rtm_lamp_model_tb/adc_read_latch
+add wave -noupdate /rtm_lamp_model_tb/rtm_lamp_sync_clk
+add wave -noupdate /rtm_lamp_model_tb/adc_cnv
+add wave -noupdate /rtm_lamp_model_tb/adc_octo_clk
+add wave -noupdate /rtm_lamp_model_tb/adc_octo_clk_out
+add wave -noupdate /rtm_lamp_model_tb/adc_octo_sdoa
+add wave -noupdate /rtm_lamp_model_tb/adc_octo_sdob
+add wave -noupdate /rtm_lamp_model_tb/adc_octo_sdoc
+add wave -noupdate /rtm_lamp_model_tb/adc_octo_sdod
+add wave -noupdate /rtm_lamp_model_tb/adc_octo_sdoa_dl
+add wave -noupdate /rtm_lamp_model_tb/adc_octo_sdob_dl
+add wave -noupdate /rtm_lamp_model_tb/adc_octo_sdoc_dl
+add wave -noupdate /rtm_lamp_model_tb/adc_octo_sdod_dl
+add wave -noupdate /rtm_lamp_model_tb/adc_quad_clk
+add wave -noupdate /rtm_lamp_model_tb/adc_quad_clk_out
+add wave -noupdate /rtm_lamp_model_tb/adc_quad_sdoa
+add wave -noupdate /rtm_lamp_model_tb/adc_quad_sdoc
+add wave -noupdate /rtm_lamp_model_tb/adc_quad_sdoa_dl
+add wave -noupdate /rtm_lamp_model_tb/adc_quad_sdoc_dl
+add wave -noupdate /rtm_lamp_model_tb/dac_ldac
+add wave -noupdate /rtm_lamp_model_tb/dac_cs
+add wave -noupdate /rtm_lamp_model_tb/dac_sck
+add wave -noupdate /rtm_lamp_model_tb/dac_sdi
+add wave -noupdate /rtm_lamp_model_tb/shift_pl
+add wave -noupdate /rtm_lamp_model_tb/shift_clk
+add wave -noupdate /rtm_lamp_model_tb/shift_dout
+add wave -noupdate /rtm_lamp_model_tb/shift_str
+add wave -noupdate /rtm_lamp_model_tb/shift_oe_n
+add wave -noupdate /rtm_lamp_model_tb/shift_din
+add wave -noupdate /rtm_lamp_model_tb/amp_iflag_l
+add wave -noupdate /rtm_lamp_model_tb/amp_tflag_l
+add wave -noupdate /rtm_lamp_model_tb/amp_iflag_r
+add wave -noupdate /rtm_lamp_model_tb/amp_tflag_r
+add wave -noupdate /rtm_lamp_model_tb/amp_en_ch
+add wave -noupdate -divider rmp_lamp_model
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/g_ADC_REF
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/g_DAC_REF
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/g_MAG_RES
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/g_MAG_IND
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/g_MAG_TIME_STEP
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/g_ADC_DDR_MODE
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/rtm_lamp_sync_clk_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/adc_cnv_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/adc_octo_clk_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/adc_octo_clk_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/adc_octo_sdoa_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/adc_octo_sdob_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/adc_octo_sdoc_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/adc_octo_sdod_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/adc_quad_clk_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/adc_quad_clk_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/adc_quad_sdoa_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/adc_quad_sdoc_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/dac_ldac_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/dac_cs_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/dac_sck_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/dac_sdi_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/shift_pl_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/shift_clk_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/shift_dout_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/shift_str_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/shift_oe_n_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/shift_din_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/voltages
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/voltages_dac
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/currents
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/currents_adc
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/adc_cnv_sync
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/dac_ldac_sync
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/amp_iflag_l
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/amp_tflag_l
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/amp_iflag_r
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/amp_tflag_r
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/amp_flags_dp
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/amp_flags_q7
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/amp_flags_q7_n
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/amp_flags_ds
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/amp_en_q
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/amp_en_q7s
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/amp_en_ds
+add wave -noupdate -divider amp_flags_regs0
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_flags_regs(0)/cmp_shift_reg_74hc165_model/pl_n_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_flags_regs(0)/cmp_shift_reg_74hc165_model/ce_n_i
+add wave -noupdate -radix binary /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_flags_regs(0)/cmp_shift_reg_74hc165_model/dp_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_flags_regs(0)/cmp_shift_reg_74hc165_model/cp_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_flags_regs(0)/cmp_shift_reg_74hc165_model/ds_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_flags_regs(0)/cmp_shift_reg_74hc165_model/q7_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_flags_regs(0)/cmp_shift_reg_74hc165_model/q7_n_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_flags_regs(0)/cmp_shift_reg_74hc165_model/q
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_flags_regs(0)/cmp_shift_reg_74hc165_model/q7
+add wave -noupdate -divider amp_en_regs0
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_en_regs(0)/cmp_shift_reg_74hc595_model/mr_n_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_en_regs(0)/cmp_shift_reg_74hc595_model/shcp_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_en_regs(0)/cmp_shift_reg_74hc595_model/stcp_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_en_regs(0)/cmp_shift_reg_74hc595_model/oe_n_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_en_regs(0)/cmp_shift_reg_74hc595_model/ds_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_en_regs(0)/cmp_shift_reg_74hc595_model/q_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_en_regs(0)/cmp_shift_reg_74hc595_model/q7s_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_en_regs(0)/cmp_shift_reg_74hc595_model/qs
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_en_regs(0)/cmp_shift_reg_74hc595_model/qp
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_en_regs(0)/cmp_shift_reg_74hc595_model/q7s
+add wave -noupdate -divider rtmlamp_ohwr_serial_regs
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/c_NUM_TICKS_PER_CLOCK
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/c_SERIAL_DIV
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/c_NUM_FLAGS_PER_CHANNEL
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/c_NUM_SERIAL_OUT_BITS_TO_SHIFT
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/c_NUM_MAX_SERIAL_IN_BITS_TO_SHIFT
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/c_SERIAL_OUT_TO_SERIAL_IN_RATIO
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/g_NUM_CHANNELS
+add wave -noupdate -radix unsigned /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/g_SYS_CLOCK_FREQ
+add wave -noupdate -radix unsigned /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/g_SERIAL_FREQ
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/clk_sys_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/rst_n_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/amp_sta_ctl_rw_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/amp_status_reg_clk_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/amp_status_reg_out_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/amp_status_reg_pl_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/amp_ctl_reg_oe_n_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/amp_ctl_reg_din_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/amp_ctl_reg_str_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/amp_iflag_l_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/amp_tflag_l_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/amp_iflag_r_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/amp_tflag_r_o
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/amp_en_ch_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/serial_tick
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/serial_divider
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/seq_count
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/amp_en_ch_padded
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/amp_reg_to_device
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/amp_reg_from_device
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/state
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {0 fs} 0}
-quietly wave cursor active 0
-configure wave -namecolwidth 150
-configure wave -valuecolwidth 100
+WaveRestoreCursors {{Cursor 1} {101977 ns} 0}
+quietly wave cursor active 1
+configure wave -namecolwidth 251
+configure wave -valuecolwidth 116
 configure wave -justifyvalue left
 configure wave -signalnamewidth 1
 configure wave -snapdistance 10
@@ -18,4 +163,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 fs} {1050 ns}
+WaveRestoreZoom {0 ns} {390465 ns}

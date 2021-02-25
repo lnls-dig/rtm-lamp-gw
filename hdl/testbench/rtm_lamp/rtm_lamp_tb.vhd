@@ -21,11 +21,15 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+use work.rtm_lamp_pkg.all;
+
 entity rtm_lamp_model_tb is
 end rtm_lamp_model_tb;
 
 architecture rtm_lamp_model_tb_arch of rtm_lamp_model_tb is
   type sample_vector is array(11 downto 0) of std_logic_vector(15 downto 0);
+  signal clk_sys           : std_logic := '0';
+  signal rst_n             : std_logic := '0';
   signal adc_dac_100mhz_clk: std_logic := '0';
   signal dac_50mhz_clk     : std_logic := '0';
   signal dac_samples       : sample_vector := (others => x"8000");
@@ -60,6 +64,17 @@ architecture rtm_lamp_model_tb_arch of rtm_lamp_model_tb is
   signal dac_cs            : std_logic := '1';
   signal dac_sck           : std_logic := '0';
   signal dac_sdi           : std_logic_vector(11 downto 0) := x"000";
+  signal shift_pl          : std_logic;
+  signal shift_clk         : std_logic;
+  signal shift_dout        : std_logic;
+  signal shift_str         : std_logic;
+  signal shift_oe_n        : std_logic;
+  signal shift_din         : std_logic;
+  signal amp_iflag_l       : std_logic_vector(11 downto 0);
+  signal amp_tflag_l       : std_logic_vector(11 downto 0);
+  signal amp_iflag_r       : std_logic_vector(11 downto 0);
+  signal amp_tflag_r       : std_logic_vector(11 downto 0);
+  signal amp_en_ch         : std_logic_vector(11 downto 0);
 begin
   cmp_rtm_lamp_model: entity work.rtm_lamp_model
     port map(
@@ -83,8 +98,36 @@ begin
       dac_ldac_i => dac_ldac,          -- DAC load
       dac_cs_i => dac_cs,              -- DAC chip select
       dac_sck_i => dac_sck,            -- DAC data clock
-      dac_sdi_i => dac_sdi             -- DAC data input (12 channels)
+      dac_sdi_i => dac_sdi,            -- DAC data input (12 channels)
+
+      shift_pl_i   => shift_pl,      -- Amplifier shift registers parallel load
+      shift_clk_i  => shift_clk,     -- Amplifier shift registers clock
+      shift_dout_o => shift_dout,     -- Amplifier flags shift register output
+
+      shift_str_i  => shift_str,     -- Amplifier enable shift register strobe
+      shift_oe_n_i => shift_oe_n,    -- Amplifier enable output enable
+      shift_din_i  => shift_din      -- Amplifier enable data input
       );
+
+  cmp_rtmlamp_ohwr_serial_regs : rtmlamp_ohwr_serial_regs
+  port map (
+    clk_sys_i => clk_sys,
+    rst_n_i   => rst_n,
+
+    amp_status_reg_clk_o => shift_clk,
+    amp_status_reg_out_i => shift_dout,
+    amp_status_reg_pl_o  => shift_pl,
+
+    amp_ctl_reg_oe_n_o => shift_oe_n,
+    amp_ctl_reg_din_o  => shift_din,
+    amp_ctl_reg_str_o  => shift_str,
+
+    amp_iflag_l_o => amp_iflag_l,
+    amp_tflag_l_o => amp_tflag_l,
+    amp_iflag_r_o => amp_iflag_r,
+    amp_tflag_r_o => amp_tflag_r,
+    amp_en_ch_i   => amp_en_ch
+  );
 
   -- The datalines should be delayed in relation to the returned adc
   -- clock when reading in DDR mode
@@ -173,6 +216,22 @@ begin
       parallel_o => adc_data_c11c12
       );
 
+  p_gen_sys_clk: process
+  begin
+    loop
+      wait for 5 ns;
+      clk_sys <= not clk_sys; -- 100 MHz
+    end loop;
+  end process;
+
+  p_gen_sys_rst_n: process
+  begin
+    rst_n <= '0';
+    wait for 200 ns;
+    rst_n <= '1';
+    wait;
+  end process;
+
   p_gen_rf_clock: process
   begin
     loop
@@ -194,6 +253,20 @@ begin
     if rising_edge(adc_dac_100mhz_clk) then
       dac_50mhz_clk <= not dac_50mhz_clk;
     end if;
+  end process;
+
+  p_set_amp_en: process
+  begin
+    wait until rst_n = '1';
+    amp_en_ch <= "010101010101";
+    wait for 10000*100*10 ns;
+    amp_en_ch <= "101010101010";
+    wait for 10000*100*10 ns;
+    amp_en_ch <= "000011110000";
+    wait for 10000*100*10 ns;
+    amp_en_ch <= "111100001111";
+    wait for 10000*100*10 ns;
+    wait;
   end process;
 
   p_set_vout: process
