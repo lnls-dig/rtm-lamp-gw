@@ -51,7 +51,15 @@ entity rtm_lamp_model is
     dac_ldac_i: in std_logic;          -- DAC load
     dac_cs_i: in std_logic;            -- DAC chip select
     dac_sck_i: in std_logic;           -- DAC data clock
-    dac_sdi_i: in std_logic_vector (0 to 11) -- DAC data input (12 channels)
+    dac_sdi_i: in std_logic_vector (0 to 11); -- DAC data input (12 channels)
+
+    shift_pl_i : in std_logic;         -- Amplifier shift registers parallel load
+    shift_clk_i : in std_logic;        -- Amplifier shift registers clock
+    shift_dout_o : out std_logic;      -- Amplifier flags shift register output
+
+    shift_str_i : in std_logic;        -- Amplifier enable shift register strobe
+    shift_oe_n_i : in std_logic;       -- Amplifier enable output enable
+    shift_din_i : in std_logic         -- Amplifier enable data input
     );
 end rtm_lamp_model;
 
@@ -62,6 +70,21 @@ architecture rtm_lamp_model_arch of rtm_lamp_model is
   signal currents_adc: real_vector(0 to 11) := (others => 0.0);
   signal adc_cnv_sync: std_logic; -- ADC conversion start (synchronized)
   signal dac_ldac_sync: std_logic; -- DAC load (synchronized)
+
+  type t_array_8b_word is array(natural range <>) of std_logic_vector(7 downto 0);
+  signal amp_iflag_l : std_logic_vector(11 downto 0);
+  signal amp_tflag_l : std_logic_vector(11 downto 0);
+  signal amp_iflag_r : std_logic_vector(11 downto 0);
+  signal amp_tflag_r : std_logic_vector(11 downto 0);
+  signal amp_flags_dp : t_array_8b_word(5 downto 0) := (others => (others => '0'));
+  signal amp_flags_q7 : std_logic_vector(5 downto 0);
+  signal amp_flags_q7_n : std_logic_vector(5 downto 0);
+  signal amp_flags_ds : std_logic_vector(6 downto 0);
+
+  signal amp_en_q : t_array_8b_word(1 downto 0) := (others => (others => '0'));
+  signal amp_en_q7s : std_logic_vector(1 downto 0);
+  signal amp_en_ds : std_logic_vector(2 downto 0);
+
 begin
   cmp_dac_ff: entity work.ffd             -- DAC LDAC synchronization flip-flop
     port map(
@@ -152,4 +175,70 @@ begin
       sdod_o => open,
       analog_i => currents_adc(8 to 11)
       );
+
+  -- generate some flags pattern
+  amp_iflag_l <= "010101010101"; -- x"555"
+  amp_tflag_l <= "101010101010"; -- x"AAA"
+  amp_iflag_r <= "000011110000"; -- x"0F0"
+  amp_tflag_r <= "111100001111"; -- x"F0F"
+
+  amp_flags_dp(0) <= amp_tflag_r(1) &
+                     amp_iflag_r(1) &
+                     amp_tflag_l(1) &
+                     amp_iflag_l(1) &
+                     amp_tflag_r(0) &
+                     amp_iflag_r(0) &
+                     amp_tflag_l(0) &
+                     amp_iflag_l(0);
+  amp_flags_ds(0) <= '0';
+
+  gen_amp_flags_regs: for i in 0 to 5 generate
+
+    amp_flags_dp(i) <= amp_tflag_r(2*i+1) &
+                       amp_iflag_r(2*i+1) &
+                       amp_tflag_l(2*i+1) &
+                       amp_iflag_l(2*i+1) &
+                       amp_tflag_r(2*i) &
+                       amp_iflag_r(2*i) &
+                       amp_tflag_l(2*i) &
+                       amp_iflag_l(2*i);
+
+    cmp_shift_reg_74hc165_model : entity work.shift_reg_74hc165_model
+    port map (
+      pl_n_i   => not shift_pl_i,
+      ce_n_i   => '0',
+      dp_i     => amp_flags_dp(i),
+      -- RTM LAMP inverts the shift clock signal for the 74HC165 CIs
+      cp_i     => not shift_clk_i,
+      ds_i     => amp_flags_ds(i),
+      q7_o     => amp_flags_q7(i),
+      q7_n_o   => amp_flags_q7_n(i)
+    );
+
+    amp_flags_ds(i+1) <= amp_flags_q7(i);
+
+  end generate;
+
+  -- RTM LAMP inverts the inverted output port.
+  shift_dout_o <= not amp_flags_q7_n(5);
+
+  amp_en_ds(0) <= shift_din_i;
+
+  gen_amp_en_regs: for i in 0 to 1 generate
+
+    cmp_shift_reg_74hc595_model : entity work.shift_reg_74hc595_model
+    port map (
+      mr_n_i   => '1',
+      shcp_i   => shift_clk_i,
+      stcp_i   => shift_str_i,
+      oe_n_i   => shift_oe_n_i,
+      ds_i     => amp_en_ds(i),
+      q_o      => amp_en_q(i),
+      q7s_o    => amp_en_q7s(i)
+    );
+
+    amp_en_ds(i+1) <= amp_en_q7s(i);
+
+  end generate;
+
 end rtm_lamp_model_arch;

@@ -5,4 +5,6 @@ files = [
     "ddr_des.vhd",
     "ltc232x_model.vhd",
     "rtm_lamp_model.vhd",
+    "shift_reg_74hc165_model.vhd",
+    "shift_reg_74hc595_model.vhd",
 ]
