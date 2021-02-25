@@ -62,7 +62,7 @@ begin
 
   gen_dac_sdi:
   for i in 0 to g_NUM_DACS-1 generate
-    dac_sdi_o(i) <= data_buf(i)(bit_cnt);
+    dac_sdi_o(i) <= data_buf(i)(data_buf(i)'left);
   end generate;
 
   p_dac_ctrl: process(clk_i)
@@ -109,6 +109,10 @@ begin
                   dac_sck <= '0';
                 else
                   bit_cnt <= bit_cnt - 1;
+
+                  for i in 0 to g_NUM_DACS-1 loop
+                    data_buf(i) <= data_buf(i)(data_buf(i)'left-1 downto 0) & '0';
+                  end loop;
                 end if;
               end if;
 
