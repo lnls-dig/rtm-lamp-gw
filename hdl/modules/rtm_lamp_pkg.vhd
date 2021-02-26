@@ -19,7 +19,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 package rtm_lamp_pkg is
-  type array_16b_word is array(natural range <>) of std_logic_vector(15 downto 0);
+  subtype t_16b_word is std_logic_vector(15 downto 0);
+  type t_16b_word_array is array(natural range <>) of t_16b_word;
 
   -- Multiple SPI DAC interface
   component multi_dac_spi is
@@ -34,7 +35,7 @@ package rtm_lamp_pkg is
       rst_n_i:     in  std_logic;
       start_i:     in  std_logic;
       ready_o:     out std_logic := '0';
-      data_i:      in  array_16b_word(g_NUM_DACS-1 downto 0);
+      data_i:      in  t_16b_word(g_NUM_DACS-1 downto 0);
       dac_cs_o:    out std_logic;
       dac_sck_o:   out std_logic;
       dac_sdi_o:   out std_logic_vector(g_NUM_DACS-1 downto 0)

@@ -41,7 +41,7 @@ entity multi_dac_spi is
     start_i:     in  std_logic;         -- Start the transfer
     ready_o:     out std_logic := '0';  -- '0': there is an ongoing transfer
                                         -- '1': ready to start a new transfer
-    data_i:      in  array_16b_word(g_NUM_DACS-1 downto 0);
+    data_i:      in  t_16b_word_array(g_NUM_DACS-1 downto 0);
     dac_cs_o:    out std_logic;  -- DAC chip select
     dac_sck_o:   out std_logic;  -- DAC data clock
     dac_sdi_o:   out std_logic_vector(g_NUM_DACS-1 downto 0) -- Serial data outputs
@@ -54,7 +54,7 @@ architecture multi_dac_spi_arch of multi_dac_spi is
   type t_state is (IDLE, CS_DELAY, TRANSFERING);
   signal state: t_state := IDLE;
   signal dac_sck: std_logic := '0';
-  signal data_buf: array_16b_word(g_NUM_DACS-1 downto 0);
+  signal data_buf: t_16b_word_array(g_NUM_DACS-1 downto 0);
   signal bit_cnt: natural range 0 to c_NUM_DATA_BITS := c_NUM_DATA_BITS-1;
 begin
 

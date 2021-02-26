@@ -25,7 +25,7 @@ entity multi_dac_spi_tb is
 end multi_dac_spi_tb;
 
 architecture multi_dac_spi_tb_arch of multi_dac_spi_tb is
-  signal dac_data: array_16b_word(11 downto 0) := (x"AAAA", x"5555", x"F000", x"0001", others => x"DEAD");
+  signal dac_data: t_16b_word_array(11 downto 0) := (x"AAAA", x"5555", x"F000", x"0001", others => x"DEAD");
   signal clk_200mhz: std_logic := '0';
   signal rst_n: std_logic := '0';
   signal ready: std_logic;
