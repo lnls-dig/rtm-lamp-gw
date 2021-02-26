@@ -22,15 +22,18 @@ use ieee.numeric_std.all;
 
 entity rtmlamp_ohwr_serial_regs is
 generic (
-  g_NUM_CHANNELS                             : integer range 1 to 16 := 12;
-  g_SYS_CLOCK_FREQ                           : integer := 100000000;
-  g_SERIAL_FREQ                              : integer := 100000
+  -- Number of AMP channels
+  g_CHANNELS                                 : natural := 12;
+  -- System clock frequency [Hz]
+  g_CLOCK_FREQ                               : natural := 100000000;
+  -- Serial registers clock frequency [Hz]
+  g_SCLK_FREQ                                : natural := 100000
 );
 port (
   ---------------------------------------------------------------------------
   -- clock and reset interface
   ---------------------------------------------------------------------------
-  clk_sys_i                                  : in std_logic;
+  clk_i                                      : in std_logic;
   rst_n_i                                    : in std_logic;
 
   ---------------------------------------------------------------------------
@@ -51,11 +54,11 @@ port (
   ---------------------------------------------------------------------------
   -- AMP parallel interface
   ---------------------------------------------------------------------------
-  amp_iflag_l_o                              : out std_logic_vector(g_NUM_CHANNELS-1 downto 0);
-  amp_tflag_l_o                              : out std_logic_vector(g_NUM_CHANNELS-1 downto 0);
-  amp_iflag_r_o                              : out std_logic_vector(g_NUM_CHANNELS-1 downto 0);
-  amp_tflag_r_o                              : out std_logic_vector(g_NUM_CHANNELS-1 downto 0);
-  amp_en_ch_i                                : in std_logic_vector(g_NUM_CHANNELS-1 downto 0)
+  amp_iflag_l_o                              : out std_logic_vector(g_CHANNELS-1 downto 0);
+  amp_tflag_l_o                              : out std_logic_vector(g_CHANNELS-1 downto 0);
+  amp_iflag_r_o                              : out std_logic_vector(g_CHANNELS-1 downto 0);
+  amp_tflag_r_o                              : out std_logic_vector(g_CHANNELS-1 downto 0);
+  amp_en_ch_i                                : in std_logic_vector(g_CHANNELS-1 downto 0)
 );
 end rtmlamp_ohwr_serial_regs;
 
@@ -75,9 +78,9 @@ architecture rtl of rtmlamp_ohwr_serial_regs is
 
   -- constants
   constant c_NUM_TICKS_PER_CLOCK             : integer := 4;
-  constant c_SERIAL_DIV                      : natural := g_SYS_CLOCK_FREQ/(c_NUM_TICKS_PER_CLOCK*g_SERIAL_FREQ)-1;
+  constant c_SERIAL_DIV                      : natural := g_CLOCK_FREQ/(c_NUM_TICKS_PER_CLOCK*g_SCLK_FREQ)-1;
   constant c_NUM_FLAGS_PER_CHANNEL           : natural := 4;
-  constant c_NUM_SERIAL_OUT_BITS_TO_SHIFT    : natural := g_NUM_CHANNELS*c_NUM_FLAGS_PER_CHANNEL;
+  constant c_NUM_SERIAL_OUT_BITS_TO_SHIFT    : natural := g_CHANNELS*c_NUM_FLAGS_PER_CHANNEL;
   -- Maximum number of bits that RTM LAMP supports to load in
   -- a serial-in/parallel-out shift register in chain. This corresponds
   -- to 2 serial-in/parallel-out shift registers in tandem.
@@ -218,9 +221,14 @@ begin
     ")"
     severity failure;
 
+  assert (g_CHANNELS <= 16)
+    report "[rtmlamp_ohwr_serial_regs] g_CHANNELS(" & Integer'image(g_CHANNELS) &
+    ") unsuppoted. Maximum number of g_CHANNELS must be less than 16"
+    severity failure;
+
   -- Pad word so that this is a multiple of amp_reg_to_device length
-  amp_en_ch_padded(amp_en_ch_padded'left downto g_NUM_CHANNELS) <= (others => '0');
-  amp_en_ch_padded(g_NUM_CHANNELS-1 downto 0) <= amp_en_ch_i;
+  amp_en_ch_padded(amp_en_ch_padded'left downto g_CHANNELS) <= (others => '0');
+  amp_en_ch_padded(g_CHANNELS-1 downto 0) <= amp_en_ch_i;
 
   -- Register to be shifted to RTM reg_din pin. See RTM LAMP schematics for
   -- order.
@@ -263,16 +271,16 @@ begin
   -- amp_iflag_r_o(0)                <= amp_reg_from_device(2);
   -- amp_tflag_l_o(0)                <= amp_reg_from_device(1);
   -- amp_iflag_l_o(0)                <= amp_reg_from_device(0);
-  gen_amp_flags : for i in 0 to g_NUM_CHANNELS-1 generate
+  gen_amp_flags : for i in 0 to g_CHANNELS-1 generate
     amp_tflag_r_o(i)               <= amp_reg_from_device(i*c_NUM_FLAGS_PER_CHANNEL+3);
     amp_iflag_r_o(i)               <= amp_reg_from_device(i*c_NUM_FLAGS_PER_CHANNEL+2);
     amp_tflag_l_o(i)               <= amp_reg_from_device(i*c_NUM_FLAGS_PER_CHANNEL+1);
     amp_iflag_l_o(i)               <= amp_reg_from_device(i*c_NUM_FLAGS_PER_CHANNEL);
   end generate;
 
-  p_serial_divider : process(clk_sys_i)
+  p_serial_divider : process(clk_i)
   begin
-    if rising_edge(clk_sys_i) then
+    if rising_edge(clk_i) then
       if rst_n_i = '0' then
         serial_divider <= (others => '0');
         serial_tick    <= '0';
@@ -288,9 +296,9 @@ begin
     end if;
   end process;
 
-  p_serial_fsm : process(clk_sys_i)
+  p_serial_fsm : process(clk_i)
   begin
-    if rising_edge(clk_sys_i) then
+    if rising_edge(clk_i) then
       if rst_n_i = '0' then
         seq_count   <= (others => '0');
         state       <= IDLE;

@@ -116,16 +116,16 @@ add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_en_regs(0)/cmp_
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_en_regs(0)/cmp_shift_reg_74hc595_model/qp
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_en_regs(0)/cmp_shift_reg_74hc595_model/q7s
 add wave -noupdate -divider rtmlamp_ohwr_serial_regs
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/g_CHANNELS
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/g_CLOCK_FREQ
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/g_SCLK_FREQ
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/c_NUM_TICKS_PER_CLOCK
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/c_SERIAL_DIV
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/c_NUM_FLAGS_PER_CHANNEL
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/c_NUM_SERIAL_OUT_BITS_TO_SHIFT
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/c_NUM_MAX_SERIAL_IN_BITS_TO_SHIFT
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/c_SERIAL_OUT_TO_SERIAL_IN_RATIO
-add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/g_NUM_CHANNELS
-add wave -noupdate -radix unsigned /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/g_SYS_CLOCK_FREQ
-add wave -noupdate -radix unsigned /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/g_SERIAL_FREQ
-add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/clk_sys_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/clk_i
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/rst_n_i
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/amp_sta_ctl_rw_i
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr_serial_regs/amp_status_reg_clk_o
@@ -163,4 +163,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 ns} {390465 ns}
+WaveRestoreZoom {9629059 ns} {10019524 ns}

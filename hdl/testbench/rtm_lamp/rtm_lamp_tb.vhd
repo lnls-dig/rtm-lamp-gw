@@ -111,8 +111,8 @@ begin
 
   cmp_rtmlamp_ohwr_serial_regs : rtmlamp_ohwr_serial_regs
   port map (
-    clk_sys_i => clk_sys,
-    rst_n_i   => rst_n,
+    clk_i    => clk_sys,
+    rst_n_i  => rst_n,
 
     amp_status_reg_clk_o => shift_clk,
     amp_status_reg_out_i => shift_dout,

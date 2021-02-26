@@ -80,12 +80,12 @@ package rtm_lamp_pkg is
 
   component rtmlamp_ohwr_serial_regs is
   generic (
-    g_NUM_CHANNELS        : integer range 1 to 16 := 12;
-    g_SYS_CLOCK_FREQ      : integer := 100000000;
-    g_SERIAL_FREQ         : integer := 100000
+    g_CHANNELS        : natural := 12;
+    g_CLOCK_FREQ      : natural := 100000000;
+    g_SCLK_FREQ       : natural := 100000
   );
   port (
-    clk_sys_i             : in std_logic;
+    clk_i                 : in std_logic;
     rst_n_i               : in std_logic;
     amp_sta_ctl_rw_i      : in std_logic := '1';
     amp_status_reg_clk_o  : out std_logic;
@@ -94,11 +94,11 @@ package rtm_lamp_pkg is
     amp_ctl_reg_oe_n_o    : out std_logic;
     amp_ctl_reg_din_o     : out std_logic;
     amp_ctl_reg_str_o     : out std_logic;
-    amp_iflag_l_o         : out std_logic_vector(g_NUM_CHANNELS-1 downto 0);
-    amp_tflag_l_o         : out std_logic_vector(g_NUM_CHANNELS-1 downto 0);
-    amp_iflag_r_o         : out std_logic_vector(g_NUM_CHANNELS-1 downto 0);
-    amp_tflag_r_o         : out std_logic_vector(g_NUM_CHANNELS-1 downto 0);
-    amp_en_ch_i           : in std_logic_vector(g_NUM_CHANNELS-1 downto 0)
+    amp_iflag_l_o         : out std_logic_vector(g_CHANNELS-1 downto 0);
+    amp_tflag_l_o         : out std_logic_vector(g_CHANNELS-1 downto 0);
+    amp_iflag_r_o         : out std_logic_vector(g_CHANNELS-1 downto 0);
+    amp_tflag_r_o         : out std_logic_vector(g_CHANNELS-1 downto 0);
+    amp_en_ch_i           : in std_logic_vector(g_CHANNELS-1 downto 0)
   );
   end component;
 end rtm_lamp_pkg;
