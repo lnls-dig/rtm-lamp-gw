@@ -18,9 +18,19 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+use work.wishbone_pkg.all;
+
 package rtm_lamp_pkg is
+  --------------------------------------------------------------------
+  -- Types
+  --------------------------------------------------------------------
   subtype t_16b_word is std_logic_vector(15 downto 0);
+
   type t_16b_word_array is array(natural range <>) of t_16b_word;
+
+  --------------------------------------------------------------------
+  -- Components
+  --------------------------------------------------------------------
 
   -- Multiple SPI DAC interface
   component multi_dac_spi is
@@ -216,4 +226,260 @@ package rtm_lamp_pkg is
     amp_en_ch_i                                : in    std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0)
   );
   end component;
+
+  component wb_rtmlamp_ohwr is
+  generic (
+    g_INTERFACE_MODE                           : t_wishbone_interface_mode      := CLASSIC;
+    g_ADDRESS_GRANULARITY                      : t_wishbone_address_granularity := WORD;
+    g_WITH_EXTRA_WB_REG                        : boolean := false;
+    -- System clock frequency [Hz]
+    g_SYS_CLOCK_FREQ                           : natural := 100000000;
+    -- ADC clock frequency [Hz]. Must be a multiple of g_ADC_SCLK_FREQ
+    g_ADC_MASTER_CLOCK_FREQ                    : natural := 200000000;
+    -- ADC clock frequency [Hz]
+    g_ADC_SCLK_FREQ                            : natural := 100000000;
+    -- Number of ADC channels
+    g_ADC_CHANNELS                             : natural := 12;
+    -- DAC clock frequency [Hz]. Must be a multiple of g_DAC_SCLK_FREQ
+    g_DAC_MASTER_CLOCK_FREQ                    : natural := 200000000;
+    -- DAC clock frequency [Hz]
+    g_DAC_SCLK_FREQ                            : natural := 25000000;
+    -- Number of DAC channels
+    g_DAC_CHANNELS                             : natural := 12;
+    -- Serial registers clock frequency [Hz]
+    g_SERIAL_REG_SCLK_FREQ                     : natural := 100000;
+    -- Number of AMP channels
+    g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12
+  );
+  port (
+    ---------------------------------------------------------------------------
+    -- clock and reset interface
+    ---------------------------------------------------------------------------
+    clk_i                                      : in   std_logic;
+    rst_n_i                                    : in   std_logic;
+
+    clk_master_adc_i                           : in   std_logic;
+    rst_master_adc_n_i                         : in   std_logic;
+
+    clk_master_dac_i                           : in   std_logic;
+    rst_master_dac_n_i                         : in   std_logic;
+
+    ---------------------------------------------------------------------------
+    -- Wishbone Control Interface signals
+    ---------------------------------------------------------------------------
+    wb_adr_i                                   : in  std_logic_vector(c_WISHBONE_ADDRESS_WIDTH-1 downto 0) := (others => '0');
+    wb_dat_i                                   : in  std_logic_vector(c_WISHBONE_DATA_WIDTH-1 downto 0) := (others => '0');
+    wb_dat_o                                   : out std_logic_vector(c_WISHBONE_DATA_WIDTH-1 downto 0);
+    wb_sel_i                                   : in  std_logic_vector(c_WISHBONE_DATA_WIDTH/8-1 downto 0) := (others => '0');
+    wb_we_i                                    : in  std_logic := '0';
+    wb_cyc_i                                   : in  std_logic := '0';
+    wb_stb_i                                   : in  std_logic := '0';
+    wb_ack_o                                   : out std_logic;
+    wb_err_o                                   : out std_logic;
+    wb_rty_o                                   : out std_logic;
+    wb_stall_o                                 : out std_logic;
+
+    ---------------------------------------------------------------------------
+    -- RTM amplifier registers serial interface
+    ---------------------------------------------------------------------------
+    amp_status_reg_clk_o                       : out  std_logic;
+    amp_status_reg_out_i                       : in   std_logic;
+    amp_status_reg_pl_o                        : out  std_logic;
+
+    amp_ctl_reg_oe_n_o                         : out  std_logic;
+    amp_ctl_reg_din_o                          : out  std_logic;
+    amp_ctl_reg_str_o                          : out  std_logic;
+
+    ---------------------------------------------------------------------------
+    -- RTM ADC interface
+    ---------------------------------------------------------------------------
+    adc_octo_cnv_o                             : out   std_logic;
+    adc_octo_sck_o                             : out   std_logic;
+    adc_octo_sck_ret_i                         : in    std_logic;
+    adc_octo_sdoa_i                            : in    std_logic;
+    adc_octo_sdob_i                            : in    std_logic;
+    adc_octo_sdoc_i                            : in    std_logic;
+    adc_octo_sdod_i                            : in    std_logic;
+
+    -- Only used when g_ADC_CHANNELS > 8
+    adc_quad_cnv_o                             : out   std_logic;
+    adc_quad_sck_o                             : out   std_logic;
+    adc_quad_sck_ret_i                         : in    std_logic := '0';
+    adc_quad_sdoa_i                            : in    std_logic := '0';
+    adc_quad_sdoc_i                            : in    std_logic := '0';
+
+    ---------------------------------------------------------------------------
+    -- RTM DAC interface
+    ---------------------------------------------------------------------------
+    dac_cs_o                                   : out  std_logic;
+    dac_sck_o                                  : out  std_logic;
+    dac_sdi_o                                  : out  std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+
+    ---------------------------------------------------------------------------
+    -- RTM Serial registers interface
+    ---------------------------------------------------------------------------
+    amp_shift_clk_o                            : out   std_logic;
+    amp_shift_dout_i                           : in    std_logic;
+    amp_shift_pl_o                             : out   std_logic;
+
+    amp_shift_oe_n_o                           : out   std_logic;
+    amp_shift_din_o                            : out   std_logic;
+    amp_shift_str_o                            : out   std_logic;
+
+    ---------------------------------------------------------------------------
+    -- FPGA interface
+    ---------------------------------------------------------------------------
+
+    ---------------------------------------------------------------------------
+    -- ADC parallel interface
+    ---------------------------------------------------------------------------
+    adc_start_i                                : in   std_logic;
+    adc_data_o                                 : out  std_logic_vector(16*g_ADC_CHANNELS-1 downto 0);
+    adc_valid_o                                : out  std_logic_vector(g_ADC_CHANNELS-1 downto 0);
+
+    ---------------------------------------------------------------------------
+    -- DAC parallel interface
+    ---------------------------------------------------------------------------
+    dac_start_i                                : in   std_logic;
+    dac_data_i                                 : in   std_logic_vector(16*g_DAC_CHANNELS-1 downto 0);
+    dac_ready_o                                : out  std_logic;
+
+    ---------------------------------------------------------------------------
+    -- AMP parallel interface
+    ---------------------------------------------------------------------------
+    -- Set to 1 to read and write all AMP parameters listed at the AMP
+    -- parallel interface
+    amp_sta_ctl_rw_i                           : in    std_logic := '1';
+
+    amp_iflag_l_o                              : out   std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
+    amp_tflag_l_o                              : out   std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
+    amp_iflag_r_o                              : out   std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
+    amp_tflag_r_o                              : out   std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
+    amp_en_ch_i                                : in    std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0)
+  );
+  end component;
+
+  component xwb_rtmlamp_ohwr is
+  generic (
+    g_INTERFACE_MODE                           : t_wishbone_interface_mode      := CLASSIC;
+    g_ADDRESS_GRANULARITY                      : t_wishbone_address_granularity := WORD;
+    g_WITH_EXTRA_WB_REG                        : boolean := false;
+    -- System clock frequency [Hz]
+    g_SYS_CLOCK_FREQ                           : natural := 100000000;
+    -- ADC clock frequency [Hz]. Must be a multiple of g_ADC_SCLK_FREQ
+    g_ADC_MASTER_CLOCK_FREQ                    : natural := 200000000;
+    -- ADC clock frequency [Hz]
+    g_ADC_SCLK_FREQ                            : natural := 100000000;
+    -- Number of ADC channels
+    g_ADC_CHANNELS                             : natural := 12;
+    -- DAC clock frequency [Hz]. Must be a multiple of g_DAC_SCLK_FREQ
+    g_DAC_MASTER_CLOCK_FREQ                    : natural := 200000000;
+    -- DAC clock frequency [Hz]
+    g_DAC_SCLK_FREQ                            : natural := 25000000;
+    -- Number of DAC channels
+    g_DAC_CHANNELS                             : natural := 12;
+    -- Serial registers clock frequency [Hz]
+    g_SERIAL_REG_SCLK_FREQ                     : natural := 100000;
+    -- Number of AMP channels
+    g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12
+  );
+  port (
+    ---------------------------------------------------------------------------
+    -- clock and reset interface
+    ---------------------------------------------------------------------------
+    clk_i                                      : in   std_logic;
+    rst_n_i                                    : in   std_logic;
+
+    clk_master_adc_i                           : in   std_logic;
+    rst_master_adc_n_i                         : in   std_logic;
+
+    clk_master_dac_i                           : in   std_logic;
+    rst_master_dac_n_i                         : in   std_logic;
+
+    ---------------------------------------------------------------------------
+    -- Wishbone Control Interface signals
+    ---------------------------------------------------------------------------
+    wb_slv_i                                   : in   t_wishbone_slave_in;
+    wb_slv_o                                   : out  t_wishbone_slave_out;
+
+    ---------------------------------------------------------------------------
+    -- RTM amplifier registers serial interface
+    ---------------------------------------------------------------------------
+    amp_status_reg_clk_o                       : out  std_logic;
+    amp_status_reg_out_i                       : in   std_logic;
+    amp_status_reg_pl_o                        : out  std_logic;
+
+    amp_ctl_reg_oe_n_o                         : out  std_logic;
+    amp_ctl_reg_din_o                          : out  std_logic;
+    amp_ctl_reg_str_o                          : out  std_logic;
+
+    ---------------------------------------------------------------------------
+    -- RTM ADC interface
+    ---------------------------------------------------------------------------
+    adc_octo_cnv_o                             : out   std_logic;
+    adc_octo_sck_o                             : out   std_logic;
+    adc_octo_sck_ret_i                         : in    std_logic;
+    adc_octo_sdoa_i                            : in    std_logic;
+    adc_octo_sdob_i                            : in    std_logic;
+    adc_octo_sdoc_i                            : in    std_logic;
+    adc_octo_sdod_i                            : in    std_logic;
+
+    -- Only used when g_ADC_CHANNELS > 8
+    adc_quad_cnv_o                             : out   std_logic;
+    adc_quad_sck_o                             : out   std_logic;
+    adc_quad_sck_ret_i                         : in    std_logic := '0';
+    adc_quad_sdoa_i                            : in    std_logic := '0';
+    adc_quad_sdoc_i                            : in    std_logic := '0';
+
+    ---------------------------------------------------------------------------
+    -- RTM DAC interface
+    ---------------------------------------------------------------------------
+    dac_cs_o                                   : out  std_logic;
+    dac_sck_o                                  : out  std_logic;
+    dac_sdi_o                                  : out  std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+
+    ---------------------------------------------------------------------------
+    -- RTM Serial registers interface
+    ---------------------------------------------------------------------------
+    amp_shift_clk_o                            : out   std_logic;
+    amp_shift_dout_i                           : in    std_logic;
+    amp_shift_pl_o                             : out   std_logic;
+
+    amp_shift_oe_n_o                           : out   std_logic;
+    amp_shift_din_o                            : out   std_logic;
+    amp_shift_str_o                            : out   std_logic;
+
+    ---------------------------------------------------------------------------
+    -- FPGA interface
+    ---------------------------------------------------------------------------
+
+    ---------------------------------------------------------------------------
+    -- ADC parallel interface
+    ---------------------------------------------------------------------------
+    adc_start_i                                : in   std_logic;
+    adc_data_o                                 : out  t_16b_word_array(g_ADC_CHANNELS-1 downto 0);
+    adc_valid_o                                : out  std_logic_vector(g_ADC_CHANNELS-1 downto 0);
+
+    ---------------------------------------------------------------------------
+    -- DAC parallel interface
+    ---------------------------------------------------------------------------
+    dac_start_i                                : in   std_logic;
+    dac_data_i                                 : in   t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+    dac_ready_o                                : out  std_logic;
+
+    ---------------------------------------------------------------------------
+    -- AMP parallel interface
+    ---------------------------------------------------------------------------
+    -- Set to 1 to read and write all AMP parameters listed at the AMP
+    -- parallel interface
+    amp_sta_ctl_rw_i                           : in    std_logic := '1';
+
+    amp_iflag_l_o                              : out   std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
+    amp_tflag_l_o                              : out   std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
+    amp_iflag_r_o                              : out   std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
+    amp_tflag_r_o                              : out   std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
+    amp_en_ch_i                                : in    std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0)
+  );
+  end component;
+
 end rtm_lamp_pkg;
