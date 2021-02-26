@@ -35,7 +35,7 @@ package rtm_lamp_pkg is
       rst_n_i:     in  std_logic;
       start_i:     in  std_logic;
       ready_o:     out std_logic := '0';
-      data_i:      in  t_16b_word(g_NUM_DACS-1 downto 0);
+      data_i:      in  t_16b_word_array(g_NUM_DACS-1 downto 0);
       dac_cs_o:    out std_logic;
       dac_sck_o:   out std_logic;
       dac_sdi_o:   out std_logic_vector(g_NUM_DACS-1 downto 0)
