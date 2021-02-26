@@ -1,0 +1,2325 @@
+<HTML>
+<HEAD>
+<TITLE>wb_rtmlamp_ohwr_regs</TITLE>
+<STYLE TYPE="text/css" MEDIA="all">
+<!--
+  BODY { background: white; color: black;
+         font-family: Arial,Helvetica; font-size:12; }
+  h1 { font-family: Trebuchet MS,Arial,Helvetica; font-size:30;
+       color:#404040; }
+  h2 { font-family: Trebuchet MS,Arial,Helvetica; font-size:22;
+       color:#404040; }
+  h3 { font-family: Trebuchet MS,Arial,Helvetica; font-size:16;
+       color:#404040; }
+  .td_arrow_left { padding:0px; background: #ffffff; text-align: right;
+                   font-size:12; }
+  .td_arrow_right { padding:0px; background: #ffffff; text-align: left;
+                    font-size:12; }
+  .td_code { font-family:Courier New,Courier; padding: 3px; }
+  .td_desc { padding: 3px; }
+  .td_sym_center { background: #e0e0f0; padding: 3px; }
+  .td_port_name { font-family:Courier New,Courier; background: #e0e0f0;
+                  text-align: right; font-weight:bold;
+                  padding: 3px; width:200px; }
+  .td_pblock_left { font-family:Courier New,Courier; background: #e0e0f0;
+                    padding: 0px; text-align: left; }
+  .td_pblock_right { font-family:Courier New,Courier;
+                     background: #e0e0f0;
+                     padding: 0px; text-align: right; }
+  .td_bit { background: #ffffff; color:#404040;
+            font-size:10; width: 70px;
+            font-family:Courier New,Courier; padding: 3px;
+            text-align:center; }
+  .td_field { background: #e0e0f0; padding: 3px; text-align:center;
+              border: solid 1px black; }
+  .td_unused { background: #a0a0a0; padding: 3px; text-align:center;  }
+  th { font-weight:bold; color:#ffffff; background: #202080;
+       padding:3px; }
+  .tr_even { background: #f0eff0; }
+  .tr_odd { background: #e0e0f0; }
+-->
+</STYLE>
+</HEAD>
+<BODY>
+<h1 class="heading">wb_rtmlamp_ohwr_regs</h1>
+<h3>RTM LAMP registers</h3>
+<p>Wishbone slave for RTM LAMP core</p>
+<h3><a name="sect_1_0">1. Memory map summary</a></h3>
+<table cellpadding=2 cellspacing=0 border=0>
+<tr>
+<th>HW address</th>
+<th>Type</th>
+<th>Name</th>
+<th>HDL prefix</th>
+<th>C prefix</th>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x00-0x7f</td>
+<td>BLOCK</td>
+<td><A href="#ch">ch</a></td>
+<td class="td_code">ch</td>
+<td class="td_code">ch</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x00-0x07</td>
+<td>BLOCK</td>
+<td><A href="#ch.0">ch.0</a></td>
+<td class="td_code">ch_0</td>
+<td class="td_code">ch.0</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x00</td>
+<td>REG</td>
+<td><A href="#ch.0.sta">ch.0.sta</a></td>
+<td class="td_code">ch_0_sta</td>
+<td class="td_code">ch.0.sta</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x04</td>
+<td>REG</td>
+<td><A href="#ch.0.ctl">ch.0.ctl</a></td>
+<td class="td_code">ch_0_ctl</td>
+<td class="td_code">ch.0.ctl</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x08-0x0f</td>
+<td>BLOCK</td>
+<td><A href="#ch.1">ch.1</a></td>
+<td class="td_code">ch_1</td>
+<td class="td_code">ch.1</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x08</td>
+<td>REG</td>
+<td><A href="#ch.1.sta">ch.1.sta</a></td>
+<td class="td_code">ch_1_sta</td>
+<td class="td_code">ch.1.sta</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x0c</td>
+<td>REG</td>
+<td><A href="#ch.1.ctl">ch.1.ctl</a></td>
+<td class="td_code">ch_1_ctl</td>
+<td class="td_code">ch.1.ctl</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x10-0x17</td>
+<td>BLOCK</td>
+<td><A href="#ch.2">ch.2</a></td>
+<td class="td_code">ch_2</td>
+<td class="td_code">ch.2</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x10</td>
+<td>REG</td>
+<td><A href="#ch.2.sta">ch.2.sta</a></td>
+<td class="td_code">ch_2_sta</td>
+<td class="td_code">ch.2.sta</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x14</td>
+<td>REG</td>
+<td><A href="#ch.2.ctl">ch.2.ctl</a></td>
+<td class="td_code">ch_2_ctl</td>
+<td class="td_code">ch.2.ctl</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x18-0x1f</td>
+<td>BLOCK</td>
+<td><A href="#ch.3">ch.3</a></td>
+<td class="td_code">ch_3</td>
+<td class="td_code">ch.3</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x18</td>
+<td>REG</td>
+<td><A href="#ch.3.sta">ch.3.sta</a></td>
+<td class="td_code">ch_3_sta</td>
+<td class="td_code">ch.3.sta</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x1c</td>
+<td>REG</td>
+<td><A href="#ch.3.ctl">ch.3.ctl</a></td>
+<td class="td_code">ch_3_ctl</td>
+<td class="td_code">ch.3.ctl</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x20-0x27</td>
+<td>BLOCK</td>
+<td><A href="#ch.4">ch.4</a></td>
+<td class="td_code">ch_4</td>
+<td class="td_code">ch.4</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x20</td>
+<td>REG</td>
+<td><A href="#ch.4.sta">ch.4.sta</a></td>
+<td class="td_code">ch_4_sta</td>
+<td class="td_code">ch.4.sta</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x24</td>
+<td>REG</td>
+<td><A href="#ch.4.ctl">ch.4.ctl</a></td>
+<td class="td_code">ch_4_ctl</td>
+<td class="td_code">ch.4.ctl</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x28-0x2f</td>
+<td>BLOCK</td>
+<td><A href="#ch.5">ch.5</a></td>
+<td class="td_code">ch_5</td>
+<td class="td_code">ch.5</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x28</td>
+<td>REG</td>
+<td><A href="#ch.5.sta">ch.5.sta</a></td>
+<td class="td_code">ch_5_sta</td>
+<td class="td_code">ch.5.sta</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x2c</td>
+<td>REG</td>
+<td><A href="#ch.5.ctl">ch.5.ctl</a></td>
+<td class="td_code">ch_5_ctl</td>
+<td class="td_code">ch.5.ctl</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x30-0x37</td>
+<td>BLOCK</td>
+<td><A href="#ch.6">ch.6</a></td>
+<td class="td_code">ch_6</td>
+<td class="td_code">ch.6</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x30</td>
+<td>REG</td>
+<td><A href="#ch.6.sta">ch.6.sta</a></td>
+<td class="td_code">ch_6_sta</td>
+<td class="td_code">ch.6.sta</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x34</td>
+<td>REG</td>
+<td><A href="#ch.6.ctl">ch.6.ctl</a></td>
+<td class="td_code">ch_6_ctl</td>
+<td class="td_code">ch.6.ctl</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x38-0x3f</td>
+<td>BLOCK</td>
+<td><A href="#ch.7">ch.7</a></td>
+<td class="td_code">ch_7</td>
+<td class="td_code">ch.7</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x38</td>
+<td>REG</td>
+<td><A href="#ch.7.sta">ch.7.sta</a></td>
+<td class="td_code">ch_7_sta</td>
+<td class="td_code">ch.7.sta</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x3c</td>
+<td>REG</td>
+<td><A href="#ch.7.ctl">ch.7.ctl</a></td>
+<td class="td_code">ch_7_ctl</td>
+<td class="td_code">ch.7.ctl</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x40-0x47</td>
+<td>BLOCK</td>
+<td><A href="#ch.8">ch.8</a></td>
+<td class="td_code">ch_8</td>
+<td class="td_code">ch.8</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x40</td>
+<td>REG</td>
+<td><A href="#ch.8.sta">ch.8.sta</a></td>
+<td class="td_code">ch_8_sta</td>
+<td class="td_code">ch.8.sta</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x44</td>
+<td>REG</td>
+<td><A href="#ch.8.ctl">ch.8.ctl</a></td>
+<td class="td_code">ch_8_ctl</td>
+<td class="td_code">ch.8.ctl</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x48-0x4f</td>
+<td>BLOCK</td>
+<td><A href="#ch.9">ch.9</a></td>
+<td class="td_code">ch_9</td>
+<td class="td_code">ch.9</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x48</td>
+<td>REG</td>
+<td><A href="#ch.9.sta">ch.9.sta</a></td>
+<td class="td_code">ch_9_sta</td>
+<td class="td_code">ch.9.sta</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x4c</td>
+<td>REG</td>
+<td><A href="#ch.9.ctl">ch.9.ctl</a></td>
+<td class="td_code">ch_9_ctl</td>
+<td class="td_code">ch.9.ctl</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x50-0x57</td>
+<td>BLOCK</td>
+<td><A href="#ch.10">ch.10</a></td>
+<td class="td_code">ch_10</td>
+<td class="td_code">ch.10</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x50</td>
+<td>REG</td>
+<td><A href="#ch.10.sta">ch.10.sta</a></td>
+<td class="td_code">ch_10_sta</td>
+<td class="td_code">ch.10.sta</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x54</td>
+<td>REG</td>
+<td><A href="#ch.10.ctl">ch.10.ctl</a></td>
+<td class="td_code">ch_10_ctl</td>
+<td class="td_code">ch.10.ctl</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x58-0x5f</td>
+<td>BLOCK</td>
+<td><A href="#ch.11">ch.11</a></td>
+<td class="td_code">ch_11</td>
+<td class="td_code">ch.11</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x58</td>
+<td>REG</td>
+<td><A href="#ch.11.sta">ch.11.sta</a></td>
+<td class="td_code">ch_11_sta</td>
+<td class="td_code">ch.11.sta</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x5c</td>
+<td>REG</td>
+<td><A href="#ch.11.ctl">ch.11.ctl</a></td>
+<td class="td_code">ch_11_ctl</td>
+<td class="td_code">ch.11.ctl</td>
+</tr>
+</table>
+
+<h3><a name="sect_3_0">2. Register description</a></h3>
+<a name="ch.0.sta"></a>
+<h3><a name="sect_3_1">2.1. ch.0.sta</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_0_sta</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x0</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.0.sta</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<p>
+Channel status register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[27:20]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[19:12]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[11:4]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="4">reserved[3:0]</td>
+ <td class="td_field" colspan="1">amp_tflag_r</td>
+ <td class="td_field" colspan="1">amp_iflag_r</td>
+ <td class="td_field" colspan="1">amp_tflag_l</td>
+ <td class="td_field" colspan="1">amp_iflag_l</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_iflag_l
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_l
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_r
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_r
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+reserved
+</b>[<i>ro</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.0.ctl"></a>
+<h3><a name="sect_3_2">2.2. ch.0.ctl</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_0_ctl</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x4</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.0.ctl</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x4</td></tr>
+</table>
+<p>
+Channel control register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[30:23]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[22:15]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[14:7]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_field" colspan="1">amp_en</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_en
+</b>[<i>rw</i>]: Amplifier Enable
+<br>write 0: disable amplifier<br>write 1: enable amplifier
+<li><b>
+reserved
+</b>[<i>rw</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.1.sta"></a>
+<h3><a name="sect_3_3">2.3. ch.1.sta</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_1_sta</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x8</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.1.sta</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<p>
+Channel status register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[27:20]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[19:12]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[11:4]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="4">reserved[3:0]</td>
+ <td class="td_field" colspan="1">amp_tflag_r</td>
+ <td class="td_field" colspan="1">amp_iflag_r</td>
+ <td class="td_field" colspan="1">amp_tflag_l</td>
+ <td class="td_field" colspan="1">amp_iflag_l</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_iflag_l
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_l
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_r
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_r
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+reserved
+</b>[<i>ro</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.1.ctl"></a>
+<h3><a name="sect_3_4">2.4. ch.1.ctl</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_1_ctl</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0xc</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.1.ctl</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x4</td></tr>
+</table>
+<p>
+Channel control register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[30:23]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[22:15]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[14:7]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_field" colspan="1">amp_en</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_en
+</b>[<i>rw</i>]: Amplifier Enable
+<br>write 0: disable amplifier<br>write 1: enable amplifier
+<li><b>
+reserved
+</b>[<i>rw</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.2.sta"></a>
+<h3><a name="sect_3_5">2.5. ch.2.sta</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_2_sta</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x10</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.2.sta</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<p>
+Channel status register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[27:20]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[19:12]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[11:4]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="4">reserved[3:0]</td>
+ <td class="td_field" colspan="1">amp_tflag_r</td>
+ <td class="td_field" colspan="1">amp_iflag_r</td>
+ <td class="td_field" colspan="1">amp_tflag_l</td>
+ <td class="td_field" colspan="1">amp_iflag_l</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_iflag_l
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_l
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_r
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_r
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+reserved
+</b>[<i>ro</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.2.ctl"></a>
+<h3><a name="sect_3_6">2.6. ch.2.ctl</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_2_ctl</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x14</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.2.ctl</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x4</td></tr>
+</table>
+<p>
+Channel control register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[30:23]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[22:15]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[14:7]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_field" colspan="1">amp_en</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_en
+</b>[<i>rw</i>]: Amplifier Enable
+<br>write 0: disable amplifier<br>write 1: enable amplifier
+<li><b>
+reserved
+</b>[<i>rw</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.3.sta"></a>
+<h3><a name="sect_3_7">2.7. ch.3.sta</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_3_sta</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x18</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.3.sta</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<p>
+Channel status register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[27:20]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[19:12]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[11:4]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="4">reserved[3:0]</td>
+ <td class="td_field" colspan="1">amp_tflag_r</td>
+ <td class="td_field" colspan="1">amp_iflag_r</td>
+ <td class="td_field" colspan="1">amp_tflag_l</td>
+ <td class="td_field" colspan="1">amp_iflag_l</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_iflag_l
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_l
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_r
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_r
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+reserved
+</b>[<i>ro</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.3.ctl"></a>
+<h3><a name="sect_3_8">2.8. ch.3.ctl</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_3_ctl</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x1c</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.3.ctl</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x4</td></tr>
+</table>
+<p>
+Channel control register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[30:23]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[22:15]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[14:7]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_field" colspan="1">amp_en</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_en
+</b>[<i>rw</i>]: Amplifier Enable
+<br>write 0: disable amplifier<br>write 1: enable amplifier
+<li><b>
+reserved
+</b>[<i>rw</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.4.sta"></a>
+<h3><a name="sect_3_9">2.9. ch.4.sta</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_4_sta</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x20</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.4.sta</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<p>
+Channel status register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[27:20]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[19:12]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[11:4]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="4">reserved[3:0]</td>
+ <td class="td_field" colspan="1">amp_tflag_r</td>
+ <td class="td_field" colspan="1">amp_iflag_r</td>
+ <td class="td_field" colspan="1">amp_tflag_l</td>
+ <td class="td_field" colspan="1">amp_iflag_l</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_iflag_l
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_l
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_r
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_r
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+reserved
+</b>[<i>ro</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.4.ctl"></a>
+<h3><a name="sect_3_10">2.10. ch.4.ctl</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_4_ctl</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x24</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.4.ctl</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x4</td></tr>
+</table>
+<p>
+Channel control register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[30:23]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[22:15]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[14:7]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_field" colspan="1">amp_en</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_en
+</b>[<i>rw</i>]: Amplifier Enable
+<br>write 0: disable amplifier<br>write 1: enable amplifier
+<li><b>
+reserved
+</b>[<i>rw</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.5.sta"></a>
+<h3><a name="sect_3_11">2.11. ch.5.sta</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_5_sta</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x28</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.5.sta</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<p>
+Channel status register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[27:20]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[19:12]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[11:4]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="4">reserved[3:0]</td>
+ <td class="td_field" colspan="1">amp_tflag_r</td>
+ <td class="td_field" colspan="1">amp_iflag_r</td>
+ <td class="td_field" colspan="1">amp_tflag_l</td>
+ <td class="td_field" colspan="1">amp_iflag_l</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_iflag_l
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_l
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_r
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_r
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+reserved
+</b>[<i>ro</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.5.ctl"></a>
+<h3><a name="sect_3_12">2.12. ch.5.ctl</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_5_ctl</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x2c</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.5.ctl</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x4</td></tr>
+</table>
+<p>
+Channel control register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[30:23]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[22:15]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[14:7]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_field" colspan="1">amp_en</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_en
+</b>[<i>rw</i>]: Amplifier Enable
+<br>write 0: disable amplifier<br>write 1: enable amplifier
+<li><b>
+reserved
+</b>[<i>rw</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.6.sta"></a>
+<h3><a name="sect_3_13">2.13. ch.6.sta</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_6_sta</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x30</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.6.sta</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<p>
+Channel status register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[27:20]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[19:12]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[11:4]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="4">reserved[3:0]</td>
+ <td class="td_field" colspan="1">amp_tflag_r</td>
+ <td class="td_field" colspan="1">amp_iflag_r</td>
+ <td class="td_field" colspan="1">amp_tflag_l</td>
+ <td class="td_field" colspan="1">amp_iflag_l</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_iflag_l
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_l
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_r
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_r
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+reserved
+</b>[<i>ro</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.6.ctl"></a>
+<h3><a name="sect_3_14">2.14. ch.6.ctl</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_6_ctl</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x34</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.6.ctl</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x4</td></tr>
+</table>
+<p>
+Channel control register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[30:23]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[22:15]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[14:7]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_field" colspan="1">amp_en</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_en
+</b>[<i>rw</i>]: Amplifier Enable
+<br>write 0: disable amplifier<br>write 1: enable amplifier
+<li><b>
+reserved
+</b>[<i>rw</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.7.sta"></a>
+<h3><a name="sect_3_15">2.15. ch.7.sta</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_7_sta</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x38</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.7.sta</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<p>
+Channel status register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[27:20]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[19:12]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[11:4]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="4">reserved[3:0]</td>
+ <td class="td_field" colspan="1">amp_tflag_r</td>
+ <td class="td_field" colspan="1">amp_iflag_r</td>
+ <td class="td_field" colspan="1">amp_tflag_l</td>
+ <td class="td_field" colspan="1">amp_iflag_l</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_iflag_l
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_l
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_r
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_r
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+reserved
+</b>[<i>ro</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.7.ctl"></a>
+<h3><a name="sect_3_16">2.16. ch.7.ctl</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_7_ctl</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x3c</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.7.ctl</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x4</td></tr>
+</table>
+<p>
+Channel control register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[30:23]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[22:15]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[14:7]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_field" colspan="1">amp_en</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_en
+</b>[<i>rw</i>]: Amplifier Enable
+<br>write 0: disable amplifier<br>write 1: enable amplifier
+<li><b>
+reserved
+</b>[<i>rw</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.8.sta"></a>
+<h3><a name="sect_3_17">2.17. ch.8.sta</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_8_sta</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x40</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.8.sta</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<p>
+Channel status register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[27:20]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[19:12]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[11:4]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="4">reserved[3:0]</td>
+ <td class="td_field" colspan="1">amp_tflag_r</td>
+ <td class="td_field" colspan="1">amp_iflag_r</td>
+ <td class="td_field" colspan="1">amp_tflag_l</td>
+ <td class="td_field" colspan="1">amp_iflag_l</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_iflag_l
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_l
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_r
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_r
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+reserved
+</b>[<i>ro</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.8.ctl"></a>
+<h3><a name="sect_3_18">2.18. ch.8.ctl</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_8_ctl</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x44</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.8.ctl</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x4</td></tr>
+</table>
+<p>
+Channel control register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[30:23]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[22:15]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[14:7]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_field" colspan="1">amp_en</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_en
+</b>[<i>rw</i>]: Amplifier Enable
+<br>write 0: disable amplifier<br>write 1: enable amplifier
+<li><b>
+reserved
+</b>[<i>rw</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.9.sta"></a>
+<h3><a name="sect_3_19">2.19. ch.9.sta</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_9_sta</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x48</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.9.sta</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<p>
+Channel status register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[27:20]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[19:12]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[11:4]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="4">reserved[3:0]</td>
+ <td class="td_field" colspan="1">amp_tflag_r</td>
+ <td class="td_field" colspan="1">amp_iflag_r</td>
+ <td class="td_field" colspan="1">amp_tflag_l</td>
+ <td class="td_field" colspan="1">amp_iflag_l</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_iflag_l
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_l
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_r
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_r
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+reserved
+</b>[<i>ro</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.9.ctl"></a>
+<h3><a name="sect_3_20">2.20. ch.9.ctl</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_9_ctl</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x4c</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.9.ctl</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x4</td></tr>
+</table>
+<p>
+Channel control register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[30:23]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[22:15]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[14:7]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_field" colspan="1">amp_en</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_en
+</b>[<i>rw</i>]: Amplifier Enable
+<br>write 0: disable amplifier<br>write 1: enable amplifier
+<li><b>
+reserved
+</b>[<i>rw</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.10.sta"></a>
+<h3><a name="sect_3_21">2.21. ch.10.sta</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_10_sta</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x50</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.10.sta</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<p>
+Channel status register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[27:20]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[19:12]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[11:4]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="4">reserved[3:0]</td>
+ <td class="td_field" colspan="1">amp_tflag_r</td>
+ <td class="td_field" colspan="1">amp_iflag_r</td>
+ <td class="td_field" colspan="1">amp_tflag_l</td>
+ <td class="td_field" colspan="1">amp_iflag_l</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_iflag_l
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_l
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_r
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_r
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+reserved
+</b>[<i>ro</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.10.ctl"></a>
+<h3><a name="sect_3_22">2.22. ch.10.ctl</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_10_ctl</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x54</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.10.ctl</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x4</td></tr>
+</table>
+<p>
+Channel control register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[30:23]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[22:15]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[14:7]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_field" colspan="1">amp_en</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_en
+</b>[<i>rw</i>]: Amplifier Enable
+<br>write 0: disable amplifier<br>write 1: enable amplifier
+<li><b>
+reserved
+</b>[<i>rw</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.11.sta"></a>
+<h3><a name="sect_3_23">2.23. ch.11.sta</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_11_sta</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x58</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.11.sta</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<p>
+Channel status register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[27:20]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[19:12]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[11:4]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="4">reserved[3:0]</td>
+ <td class="td_field" colspan="1">amp_tflag_r</td>
+ <td class="td_field" colspan="1">amp_iflag_r</td>
+ <td class="td_field" colspan="1">amp_tflag_l</td>
+ <td class="td_field" colspan="1">amp_iflag_l</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_iflag_l
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_l
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_r
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit
+<li><b>
+amp_tflag_r
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+reserved
+</b>[<i>ro</i>]: reserved
+<br>reserved
+</ul>
+<a name="ch.11.ctl"></a>
+<h3><a name="sect_3_24">2.24. ch.11.ctl</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">ch_11_ctl</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x5c</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">ch.11.ctl</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x4</td></tr>
+</table>
+<p>
+Channel control register
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[30:23]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[22:15]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[14:7]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_field" colspan="1">amp_en</td>
+</tr>
+</table>
+<ul>
+<li><b>
+amp_en
+</b>[<i>rw</i>]: Amplifier Enable
+<br>write 0: disable amplifier<br>write 1: enable amplifier
+<li><b>
+reserved
+</b>[<i>rw</i>]: reserved
+<br>reserved
+</ul>
+
+
+</BODY>
+</HTML>

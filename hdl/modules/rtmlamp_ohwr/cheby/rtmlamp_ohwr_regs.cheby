@@ -1,0 +1,77 @@
+memory-map:
+  bus: wb-32-be
+  name: wb_rtmlamp_ohwr_regs
+  description: RTM LAMP registers
+  comment: |
+    Wishbone slave for RTM LAMP core
+  x-hdl:
+    busgroup: True
+    iogroup: rtmlamp_ohwr_regs
+  children:
+    - repeat:
+        name: ch
+        count: 12
+        children:
+          - reg:
+              name: sta
+              width: 32
+              access: ro
+              description: Channel status register
+              comment: |
+                Channel status register
+              children:
+                - field:
+                    name: amp_iflag_l
+                    range: 0
+                    description: Amplifier Left Current Limit Flag (IFLAG_L)
+                    comment: |
+                      read 0: current above limit
+                      read 1: current under limit
+                - field:
+                    name: amp_tflag_l
+                    range: 1
+                    description: Amplifier Left Thermal Limit Flag (TFLAG_L)
+                    comment: |
+                      read 0: temperature above limit
+                      read 1: temperature under limit
+                - field:
+                    name: amp_iflag_r
+                    range: 2
+                    description: Amplifier Right Current Limit Flag (IFLAG_R)
+                    comment: |
+                      read 0: current above limit
+                      read 1: current under limit
+                - field:
+                    name: amp_tflag_r
+                    range: 3
+                    description: Amplifier Right Thermal Limit Flag (TFLAG_R)
+                    comment: |
+                      read 0: temperature above limit
+                      read 1: temperature under limit
+                - field:
+                    name: reserved
+                    range: 31-4
+                    description: reserved
+                    comment: |
+                      reserved
+          - reg:
+              name: ctl
+              width: 32
+              access: rw
+              description: Channel control register
+              comment: |
+                Channel control register
+              children:
+                - field:
+                    name: amp_en
+                    range: 0
+                    description: Amplifier Enable
+                    comment: |
+                      write 0: disable amplifier
+                      write 1: enable amplifier
+                - field:
+                    name: reserved
+                    range: 31-1
+                    description: reserved
+                    comment: |
+                      reserved
