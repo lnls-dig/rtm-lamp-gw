@@ -223,7 +223,7 @@ begin
 
   assert (g_CHANNELS <= 16)
     report "[rtmlamp_ohwr_serial_regs] g_CHANNELS(" & Integer'image(g_CHANNELS) &
-    ") unsuppoted. Maximum number of g_CHANNELS must be less than 16"
+    ") unsuppoted. Maximum number of g_CHANNELS must be <= 16"
     severity failure;
 
   -- Pad word so that this is a multiple of amp_reg_to_device length
