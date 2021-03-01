@@ -133,20 +133,7 @@ port (
   ---------------------------------------------------------------------------
   dac_start_i                                : in   std_logic;
   dac_data_i                                 : in   t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
-  dac_ready_o                                : out  std_logic;
-
-  ---------------------------------------------------------------------------
-  -- AMP parallel interface
-  ---------------------------------------------------------------------------
-  -- Set to 1 to read and write all AMP parameters listed at the AMP
-  -- parallel interface
-  amp_sta_ctl_rw_i                           : in    std_logic := '1';
-
-  amp_iflag_l_o                              : out   std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
-  amp_tflag_l_o                              : out   std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
-  amp_iflag_r_o                              : out   std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
-  amp_tflag_r_o                              : out   std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
-  amp_en_ch_i                                : in    std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0)
+  dac_ready_o                                : out  std_logic
 );
 end xwb_rtmlamp_ohwr;
 
