@@ -773,6 +773,7 @@ begin
     -- RTM DAC interface
     ---------------------------------------------------------------------------
     dac_cs_n_o                                 => rtmlamp_dac_cs_n_o,
+    dac_ldac_n_o                               => rtmlamp_dac_ldac_n_o,
     dac_sck_o                                  => rtmlamp_dac_sck_o,
     dac_sdi_o                                  => rtmlamp_dac_sdi_o,
 
@@ -805,9 +806,6 @@ begin
     dac_data_i                                 => rtmlamp_dac_data,
     dac_ready_o                                => rtmlamp_dac_ready
   );
-
-  -- always enabled for now
-  rtmlamp_dac_ldac_n_o <= '0';
 
   ----------------------------------------------------------------------
   --                          Acquisition                             --
