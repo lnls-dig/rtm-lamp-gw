@@ -53,7 +53,7 @@ use work.rtm_lamp_pkg.all;
 entity afc_rtm_lamp_ctrl is
 generic (
   -- Number of DAC channels
-  g_DAC_CHANNELS                             : natural := 12
+  g_DAC_CHANNELS                             : natural := 8
 );
 port (
   ---------------------------------------------------------------------------
@@ -235,7 +235,7 @@ architecture top of afc_rtm_lamp_ctrl is
   constant c_ADC_MASTER_CLOCK_FREQ           : natural := 200000000;
   constant c_DAC_MASTER_CLOCK_FREQ           : natural := 200000000;
   constant c_DAC_SCLK_FREQ                   : natural := 25000000;
-  constant c_ADC_CHANNELS                    : natural := 12;
+  constant c_ADC_CHANNELS                    : natural := 8;
   constant c_DAC_CHANNELS                    : natural := g_DAC_CHANNELS;
 
   constant c_NUM_USER_IRQ                    : natural := 1;
