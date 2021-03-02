@@ -59,6 +59,29 @@ package rtm_lamp_pkg is
       );
   end component;
 
+  component multi_dac_spi_ldac is
+    generic (
+      g_CLK_FREQ            : natural := 100_000_000;
+      g_SCLK_FREQ           : natural := 50_000_000;
+      g_NUM_DACS            : natural := 8;
+      g_CPOL                : boolean := false;
+      g_LDAC_WIDTH          : real := 30.0e-9;
+      g_LDAC_WAIT_AFTER_CS  : real := 30.0e-9
+    );
+    port(
+      clk_i:         in  std_logic;
+      rst_n_i:       in  std_logic;
+      start_i:       in  std_logic;
+      ready_o:       out std_logic := '0';
+      done_pp_o:     out std_logic;
+      data_i:        in  t_16b_word_array(g_NUM_DACS-1 downto 0);
+      dac_cs_n_o:    out std_logic;
+      dac_ldac_n_o:  out std_logic;
+      dac_sck_o:     out std_logic;
+      dac_sdi_o:     out std_logic_vector(g_NUM_DACS-1 downto 0)
+      );
+  end component;
+
   component ltc232x_acq is
   generic(
     g_CLK_FREQ:   natural := 100_000_000;
@@ -186,6 +209,7 @@ package rtm_lamp_pkg is
     -- RTM DAC interface
     ---------------------------------------------------------------------------
     dac_cs_n_o                                 : out  std_logic;
+    dac_ldac_n_o                               : out  std_logic;
     dac_sck_o                                  : out  std_logic;
     dac_sdi_o                                  : out  std_logic_vector(g_DAC_CHANNELS-1 downto 0);
 
@@ -317,6 +341,7 @@ package rtm_lamp_pkg is
     -- RTM DAC interface
     ---------------------------------------------------------------------------
     dac_cs_n_o                                 : out  std_logic;
+    dac_ldac_n_o                               : out  std_logic;
     dac_sck_o                                  : out  std_logic;
     dac_sdi_o                                  : out  std_logic_vector(g_DAC_CHANNELS-1 downto 0);
 
@@ -426,6 +451,7 @@ package rtm_lamp_pkg is
     -- RTM DAC interface
     ---------------------------------------------------------------------------
     dac_cs_n_o                                 : out  std_logic;
+    dac_ldac_n_o                               : out  std_logic;
     dac_sck_o                                  : out  std_logic;
     dac_sdi_o                                  : out  std_logic_vector(g_DAC_CHANNELS-1 downto 0);
 
