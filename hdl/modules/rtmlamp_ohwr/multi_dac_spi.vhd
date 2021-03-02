@@ -41,6 +41,7 @@ entity multi_dac_spi is
     start_i:     in  std_logic;         -- Start the transfer
     ready_o:     out std_logic := '0';  -- '0': there is an ongoing transfer
                                         -- '1': ready to start a new transfer
+    done_pp_o:   out std_logic;         -- pulse when finished transferred
     data_i:      in  t_16b_word_array(g_NUM_DACS-1 downto 0);
     dac_cs_n_o:  out std_logic;  -- DAC chip select
     dac_sck_o:   out std_logic;  -- DAC data clock
@@ -77,7 +78,10 @@ begin
         dac_sck <= '0';
         -- if we are in reset state we can't be ready
         ready_o <= '0';
+        done_pp_o <= '0';
       else
+        done_pp_o <= '0';
+
         case state is
           when IDLE =>
             ready_o <= '1';
@@ -106,6 +110,7 @@ begin
                   state <= IDLE;
                   ready_o <= '1';        -- Signals that the module is ready
                                          -- to start a new transfer
+                  done_pp_o <= '1';
                   dac_cs_n_o <= '1';
                   bit_cnt <= c_NUM_DATA_BITS-1;
                   v_sck_div_cnt := 0;
