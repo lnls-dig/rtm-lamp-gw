@@ -208,10 +208,15 @@ begin
     fifo_in(0) <= sdo1a_i;
   end generate;
 
-  cmp_fifo: generic_async_fifo          -- Dual clocked FIFO buffer to cross
+  -- Inferred async FIFO will likely be implemented
+  -- as distributed FIFO, which for this small CDC fifo
+  -- is best as it can place it near the input PAD
+  cmp_fifo: inferred_async_fifo         -- Dual clocked FIFO buffer to cross
     generic map(                        -- the dada read from sck_ret_i clock
       g_DATA_WIDTH => g_DATA_LINES,     -- to clk_i
-      g_SIZE => 8
+      g_SIZE => 8,
+      g_ALMOST_EMPTY_THRESHOLD => 2,
+      g_ALMOST_FULL_THRESHOLD  => 6
       )
     port map(
       rst_n_i => rst_n_i,
