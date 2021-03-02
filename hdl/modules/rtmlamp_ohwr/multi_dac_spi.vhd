@@ -42,7 +42,7 @@ entity multi_dac_spi is
     ready_o:     out std_logic := '0';  -- '0': there is an ongoing transfer
                                         -- '1': ready to start a new transfer
     data_i:      in  t_16b_word_array(g_NUM_DACS-1 downto 0);
-    dac_cs_o:    out std_logic;  -- DAC chip select
+    dac_cs_n_o:  out std_logic;  -- DAC chip select
     dac_sck_o:   out std_logic;  -- DAC data clock
     dac_sdi_o:   out std_logic_vector(g_NUM_DACS-1 downto 0) -- Serial data outputs
     );
@@ -71,7 +71,7 @@ begin
     if rising_edge(clk_i) then
       if rst_n_i = '0' then
         state <= IDLE;
-        dac_cs_o <= '1';
+        dac_cs_n_o <= '1';
         bit_cnt <= c_NUM_DATA_BITS-1;
         v_sck_div_cnt := 0;
         dac_sck <= '0';
@@ -80,7 +80,7 @@ begin
         case state is
           when IDLE =>
             if start_i = '1' then
-              dac_cs_o <= '0';
+              dac_cs_n_o <= '0';
               state <= CS_DELAY;
               data_buf <= data_i;
               ready_o <= '0';
@@ -103,7 +103,7 @@ begin
                   state <= IDLE;
                   ready_o <= '1';        -- Signals that the module is ready
                                          -- to start a new transfer
-                  dac_cs_o <= '1';
+                  dac_cs_n_o <= '1';
                   bit_cnt <= c_NUM_DATA_BITS-1;
                   v_sck_div_cnt := 0;
                   dac_sck <= '0';
