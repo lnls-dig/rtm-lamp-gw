@@ -401,6 +401,8 @@ architecture top of afc_rtm_lamp_ctrl is
   signal clk_link01_n                        : std_logic;
   signal clk_200mhz                          : std_logic;
   signal clk_200mhz_rstn                     : std_logic;
+  signal clk_master                          : std_logic;
+  signal clk_master_rstn                     : std_logic;
   signal clk_pcie                            : std_logic;
   signal clk_pcie_rstn                       : std_logic;
   signal clk_trig_ref                        : std_logic;
@@ -706,6 +708,11 @@ begin
   --                          RTM LAMP OHWR                           --
   ----------------------------------------------------------------------
 
+  -- Keep it so it's easier to apply constraints on all nets that use this clock
+  -- name
+  clk_master <= clk_200mhz;
+  clk_master_rstn <= clk_200mhz_rstn;
+
   cmp_rtmlamp_ohwr : xwb_rtmlamp_ohwr
   generic map (
     g_INTERFACE_MODE                           => PIPELINED,
@@ -733,11 +740,11 @@ begin
     clk_i                                      => clk_sys,
     rst_n_i                                    => clk_sys_rstn,
 
-    clk_master_adc_i                           => clk_200mhz,
-    rst_master_adc_n_i                         => clk_200mhz_rstn,
+    clk_master_adc_i                           => clk_master,
+    rst_master_adc_n_i                         => clk_master_rstn,
 
-    clk_master_dac_i                           => clk_200mhz,
-    rst_master_dac_n_i                         => clk_200mhz_rstn,
+    clk_master_dac_i                           => clk_master,
+    rst_master_dac_n_i                         => clk_master_rstn,
 
     ---------------------------------------------------------------------------
     -- Wishbone Control Interface signals
@@ -828,8 +835,8 @@ begin
   --                          Acquisition                             --
   ----------------------------------------------------------------------
 
-  fs_clk_array(c_ACQ_CORE_0_ID)   <= clk_200mhz;
-  fs_rst_n_array(c_ACQ_CORE_0_ID) <= clk_200mhz_rstn;
+  fs_clk_array(c_ACQ_CORE_0_ID)   <= clk_master;
+  fs_rst_n_array(c_ACQ_CORE_0_ID) <= clk_master_rstn;
 
   gen_acq_clks : for i in 0 to c_ACQ_NUM_CORES-1 generate
 
