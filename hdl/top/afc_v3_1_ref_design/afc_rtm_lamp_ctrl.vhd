@@ -260,6 +260,7 @@ architecture top of afc_rtm_lamp_ctrl is
   signal rtmlamp_dac_start                   : std_logic := '1';
   signal rtmlamp_dac_data                    : t_16b_word_array(c_DAC_CHANNELS-1 downto 0);
   signal rtmlamp_dac_ready                   : std_logic;
+  signal rtmlamp_dac_done_pp                 : std_logic;
 
   -----------------------------------------------------------------------------
   -- AFC Si57x signals
@@ -808,7 +809,8 @@ begin
     ---------------------------------------------------------------------------
     dac_start_i                                => rtmlamp_dac_start,
     dac_data_i                                 => rtmlamp_dac_data,
-    dac_ready_o                                => rtmlamp_dac_ready
+    dac_ready_o                                => rtmlamp_dac_ready,
+    dac_done_pp_o                              => rtmlamp_dac_done_pp
   );
 
   ----------------------------------------------------------------------
