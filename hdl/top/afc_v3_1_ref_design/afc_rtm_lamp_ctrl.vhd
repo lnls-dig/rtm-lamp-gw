@@ -167,17 +167,6 @@ port (
   ---------------------------------------------------------------------------
 
   ---------------------------------------------------------------------------
-  -- RTM amplifier registers serial interface
-  ---------------------------------------------------------------------------
-  rtmlamp_amp_status_reg_clk_o               : out  std_logic;
-  rtmlamp_amp_status_reg_out_i               : in   std_logic;
-  rtmlamp_amp_status_reg_pl_o                : out  std_logic;
-
-  rtmlamp_amp_ctl_reg_oe_n_o                 : out  std_logic;
-  rtmlamp_amp_ctl_reg_din_o                  : out  std_logic;
-  rtmlamp_amp_ctl_reg_str_o                  : out  std_logic;
-
-  ---------------------------------------------------------------------------
   -- RTM ADC interface
   ---------------------------------------------------------------------------
   rtmlamp_adc_cnv_o                          : out   std_logic;
@@ -751,17 +740,6 @@ begin
     ---------------------------------------------------------------------------
     wb_slv_i                                   => user_wb_out(c_SLV_RTM_LAMP_CORE_IDS(c_RTM_LAMP_ID)),
     wb_slv_o                                   => user_wb_in(c_SLV_RTM_LAMP_CORE_IDS(c_RTM_LAMP_ID)),
-
-    ---------------------------------------------------------------------------
-    -- RTM amplifier registers serial interface
-    ---------------------------------------------------------------------------
-    amp_status_reg_clk_o                       => rtmlamp_amp_status_reg_clk_o,
-    amp_status_reg_out_i                       => rtmlamp_amp_status_reg_out_i,
-    amp_status_reg_pl_o                        => rtmlamp_amp_status_reg_pl_o,
-
-    amp_ctl_reg_oe_n_o                         => rtmlamp_amp_ctl_reg_oe_n_o,
-    amp_ctl_reg_din_o                          => rtmlamp_amp_ctl_reg_din_o,
-    amp_ctl_reg_str_o                          => rtmlamp_amp_ctl_reg_str_o,
 
     ---------------------------------------------------------------------------
     -- RTM ADC interface
