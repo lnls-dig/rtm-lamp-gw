@@ -39,7 +39,8 @@ pin j1_e8   rtmlamp_adc_octo_sck_ret_p_i       lvds_25
 # pin j1_c9   rtmlamp_amp_shift_clk_o             lvcmos25
 # pin j1_c7   rtmlamp_amp_shift_din_o             lvcmos25
 # pin j1_b7   rtmlamp_amp_shift_oe_o              lvcmos25
-# pin j1_a7   rtmlamp_amp_shift_str_o             lvcmos25
+# Connected through a level translator from 1.5V to 3.3V
+# pin j1_a7   rtmlamp_amp_shift_str_o             lvcmos15
 # pin j1_d5   rtmlamp_amp_shift_pl_o              lvcmos25
 # pin j1_d10  rtmlamp_amp_shift_dout_i            lvcmos25
 
@@ -64,11 +65,11 @@ pin j1_c6   rtmlamp_dac_cs_o                    lvcmos25
 # Connected through a level translator from 1.5V to 3.3V
 pin j1_a9   rtmlamp_dac_sdi_o[7]                lvcmos15
 pin j1_c10  rtmlamp_dac_sdi_o[6]                lvcmos25
-
 pin j2_e1   rtmlamp_dac_sdi_o[5]                lvcmos25
 pin j2_c1   rtmlamp_dac_sdi_o[4]                lvcmos25
 pin j2_a1   rtmlamp_dac_sdi_o[3]                lvcmos25
-pin j2_e2   rtmlamp_dac_sdi_o[2]                lvcmos25
+# Connected through a level translator from 1.5V to 3.3V
+pin j2_e2   rtmlamp_dac_sdi_o[2]                lvcmos15
 pin j2_c2   rtmlamp_dac_sdi_o[1]                lvcmos25
 pin j2_a2   rtmlamp_dac_sdi_o[0]                lvcmos25
 
