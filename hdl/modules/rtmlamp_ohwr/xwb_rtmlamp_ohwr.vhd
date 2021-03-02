@@ -424,17 +424,6 @@ begin
     rst_master_dac_n_i                         => rst_master_dac_n_i,
 
     ---------------------------------------------------------------------------
-    -- RTM amplifier registers serial interface
-    ---------------------------------------------------------------------------
-    amp_status_reg_clk_o                       => amp_status_reg_clk_o,
-    amp_status_reg_out_i                       => amp_status_reg_out_i,
-    amp_status_reg_pl_o                        => amp_status_reg_pl_o,
-
-    amp_ctl_reg_oe_n_o                         => amp_ctl_reg_oe_n_o,
-    amp_ctl_reg_din_o                          => amp_ctl_reg_din_o,
-    amp_ctl_reg_str_o                          => amp_ctl_reg_str_o,
-
-    ---------------------------------------------------------------------------
     -- RTM ADC interface
     ---------------------------------------------------------------------------
     adc_octo_cnv_o                             => adc_octo_cnv_o,

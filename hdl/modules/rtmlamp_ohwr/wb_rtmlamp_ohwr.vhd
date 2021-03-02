@@ -78,17 +78,6 @@ port (
   wb_stall_o                                 : out std_logic;
 
   ---------------------------------------------------------------------------
-  -- RTM amplifier registers serial interface
-  ---------------------------------------------------------------------------
-  amp_status_reg_clk_o                       : out  std_logic;
-  amp_status_reg_out_i                       : in   std_logic;
-  amp_status_reg_pl_o                        : out  std_logic;
-
-  amp_ctl_reg_oe_n_o                         : out  std_logic;
-  amp_ctl_reg_din_o                          : out  std_logic;
-  amp_ctl_reg_str_o                          : out  std_logic;
-
-  ---------------------------------------------------------------------------
   -- RTM ADC interface
   ---------------------------------------------------------------------------
   adc_octo_cnv_o                             : out   std_logic;
@@ -210,17 +199,6 @@ begin
     ---------------------------------------------------------------------------
     wb_slv_i                                   => wb_slv_in,
     wb_slv_o                                   => wb_slv_out,
-
-    ---------------------------------------------------------------------------
-    -- RTM amplifier registers serial interface
-    ---------------------------------------------------------------------------
-    amp_status_reg_clk_o                       => amp_status_reg_clk_o,
-    amp_status_reg_out_i                       => amp_status_reg_out_i,
-    amp_status_reg_pl_o                        => amp_status_reg_pl_o,
-
-    amp_ctl_reg_oe_n_o                         => amp_ctl_reg_oe_n_o,
-    amp_ctl_reg_din_o                          => amp_ctl_reg_din_o,
-    amp_ctl_reg_str_o                          => amp_ctl_reg_str_o,
 
     ---------------------------------------------------------------------------
     -- RTM ADC interface
