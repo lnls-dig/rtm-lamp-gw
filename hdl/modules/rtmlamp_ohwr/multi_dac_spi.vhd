@@ -75,10 +75,13 @@ begin
         bit_cnt <= c_NUM_DATA_BITS-1;
         v_sck_div_cnt := 0;
         dac_sck <= '0';
-        ready_o <= '1';
+        -- if we are in reset state we can't be ready
+        ready_o <= '0';
       else
         case state is
           when IDLE =>
+            ready_o <= '1';
+
             if start_i = '1' then
               dac_cs_n_o <= '0';
               state <= CS_DELAY;

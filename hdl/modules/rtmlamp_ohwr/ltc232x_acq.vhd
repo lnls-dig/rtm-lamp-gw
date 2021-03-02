@@ -246,7 +246,8 @@ begin
         v_delayed_read_fifo := false;
         cnv_o <= '0';
         sck_o_s <= '0';
-        ready_o <= '1';
+        -- if we are in reset state we can't be ready
+        ready_o <= '0';
         valid_o <= '0';
       else
         -- valid signal is only asserted for 1 clock cycle
@@ -269,6 +270,8 @@ begin
         --   Read the converted data through the serial lines.
         case state is
           when IDLE =>
+            ready_o <= '1';
+
             if start_i = '0' then
               state <= IDLE;
             else
