@@ -29,7 +29,7 @@ architecture multi_dac_spi_tb_arch of multi_dac_spi_tb is
   signal clk_200mhz: std_logic := '0';
   signal rst_n: std_logic := '0';
   signal ready: std_logic;
-  signal dac_cs: std_logic;
+  signal dac_cs_n: std_logic;
   signal dac_sck: std_logic;
   signal dac_sdi: std_logic_vector(11 downto 0);
   signal dac_start: std_logic := '0';
@@ -56,7 +56,7 @@ begin
       start_i => dac_start,
       data_i => dac_data,
       ready_o => ready,
-      dac_cs_o => dac_cs,
+      dac_cs_n_o => dac_cs_n,
       dac_sck_o => dac_sck,
       dac_sdi_o => dac_sdi
       );

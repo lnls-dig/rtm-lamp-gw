@@ -5,7 +5,7 @@ add wave -noupdate /multi_dac_spi_tb/dac_data
 add wave -noupdate /multi_dac_spi_tb/clk_200mhz
 add wave -noupdate /multi_dac_spi_tb/rst_n
 add wave -noupdate /multi_dac_spi_tb/ready
-add wave -noupdate /multi_dac_spi_tb/dac_cs
+add wave -noupdate /multi_dac_spi_tb/dac_cs_n
 add wave -noupdate /multi_dac_spi_tb/dac_sck
 add wave -noupdate /multi_dac_spi_tb/dac_sdi
 add wave -noupdate /multi_dac_spi_tb/dac_start
@@ -21,7 +21,7 @@ add wave -noupdate /multi_dac_spi_tb/cmp_multi_dac/rst_n_i
 add wave -noupdate /multi_dac_spi_tb/cmp_multi_dac/start_i
 add wave -noupdate /multi_dac_spi_tb/cmp_multi_dac/data_i
 add wave -noupdate /multi_dac_spi_tb/cmp_multi_dac/ready_o
-add wave -noupdate /multi_dac_spi_tb/cmp_multi_dac/dac_cs_o
+add wave -noupdate /multi_dac_spi_tb/cmp_multi_dac/dac_cs_n_o
 add wave -noupdate /multi_dac_spi_tb/cmp_multi_dac/dac_sck_o
 add wave -noupdate /multi_dac_spi_tb/cmp_multi_dac/dac_sdi_o
 add wave -noupdate /multi_dac_spi_tb/cmp_multi_dac/state
