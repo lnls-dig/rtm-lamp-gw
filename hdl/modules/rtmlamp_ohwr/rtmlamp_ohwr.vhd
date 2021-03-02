@@ -154,8 +154,8 @@ architecture rtl of rtmlamp_ohwr is
   signal adc_octo_valid                      : std_logic;
   signal adc_quad_valid                      : std_logic;
 
-  signal adc_data                            : t_16b_word_array(g_ADC_CHANNELS-1 downto 0);
-  signal adc_valid                           : std_logic_vector(g_ADC_CHANNELS-1 downto 0);
+  signal adc_data                            : t_16b_word_array(c_MAX_ADC_CHANNELS-1 downto 0);
+  signal adc_valid                           : std_logic_vector(c_MAX_ADC_CHANNELS-1 downto 0);
 
   signal adc_octo_sck                        : std_logic;
   signal adc_octo_sck_ret                    : std_logic;
@@ -171,9 +171,14 @@ architecture rtl of rtmlamp_ohwr is
 
 begin
 
-  assert (g_ADC_CHANNELS <= 12)
+  assert (g_ADC_CHANNELS <= c_MAX_ADC_CHANNELS)
     report "[rtmlamp_ohwr] g_ADC_CHANNELS(" & Integer'image(g_ADC_CHANNELS) &
-    ") unsuppoted. Maximum number of g_ADC_CHANNELS must be <= 12"
+    ") unsuppoted. Maximum number of g_ADC_CHANNELS = " & Integer'image(c_MAX_ADC_CHANNELS)
+    severity failure;
+
+  assert (g_DAC_CHANNELS <= c_MAX_DAC_CHANNELS)
+    report "[rtmlamp_ohwr] g_DAC_CHANNELS(" & Integer'image(g_DAC_CHANNELS) &
+    ") unsuppoted. Maximum number of g_DAC_CHANNELS = " & Integer'image(c_MAX_DAC_CHANNELS)
     severity failure;
 
   ---------------------------------------------------------------------------
@@ -364,10 +369,10 @@ begin
       adc_valid(i) <= adc_quad_valid;
     end generate;
 
-  end generate;
+    adc_data_o(i) <= adc_data(i);
+    adc_valid_o(i) <= adc_valid(i);
 
-  adc_data_o <= adc_data;
-  adc_valid_o <= adc_valid;
+  end generate;
 
   ---------------------------------------------------------------------------
   --                              DACs

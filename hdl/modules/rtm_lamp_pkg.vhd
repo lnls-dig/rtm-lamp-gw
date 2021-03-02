@@ -22,6 +22,12 @@ use work.wishbone_pkg.all;
 
 package rtm_lamp_pkg is
   --------------------------------------------------------------------
+  -- Constants
+  --------------------------------------------------------------------
+  constant c_MAX_ADC_CHANNELS                : natural := 12;
+  constant c_MAX_DAC_CHANNELS                : natural := 12;
+
+  --------------------------------------------------------------------
   -- Types
   --------------------------------------------------------------------
   subtype t_16b_word is std_logic_vector(15 downto 0);
