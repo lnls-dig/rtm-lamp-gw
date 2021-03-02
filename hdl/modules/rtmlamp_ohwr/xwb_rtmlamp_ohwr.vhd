@@ -113,6 +113,7 @@ port (
   -- RTM DAC interface
   ---------------------------------------------------------------------------
   dac_cs_n_o                                 : out  std_logic;
+  dac_ldac_n_o                               : out  std_logic;
   dac_sck_o                                  : out  std_logic;
   dac_sdi_o                                  : out  std_logic_vector(g_DAC_CHANNELS-1 downto 0);
 
@@ -455,6 +456,7 @@ begin
     -- RTM DAC interface
     ---------------------------------------------------------------------------
     dac_cs_n_o                                 => dac_cs_n_o,
+    dac_ldac_n_o                               => dac_ldac_n_o,
     dac_sck_o                                  => dac_sck_o,
     dac_sdi_o                                  => dac_sdi_o,
 
