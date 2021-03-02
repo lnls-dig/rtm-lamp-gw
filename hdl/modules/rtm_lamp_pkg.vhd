@@ -217,7 +217,7 @@ package rtm_lamp_pkg is
     -- RTM Serial registers interface
     ---------------------------------------------------------------------------
     amp_shift_clk_o                            : out   std_logic;
-    amp_shift_dout_i                           : in    std_logic;
+    amp_shift_dout_i                           : in    std_logic := '0';
     amp_shift_pl_o                             : out   std_logic;
 
     amp_shift_oe_n_o                           : out   std_logic;
@@ -349,7 +349,7 @@ package rtm_lamp_pkg is
     -- RTM Serial registers interface
     ---------------------------------------------------------------------------
     amp_shift_clk_o                            : out   std_logic;
-    amp_shift_dout_i                           : in    std_logic;
+    amp_shift_dout_i                           : in    std_logic := '0';
     amp_shift_pl_o                             : out   std_logic;
 
     amp_shift_oe_n_o                           : out   std_logic;
@@ -459,7 +459,7 @@ package rtm_lamp_pkg is
     -- RTM Serial registers interface
     ---------------------------------------------------------------------------
     amp_shift_clk_o                            : out   std_logic;
-    amp_shift_dout_i                           : in    std_logic;
+    amp_shift_dout_i                           : in    std_logic := '0';
     amp_shift_pl_o                             : out   std_logic;
 
     amp_shift_oe_n_o                           : out   std_logic;
