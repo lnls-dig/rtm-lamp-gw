@@ -54,7 +54,7 @@ pin j1_f6   rtmlamp_adc_octo_sdod_n_i           lvds_25
 pin j1_e6   rtmlamp_adc_octo_sdod_p_i           lvds_25
 
 pin j1_c5   rtmlamp_dac_sck_o                   lvcmos25
-pin j1_c6   rtmlamp_dac_cs_o                    lvcmos25
+pin j1_c6   rtmlamp_dac_cs_n_o                  lvcmos25
 
 # Not connected to the AFC v3.1 carrier
 # pin j1_d6   rtmlamp_dac_sdi_o[11]               lvcmos25
