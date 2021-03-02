@@ -20,7 +20,10 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+-- RTM LAMP definitions
 use work.rtm_lamp_pkg.all;
+-- generic buffers
+use work.platform_generic_pkg.all;
 
 entity rtmlamp_ohwr is
 generic (
@@ -71,19 +74,29 @@ port (
   -- RTM ADC interface
   ---------------------------------------------------------------------------
   adc_octo_cnv_o                             : out   std_logic;
-  adc_octo_sck_o                             : out   std_logic;
-  adc_octo_sck_ret_i                         : in    std_logic;
-  adc_octo_sdoa_i                            : in    std_logic;
-  adc_octo_sdob_i                            : in    std_logic;
-  adc_octo_sdoc_i                            : in    std_logic;
-  adc_octo_sdod_i                            : in    std_logic;
+  adc_octo_sck_p_o                           : out   std_logic;
+  adc_octo_sck_n_o                           : out   std_logic;
+  adc_octo_sck_ret_p_i                       : in    std_logic;
+  adc_octo_sck_ret_n_i                       : in    std_logic;
+  adc_octo_sdoa_p_i                          : in    std_logic;
+  adc_octo_sdoa_n_i                          : in    std_logic;
+  adc_octo_sdob_p_i                          : in    std_logic;
+  adc_octo_sdob_n_i                          : in    std_logic;
+  adc_octo_sdoc_p_i                          : in    std_logic;
+  adc_octo_sdoc_n_i                          : in    std_logic;
+  adc_octo_sdod_p_i                          : in    std_logic;
+  adc_octo_sdod_n_i                          : in    std_logic;
 
   -- Only used when g_ADC_CHANNELS > 8
   adc_quad_cnv_o                             : out   std_logic;
-  adc_quad_sck_o                             : out   std_logic;
-  adc_quad_sck_ret_i                         : in    std_logic := '0';
-  adc_quad_sdoa_i                            : in    std_logic := '0';
-  adc_quad_sdoc_i                            : in    std_logic := '0';
+  adc_quad_sck_p_o                           : out   std_logic;
+  adc_quad_sck_n_o                           : out   std_logic;
+  adc_quad_sck_ret_p_i                       : in    std_logic := '0';
+  adc_quad_sck_ret_n_i                       : in    std_logic := '1';
+  adc_quad_sdoa_p_i                          : in    std_logic := '0';
+  adc_quad_sdoa_n_i                          : in    std_logic := '1';
+  adc_quad_sdoc_p_i                          : in    std_logic := '0';
+  adc_quad_sdoc_n_i                          : in    std_logic := '1';
 
   ---------------------------------------------------------------------------
   -- RTM DAC interface
@@ -144,6 +157,18 @@ architecture rtl of rtmlamp_ohwr is
   signal adc_data                            : t_16b_word_array(g_ADC_CHANNELS-1 downto 0);
   signal adc_valid                           : std_logic_vector(g_ADC_CHANNELS-1 downto 0);
 
+  signal adc_octo_sck                        : std_logic;
+  signal adc_octo_sck_ret                    : std_logic;
+  signal adc_octo_sdoa                       : std_logic;
+  signal adc_octo_sdob                       : std_logic;
+  signal adc_octo_sdoc                       : std_logic;
+  signal adc_octo_sdod                       : std_logic;
+
+  signal adc_quad_sck                        : std_logic;
+  signal adc_quad_sck_ret                    : std_logic;
+  signal adc_quad_sdoa                       : std_logic;
+  signal adc_quad_sdoc                       : std_logic;
+
 begin
 
   assert (g_ADC_CHANNELS <= 12)
@@ -152,7 +177,7 @@ begin
     severity failure;
 
   ---------------------------------------------------------------------------
-  --                              ADCs
+  --                              ADC octo
   ---------------------------------------------------------------------------
 
   -- RTM LTC2320 operates in LVDS mode, so we always acquire 8 channels
@@ -171,12 +196,12 @@ begin
       start_i                              => adc_start_i,
 
       cnv_o                                => adc_octo_cnv_o,
-      sck_o                                => adc_octo_sck_o,
-      sck_ret_i                            => adc_octo_sck_ret_i,
-      sdo1a_i                              => adc_octo_sdoa_i,
-      sdo3b_i                              => adc_octo_sdob_i,
-      sdo5c_i                              => adc_octo_sdoc_i,
-      sdo7d_i                              => adc_octo_sdod_i,
+      sck_o                                => adc_octo_sck,
+      sck_ret_i                            => adc_octo_sck_ret,
+      sdo1a_i                              => adc_octo_sdoa,
+      sdo3b_i                              => adc_octo_sdob,
+      sdo5c_i                              => adc_octo_sdoc,
+      sdo7d_i                              => adc_octo_sdod,
 
       ch1_o                                => adc_data(0),
       ch2_o                                => adc_data(1),
@@ -189,6 +214,63 @@ begin
       valid_o                              => adc_octo_valid
     );
 
+  ---------------------------------------------------------------------------
+  --                              Buffers
+  ---------------------------------------------------------------------------
+
+  cmp_octo_obufds_sck : obufds_generic
+  port map
+  (
+    buffer_i                                  => adc_octo_sck,
+    buffer_p_o                                => adc_octo_sck_p_o,
+    buffer_n_o                                => adc_octo_sck_n_o
+
+  );
+
+  cmp_octo_ibufds_sck_ret : ibufds_generic
+  port map
+  (
+    buffer_p_i                               => adc_octo_sck_ret_p_i,
+    buffer_n_i                               => adc_octo_sck_ret_n_i,
+    buffer_o                                 => adc_octo_sck_ret
+  );
+
+  cmp_octo_ibufds_sdoa : ibufds_generic
+  port map
+  (
+    buffer_p_i                               => adc_octo_sdoa_p_i,
+    buffer_n_i                               => adc_octo_sdoa_n_i,
+    buffer_o                                 => adc_octo_sdoa
+  );
+
+  cmp_octo_ibufds_sdob : ibufds_generic
+  port map
+  (
+    buffer_p_i                               => adc_octo_sdob_p_i,
+    buffer_n_i                               => adc_octo_sdob_n_i,
+    buffer_o                                 => adc_octo_sdob
+  );
+
+  cmp_octo_ibufds_sdoc : ibufds_generic
+  port map
+  (
+    buffer_p_i                               => adc_octo_sdoc_p_i,
+    buffer_n_i                               => adc_octo_sdoc_n_i,
+    buffer_o                                 => adc_octo_sdoc
+  );
+
+  cmp_octo_ibufds_sdod : ibufds_generic
+  port map
+  (
+    buffer_p_i                               => adc_octo_sdod_p_i,
+    buffer_n_i                               => adc_octo_sdod_n_i,
+    buffer_o                                 => adc_octo_sdod
+  );
+
+  ---------------------------------------------------------------------------
+  --                              ADC quad
+  ---------------------------------------------------------------------------
+
   gen_adc_up_to_8_channels : if g_ADC_CHANNELS <= 8 generate
 
       adc_data(8)    <= (others => '0');
@@ -198,7 +280,7 @@ begin
       adc_quad_valid <= '0';
 
       adc_quad_cnv_o <= '0';
-      adc_quad_sck_o <= '0';
+      adc_quad_sck <= '0';
 
   end generate;
 
@@ -220,10 +302,10 @@ begin
         start_i                              => adc_start_i,
 
         cnv_o                                => adc_quad_cnv_o,
-        sck_o                                => adc_quad_sck_o,
-        sck_ret_i                            => adc_quad_sck_ret_i,
-        sdo1a_i                              => adc_quad_sdoa_i,
-        sdo5c_i                              => adc_quad_sdoc_i,
+        sck_o                                => adc_quad_sck,
+        sck_ret_i                            => adc_quad_sck_ret,
+        sdo1a_i                              => adc_quad_sdoa,
+        sdo5c_i                              => adc_quad_sdoc,
 
         ch1_o                                => adc_data(8),
         ch2_o                                => adc_data(9),
@@ -231,6 +313,43 @@ begin
         ch4_o                                => adc_data(11),
         valid_o                              => adc_quad_valid
       );
+
+    ---------------------------------------------------------------------------
+    --                              Buffers
+    ---------------------------------------------------------------------------
+
+    cmp_quad_obufds_sck : obufds_generic
+    port map
+    (
+      buffer_i                               => adc_quad_sck,
+      buffer_p_o                             => adc_quad_sck_p_o,
+      buffer_n_o                             => adc_quad_sck_n_o
+
+    );
+
+    cmp_quad_ibufds_sck_ret : ibufds_generic
+    port map
+    (
+      buffer_p_i                             => adc_quad_sck_ret_p_i,
+      buffer_n_i                             => adc_quad_sck_ret_n_i,
+      buffer_o                               => adc_quad_sck_ret
+    );
+
+    cmp_quad_ibufds_sdoa : ibufds_generic
+    port map
+    (
+      buffer_p_i                             => adc_quad_sdoa_p_i,
+      buffer_n_i                             => adc_quad_sdoa_n_i,
+      buffer_o                               => adc_quad_sdoa
+    );
+
+    cmp_quad_ibufds_sdoc : ibufds_generic
+    port map
+    (
+      buffer_p_i                             => adc_quad_sdoc_p_i,
+      buffer_n_i                             => adc_quad_sdoc_n_i,
+      buffer_o                               => adc_quad_sdoc
+    );
 
   end generate;
 

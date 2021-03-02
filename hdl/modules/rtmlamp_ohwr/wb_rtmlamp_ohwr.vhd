@@ -92,19 +92,29 @@ port (
   -- RTM ADC interface
   ---------------------------------------------------------------------------
   adc_octo_cnv_o                             : out   std_logic;
-  adc_octo_sck_o                             : out   std_logic;
-  adc_octo_sck_ret_i                         : in    std_logic;
-  adc_octo_sdoa_i                            : in    std_logic;
-  adc_octo_sdob_i                            : in    std_logic;
-  adc_octo_sdoc_i                            : in    std_logic;
-  adc_octo_sdod_i                            : in    std_logic;
+  adc_octo_sck_p_o                           : out   std_logic;
+  adc_octo_sck_n_o                           : out   std_logic;
+  adc_octo_sck_ret_p_i                       : in    std_logic;
+  adc_octo_sck_ret_n_i                       : in    std_logic;
+  adc_octo_sdoa_p_i                          : in    std_logic;
+  adc_octo_sdoa_n_i                          : in    std_logic;
+  adc_octo_sdob_p_i                          : in    std_logic;
+  adc_octo_sdob_n_i                          : in    std_logic;
+  adc_octo_sdoc_p_i                          : in    std_logic;
+  adc_octo_sdoc_n_i                          : in    std_logic;
+  adc_octo_sdod_p_i                          : in    std_logic;
+  adc_octo_sdod_n_i                          : in    std_logic;
 
   -- Only used when g_ADC_CHANNELS > 8
   adc_quad_cnv_o                             : out   std_logic;
-  adc_quad_sck_o                             : out   std_logic;
-  adc_quad_sck_ret_i                         : in    std_logic := '0';
-  adc_quad_sdoa_i                            : in    std_logic := '0';
-  adc_quad_sdoc_i                            : in    std_logic := '0';
+  adc_quad_sck_p_o                           : out   std_logic;
+  adc_quad_sck_n_o                           : out   std_logic;
+  adc_quad_sck_ret_p_i                       : in    std_logic := '0';
+  adc_quad_sck_ret_n_i                       : in    std_logic := '1';
+  adc_quad_sdoa_p_i                          : in    std_logic := '0';
+  adc_quad_sdoa_n_i                          : in    std_logic := '1';
+  adc_quad_sdoc_p_i                          : in    std_logic := '0';
+  adc_quad_sdoc_n_i                          : in    std_logic := '1';
 
   ---------------------------------------------------------------------------
   -- RTM DAC interface
@@ -216,19 +226,29 @@ begin
     -- RTM ADC interface
     ---------------------------------------------------------------------------
     adc_octo_cnv_o                             => adc_octo_cnv_o,
-    adc_octo_sck_o                             => adc_octo_sck_o,
-    adc_octo_sck_ret_i                         => adc_octo_sck_ret_i,
-    adc_octo_sdoa_i                            => adc_octo_sdoa_i,
-    adc_octo_sdob_i                            => adc_octo_sdob_i,
-    adc_octo_sdoc_i                            => adc_octo_sdoc_i,
-    adc_octo_sdod_i                            => adc_octo_sdod_i,
+    adc_octo_sck_p_o                           => adc_octo_sck_p_o,
+    adc_octo_sck_n_o                           => adc_octo_sck_n_o,
+    adc_octo_sck_ret_p_i                       => adc_octo_sck_ret_p_i,
+    adc_octo_sck_ret_n_i                       => adc_octo_sck_ret_n_i,
+    adc_octo_sdoa_p_i                          => adc_octo_sdoa_p_i,
+    adc_octo_sdoa_n_i                          => adc_octo_sdoa_n_i,
+    adc_octo_sdob_p_i                          => adc_octo_sdob_p_i,
+    adc_octo_sdob_n_i                          => adc_octo_sdob_n_i,
+    adc_octo_sdoc_p_i                          => adc_octo_sdoc_p_i,
+    adc_octo_sdoc_n_i                          => adc_octo_sdoc_n_i,
+    adc_octo_sdod_p_i                          => adc_octo_sdod_p_i,
+    adc_octo_sdod_n_i                          => adc_octo_sdod_n_i,
 
     -- Only used when g_ADC_CHANNELS > 8
     adc_quad_cnv_o                             => adc_quad_cnv_o,
-    adc_quad_sck_o                             => adc_quad_sck_o,
-    adc_quad_sck_ret_i                         => adc_quad_sck_ret_i,
-    adc_quad_sdoa_i                            => adc_quad_sdoa_i,
-    adc_quad_sdoc_i                            => adc_quad_sdoc_i,
+    adc_quad_sck_p_o                           => adc_quad_sck_p_o,
+    adc_quad_sck_n_o                           => adc_quad_sck_n_o,
+    adc_quad_sck_ret_p_i                       => adc_quad_sck_ret_p_i,
+    adc_quad_sck_ret_n_i                       => adc_quad_sck_ret_n_i,
+    adc_quad_sdoa_p_i                          => adc_quad_sdoa_p_i,
+    adc_quad_sdoa_n_i                          => adc_quad_sdoa_n_i,
+    adc_quad_sdoc_p_i                          => adc_quad_sdoc_p_i,
+    adc_quad_sdoc_n_i                          => adc_quad_sdoc_n_i,
 
     ---------------------------------------------------------------------------
     -- RTM DAC interface
