@@ -140,7 +140,8 @@ port (
   ---------------------------------------------------------------------------
   dac_start_i                                : in   std_logic;
   dac_data_i                                 : in   std_logic_vector(16*g_DAC_CHANNELS-1 downto 0);
-  dac_ready_o                                : out  std_logic
+  dac_ready_o                                : out  std_logic;
+  dac_done_pp_o                              : out  std_logic
 );
 end wb_rtmlamp_ohwr;
 
@@ -264,7 +265,8 @@ begin
     ---------------------------------------------------------------------------
     dac_start_i                                => dac_start_i,
     dac_data_i                                 => dac_data,
-    dac_ready_o                                => dac_ready_o
+    dac_ready_o                                => dac_ready_o,
+    dac_done_pp_o                              => dac_done_pp_o
   );
 
   gen_adc_plain_data : for i in 0 to g_ADC_CHANNELS-1 generate

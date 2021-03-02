@@ -241,6 +241,7 @@ package rtm_lamp_pkg is
     dac_start_i                                : in   std_logic;
     dac_data_i                                 : in   t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
     dac_ready_o                                : out  std_logic;
+    dac_done_pp_o                              : out  std_logic;
 
     ---------------------------------------------------------------------------
     -- AMP parallel interface
@@ -372,7 +373,8 @@ package rtm_lamp_pkg is
     ---------------------------------------------------------------------------
     dac_start_i                                : in   std_logic;
     dac_data_i                                 : in   std_logic_vector(16*g_DAC_CHANNELS-1 downto 0);
-    dac_ready_o                                : out  std_logic
+    dac_ready_o                                : out  std_logic;
+    dac_done_pp_o                              : out  std_logic
   );
   end component;
 
@@ -482,7 +484,8 @@ package rtm_lamp_pkg is
     ---------------------------------------------------------------------------
     dac_start_i                                : in   std_logic;
     dac_data_i                                 : in   t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
-    dac_ready_o                                : out  std_logic
+    dac_ready_o                                : out  std_logic;
+    dac_done_pp_o                              : out  std_logic
   );
   end component;
 

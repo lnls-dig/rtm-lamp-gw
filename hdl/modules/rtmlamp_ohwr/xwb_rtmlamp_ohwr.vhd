@@ -144,7 +144,8 @@ port (
   ---------------------------------------------------------------------------
   dac_start_i                                : in   std_logic;
   dac_data_i                                 : in   t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
-  dac_ready_o                                : out  std_logic
+  dac_ready_o                                : out  std_logic;
+  dac_done_pp_o                              : out  std_logic
 );
 end xwb_rtmlamp_ohwr;
 
@@ -488,6 +489,7 @@ begin
     dac_start_i                                => dac_start_i,
     dac_data_i                                 => dac_data_i,
     dac_ready_o                                => dac_ready_o,
+    dac_done_pp_o                              => dac_done_pp_o,
 
     ---------------------------------------------------------------------------
     -- AMP parallel interface

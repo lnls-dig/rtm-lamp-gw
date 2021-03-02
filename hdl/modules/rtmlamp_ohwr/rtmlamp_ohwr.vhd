@@ -123,6 +123,7 @@ port (
   dac_start_i                                : in   std_logic;
   dac_data_i                                 : in   t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
   dac_ready_o                                : out  std_logic;
+  dac_done_pp_o                              : out  std_logic;
 
   ---------------------------------------------------------------------------
   -- AMP parallel interface
@@ -384,6 +385,7 @@ begin
       start_i                                => dac_start_i,
       data_i                                 => dac_data_i,
       ready_o                                => dac_ready_o,
+      done_pp_o                              => dac_done_pp_o,
       dac_cs_n_o                             => dac_cs_n_o,
       dac_ldac_n_o                           => dac_ldac_n_o,
       dac_sck_o                              => dac_sck_o,
