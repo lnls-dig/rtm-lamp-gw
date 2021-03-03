@@ -307,6 +307,7 @@ pin 0 j1_c9  U11
 pin 0 j1_c8  AA8
 pin 0 j1_c7  W6
 pin 0 j1_c6  L23
+pin 0 j1_a7  AC11
 
 pin 0 j1_a8  AN7
 pin 0 j1_f5  K12
