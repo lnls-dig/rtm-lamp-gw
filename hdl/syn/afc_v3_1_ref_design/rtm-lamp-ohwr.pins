@@ -36,11 +36,11 @@ pin j1_e8   rtmlamp_adc_octo_sck_ret_p_i       lvds_25
 
 # Not connected to the AFC v3.1 carrier
 # Connected through a level translator from VADJ (2.5V) to 3.3V
-# pin j1_c9   rtmlamp_amp_shift_clk_o             lvcmos25
-# pin j1_c7   rtmlamp_amp_shift_din_o             lvcmos25
+pin j1_c9   rtmlamp_amp_shift_clk_o             lvcmos25
+pin j1_c7   rtmlamp_amp_shift_din_o             lvcmos25
 # pin j1_b7   rtmlamp_amp_shift_oe_o              lvcmos25
 # Connected through a level translator from 1.5V to 3.3V
-# pin j1_a7   rtmlamp_amp_shift_str_o             lvcmos15
+pin j1_a7   rtmlamp_amp_shift_str_o             lvcmos15
 # pin j1_d5   rtmlamp_amp_shift_pl_o              lvcmos25
 # pin j1_d10  rtmlamp_amp_shift_dout_i            lvcmos25
 

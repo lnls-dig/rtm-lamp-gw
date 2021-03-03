@@ -18,6 +18,8 @@
 
 
 
+
+
 # <xdcgen_start>
 
 # This section has been generated automatically by xdcgen.py. Do not hand-modify if not really necessary.
@@ -35,6 +37,12 @@ set_property PACKAGE_PIN AD24 [get_ports rtmlamp_adc_octo_sck_ret_n_i]
 set_property IOSTANDARD LVDS_25 [get_ports rtmlamp_adc_octo_sck_ret_n_i]
 set_property PACKAGE_PIN AC24 [get_ports rtmlamp_adc_octo_sck_ret_p_i]
 set_property IOSTANDARD LVDS_25 [get_ports rtmlamp_adc_octo_sck_ret_p_i]
+set_property PACKAGE_PIN U11 [get_ports rtmlamp_amp_shift_clk_o]
+set_property IOSTANDARD LVCMOS25 [get_ports rtmlamp_amp_shift_clk_o]
+set_property PACKAGE_PIN W6 [get_ports rtmlamp_amp_shift_din_o]
+set_property IOSTANDARD LVCMOS25 [get_ports rtmlamp_amp_shift_din_o]
+set_property PACKAGE_PIN AC11 [get_ports rtmlamp_amp_shift_str_o]
+set_property IOSTANDARD LVCMOS15 [get_ports rtmlamp_amp_shift_str_o]
 set_property PACKAGE_PIN AE26 [get_ports rtmlamp_adc_octo_sdoa_n_i]
 set_property IOSTANDARD LVDS_25 [get_ports rtmlamp_adc_octo_sdoa_n_i]
 set_property PACKAGE_PIN AD26 [get_ports rtmlamp_adc_octo_sdoa_p_i]

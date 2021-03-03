@@ -200,20 +200,20 @@ port (
   rtmlamp_dac_ldac_n_o                       : out  std_logic;
   rtmlamp_dac_cs_n_o                         : out  std_logic;
   rtmlamp_dac_sck_o                          : out  std_logic;
-  rtmlamp_dac_sdi_o                          : out  std_logic_vector(g_DAC_CHANNELS-1 downto 0)
+  rtmlamp_dac_sdi_o                          : out  std_logic_vector(g_DAC_CHANNELS-1 downto 0);
 
   ---------------------------------------------------------------------------
   -- RTM Serial registers interface
   ---------------------------------------------------------------------------
   -- Unconnected in AFC v3.1
   --
-  -- rtmlamp_amp_shift_clk_o                    : out   std_logic;
+  rtmlamp_amp_shift_clk_o                    : out   std_logic;
   -- rtmlamp_amp_shift_dout_i                   : in    std_logic;
   -- rtmlamp_amp_shift_pl_o                     : out   std_logic;
 
   -- rtmlamp_amp_shift_oe_n_o                   : out   std_logic;
-  -- rtmlamp_amp_shift_din_o                    : out   std_logic;
-  -- rtmlamp_amp_shift_str_o                    : out   std_logic
+  rtmlamp_amp_shift_din_o                    : out   std_logic;
+  rtmlamp_amp_shift_str_o                    : out   std_logic
 );
 end entity afc_rtm_lamp_ctrl;
 
@@ -785,13 +785,13 @@ begin
     ---------------------------------------------------------------------------
     -- Unconnected in AFC v3.1
     --
-    -- amp_shift_clk_o                            => rtmlamp_amp_shift_clk_o,
+    amp_shift_clk_o                            => rtmlamp_amp_shift_clk_o,
     -- amp_shift_dout_i                           => rtmlamp_amp_shift_dout_i,
     -- amp_shift_pl_o                             => rtmlamp_amp_shift_pl_o,
 
     -- amp_shift_oe_n_o                           => rtmlamp_amp_shift_oe_n_o,
-    -- amp_shift_din_o                            => rtmlamp_amp_shift_din_o,
-    -- amp_shift_str_o                            => rtmlamp_amp_shift_str_o,
+    amp_shift_din_o                            => rtmlamp_amp_shift_din_o,
+    amp_shift_str_o                            => rtmlamp_amp_shift_str_o,
 
     ---------------------------------------------------------------------------
     -- FPGA interface
