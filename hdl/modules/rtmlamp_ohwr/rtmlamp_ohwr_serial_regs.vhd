@@ -156,7 +156,6 @@ architecture rtl of rtmlamp_ohwr_serial_regs is
                             to_integer(counter(counter'left downto 2)));
             reg_pl <= '0';
             reg_str <= '0';
-            reg_oe_n <= '0';
           when "01" =>
             reg_clk <= '1';
             -- reg_dout is shifted on negative edge. So we load the current value here,
@@ -180,6 +179,9 @@ architecture rtl of rtmlamp_ohwr_serial_regs is
             reg_str <= '0';
 
             if counter(counter'left downto 2) = to_unsigned(val_num_bits, counter'length)-1 then
+              -- Enable output onle after the parallel registers are loaded by
+              -- reg_str 0 -> 1
+              reg_oe_n <= '0';
               last := true;
             end if;
           when others =>
