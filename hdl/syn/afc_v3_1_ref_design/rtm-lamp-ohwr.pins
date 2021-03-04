@@ -7,13 +7,9 @@
 
 mezzanine rtm-lamp-ohwr-v1
 
-# Not connected in the carrier. Goes to clock switch. The correct ones are below!
+# Not connected in the carrier. Goes to clock switch.
 # pin j1_b3   rtmlamp_sync_clk1_n_o               lvds_33
 # pin j1_a3   rtmlamp_sync_clk1_p_o               lvds_33
-#
-# Not connected in the carrier. Goes to clock switch.
-# pin j1_d3   rtmlamp_sync_clk1_n_o               lvds_33
-# pin j1_c3   rtmlamp_sync_clk1_p_o               lvds_33
 
 # Connected through a level translator from VADJ (2.5V) to 3.3V
 pin j1_c8   rtmlamp_adc_cnv_o                   lvcmos25
