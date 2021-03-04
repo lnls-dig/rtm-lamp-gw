@@ -43,6 +43,7 @@ add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_acq/c_WAIT_CONV_C
 add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_acq/c_CONV_HIGH_CYCLES
 add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_acq/g_CLK_FREQ
 add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_acq/g_SCLK_FREQ
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_REF_CLK_CNV_FREQ
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_USE_REF_CLK_CNV
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_BITS
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_CHANNELS
@@ -82,6 +83,7 @@ add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/rst_fsm_n
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/start_ref_cnv
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/done_cnv_pp
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/done_cnv_pp_ref_sys
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/start_cnv
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/start_readout_pp
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/done_pp
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/ready_cnv
@@ -108,6 +110,7 @@ add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_sync_acq/c_WAIT_C
 add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_sync_acq/c_CONV_HIGH_CYCLES
 add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_sync_acq/g_CLK_FREQ
 add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_sync_acq/g_SCLK_FREQ
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/g_REF_CLK_CNV_FREQ
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/g_USE_REF_CLK_CNV
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/g_BITS
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/g_CHANNELS
@@ -147,6 +150,7 @@ add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/rst_fsm_n
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/start_ref_cnv
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/done_cnv_pp
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/done_cnv_pp_ref_sys
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/start_cnv
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/start_readout_pp
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/done_pp
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/ready_cnv
@@ -169,7 +173,7 @@ add wave -noupdate /ltc232x_acq_tb/cmp_clk_sync_ltc2320/delayed_cnv_n
 add wave -noupdate /ltc232x_acq_tb/cmp_clk_sync_ltc2320/chn_off
 add wave -noupdate /ltc232x_acq_tb/cmp_clk_sync_ltc2320/bit_indx
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {207500 ps} 0}
+WaveRestoreCursors {{Cursor 1} {972000 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 150
 configure wave -valuecolwidth 100
@@ -185,4 +189,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 ps} {1307500 ps}
+WaveRestoreZoom {807900 ps} {2115400 ps}
