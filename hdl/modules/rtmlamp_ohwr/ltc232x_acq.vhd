@@ -146,8 +146,11 @@ architecture ltc232x_acq_arch of ltc232x_acq is
 begin
 
   -------------------------------------------
-  --         Reference clock for CNV
+  --         Reference clock and CNV start
   -------------------------------------------
+
+  start_cnv <= start_i and ready;
+
   gen_ref_clk_cnv : if (g_USE_REF_CLK_CNV) generate
 
     clk_fsm <= clk_ref_cnv_i;
@@ -163,8 +166,6 @@ begin
       q_p_o                                  => start_ref_cnv
     );
 
-   start_cnv <= start_i and ready;
-
   end generate;
 
   gen_sys_clk_cnv : if (not g_USE_REF_CLK_CNV) generate
@@ -172,7 +173,7 @@ begin
     clk_fsm <= clk_i;
     rst_fsm_n <= rst_n_i;
 
-    start_ref_cnv <= start_i;
+    start_ref_cnv <= start_cnv;
 
   end generate;
 
