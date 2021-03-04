@@ -194,7 +194,7 @@ begin
             end if;
 
           when WAIT_AFTER_CS =>
-            if ldac_wait_counter = to_unsigned(c_LDAC_WAIT_CYCLES, ldac_wait_counter'length) then
+            if ldac_wait_counter = to_unsigned(c_LDAC_WAIT_CYCLES, ldac_wait_counter'length)-1 then
               ldac_n <= '0';
               ldac_width_counter <= (others => '0');
               state_ldac <= DRIVE_LDAC;
@@ -203,7 +203,7 @@ begin
             end if;
 
           when DRIVE_LDAC =>
-            if ldac_width_counter = to_unsigned(c_LDAC_WIDTH_CYCLES, ldac_width_counter'length) then
+            if ldac_width_counter = to_unsigned(c_LDAC_WIDTH_CYCLES, ldac_width_counter'length)-1 then
               ldac_n <= '1';
               state_ldac <= IDLE;
               done_ldac_pp <= '1';

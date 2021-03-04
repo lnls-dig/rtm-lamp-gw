@@ -217,7 +217,7 @@ begin
             end if;
 
           when CONV_HIGH =>
-            if v_wait_cnt = c_CONV_HIGH_CYCLES then
+            if v_wait_cnt = c_CONV_HIGH_CYCLES-1 then
               v_wait_cnt := 0;
               cnv_o <= '0';
               state_conv <= WAIT_CONV;
@@ -226,7 +226,7 @@ begin
             end if;
 
           when WAIT_CONV =>
-            if v_wait_cnt = c_WAIT_CONV_CYCLES then
+            if v_wait_cnt = c_WAIT_CONV_CYCLES-1 then
               v_wait_cnt := 0;
               state_conv <= IDLE;
               ready_cnv <= '1';
