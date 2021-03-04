@@ -137,6 +137,7 @@ architecture ltc232x_acq_arch of ltc232x_acq is
   signal start_ref_cnv                       : std_logic;
   signal done_cnv_pp                         : std_logic;
   signal done_cnv_pp_ref_sys                 : std_logic := '0';
+  signal start_cnv                           : std_logic := '0';
   signal start_readout_pp                    : std_logic;
   signal done_pp                             : std_logic;
   signal ready_cnv                           : std_logic;
@@ -158,9 +159,11 @@ begin
       rst_in_n_i                             => rst_n_i,
       clk_out_i                              => clk_fsm,
       rst_out_n_i                            => rst_fsm_n,
-      d_p_i                                  => start_i,
+      d_p_i                                  => start_cnv,
       q_p_o                                  => start_ref_cnv
     );
+
+   start_cnv <= start_i and ready;
 
   end generate;
 
