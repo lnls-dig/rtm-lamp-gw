@@ -33,8 +33,15 @@ entity multi_dac_spi_ldac is
     g_CLK_FREQ                               : natural := 100_000_000;
     -- DAC sck frequency [Hz]
     g_SCLK_FREQ                              : natural := 50_000_000;
+    -- Reference clock frequency [Hz], used only when g_USE_REF_CLK_LDAC is
+    -- set to true
+    g_REF_CLK_LDAC_FREQ                      : natural := 50_000_000;
     -- Number of DACs to control
     g_NUM_DACS                               : natural := 8;
+    -- Wether or not to use a reference clk to drive LDAC.
+    -- If true uses clk_ref_ldac_i to drive LDAC
+    -- If false uses clk_i to drive LDAC
+    g_USE_REF_CLK_LDAC                       : boolean := false;
     -- Clock polarity.
     -- false - bit shifted on falling edge
     -- true - bit shifted on falling edge
@@ -49,6 +56,10 @@ entity multi_dac_spi_ldac is
     clk_i:         in  std_logic;
     -- Synchrnous reset (active low)
     rst_n_i:       in  std_logic;
+    -- Optional reference clock to drive LDAC
+    clk_ref_ldac_i: in  std_logic := '0';
+    -- Optional reset_n to ref_ldac
+    rst_ref_ldac_n_i: in  std_logic := '1';
     -- Start the transfer
     start_i:       in  std_logic;
     -- '0': there is an ongoing transfer
@@ -60,7 +71,9 @@ entity multi_dac_spi_ldac is
     data_i:        in  t_16b_word_array(g_NUM_DACS-1 downto 0);
     -- DAC chip select
     dac_cs_n_o:    out std_logic;
-    -- DAC LDAC
+    -- DAC LDAC.
+    -- Synched with clk_i if g_USE_REF_CLK_LDAC is false
+    -- Synched with clk_ref_ldac_i if g_USE_REF_CLK_LDAC is true
     dac_ldac_n_o:  out std_logic;
     -- DAC data clock
     dac_sck_o:     out std_logic;
@@ -71,13 +84,34 @@ end multi_dac_spi_ldac;
 
 architecture multi_dac_spi_ldac_arch of multi_dac_spi_ldac is
 
-  constant c_LDAC_WAIT_CYCLES                : natural := integer(ceil(g_LDAC_WAIT_AFTER_CS * real(g_CLK_FREQ)));
-  constant c_LDAC_WIDTH_CYCLES               : natural := integer(ceil(g_LDAC_WIDTH * real(g_CLK_FREQ)));
+  function f_get_clk_freq( use_ref_clk_cnv : boolean ) return natural is
+    variable v_clk_freq : natural;
+  begin
+    if use_ref_clk_cnv then
+      v_clk_freq := g_REF_CLK_LDAC_FREQ;
+    else
+      v_clk_freq := g_CLK_FREQ;
+    end if;
 
-  type t_state is (IDLE, WAIT_AFTER_CS, DRIVE_LDAC);
-  signal state                               : t_state := IDLE;
+    return v_clk_freq;
+  end f_get_clk_freq;
 
-  signal done_pp                             : std_logic;
+  constant c_LDAC_WAIT_CYCLES                : natural := integer(ceil(g_LDAC_WAIT_AFTER_CS * real(f_get_clk_freq(g_USE_REF_CLK_LDAC))));
+  constant c_LDAC_WIDTH_CYCLES               : natural := integer(ceil(g_LDAC_WIDTH * real(f_get_clk_freq(g_USE_REF_CLK_LDAC))));
+
+  type t_state_ldac is (IDLE, WAIT_AFTER_CS, DRIVE_LDAC);
+  signal state_ldac                          : t_state_ldac := IDLE;
+  type t_state_ready is (IDLE, WAIT_FOR_TRANS, WAIT_FOR_LDAC);
+  signal state_ready                         : t_state_ready := IDLE;
+
+  signal clk_fsm                             : std_logic;
+  signal rst_fsm_n                           : std_logic;
+  signal done_trans_pp                       : std_logic;
+  signal done_trans_pp_ref_ldac              : std_logic := '0';
+  signal done_trans_pp_fsm                   : std_logic;
+  signal done_ldac_pp                        : std_logic;
+  signal done_ldac_pp_ref_sys                : std_logic;
+  signal ready                               : std_logic;
   signal ldac_n                              : std_logic;
   signal ldac_wait_counter                   : unsigned(f_log2_ceil(c_LDAC_WAIT_CYCLES)-1 downto 0);
   signal ldac_width_counter                  : unsigned(f_log2_ceil(c_LDAC_WIDTH_CYCLES)-1 downto 0);
@@ -93,45 +127,77 @@ begin
     port map(
       clk_i                                  => clk_i,
       rst_n_i                                => rst_n_i,
-
       start_i                                => start_i,
       data_i                                 => data_i,
-      ready_o                                => ready_o,
-      done_pp_o                              => done_pp,
+      done_pp_o                              => done_trans_pp,
       dac_cs_n_o                             => dac_cs_n_o,
       dac_sck_o                              => dac_sck_o,
       dac_sdi_o                              => dac_sdi_o
     );
 
-  done_pp_o <= done_pp;
+  ------------------------------------------
+  --         Reference clock for LDAC
+  ------------------------------------------
+  gen_ref_clk_done_trans_pp : if (g_USE_REF_CLK_LDAC) generate
+
+    clk_fsm <= clk_ref_ldac_i;
+    rst_fsm_n <= rst_ref_ldac_n_i;
+
+    cmp_done_ldac_gc_pulse_synchronizer2 : gc_pulse_synchronizer2
+    port map (
+      clk_in_i                               => clk_i,
+      rst_in_n_i                             => rst_n_i,
+      clk_out_i                              => clk_fsm,
+      rst_out_n_i                            => rst_fsm_n,
+      -- pulse input (clk_in_i domain)
+      d_p_i                                  => done_trans_pp,
+      -- pulse output (clk_out_i domain)
+      q_p_o                                  => done_trans_pp_ref_ldac
+    );
+
+    done_trans_pp_fsm <= done_trans_pp_ref_ldac;
+
+  end generate;
+
+  gen_sys_clk_done_trans_pp : if (not g_USE_REF_CLK_LDAC) generate
+
+    clk_fsm <= clk_i;
+    rst_fsm_n <= rst_n_i;
+    done_trans_pp_fsm <= done_trans_pp;
+
+  end generate;
 
   ----------------------------------
   --         LDAC drive
   ----------------------------------
 
-  p_drive_ldac : process(clk_i)
+  p_drive_ldac : process(clk_fsm)
   begin
-    if rising_edge(clk_i) then
-      if rst_n_i = '0' then
-        state <= IDLE;
+    if rising_edge(clk_fsm) then
+      if rst_fsm_n = '0' then
+        state_ldac <= IDLE;
         ldac_n <= '1';
         ldac_wait_counter <= (others => '0');
         ldac_width_counter <= (others => '0');
+        done_ldac_pp <= '0';
       else
+        -- done_ldac_pp signal is only asserted for 1 clock cycle
+        done_ldac_pp <= '0';
 
-        case state is
+        case state_ldac is
 
           when IDLE =>
-            if done_pp = '1' then
+
+            if done_trans_pp_fsm = '1' then
               ldac_wait_counter <= (others => '0');
-              state <= WAIT_AFTER_CS;
+              state_ldac <= WAIT_AFTER_CS;
             end if;
 
           when WAIT_AFTER_CS =>
             if ldac_wait_counter = to_unsigned(c_LDAC_WAIT_CYCLES, ldac_wait_counter'length) then
               ldac_n <= '0';
               ldac_width_counter <= (others => '0');
-              state <= DRIVE_LDAC;
+              state_ldac <= DRIVE_LDAC;
             else
               ldac_wait_counter <= ldac_wait_counter+1;
             end if;
@@ -139,7 +205,8 @@ begin
           when DRIVE_LDAC =>
             if ldac_width_counter = to_unsigned(c_LDAC_WIDTH_CYCLES, ldac_width_counter'length) then
               ldac_n <= '1';
-              state <= IDLE;
+              state_ldac <= IDLE;
+              done_ldac_pp <= '1';
             else
               ldac_width_counter <= ldac_width_counter+1;
             end if;
@@ -151,5 +218,68 @@ begin
   end process;
 
   dac_ldac_n_o <= ldac_n;
+
+  gen_ref_clk_done_ldac : if (g_USE_REF_CLK_LDAC) generate
+
+    cmp_done_trans_gc_pulse_synchronizer2 : gc_pulse_synchronizer2
+    port map (
+      clk_in_i                               => clk_ref_ldac_i,
+      rst_in_n_i                             => rst_ref_ldac_n_i,
+      clk_out_i                              => clk_i,
+      rst_out_n_i                            => rst_n_i,
+      -- pulse input (clk_in_i domain)
+      d_p_i                                  => done_ldac_pp,
+      -- pulse output (clk_out_i domain)
+      q_p_o                                  => done_ldac_pp_ref_sys
+    );
+
+  end generate;
+
+  gen_sys_clk_done_ldac : if (not g_USE_REF_CLK_LDAC) generate
+
+    done_ldac_pp_ref_sys <= done_ldac_pp;
+
+  end generate;
+
+  done_pp_o <= done_ldac_pp_ref_sys;
+
+  ----------------------------------
+  --         Ready drive
+  ----------------------------------
+  p_drive_ready : process(clk_i)
+  begin
+    if rising_edge(clk_i) then
+      if rst_n_i = '0' then
+        state_ready <= IDLE;
+        ready <= '0';
+      else
+
+        case state_ready is
+          when IDLE =>
+            ready <= '1';
+
+            if start_i = '1' then
+              ready <= '0';
+              state_ready <= WAIT_FOR_TRANS;
+            end if;
+
+          when WAIT_FOR_TRANS =>
+            if done_trans_pp = '1' then
+              state_ready <= WAIT_FOR_LDAC;
+            end if;
+
+          when WAIT_FOR_LDAC =>
+            if done_ldac_pp_ref_sys = '1' then
+              ready <= '1';
+              state_ready <= IDLE;
+            end if;
+
+        end case;
+
+      end if;
+    end if;
+  end process;
+
+  ready_o <= ready;
 
 end multi_dac_spi_ldac_arch;

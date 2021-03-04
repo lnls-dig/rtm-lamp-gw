@@ -63,7 +63,9 @@ package rtm_lamp_pkg is
     generic (
       g_CLK_FREQ            : natural := 100_000_000;
       g_SCLK_FREQ           : natural := 50_000_000;
+      g_REF_CLK_LDAC_FREQ   : natural := 50_000_000;
       g_NUM_DACS            : natural := 8;
+      g_USE_REF_CLK_LDAC    : boolean := false;
       g_CPOL                : boolean := false;
       g_LDAC_WIDTH          : real := 30.0e-9;
       g_LDAC_WAIT_AFTER_CS  : real := 30.0e-9
@@ -71,6 +73,8 @@ package rtm_lamp_pkg is
     port(
       clk_i:         in  std_logic;
       rst_n_i:       in  std_logic;
+      clk_ref_ldac_i: in  std_logic := '0';
+      rst_ref_ldac_n_i: in  std_logic := '1';
       start_i:       in  std_logic;
       ready_o:       out std_logic := '0';
       done_pp_o:     out std_logic;
