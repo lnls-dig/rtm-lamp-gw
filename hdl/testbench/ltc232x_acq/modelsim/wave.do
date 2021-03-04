@@ -88,6 +88,7 @@ add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/start_readout_pp
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/ready_cnv
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/ready
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/done_readout_pp
+add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_acq/wait_counter
 add wave -noupdate -divider ltc2320_model
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc2320/g_REF
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc2320/g_CHANNELS
@@ -154,6 +155,7 @@ add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/start_readout_pp
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/ready_cnv
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/ready
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/done_readout_pp
+add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_sync_acq/wait_counter
 add wave -noupdate -divider ltc2320_sync_model
 add wave -noupdate /ltc232x_acq_tb/cmp_clk_sync_ltc2320/g_REF
 add wave -noupdate /ltc232x_acq_tb/cmp_clk_sync_ltc2320/g_CHANNELS
@@ -171,7 +173,7 @@ add wave -noupdate /ltc232x_acq_tb/cmp_clk_sync_ltc2320/delayed_cnv_n
 add wave -noupdate /ltc232x_acq_tb/cmp_clk_sync_ltc2320/chn_off
 add wave -noupdate /ltc232x_acq_tb/cmp_clk_sync_ltc2320/bit_indx
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {1084200 ps} 0}
+WaveRestoreCursors {{Cursor 1} {976300 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 150
 configure wave -valuecolwidth 100

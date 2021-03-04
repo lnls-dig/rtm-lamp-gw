@@ -142,6 +142,7 @@ architecture ltc232x_acq_arch of ltc232x_acq is
   signal ready_cnv                           : std_logic;
   signal ready                               : std_logic;
   signal done_readout_pp                     : std_logic;
+  signal wait_counter                        : integer range 0 to c_WAIT_CONV_CYCLES := 0;
 begin
 
   -------------------------------------------
@@ -177,12 +178,11 @@ begin
   end generate;
 
   p_cnv_ltc232x: process(clk_fsm)
-    variable v_wait_cnt: integer range 0 to c_WAIT_CONV_CYCLES := 0;
   begin
     if rising_edge(clk_fsm) then
       if rst_fsm_n = '0' then               -- Reset the state_conv machine
         state_conv <= IDLE;
-        v_wait_cnt := 0;
+        wait_counter <= 0;
         cnv_o <= '0';
         done_cnv_pp <= '0';
         -- if we are in reset state we can't be ready
@@ -217,22 +217,22 @@ begin
             end if;
 
           when CONV_HIGH =>
-            if v_wait_cnt = c_CONV_HIGH_CYCLES-1 then
-              v_wait_cnt := 0;
+            if wait_counter = c_CONV_HIGH_CYCLES-1 then
+              wait_counter <= 0;
               cnv_o <= '0';
               state_conv <= WAIT_CONV;
             else
-              v_wait_cnt := v_wait_cnt + 1;
+              wait_counter <= wait_counter + 1;
             end if;
 
           when WAIT_CONV =>
-            if v_wait_cnt = c_WAIT_CONV_CYCLES-1 then
-              v_wait_cnt := 0;
+            if wait_counter = c_WAIT_CONV_CYCLES-1 then
+              wait_counter <= 0;
               state_conv <= IDLE;
               ready_cnv <= '1';
               done_cnv_pp <= '1';
             else
-              v_wait_cnt := v_wait_cnt + 1;
+              wait_counter <= wait_counter + 1;
             end if;
 
         end case;
