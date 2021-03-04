@@ -136,7 +136,7 @@ begin
     );
 
   ------------------------------------------
-  --         Reference clock for LDAC
+  --         Reference clock and DONE for LDAC
   ------------------------------------------
   gen_ref_clk_done_trans_pp : if (g_USE_REF_CLK_LDAC) generate
 
