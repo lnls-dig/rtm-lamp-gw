@@ -88,38 +88,79 @@ package rtm_lamp_pkg is
 
   component ltc232x_acq is
   generic(
-    g_CLK_FREQ:   natural := 100_000_000;
-    g_SCLK_FREQ:  natural := 50_000_000;
-    g_BITS:       natural := 16;
-    g_CHANNELS:   natural := 8;
-    g_DATA_LINES: natural := 8;
-    g_CNV_WAIT:   real := 450.0e-9
+    g_CLK_FREQ                               : natural := 100_000_000;
+    g_SCLK_FREQ                              : natural := 50_000_000;
+    g_REF_CLK_CNV_FREQ                       : natural := 50_000_000;
+    g_USE_REF_CLK_CNV                        : boolean := false;
+    g_BITS                                   : natural := 16;
+    g_CHANNELS                               : natural := 8;
+    g_DATA_LINES                             : natural := 8;
+    g_CNV_WAIT                               : real    := 450.0e-9
     );
   port(
-    rst_n_i:    in  std_logic;
-    clk_i:      in  std_logic;
-    start_i:    in  std_logic;
-    cnv_o:      out std_logic := '0';
-    sck_o:      out std_logic := '0';
-    sck_ret_i:  in  std_logic;
-    ready_o:    out std_logic := '0';
-    sdo1a_i:    in  std_logic;
-    sdo2_i:     in  std_logic := '0';
-    sdo3b_i:    in  std_logic := '0';
-    sdo4_i:     in  std_logic := '0';
-    sdo5c_i:    in  std_logic := '0';
-    sdo6_i:     in  std_logic := '0';
-    sdo7d_i:    in  std_logic := '0';
-    sdo8_i:     in  std_logic := '0';
-    ch1_o:      out std_logic_vector(g_BITS-1 downto 0);
-    ch2_o:      out std_logic_vector(g_BITS-1 downto 0);
-    ch3_o:      out std_logic_vector(g_BITS-1 downto 0);
-    ch4_o:      out std_logic_vector(g_BITS-1 downto 0);
-    ch5_o:      out std_logic_vector(g_BITS-1 downto 0);
-    ch6_o:      out std_logic_vector(g_BITS-1 downto 0);
-    ch7_o:      out std_logic_vector(g_BITS-1 downto 0);
-    ch8_o:      out std_logic_vector(g_BITS-1 downto 0);
-    valid_o:    out std_logic
+    rst_n_i                                  : in  std_logic;
+    clk_i                                    : in  std_logic;
+    rst_ref_cnv_n_i                          : in  std_logic  := '1';
+    clk_ref_cnv_i                            : in  std_logic  := '0';
+    start_i                                  : in  std_logic;
+    cnv_o                                    : out std_logic  := '0';
+    sck_o                                    : out std_logic  := '0';
+    sck_ret_i                                : in  std_logic;
+    ready_o                                  : out std_logic  := '0';
+    done_pp_o                                : out std_logic;
+    sdo1a_i                                  : in  std_logic;
+    sdo2_i                                   : in  std_logic  := '0';
+    sdo3b_i                                  : in  std_logic  := '0';
+    sdo4_i                                   : in  std_logic  := '0';
+    sdo5c_i                                  : in  std_logic  := '0';
+    sdo6_i                                   : in  std_logic  := '0';
+    sdo7d_i                                  : in  std_logic  := '0';
+    sdo8_i                                   : in  std_logic  := '0';
+    ch1_o                                    : out std_logic_vector(g_BITS-1 downto 0);
+    ch2_o                                    : out std_logic_vector(g_BITS-1 downto 0);
+    ch3_o                                    : out std_logic_vector(g_BITS-1 downto 0);
+    ch4_o                                    : out std_logic_vector(g_BITS-1 downto 0);
+    ch5_o                                    : out std_logic_vector(g_BITS-1 downto 0);
+    ch6_o                                    : out std_logic_vector(g_BITS-1 downto 0);
+    ch7_o                                    : out std_logic_vector(g_BITS-1 downto 0);
+    ch8_o                                    : out std_logic_vector(g_BITS-1 downto 0);
+    valid_o                                  : out std_logic
+    );
+  end component;
+
+  component ltc232x_readout is
+  generic(
+    g_CLK_FREQ                               : natural := 100_000_000;
+    g_SCLK_FREQ                              : natural := 50_000_000;
+    g_BITS                                   : natural := 16;
+    g_CHANNELS                               : natural := 8;
+    g_DATA_LINES                             : natural := 8
+    );
+  port(
+    rst_n_i                                  : in  std_logic;
+    clk_i                                    : in  std_logic;
+    start_i                                  : in  std_logic;
+    sck_o                                    : out std_logic  := '0';
+    sck_ret_i                                : in  std_logic;
+    ready_o                                  : out std_logic  := '0';
+    done_pp_o                                : out std_logic;
+    sdo1a_i                                  : in  std_logic;
+    sdo2_i                                   : in  std_logic  := '0';
+    sdo3b_i                                  : in  std_logic  := '0';
+    sdo4_i                                   : in  std_logic  := '0';
+    sdo5c_i                                  : in  std_logic  := '0';
+    sdo6_i                                   : in  std_logic  := '0';
+    sdo7d_i                                  : in  std_logic  := '0';
+    sdo8_i                                   : in  std_logic  := '0';
+    ch1_o                                    : out std_logic_vector(g_BITS-1 downto 0);
+    ch2_o                                    : out std_logic_vector(g_BITS-1 downto 0);
+    ch3_o                                    : out std_logic_vector(g_BITS-1 downto 0);
+    ch4_o                                    : out std_logic_vector(g_BITS-1 downto 0);
+    ch5_o                                    : out std_logic_vector(g_BITS-1 downto 0);
+    ch6_o                                    : out std_logic_vector(g_BITS-1 downto 0);
+    ch7_o                                    : out std_logic_vector(g_BITS-1 downto 0);
+    ch8_o                                    : out std_logic_vector(g_BITS-1 downto 0);
+    valid_o                                  : out std_logic
     );
   end component;
 
