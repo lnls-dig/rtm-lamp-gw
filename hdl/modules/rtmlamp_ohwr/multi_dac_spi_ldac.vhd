@@ -113,8 +113,8 @@ architecture multi_dac_spi_ldac_arch of multi_dac_spi_ldac is
   signal done_ldac_pp_ref_sys                : std_logic;
   signal ready                               : std_logic;
   signal ldac_n                              : std_logic;
-  signal ldac_wait_counter                   : unsigned(f_log2_ceil(c_LDAC_WAIT_CYCLES)-1 downto 0);
-  signal ldac_width_counter                  : unsigned(f_log2_ceil(c_LDAC_WIDTH_CYCLES)-1 downto 0);
+  signal ldac_wait_counter                   : integer range 0 to c_LDAC_WAIT_CYCLES := 0;
+  signal ldac_width_counter                  : integer range 0 to c_LDAC_WIDTH_CYCLES := 0;
 begin
 
   cmp_multi_dac_spi : multi_dac_spi
@@ -177,8 +177,8 @@ begin
       if rst_fsm_n = '0' then
         state_ldac <= IDLE;
         ldac_n <= '1';
-        ldac_wait_counter <= (others => '0');
-        ldac_width_counter <= (others => '0');
+        ldac_wait_counter <= 0;
+        ldac_width_counter <= 0;
         done_ldac_pp <= '0';
       else
         -- done_ldac_pp signal is only asserted for 1 clock cycle
@@ -189,21 +189,21 @@ begin
           when IDLE =>
 
             if done_trans_pp_fsm = '1' then
-              ldac_wait_counter <= (others => '0');
+              ldac_wait_counter <= 0;
               state_ldac <= WAIT_AFTER_CS;
             end if;
 
           when WAIT_AFTER_CS =>
-            if ldac_wait_counter = to_unsigned(c_LDAC_WAIT_CYCLES, ldac_wait_counter'length)-1 then
+            if ldac_wait_counter = c_LDAC_WAIT_CYCLES-1 then
               ldac_n <= '0';
-              ldac_width_counter <= (others => '0');
+              ldac_width_counter <= 0;
               state_ldac <= DRIVE_LDAC;
             else
               ldac_wait_counter <= ldac_wait_counter+1;
             end if;
 
           when DRIVE_LDAC =>
-            if ldac_width_counter = to_unsigned(c_LDAC_WIDTH_CYCLES, ldac_width_counter'length)-1 then
+            if ldac_width_counter = c_LDAC_WIDTH_CYCLES-1 then
               ldac_n <= '1';
               state_ldac <= IDLE;
               done_ldac_pp <= '1';
