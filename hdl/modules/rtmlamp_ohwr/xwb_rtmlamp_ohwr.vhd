@@ -34,6 +34,13 @@ generic (
   g_WITH_EXTRA_WB_REG                        : boolean := false;
   -- System clock frequency [Hz]
   g_SYS_CLOCK_FREQ                           : natural := 100000000;
+  -- Reference clock frequency [Hz], used only when g_USE_REF_CNV is
+  -- set to true
+  g_REF_CLK_FREQ                             : natural := 50000000;
+  -- Wether or not to use a reference clk to drive CNV/LDAC.
+  -- If true uses clk_ref_i to drive CNV/LDAC
+  -- If false uses clk_i to drive CNV/LDAC
+  g_USE_REF_CLK                              : boolean := false;
   -- ADC clock frequency [Hz]. Must be a multiple of g_ADC_SCLK_FREQ
   g_ADC_MASTER_CLOCK_FREQ                    : natural := 200000000;
   -- ADC clock frequency [Hz]
@@ -57,6 +64,9 @@ port (
   ---------------------------------------------------------------------------
   clk_i                                      : in   std_logic;
   rst_n_i                                    : in   std_logic;
+
+  clk_ref_i                                  : in   std_logic := '0';
+  rst_ref_n_i                                : in   std_logic := '1';
 
   clk_master_adc_i                           : in   std_logic;
   rst_master_adc_n_i                         : in   std_logic;
@@ -403,6 +413,8 @@ begin
   cmp_rtmlamp_ohwr : rtmlamp_ohwr
   generic map (
     g_SYS_CLOCK_FREQ                           => g_SYS_CLOCK_FREQ,
+    g_REF_CLK_FREQ                             => g_REF_CLK_FREQ,
+    g_USE_REF_CLK                              => g_USE_REF_CLK ,
     g_ADC_MASTER_CLOCK_FREQ                    => g_ADC_MASTER_CLOCK_FREQ,
     g_ADC_SCLK_FREQ                            => g_ADC_SCLK_FREQ,
     g_ADC_CHANNELS                             => g_ADC_CHANNELS,
@@ -418,6 +430,9 @@ begin
     ---------------------------------------------------------------------------
     clk_i                                      => clk_i,
     rst_n_i                                    => rst_n_i,
+
+    clk_ref_i                                  => clk_ref_i,
+    rst_ref_n_i                                => rst_ref_n_i,
 
     clk_master_adc_i                           => clk_master_adc_i,
     rst_master_adc_n_i                         => rst_master_adc_n_i,
