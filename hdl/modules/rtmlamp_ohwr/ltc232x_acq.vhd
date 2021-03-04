@@ -139,7 +139,6 @@ architecture ltc232x_acq_arch of ltc232x_acq is
   signal done_cnv_pp_ref_sys                 : std_logic := '0';
   signal start_cnv                           : std_logic := '0';
   signal start_readout_pp                    : std_logic;
-  signal done_pp                             : std_logic;
   signal ready_cnv                           : std_logic;
   signal ready                               : std_logic;
   signal done_readout_pp                     : std_logic;
@@ -186,13 +185,11 @@ begin
         v_wait_cnt := 0;
         cnv_o <= '0';
         done_cnv_pp <= '0';
-        done_pp <= '0';
         -- if we are in reset state we can't be ready
         ready_cnv <= '0';
       else
         -- done_pp signal is only asserted for 1 clock cycle
         done_cnv_pp <= '0';
-        done_pp <= '0';
 
         -- The FSM has 3 states:
         --
