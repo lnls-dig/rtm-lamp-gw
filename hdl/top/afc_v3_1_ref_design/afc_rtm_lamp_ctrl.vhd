@@ -223,9 +223,11 @@ architecture top of afc_rtm_lamp_ctrl is
   -- General constants
   -----------------------------------------------------------------------------
   constant c_SYS_CLOCK_FREQ                  : natural := 100000000;
+  constant c_REF_CLOCK_FREQ                  : natural := 69306000; -- RF*5/36
   constant c_ADC_MASTER_CLOCK_FREQ           : natural := 200000000;
   constant c_DAC_MASTER_CLOCK_FREQ           : natural := 200000000;
   constant c_DAC_SCLK_FREQ                   : natural := 25000000;
+  constant c_USE_REF_CLOCK                   : boolean := true;
   constant c_ADC_CHANNELS                    : natural := 8;
   constant c_DAC_CHANNELS                    : natural := g_DAC_CHANNELS;
 
@@ -252,6 +254,9 @@ architecture top of afc_rtm_lamp_ctrl is
   -- Wishbone bus from user afc_base_acq to RTM
   signal wb_rtm_master_out                   : t_wishbone_master_out_array(c_RTM_LAMP_NUM_CORES-1 downto 0);
   signal wb_rtm_master_in                    : t_wishbone_master_in_array(c_RTM_LAMP_NUM_CORES-1 downto 0);
+
+  signal clk_rtm_ref                         : std_logic;
+  signal clk_rtm_ref_rstn                    : std_logic;
 
   signal rtmlamp_adc_start                   : std_logic := '1';
   signal rtmlamp_adc_data                    : t_16b_word_array(c_ADC_CHANNELS-1 downto 0);
@@ -357,9 +362,6 @@ architecture top of afc_rtm_lamp_ctrl is
   -- Trigger RCV intern IDs
   constant c_TRIG_RCV_INTERN_CHAN_1_ID       : natural := 0; -- Internal Channel 1
   constant c_TRIG_RCV_INTERN_CHAN_2_ID       : natural := 1; -- Internal Channel 2
-
-  signal trig_ref_clk                        : std_logic;
-  signal trig_ref_rst_n                      : std_logic;
 
   signal trig_rcv_intern                     : t_trig_channel_array2d(c_TRIG_MUX_NUM_CORES-1 downto 0, c_TRIG_MUX_RCV_INTERN_NUM-1 downto 0);
   signal trig_pulse_transm                   : t_trig_channel_array2d(c_TRIG_MUX_NUM_CORES-1 downto 0, c_TRIG_MUX_INTERN_NUM-1 downto 0);
@@ -705,6 +707,11 @@ begin
   clk_master <= clk_200mhz;
   clk_master_rstn <= clk_200mhz_rstn;
 
+  -- FIXME! Clock aux is wrong here. We need TCLKA and not some
+  -- rational number of it.
+  clk_rtm_ref <= clk_trig_ref;
+  clk_rtm_ref_rstn <= clk_trig_ref_rstn;
+
   cmp_rtmlamp_ohwr : xwb_rtmlamp_ohwr
   generic map (
     g_INTERFACE_MODE                           => PIPELINED,
@@ -712,6 +719,13 @@ begin
     g_WITH_EXTRA_WB_REG                        => false,
     -- System clock frequency [Hz]
     g_SYS_CLOCK_FREQ                           => c_SYS_CLOCK_FREQ,
+    -- Reference clock frequency [Hz], used only when g_USE_REF_CNV is
+    -- set to true
+    g_REF_CLK_FREQ                             => c_REF_CLOCK_FREQ,
+    -- Wether or not to use a reference clk to drive CNV/LDAC.
+    -- If true uses clk_ref_i to drive CNV/LDAC
+    -- If false uses clk_i to drive CNV/LDAC
+    g_USE_REF_CLK                              => c_USE_REF_CLOCK,
     -- ADC clock frequency [Hz]. Must be a multiple of g_ADC_SCLK_FREQ
     g_ADC_MASTER_CLOCK_FREQ                    => c_ADC_MASTER_CLOCK_FREQ,
     -- ADC clock frequency [Hz]
@@ -731,6 +745,9 @@ begin
     ---------------------------------------------------------------------------
     clk_i                                      => clk_sys,
     rst_n_i                                    => clk_sys_rstn,
+
+    clk_ref_i                                  => clk_rtm_ref,
+    rst_ref_n_i                                => clk_rtm_ref_rstn,
 
     clk_master_adc_i                           => clk_master,
     rst_master_adc_n_i                         => clk_master_rstn,
@@ -864,9 +881,6 @@ begin
   ----------------------------------------------------------------------
   --                          Trigger                                 --
   ----------------------------------------------------------------------
-
-  trig_ref_clk <= clk_trig_ref;
-  trig_ref_rst_n <= clk_trig_ref_rstn;
 
   -- Assign trigger pulses to trigger channel interfaces
   trig_acq1_channel_1.pulse <= rtmlamp_adc_start;
