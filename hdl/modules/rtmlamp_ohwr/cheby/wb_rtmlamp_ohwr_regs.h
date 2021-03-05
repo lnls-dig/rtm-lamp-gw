@@ -1,353 +1,411 @@
-#ifndef __CHEBY__WB_RTMLAMP_OHWR_REGS__H__
-#define __CHEBY__WB_RTMLAMP_OHWR_REGS__H__
-#define WB_RTMLAMP_OHWR_REGS_SIZE 128
+#ifndef __CHEBY__REGS__H__
+#define __CHEBY__REGS__H__
+#define REGS_SIZE 400 /* 0x190 */
 
-/* None */
-#define WB_RTMLAMP_OHWR_REGS_CH 0x0UL
-#define WB_RTMLAMP_OHWR_REGS_CH_SIZE 128
+/* General RTM status register */
+#define REGS_STA 0x0UL
+#define REGS_STA_RESERVED_MASK 0xffffffffUL
+#define REGS_STA_RESERVED_SHIFT 0
 
-/* None */
-#define WB_RTMLAMP_OHWR_REGS_CH_0 0x0UL
-#define WB_RTMLAMP_OHWR_REGS_CH_0_SIZE 8
+/* General RTM control register */
+#define REGS_CTL 0x4UL
+#define REGS_CTL_DAC_DATA_FROM_WB 0x1UL
+#define REGS_CTL_RESERVED_MASK 0xfffffffeUL
+#define REGS_CTL_RESERVED_SHIFT 1
 
-/* Channel status register */
-#define WB_RTMLAMP_OHWR_REGS_CH_0_STA 0x0UL
-#define WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_IFLAG_L 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_TFLAG_L 0x2UL
-#define WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_IFLAG_R 0x4UL
-#define WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_TFLAG_R 0x8UL
-#define WB_RTMLAMP_OHWR_REGS_CH_0_STA_RESERVED_MASK 0xfffffff0UL
-#define WB_RTMLAMP_OHWR_REGS_CH_0_STA_RESERVED_SHIFT 4
+/* Channel 0 status register */
+#define REGS_CH_0_STA 0x100UL
+#define REGS_CH_0_STA_AMP_IFLAG_L 0x1UL
+#define REGS_CH_0_STA_AMP_TFLAG_L 0x2UL
+#define REGS_CH_0_STA_AMP_IFLAG_R 0x4UL
+#define REGS_CH_0_STA_AMP_TFLAG_R 0x8UL
+#define REGS_CH_0_STA_RESERVED_MASK 0xfffffff0UL
+#define REGS_CH_0_STA_RESERVED_SHIFT 4
 
-/* Channel control register */
-#define WB_RTMLAMP_OHWR_REGS_CH_0_CTL 0x4UL
-#define WB_RTMLAMP_OHWR_REGS_CH_0_CTL_AMP_EN 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_0_CTL_RESERVED_MASK 0xfffffffeUL
-#define WB_RTMLAMP_OHWR_REGS_CH_0_CTL_RESERVED_SHIFT 1
+/* Channel 0 control register */
+#define REGS_CH_0_CTL 0x104UL
+#define REGS_CH_0_CTL_AMP_EN 0x1UL
+#define REGS_CH_0_CTL_RESERVED_MASK 0xfffffffeUL
+#define REGS_CH_0_CTL_RESERVED_SHIFT 1
 
-/* None */
-#define WB_RTMLAMP_OHWR_REGS_CH_1 0x8UL
-#define WB_RTMLAMP_OHWR_REGS_CH_1_SIZE 8
+/* DAC channel 0 control register */
+#define REGS_CH_0_DAC 0x108UL
+#define REGS_CH_0_DAC_DATA_MASK 0xffffUL
+#define REGS_CH_0_DAC_DATA_SHIFT 0
+#define REGS_CH_0_DAC_WR 0x10000UL
+#define REGS_CH_0_DAC_RESERVED_MASK 0xfffe0000UL
+#define REGS_CH_0_DAC_RESERVED_SHIFT 17
 
-/* Channel status register */
-#define WB_RTMLAMP_OHWR_REGS_CH_1_STA 0x8UL
-#define WB_RTMLAMP_OHWR_REGS_CH_1_STA_AMP_IFLAG_L 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_1_STA_AMP_TFLAG_L 0x2UL
-#define WB_RTMLAMP_OHWR_REGS_CH_1_STA_AMP_IFLAG_R 0x4UL
-#define WB_RTMLAMP_OHWR_REGS_CH_1_STA_AMP_TFLAG_R 0x8UL
-#define WB_RTMLAMP_OHWR_REGS_CH_1_STA_RESERVED_MASK 0xfffffff0UL
-#define WB_RTMLAMP_OHWR_REGS_CH_1_STA_RESERVED_SHIFT 4
+/* Channel 1 status register */
+#define REGS_CH_1_STA 0x10cUL
+#define REGS_CH_1_STA_AMP_IFLAG_L 0x1UL
+#define REGS_CH_1_STA_AMP_TFLAG_L 0x2UL
+#define REGS_CH_1_STA_AMP_IFLAG_R 0x4UL
+#define REGS_CH_1_STA_AMP_TFLAG_R 0x8UL
+#define REGS_CH_1_STA_RESERVED_MASK 0xfffffff0UL
+#define REGS_CH_1_STA_RESERVED_SHIFT 4
 
-/* Channel control register */
-#define WB_RTMLAMP_OHWR_REGS_CH_1_CTL 0xcUL
-#define WB_RTMLAMP_OHWR_REGS_CH_1_CTL_AMP_EN 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_1_CTL_RESERVED_MASK 0xfffffffeUL
-#define WB_RTMLAMP_OHWR_REGS_CH_1_CTL_RESERVED_SHIFT 1
+/* Channel 1 control register */
+#define REGS_CH_1_CTL 0x110UL
+#define REGS_CH_1_CTL_AMP_EN 0x1UL
+#define REGS_CH_1_CTL_RESERVED_MASK 0xfffffffeUL
+#define REGS_CH_1_CTL_RESERVED_SHIFT 1
 
-/* None */
-#define WB_RTMLAMP_OHWR_REGS_CH_2 0x10UL
-#define WB_RTMLAMP_OHWR_REGS_CH_2_SIZE 8
+/* DAC channel 1 control register */
+#define REGS_CH_1_DAC 0x114UL
+#define REGS_CH_1_DAC_DATA_MASK 0xffffUL
+#define REGS_CH_1_DAC_DATA_SHIFT 0
+#define REGS_CH_1_DAC_WR 0x10000UL
+#define REGS_CH_1_DAC_RESERVED_MASK 0xfffe0000UL
+#define REGS_CH_1_DAC_RESERVED_SHIFT 17
 
-/* Channel status register */
-#define WB_RTMLAMP_OHWR_REGS_CH_2_STA 0x10UL
-#define WB_RTMLAMP_OHWR_REGS_CH_2_STA_AMP_IFLAG_L 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_2_STA_AMP_TFLAG_L 0x2UL
-#define WB_RTMLAMP_OHWR_REGS_CH_2_STA_AMP_IFLAG_R 0x4UL
-#define WB_RTMLAMP_OHWR_REGS_CH_2_STA_AMP_TFLAG_R 0x8UL
-#define WB_RTMLAMP_OHWR_REGS_CH_2_STA_RESERVED_MASK 0xfffffff0UL
-#define WB_RTMLAMP_OHWR_REGS_CH_2_STA_RESERVED_SHIFT 4
+/* Channel 2 status register */
+#define REGS_CH_2_STA 0x118UL
+#define REGS_CH_2_STA_AMP_IFLAG_L 0x1UL
+#define REGS_CH_2_STA_AMP_TFLAG_L 0x2UL
+#define REGS_CH_2_STA_AMP_IFLAG_R 0x4UL
+#define REGS_CH_2_STA_AMP_TFLAG_R 0x8UL
+#define REGS_CH_2_STA_RESERVED_MASK 0xfffffff0UL
+#define REGS_CH_2_STA_RESERVED_SHIFT 4
 
-/* Channel control register */
-#define WB_RTMLAMP_OHWR_REGS_CH_2_CTL 0x14UL
-#define WB_RTMLAMP_OHWR_REGS_CH_2_CTL_AMP_EN 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_2_CTL_RESERVED_MASK 0xfffffffeUL
-#define WB_RTMLAMP_OHWR_REGS_CH_2_CTL_RESERVED_SHIFT 1
+/* Channel 2 control register */
+#define REGS_CH_2_CTL 0x11cUL
+#define REGS_CH_2_CTL_AMP_EN 0x1UL
+#define REGS_CH_2_CTL_RESERVED_MASK 0xfffffffeUL
+#define REGS_CH_2_CTL_RESERVED_SHIFT 1
 
-/* None */
-#define WB_RTMLAMP_OHWR_REGS_CH_3 0x18UL
-#define WB_RTMLAMP_OHWR_REGS_CH_3_SIZE 8
+/* DAC channel 2 control register */
+#define REGS_CH_2_DAC 0x120UL
+#define REGS_CH_2_DAC_DATA_MASK 0xffffUL
+#define REGS_CH_2_DAC_DATA_SHIFT 0
+#define REGS_CH_2_DAC_WR 0x10000UL
+#define REGS_CH_2_DAC_RESERVED_MASK 0xfffe0000UL
+#define REGS_CH_2_DAC_RESERVED_SHIFT 17
 
-/* Channel status register */
-#define WB_RTMLAMP_OHWR_REGS_CH_3_STA 0x18UL
-#define WB_RTMLAMP_OHWR_REGS_CH_3_STA_AMP_IFLAG_L 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_3_STA_AMP_TFLAG_L 0x2UL
-#define WB_RTMLAMP_OHWR_REGS_CH_3_STA_AMP_IFLAG_R 0x4UL
-#define WB_RTMLAMP_OHWR_REGS_CH_3_STA_AMP_TFLAG_R 0x8UL
-#define WB_RTMLAMP_OHWR_REGS_CH_3_STA_RESERVED_MASK 0xfffffff0UL
-#define WB_RTMLAMP_OHWR_REGS_CH_3_STA_RESERVED_SHIFT 4
+/* Channel 3 status register */
+#define REGS_CH_3_STA 0x124UL
+#define REGS_CH_3_STA_AMP_IFLAG_L 0x1UL
+#define REGS_CH_3_STA_AMP_TFLAG_L 0x2UL
+#define REGS_CH_3_STA_AMP_IFLAG_R 0x4UL
+#define REGS_CH_3_STA_AMP_TFLAG_R 0x8UL
+#define REGS_CH_3_STA_RESERVED_MASK 0xfffffff0UL
+#define REGS_CH_3_STA_RESERVED_SHIFT 4
 
-/* Channel control register */
-#define WB_RTMLAMP_OHWR_REGS_CH_3_CTL 0x1cUL
-#define WB_RTMLAMP_OHWR_REGS_CH_3_CTL_AMP_EN 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_3_CTL_RESERVED_MASK 0xfffffffeUL
-#define WB_RTMLAMP_OHWR_REGS_CH_3_CTL_RESERVED_SHIFT 1
+/* Channel 3 control register */
+#define REGS_CH_3_CTL 0x128UL
+#define REGS_CH_3_CTL_AMP_EN 0x1UL
+#define REGS_CH_3_CTL_RESERVED_MASK 0xfffffffeUL
+#define REGS_CH_3_CTL_RESERVED_SHIFT 1
 
-/* None */
-#define WB_RTMLAMP_OHWR_REGS_CH_4 0x20UL
-#define WB_RTMLAMP_OHWR_REGS_CH_4_SIZE 8
+/* DAC channel 3 control register */
+#define REGS_CH_3_DAC 0x12cUL
+#define REGS_CH_3_DAC_DATA_MASK 0xffffUL
+#define REGS_CH_3_DAC_DATA_SHIFT 0
+#define REGS_CH_3_DAC_WR 0x10000UL
+#define REGS_CH_3_DAC_RESERVED_MASK 0xfffe0000UL
+#define REGS_CH_3_DAC_RESERVED_SHIFT 17
 
-/* Channel status register */
-#define WB_RTMLAMP_OHWR_REGS_CH_4_STA 0x20UL
-#define WB_RTMLAMP_OHWR_REGS_CH_4_STA_AMP_IFLAG_L 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_4_STA_AMP_TFLAG_L 0x2UL
-#define WB_RTMLAMP_OHWR_REGS_CH_4_STA_AMP_IFLAG_R 0x4UL
-#define WB_RTMLAMP_OHWR_REGS_CH_4_STA_AMP_TFLAG_R 0x8UL
-#define WB_RTMLAMP_OHWR_REGS_CH_4_STA_RESERVED_MASK 0xfffffff0UL
-#define WB_RTMLAMP_OHWR_REGS_CH_4_STA_RESERVED_SHIFT 4
+/* Channel 4 status register */
+#define REGS_CH_4_STA 0x130UL
+#define REGS_CH_4_STA_AMP_IFLAG_L 0x1UL
+#define REGS_CH_4_STA_AMP_TFLAG_L 0x2UL
+#define REGS_CH_4_STA_AMP_IFLAG_R 0x4UL
+#define REGS_CH_4_STA_AMP_TFLAG_R 0x8UL
+#define REGS_CH_4_STA_RESERVED_MASK 0xfffffff0UL
+#define REGS_CH_4_STA_RESERVED_SHIFT 4
 
-/* Channel control register */
-#define WB_RTMLAMP_OHWR_REGS_CH_4_CTL 0x24UL
-#define WB_RTMLAMP_OHWR_REGS_CH_4_CTL_AMP_EN 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_4_CTL_RESERVED_MASK 0xfffffffeUL
-#define WB_RTMLAMP_OHWR_REGS_CH_4_CTL_RESERVED_SHIFT 1
+/* Channel 4 control register */
+#define REGS_CH_4_CTL 0x134UL
+#define REGS_CH_4_CTL_AMP_EN 0x1UL
+#define REGS_CH_4_CTL_RESERVED_MASK 0xfffffffeUL
+#define REGS_CH_4_CTL_RESERVED_SHIFT 1
 
-/* None */
-#define WB_RTMLAMP_OHWR_REGS_CH_5 0x28UL
-#define WB_RTMLAMP_OHWR_REGS_CH_5_SIZE 8
+/* DAC channel 4 control register */
+#define REGS_CH_4_DAC 0x138UL
+#define REGS_CH_4_DAC_DATA_MASK 0xffffUL
+#define REGS_CH_4_DAC_DATA_SHIFT 0
+#define REGS_CH_4_DAC_WR 0x10000UL
+#define REGS_CH_4_DAC_RESERVED_MASK 0xfffe0000UL
+#define REGS_CH_4_DAC_RESERVED_SHIFT 17
 
-/* Channel status register */
-#define WB_RTMLAMP_OHWR_REGS_CH_5_STA 0x28UL
-#define WB_RTMLAMP_OHWR_REGS_CH_5_STA_AMP_IFLAG_L 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_5_STA_AMP_TFLAG_L 0x2UL
-#define WB_RTMLAMP_OHWR_REGS_CH_5_STA_AMP_IFLAG_R 0x4UL
-#define WB_RTMLAMP_OHWR_REGS_CH_5_STA_AMP_TFLAG_R 0x8UL
-#define WB_RTMLAMP_OHWR_REGS_CH_5_STA_RESERVED_MASK 0xfffffff0UL
-#define WB_RTMLAMP_OHWR_REGS_CH_5_STA_RESERVED_SHIFT 4
+/* Channel 5 status register */
+#define REGS_CH_5_STA 0x13cUL
+#define REGS_CH_5_STA_AMP_IFLAG_L 0x1UL
+#define REGS_CH_5_STA_AMP_TFLAG_L 0x2UL
+#define REGS_CH_5_STA_AMP_IFLAG_R 0x4UL
+#define REGS_CH_5_STA_AMP_TFLAG_R 0x8UL
+#define REGS_CH_5_STA_RESERVED_MASK 0xfffffff0UL
+#define REGS_CH_5_STA_RESERVED_SHIFT 4
 
-/* Channel control register */
-#define WB_RTMLAMP_OHWR_REGS_CH_5_CTL 0x2cUL
-#define WB_RTMLAMP_OHWR_REGS_CH_5_CTL_AMP_EN 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_5_CTL_RESERVED_MASK 0xfffffffeUL
-#define WB_RTMLAMP_OHWR_REGS_CH_5_CTL_RESERVED_SHIFT 1
+/* Channel 5 control register */
+#define REGS_CH_5_CTL 0x140UL
+#define REGS_CH_5_CTL_AMP_EN 0x1UL
+#define REGS_CH_5_CTL_RESERVED_MASK 0xfffffffeUL
+#define REGS_CH_5_CTL_RESERVED_SHIFT 1
 
-/* None */
-#define WB_RTMLAMP_OHWR_REGS_CH_6 0x30UL
-#define WB_RTMLAMP_OHWR_REGS_CH_6_SIZE 8
+/* DAC channel 5 control register */
+#define REGS_CH_5_DAC 0x144UL
+#define REGS_CH_5_DAC_DATA_MASK 0xffffUL
+#define REGS_CH_5_DAC_DATA_SHIFT 0
+#define REGS_CH_5_DAC_WR 0x10000UL
+#define REGS_CH_5_DAC_RESERVED_MASK 0xfffe0000UL
+#define REGS_CH_5_DAC_RESERVED_SHIFT 17
 
-/* Channel status register */
-#define WB_RTMLAMP_OHWR_REGS_CH_6_STA 0x30UL
-#define WB_RTMLAMP_OHWR_REGS_CH_6_STA_AMP_IFLAG_L 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_6_STA_AMP_TFLAG_L 0x2UL
-#define WB_RTMLAMP_OHWR_REGS_CH_6_STA_AMP_IFLAG_R 0x4UL
-#define WB_RTMLAMP_OHWR_REGS_CH_6_STA_AMP_TFLAG_R 0x8UL
-#define WB_RTMLAMP_OHWR_REGS_CH_6_STA_RESERVED_MASK 0xfffffff0UL
-#define WB_RTMLAMP_OHWR_REGS_CH_6_STA_RESERVED_SHIFT 4
+/* Channel 6 status register */
+#define REGS_CH_6_STA 0x148UL
+#define REGS_CH_6_STA_AMP_IFLAG_L 0x1UL
+#define REGS_CH_6_STA_AMP_TFLAG_L 0x2UL
+#define REGS_CH_6_STA_AMP_IFLAG_R 0x4UL
+#define REGS_CH_6_STA_AMP_TFLAG_R 0x8UL
+#define REGS_CH_6_STA_RESERVED_MASK 0xfffffff0UL
+#define REGS_CH_6_STA_RESERVED_SHIFT 4
 
-/* Channel control register */
-#define WB_RTMLAMP_OHWR_REGS_CH_6_CTL 0x34UL
-#define WB_RTMLAMP_OHWR_REGS_CH_6_CTL_AMP_EN 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_6_CTL_RESERVED_MASK 0xfffffffeUL
-#define WB_RTMLAMP_OHWR_REGS_CH_6_CTL_RESERVED_SHIFT 1
+/* Channel 6 control register */
+#define REGS_CH_6_CTL 0x14cUL
+#define REGS_CH_6_CTL_AMP_EN 0x1UL
+#define REGS_CH_6_CTL_RESERVED_MASK 0xfffffffeUL
+#define REGS_CH_6_CTL_RESERVED_SHIFT 1
 
-/* None */
-#define WB_RTMLAMP_OHWR_REGS_CH_7 0x38UL
-#define WB_RTMLAMP_OHWR_REGS_CH_7_SIZE 8
+/* DAC channel 6 control register */
+#define REGS_CH_6_DAC 0x150UL
+#define REGS_CH_6_DAC_DATA_MASK 0xffffUL
+#define REGS_CH_6_DAC_DATA_SHIFT 0
+#define REGS_CH_6_DAC_WR 0x10000UL
+#define REGS_CH_6_DAC_RESERVED_MASK 0xfffe0000UL
+#define REGS_CH_6_DAC_RESERVED_SHIFT 17
 
-/* Channel status register */
-#define WB_RTMLAMP_OHWR_REGS_CH_7_STA 0x38UL
-#define WB_RTMLAMP_OHWR_REGS_CH_7_STA_AMP_IFLAG_L 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_7_STA_AMP_TFLAG_L 0x2UL
-#define WB_RTMLAMP_OHWR_REGS_CH_7_STA_AMP_IFLAG_R 0x4UL
-#define WB_RTMLAMP_OHWR_REGS_CH_7_STA_AMP_TFLAG_R 0x8UL
-#define WB_RTMLAMP_OHWR_REGS_CH_7_STA_RESERVED_MASK 0xfffffff0UL
-#define WB_RTMLAMP_OHWR_REGS_CH_7_STA_RESERVED_SHIFT 4
+/* Channel 7 status register */
+#define REGS_CH_7_STA 0x154UL
+#define REGS_CH_7_STA_AMP_IFLAG_L 0x1UL
+#define REGS_CH_7_STA_AMP_TFLAG_L 0x2UL
+#define REGS_CH_7_STA_AMP_IFLAG_R 0x4UL
+#define REGS_CH_7_STA_AMP_TFLAG_R 0x8UL
+#define REGS_CH_7_STA_RESERVED_MASK 0xfffffff0UL
+#define REGS_CH_7_STA_RESERVED_SHIFT 4
 
-/* Channel control register */
-#define WB_RTMLAMP_OHWR_REGS_CH_7_CTL 0x3cUL
-#define WB_RTMLAMP_OHWR_REGS_CH_7_CTL_AMP_EN 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_7_CTL_RESERVED_MASK 0xfffffffeUL
-#define WB_RTMLAMP_OHWR_REGS_CH_7_CTL_RESERVED_SHIFT 1
+/* Channel 7 control register */
+#define REGS_CH_7_CTL 0x158UL
+#define REGS_CH_7_CTL_AMP_EN 0x1UL
+#define REGS_CH_7_CTL_RESERVED_MASK 0xfffffffeUL
+#define REGS_CH_7_CTL_RESERVED_SHIFT 1
 
-/* None */
-#define WB_RTMLAMP_OHWR_REGS_CH_8 0x40UL
-#define WB_RTMLAMP_OHWR_REGS_CH_8_SIZE 8
+/* DAC channel 7 control register */
+#define REGS_CH_7_DAC 0x15cUL
+#define REGS_CH_7_DAC_DATA_MASK 0xffffUL
+#define REGS_CH_7_DAC_DATA_SHIFT 0
+#define REGS_CH_7_DAC_WR 0x10000UL
+#define REGS_CH_7_DAC_RESERVED_MASK 0xfffe0000UL
+#define REGS_CH_7_DAC_RESERVED_SHIFT 17
 
-/* Channel status register */
-#define WB_RTMLAMP_OHWR_REGS_CH_8_STA 0x40UL
-#define WB_RTMLAMP_OHWR_REGS_CH_8_STA_AMP_IFLAG_L 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_8_STA_AMP_TFLAG_L 0x2UL
-#define WB_RTMLAMP_OHWR_REGS_CH_8_STA_AMP_IFLAG_R 0x4UL
-#define WB_RTMLAMP_OHWR_REGS_CH_8_STA_AMP_TFLAG_R 0x8UL
-#define WB_RTMLAMP_OHWR_REGS_CH_8_STA_RESERVED_MASK 0xfffffff0UL
-#define WB_RTMLAMP_OHWR_REGS_CH_8_STA_RESERVED_SHIFT 4
+/* Channel 8 status register */
+#define REGS_CH_8_STA 0x160UL
+#define REGS_CH_8_STA_AMP_IFLAG_L 0x1UL
+#define REGS_CH_8_STA_AMP_TFLAG_L 0x2UL
+#define REGS_CH_8_STA_AMP_IFLAG_R 0x4UL
+#define REGS_CH_8_STA_AMP_TFLAG_R 0x8UL
+#define REGS_CH_8_STA_RESERVED_MASK 0xfffffff0UL
+#define REGS_CH_8_STA_RESERVED_SHIFT 4
 
-/* Channel control register */
-#define WB_RTMLAMP_OHWR_REGS_CH_8_CTL 0x44UL
-#define WB_RTMLAMP_OHWR_REGS_CH_8_CTL_AMP_EN 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_8_CTL_RESERVED_MASK 0xfffffffeUL
-#define WB_RTMLAMP_OHWR_REGS_CH_8_CTL_RESERVED_SHIFT 1
+/* Channel 8 control register */
+#define REGS_CH_8_CTL 0x164UL
+#define REGS_CH_8_CTL_AMP_EN 0x1UL
+#define REGS_CH_8_CTL_RESERVED_MASK 0xfffffffeUL
+#define REGS_CH_8_CTL_RESERVED_SHIFT 1
 
-/* None */
-#define WB_RTMLAMP_OHWR_REGS_CH_9 0x48UL
-#define WB_RTMLAMP_OHWR_REGS_CH_9_SIZE 8
+/* DAC channel 8 control register */
+#define REGS_CH_8_DAC 0x168UL
+#define REGS_CH_8_DAC_DATA_MASK 0xffffUL
+#define REGS_CH_8_DAC_DATA_SHIFT 0
+#define REGS_CH_8_DAC_WR 0x10000UL
+#define REGS_CH_8_DAC_RESERVED_MASK 0xfffe0000UL
+#define REGS_CH_8_DAC_RESERVED_SHIFT 17
 
-/* Channel status register */
-#define WB_RTMLAMP_OHWR_REGS_CH_9_STA 0x48UL
-#define WB_RTMLAMP_OHWR_REGS_CH_9_STA_AMP_IFLAG_L 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_9_STA_AMP_TFLAG_L 0x2UL
-#define WB_RTMLAMP_OHWR_REGS_CH_9_STA_AMP_IFLAG_R 0x4UL
-#define WB_RTMLAMP_OHWR_REGS_CH_9_STA_AMP_TFLAG_R 0x8UL
-#define WB_RTMLAMP_OHWR_REGS_CH_9_STA_RESERVED_MASK 0xfffffff0UL
-#define WB_RTMLAMP_OHWR_REGS_CH_9_STA_RESERVED_SHIFT 4
+/* Channel 9 status register */
+#define REGS_CH_9_STA 0x16cUL
+#define REGS_CH_9_STA_AMP_IFLAG_L 0x1UL
+#define REGS_CH_9_STA_AMP_TFLAG_L 0x2UL
+#define REGS_CH_9_STA_AMP_IFLAG_R 0x4UL
+#define REGS_CH_9_STA_AMP_TFLAG_R 0x8UL
+#define REGS_CH_9_STA_RESERVED_MASK 0xfffffff0UL
+#define REGS_CH_9_STA_RESERVED_SHIFT 4
 
-/* Channel control register */
-#define WB_RTMLAMP_OHWR_REGS_CH_9_CTL 0x4cUL
-#define WB_RTMLAMP_OHWR_REGS_CH_9_CTL_AMP_EN 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_9_CTL_RESERVED_MASK 0xfffffffeUL
-#define WB_RTMLAMP_OHWR_REGS_CH_9_CTL_RESERVED_SHIFT 1
+/* Channel 9 control register */
+#define REGS_CH_9_CTL 0x170UL
+#define REGS_CH_9_CTL_AMP_EN 0x1UL
+#define REGS_CH_9_CTL_RESERVED_MASK 0xfffffffeUL
+#define REGS_CH_9_CTL_RESERVED_SHIFT 1
 
-/* None */
-#define WB_RTMLAMP_OHWR_REGS_CH_10 0x50UL
-#define WB_RTMLAMP_OHWR_REGS_CH_10_SIZE 8
+/* DAC channel 9 control register */
+#define REGS_CH_9_DAC 0x174UL
+#define REGS_CH_9_DAC_DATA_MASK 0xffffUL
+#define REGS_CH_9_DAC_DATA_SHIFT 0
+#define REGS_CH_9_DAC_WR 0x10000UL
+#define REGS_CH_9_DAC_RESERVED_MASK 0xfffe0000UL
+#define REGS_CH_9_DAC_RESERVED_SHIFT 17
 
-/* Channel status register */
-#define WB_RTMLAMP_OHWR_REGS_CH_10_STA 0x50UL
-#define WB_RTMLAMP_OHWR_REGS_CH_10_STA_AMP_IFLAG_L 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_10_STA_AMP_TFLAG_L 0x2UL
-#define WB_RTMLAMP_OHWR_REGS_CH_10_STA_AMP_IFLAG_R 0x4UL
-#define WB_RTMLAMP_OHWR_REGS_CH_10_STA_AMP_TFLAG_R 0x8UL
-#define WB_RTMLAMP_OHWR_REGS_CH_10_STA_RESERVED_MASK 0xfffffff0UL
-#define WB_RTMLAMP_OHWR_REGS_CH_10_STA_RESERVED_SHIFT 4
+/* Channel 10 status register */
+#define REGS_CH_10_STA 0x178UL
+#define REGS_CH_10_STA_AMP_IFLAG_L 0x1UL
+#define REGS_CH_10_STA_AMP_TFLAG_L 0x2UL
+#define REGS_CH_10_STA_AMP_IFLAG_R 0x4UL
+#define REGS_CH_10_STA_AMP_TFLAG_R 0x8UL
+#define REGS_CH_10_STA_RESERVED_MASK 0xfffffff0UL
+#define REGS_CH_10_STA_RESERVED_SHIFT 4
 
-/* Channel control register */
-#define WB_RTMLAMP_OHWR_REGS_CH_10_CTL 0x54UL
-#define WB_RTMLAMP_OHWR_REGS_CH_10_CTL_AMP_EN 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_10_CTL_RESERVED_MASK 0xfffffffeUL
-#define WB_RTMLAMP_OHWR_REGS_CH_10_CTL_RESERVED_SHIFT 1
+/* Channel 10 control register */
+#define REGS_CH_10_CTL 0x17cUL
+#define REGS_CH_10_CTL_AMP_EN 0x1UL
+#define REGS_CH_10_CTL_RESERVED_MASK 0xfffffffeUL
+#define REGS_CH_10_CTL_RESERVED_SHIFT 1
 
-/* None */
-#define WB_RTMLAMP_OHWR_REGS_CH_11 0x58UL
-#define WB_RTMLAMP_OHWR_REGS_CH_11_SIZE 8
+/* DAC channel 10 control register */
+#define REGS_CH_10_DAC 0x180UL
+#define REGS_CH_10_DAC_DATA_MASK 0xffffUL
+#define REGS_CH_10_DAC_DATA_SHIFT 0
+#define REGS_CH_10_DAC_WR 0x10000UL
+#define REGS_CH_10_DAC_RESERVED_MASK 0xfffe0000UL
+#define REGS_CH_10_DAC_RESERVED_SHIFT 17
 
-/* Channel status register */
-#define WB_RTMLAMP_OHWR_REGS_CH_11_STA 0x58UL
-#define WB_RTMLAMP_OHWR_REGS_CH_11_STA_AMP_IFLAG_L 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_11_STA_AMP_TFLAG_L 0x2UL
-#define WB_RTMLAMP_OHWR_REGS_CH_11_STA_AMP_IFLAG_R 0x4UL
-#define WB_RTMLAMP_OHWR_REGS_CH_11_STA_AMP_TFLAG_R 0x8UL
-#define WB_RTMLAMP_OHWR_REGS_CH_11_STA_RESERVED_MASK 0xfffffff0UL
-#define WB_RTMLAMP_OHWR_REGS_CH_11_STA_RESERVED_SHIFT 4
+/* Channel 11 status register */
+#define REGS_CH_11_STA 0x184UL
+#define REGS_CH_11_STA_AMP_IFLAG_L 0x1UL
+#define REGS_CH_11_STA_AMP_TFLAG_L 0x2UL
+#define REGS_CH_11_STA_AMP_IFLAG_R 0x4UL
+#define REGS_CH_11_STA_AMP_TFLAG_R 0x8UL
+#define REGS_CH_11_STA_RESERVED_MASK 0xfffffff0UL
+#define REGS_CH_11_STA_RESERVED_SHIFT 4
 
-/* Channel control register */
-#define WB_RTMLAMP_OHWR_REGS_CH_11_CTL 0x5cUL
-#define WB_RTMLAMP_OHWR_REGS_CH_11_CTL_AMP_EN 0x1UL
-#define WB_RTMLAMP_OHWR_REGS_CH_11_CTL_RESERVED_MASK 0xfffffffeUL
-#define WB_RTMLAMP_OHWR_REGS_CH_11_CTL_RESERVED_SHIFT 1
+/* Channel 11 control register */
+#define REGS_CH_11_CTL 0x188UL
+#define REGS_CH_11_CTL_AMP_EN 0x1UL
+#define REGS_CH_11_CTL_RESERVED_MASK 0xfffffffeUL
+#define REGS_CH_11_CTL_RESERVED_SHIFT 1
 
-struct wb_rtmlamp_ohwr_regs {
-  /* [0x0]: BLOCK (no description) */
-  struct ch {
-    /* [0x0]: BLOCK (no description) */
-    struct 0 {
-      /* [0x0]: REG (ro) Channel status register */
-      uint32_t sta;
+/* DAC channel 11 control register */
+#define REGS_CH_11_DAC 0x18cUL
+#define REGS_CH_11_DAC_DATA_MASK 0xffffUL
+#define REGS_CH_11_DAC_DATA_SHIFT 0
+#define REGS_CH_11_DAC_WR 0x10000UL
+#define REGS_CH_11_DAC_RESERVED_MASK 0xfffe0000UL
+#define REGS_CH_11_DAC_RESERVED_SHIFT 17
 
-      /* [0x4]: REG (rw) Channel control register */
-      uint32_t ctl;
-    } 0;
+struct regs {
+  /* [0x0]: REG (ro) General RTM status register */
+  uint32_t sta;
 
-    /* [0x8]: BLOCK (no description) */
-    struct 1 {
-      /* [0x0]: REG (ro) Channel status register */
-      uint32_t sta;
+  /* [0x4]: REG (rw) General RTM control register */
+  uint32_t ctl;
 
-      /* [0x4]: REG (rw) Channel control register */
-      uint32_t ctl;
-    } 1;
+  /* padding to: 64 words */
+  uint32_t __padding_0[62];
 
-    /* [0x10]: BLOCK (no description) */
-    struct 2 {
-      /* [0x0]: REG (ro) Channel status register */
-      uint32_t sta;
+  /* [0x100]: REG (ro) Channel 0 status register */
+  uint32_t ch_0_sta;
 
-      /* [0x4]: REG (rw) Channel control register */
-      uint32_t ctl;
-    } 2;
+  /* [0x104]: REG (rw) Channel 0 control register */
+  uint32_t ch_0_ctl;
 
-    /* [0x18]: BLOCK (no description) */
-    struct 3 {
-      /* [0x0]: REG (ro) Channel status register */
-      uint32_t sta;
+  /* [0x108]: REG (rw) DAC channel 0 control register */
+  uint32_t ch_0_dac;
 
-      /* [0x4]: REG (rw) Channel control register */
-      uint32_t ctl;
-    } 3;
+  /* [0x10c]: REG (ro) Channel 1 status register */
+  uint32_t ch_1_sta;
 
-    /* [0x20]: BLOCK (no description) */
-    struct 4 {
-      /* [0x0]: REG (ro) Channel status register */
-      uint32_t sta;
+  /* [0x110]: REG (rw) Channel 1 control register */
+  uint32_t ch_1_ctl;
 
-      /* [0x4]: REG (rw) Channel control register */
-      uint32_t ctl;
-    } 4;
+  /* [0x114]: REG (rw) DAC channel 1 control register */
+  uint32_t ch_1_dac;
 
-    /* [0x28]: BLOCK (no description) */
-    struct 5 {
-      /* [0x0]: REG (ro) Channel status register */
-      uint32_t sta;
+  /* [0x118]: REG (ro) Channel 2 status register */
+  uint32_t ch_2_sta;
 
-      /* [0x4]: REG (rw) Channel control register */
-      uint32_t ctl;
-    } 5;
+  /* [0x11c]: REG (rw) Channel 2 control register */
+  uint32_t ch_2_ctl;
 
-    /* [0x30]: BLOCK (no description) */
-    struct 6 {
-      /* [0x0]: REG (ro) Channel status register */
-      uint32_t sta;
+  /* [0x120]: REG (rw) DAC channel 2 control register */
+  uint32_t ch_2_dac;
 
-      /* [0x4]: REG (rw) Channel control register */
-      uint32_t ctl;
-    } 6;
+  /* [0x124]: REG (ro) Channel 3 status register */
+  uint32_t ch_3_sta;
 
-    /* [0x38]: BLOCK (no description) */
-    struct 7 {
-      /* [0x0]: REG (ro) Channel status register */
-      uint32_t sta;
+  /* [0x128]: REG (rw) Channel 3 control register */
+  uint32_t ch_3_ctl;
 
-      /* [0x4]: REG (rw) Channel control register */
-      uint32_t ctl;
-    } 7;
+  /* [0x12c]: REG (rw) DAC channel 3 control register */
+  uint32_t ch_3_dac;
 
-    /* [0x40]: BLOCK (no description) */
-    struct 8 {
-      /* [0x0]: REG (ro) Channel status register */
-      uint32_t sta;
+  /* [0x130]: REG (ro) Channel 4 status register */
+  uint32_t ch_4_sta;
 
-      /* [0x4]: REG (rw) Channel control register */
-      uint32_t ctl;
-    } 8;
+  /* [0x134]: REG (rw) Channel 4 control register */
+  uint32_t ch_4_ctl;
 
-    /* [0x48]: BLOCK (no description) */
-    struct 9 {
-      /* [0x0]: REG (ro) Channel status register */
-      uint32_t sta;
+  /* [0x138]: REG (rw) DAC channel 4 control register */
+  uint32_t ch_4_dac;
 
-      /* [0x4]: REG (rw) Channel control register */
-      uint32_t ctl;
-    } 9;
+  /* [0x13c]: REG (ro) Channel 5 status register */
+  uint32_t ch_5_sta;
 
-    /* [0x50]: BLOCK (no description) */
-    struct 10 {
-      /* [0x0]: REG (ro) Channel status register */
-      uint32_t sta;
+  /* [0x140]: REG (rw) Channel 5 control register */
+  uint32_t ch_5_ctl;
 
-      /* [0x4]: REG (rw) Channel control register */
-      uint32_t ctl;
-    } 10;
+  /* [0x144]: REG (rw) DAC channel 5 control register */
+  uint32_t ch_5_dac;
 
-    /* [0x58]: BLOCK (no description) */
-    struct 11 {
-      /* [0x0]: REG (ro) Channel status register */
-      uint32_t sta;
+  /* [0x148]: REG (ro) Channel 6 status register */
+  uint32_t ch_6_sta;
 
-      /* [0x4]: REG (rw) Channel control register */
-      uint32_t ctl;
-    } 11;
+  /* [0x14c]: REG (rw) Channel 6 control register */
+  uint32_t ch_6_ctl;
 
-    /* padding to: 22 words */
-    uint32_t __padding_0[8];
-  } ch;
+  /* [0x150]: REG (rw) DAC channel 6 control register */
+  uint32_t ch_6_dac;
+
+  /* [0x154]: REG (ro) Channel 7 status register */
+  uint32_t ch_7_sta;
+
+  /* [0x158]: REG (rw) Channel 7 control register */
+  uint32_t ch_7_ctl;
+
+  /* [0x15c]: REG (rw) DAC channel 7 control register */
+  uint32_t ch_7_dac;
+
+  /* [0x160]: REG (ro) Channel 8 status register */
+  uint32_t ch_8_sta;
+
+  /* [0x164]: REG (rw) Channel 8 control register */
+  uint32_t ch_8_ctl;
+
+  /* [0x168]: REG (rw) DAC channel 8 control register */
+  uint32_t ch_8_dac;
+
+  /* [0x16c]: REG (ro) Channel 9 status register */
+  uint32_t ch_9_sta;
+
+  /* [0x170]: REG (rw) Channel 9 control register */
+  uint32_t ch_9_ctl;
+
+  /* [0x174]: REG (rw) DAC channel 9 control register */
+  uint32_t ch_9_dac;
+
+  /* [0x178]: REG (ro) Channel 10 status register */
+  uint32_t ch_10_sta;
+
+  /* [0x17c]: REG (rw) Channel 10 control register */
+  uint32_t ch_10_ctl;
+
+  /* [0x180]: REG (rw) DAC channel 10 control register */
+  uint32_t ch_10_dac;
+
+  /* [0x184]: REG (ro) Channel 11 status register */
+  uint32_t ch_11_sta;
+
+  /* [0x188]: REG (rw) Channel 11 control register */
+  uint32_t ch_11_ctl;
+
+  /* [0x18c]: REG (rw) DAC channel 11 control register */
+  uint32_t ch_11_dac;
 };
 
-#endif /* __CHEBY__WB_RTMLAMP_OHWR_REGS__H__ */
+#endif /* __CHEBY__REGS__H__ */

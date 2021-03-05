@@ -1,77 +1,1706 @@
 memory-map:
   bus: wb-32-be
-  name: wb_rtmlamp_ohwr_regs
+  name: regs
   description: RTM LAMP registers
   comment: |
     Wishbone slave for RTM LAMP core
   x-hdl:
     busgroup: True
     iogroup: rtmlamp_ohwr_regs
+  x-wbgen:
+    hdl_entity: wb_rtmlamp_ohwr_regs
   children:
-    - repeat:
-        name: ch
-        count: 12
+    - reg:
+        name: sta
+        width: 32
+        access: ro
+        address: 0x00000000
+        description: General RTM status register
+        comment: |
+          General RTM status register
         children:
-          - reg:
-              name: sta
-              width: 32
-              access: ro
-              description: Channel status register
+          - field:
+              name: reserved
+              range: 31-0
+              description: reserved
               comment: |
-                Channel status register
-              children:
-                - field:
-                    name: amp_iflag_l
-                    range: 0
-                    description: Amplifier Left Current Limit Flag (IFLAG_L)
-                    comment: |
-                      read 0: current above limit
-                      read 1: current under limit
-                - field:
-                    name: amp_tflag_l
-                    range: 1
-                    description: Amplifier Left Thermal Limit Flag (TFLAG_L)
-                    comment: |
-                      read 0: temperature above limit
-                      read 1: temperature under limit
-                - field:
-                    name: amp_iflag_r
-                    range: 2
-                    description: Amplifier Right Current Limit Flag (IFLAG_R)
-                    comment: |
-                      read 0: current above limit
-                      read 1: current under limit
-                - field:
-                    name: amp_tflag_r
-                    range: 3
-                    description: Amplifier Right Thermal Limit Flag (TFLAG_R)
-                    comment: |
-                      read 0: temperature above limit
-                      read 1: temperature under limit
-                - field:
-                    name: reserved
-                    range: 31-4
-                    description: reserved
-                    comment: |
-                      reserved
-          - reg:
-              name: ctl
-              width: 32
-              access: rw
-              description: Channel control register
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+    - reg:
+        name: ctl
+        width: 32
+        access: rw
+        address: 0x00000004
+        description: General RTM control register
+        comment: |
+          General RTM control register
+        children:
+          - field:
+              name: dac_data_from_wb
+              range: 0
+              description: Use data from WB for DACs
               comment: |
-                Channel control register
-              children:
-                - field:
-                    name: amp_en
-                    range: 0
-                    description: Amplifier Enable
-                    comment: |
-                      write 0: disable amplifier
-                      write 1: enable amplifier
-                - field:
-                    name: reserved
-                    range: 31-1
-                    description: reserved
-                    comment: |
-                      reserved
+                write 0: DAC data from RTM module input ports
+                write 1: DAC data from Wishbone
+              x-wbgen:
+                type: BIT
+                clock: dac_master_clk_i
+          - field:
+              name: reserved
+              range: 31-1
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+    - reg:
+        name: ch_0_sta
+        width: 32
+        access: ro
+        description: Channel 0 status register
+        address: 0x00000100
+        comment: |
+          Channel 0 status register
+        children:
+          - field:
+              name: amp_iflag_l
+              range: 0
+              description: Amplifier Left Current Limit Flag (IFLAG_L)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_l
+              range: 1
+              description: Amplifier Left Thermal Limit Flag (TFLAG_L)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_iflag_r
+              range: 2
+              description: Amplifier Right Current Limit Flag (IFLAG_R)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_r
+              range: 3
+              description: Amplifier Right Thermal Limit Flag (TFLAG_R)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-4
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: SLV
+    - reg:
+        name: ch_0_ctl
+        width: 32
+        access: rw
+        description: Channel 0 control register
+        address: 0x00000104
+        comment: |
+          Channel 0 control register
+        children:
+          - field:
+              name: amp_en
+              range: 0
+              description: Amplifier Enable
+              comment: |
+                write 0: disable amplifier
+                write 1: enable amplifier
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-1
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_0_dac
+        width: 32
+        access: rw
+        description: DAC channel 0 control register
+        address: 0x00000108
+        comment: |
+          DAC channel 0 control register
+        children:
+          - field:
+              name: data
+              range: 15-0
+              description: DAC data
+              comment: |
+                Write DAC data for channel
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+          - field:
+              name: wr
+              range: 16
+              description: Write DAC data to external CI
+              comment: |
+                write 0: nothing
+                write 1: DAC data written to external CI (auto-cleared)
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: MONOSTABLE
+                clock: dac_master_clk_i
+          - field:
+              name: reserved
+              range: 31-17
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+
+    - reg:
+        name: ch_1_sta
+        width: 32
+        access: ro
+        description: Channel 1 status register
+        address: 0x0000010C
+        comment: |
+          Channel 1 status register
+        children:
+          - field:
+              name: amp_iflag_l
+              range: 0
+              description: Amplifier Left Current Limit Flag (IFLAG_L)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_l
+              range: 1
+              description: Amplifier Left Thermal Limit Flag (TFLAG_L)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_iflag_r
+              range: 2
+              description: Amplifier Right Current Limit Flag (IFLAG_R)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_r
+              range: 3
+              description: Amplifier Right Thermal Limit Flag (TFLAG_R)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-4
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: SLV
+    - reg:
+        name: ch_1_ctl
+        width: 32
+        access: rw
+        description: Channel 1 control register
+        address: 0x00000110
+        comment: |
+          Channel 1 control register
+        children:
+          - field:
+              name: amp_en
+              range: 0
+              description: Amplifier Enable
+              comment: |
+                write 0: disable amplifier
+                write 1: enable amplifier
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-1
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_1_dac
+        width: 32
+        access: rw
+        description: DAC channel 1 control register
+        address: 0x00000114
+        comment: |
+          DAC channel 1 control register
+        children:
+          - field:
+              name: data
+              range: 15-0
+              description: DAC data
+              comment: |
+                Write DAC data for channel
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+          - field:
+              name: wr
+              range: 16
+              description: Write DAC data to external CI
+              comment: |
+                write 0: nothing
+                write 1: DAC data written to external CI (auto-cleared)
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: MONOSTABLE
+                clock: dac_master_clk_i
+          - field:
+              name: reserved
+              range: 31-17
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+
+    - reg:
+        name: ch_2_sta
+        width: 32
+        access: ro
+        description: Channel 2 status register
+        address: 0x00000118
+        comment: |
+          Channel 2 status register
+        children:
+          - field:
+              name: amp_iflag_l
+              range: 0
+              description: Amplifier Left Current Limit Flag (IFLAG_L)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_l
+              range: 1
+              description: Amplifier Left Thermal Limit Flag (TFLAG_L)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_iflag_r
+              range: 2
+              description: Amplifier Right Current Limit Flag (IFLAG_R)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_r
+              range: 3
+              description: Amplifier Right Thermal Limit Flag (TFLAG_R)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-4
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: SLV
+    - reg:
+        name: ch_2_ctl
+        width: 32
+        access: rw
+        description: Channel 2 control register
+        address: 0x0000011C
+        comment: |
+          Channel 2 control register
+        children:
+          - field:
+              name: amp_en
+              range: 0
+              description: Amplifier Enable
+              comment: |
+                write 0: disable amplifier
+                write 1: enable amplifier
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-1
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_2_dac
+        width: 32
+        access: rw
+        description: DAC channel 2 control register
+        address: 0x00000120
+        comment: |
+          DAC channel 2 control register
+        children:
+          - field:
+              name: data
+              range: 15-0
+              description: DAC data
+              comment: |
+                Write DAC data for channel
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+          - field:
+              name: wr
+              range: 16
+              description: Write DAC data to external CI
+              comment: |
+                write 0: nothing
+                write 1: DAC data written to external CI (auto-cleared)
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: MONOSTABLE
+                clock: dac_master_clk_i
+          - field:
+              name: reserved
+              range: 31-17
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+
+    - reg:
+        name: ch_3_sta
+        width: 32
+        access: ro
+        description: Channel 3 status register
+        address: 0x00000124
+        comment: |
+          Channel 3 status register
+        children:
+          - field:
+              name: amp_iflag_l
+              range: 0
+              description: Amplifier Left Current Limit Flag (IFLAG_L)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_l
+              range: 1
+              description: Amplifier Left Thermal Limit Flag (TFLAG_L)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_iflag_r
+              range: 2
+              description: Amplifier Right Current Limit Flag (IFLAG_R)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_r
+              range: 3
+              description: Amplifier Right Thermal Limit Flag (TFLAG_R)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-4
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: SLV
+    - reg:
+        name: ch_3_ctl
+        width: 32
+        access: rw
+        description: Channel 3 control register
+        address: 0x00000128
+        comment: |
+          Channel 3 control register
+        children:
+          - field:
+              name: amp_en
+              range: 0
+              description: Amplifier Enable
+              comment: |
+                write 0: disable amplifier
+                write 1: enable amplifier
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-1
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_3_dac
+        width: 32
+        access: rw
+        description: DAC channel 3 control register
+        address: 0x0000012C
+        comment: |
+          DAC channel 3 control register
+        children:
+          - field:
+              name: data
+              range: 15-0
+              description: DAC data
+              comment: |
+                Write DAC data for channel
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+          - field:
+              name: wr
+              range: 16
+              description: Write DAC data to external CI
+              comment: |
+                write 0: nothing
+                write 1: DAC data written to external CI (auto-cleared)
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: MONOSTABLE
+                clock: dac_master_clk_i
+          - field:
+              name: reserved
+              range: 31-17
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+
+    - reg:
+        name: ch_4_sta
+        width: 32
+        access: ro
+        description: Channel 4 status register
+        address: 0x00000130
+        comment: |
+          Channel 4 status register
+        children:
+          - field:
+              name: amp_iflag_l
+              range: 0
+              description: Amplifier Left Current Limit Flag (IFLAG_L)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_l
+              range: 1
+              description: Amplifier Left Thermal Limit Flag (TFLAG_L)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_iflag_r
+              range: 2
+              description: Amplifier Right Current Limit Flag (IFLAG_R)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_r
+              range: 3
+              description: Amplifier Right Thermal Limit Flag (TFLAG_R)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-4
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: SLV
+    - reg:
+        name: ch_4_ctl
+        width: 32
+        access: rw
+        description: Channel 4 control register
+        address: 0x00000134
+        comment: |
+          Channel 4 control register
+        children:
+          - field:
+              name: amp_en
+              range: 0
+              description: Amplifier Enable
+              comment: |
+                write 0: disable amplifier
+                write 1: enable amplifier
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-1
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_4_dac
+        width: 32
+        access: rw
+        description: DAC channel 4 control register
+        address: 0x00000138
+        comment: |
+          DAC channel 4 control register
+        children:
+          - field:
+              name: data
+              range: 15-0
+              description: DAC data
+              comment: |
+                Write DAC data for channel
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+          - field:
+              name: wr
+              range: 16
+              description: Write DAC data to external CI
+              comment: |
+                write 0: nothing
+                write 1: DAC data written to external CI (auto-cleared)
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: MONOSTABLE
+                clock: dac_master_clk_i
+          - field:
+              name: reserved
+              range: 31-17
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+
+    - reg:
+        name: ch_5_sta
+        width: 32
+        access: ro
+        description: Channel 5 status register
+        address: 0x0000013C
+        comment: |
+          Channel 5 status register
+        children:
+          - field:
+              name: amp_iflag_l
+              range: 0
+              description: Amplifier Left Current Limit Flag (IFLAG_L)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_l
+              range: 1
+              description: Amplifier Left Thermal Limit Flag (TFLAG_L)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_iflag_r
+              range: 2
+              description: Amplifier Right Current Limit Flag (IFLAG_R)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_r
+              range: 3
+              description: Amplifier Right Thermal Limit Flag (TFLAG_R)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-4
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: SLV
+    - reg:
+        name: ch_5_ctl
+        width: 32
+        access: rw
+        description: Channel 5 control register
+        address: 0x00000140
+        comment: |
+          Channel 5 control register
+        children:
+          - field:
+              name: amp_en
+              range: 0
+              description: Amplifier Enable
+              comment: |
+                write 0: disable amplifier
+                write 1: enable amplifier
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-1
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_5_dac
+        width: 32
+        access: rw
+        description: DAC channel 5 control register
+        address: 0x00000144
+        comment: |
+          DAC channel 5 control register
+        children:
+          - field:
+              name: data
+              range: 15-0
+              description: DAC data
+              comment: |
+                Write DAC data for channel
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+          - field:
+              name: wr
+              range: 16
+              description: Write DAC data to external CI
+              comment: |
+                write 0: nothing
+                write 1: DAC data written to external CI (auto-cleared)
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: MONOSTABLE
+                clock: dac_master_clk_i
+          - field:
+              name: reserved
+              range: 31-17
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+
+    - reg:
+        name: ch_6_sta
+        width: 32
+        access: ro
+        description: Channel 6 status register
+        address: 0x00000148
+        comment: |
+          Channel 6 status register
+        children:
+          - field:
+              name: amp_iflag_l
+              range: 0
+              description: Amplifier Left Current Limit Flag (IFLAG_L)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_l
+              range: 1
+              description: Amplifier Left Thermal Limit Flag (TFLAG_L)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_iflag_r
+              range: 2
+              description: Amplifier Right Current Limit Flag (IFLAG_R)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_r
+              range: 3
+              description: Amplifier Right Thermal Limit Flag (TFLAG_R)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-4
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: SLV
+    - reg:
+        name: ch_6_ctl
+        width: 32
+        access: rw
+        description: Channel 6 control register
+        address: 0x0000014C
+        comment: |
+          Channel 6 control register
+        children:
+          - field:
+              name: amp_en
+              range: 0
+              description: Amplifier Enable
+              comment: |
+                write 0: disable amplifier
+                write 1: enable amplifier
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-1
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_6_dac
+        width: 32
+        access: rw
+        description: DAC channel 6 control register
+        address: 0x00000150
+        comment: |
+          DAC channel 6 control register
+        children:
+          - field:
+              name: data
+              range: 15-0
+              description: DAC data
+              comment: |
+                Write DAC data for channel
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+          - field:
+              name: wr
+              range: 16
+              description: Write DAC data to external CI
+              comment: |
+                write 0: nothing
+                write 1: DAC data written to external CI (auto-cleared)
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: MONOSTABLE
+                clock: dac_master_clk_i
+          - field:
+              name: reserved
+              range: 31-17
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+
+    - reg:
+        name: ch_7_sta
+        width: 32
+        access: ro
+        description: Channel 7 status register
+        address: 0x00000154
+        comment: |
+          Channel 7 status register
+        children:
+          - field:
+              name: amp_iflag_l
+              range: 0
+              description: Amplifier Left Current Limit Flag (IFLAG_L)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_l
+              range: 1
+              description: Amplifier Left Thermal Limit Flag (TFLAG_L)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_iflag_r
+              range: 2
+              description: Amplifier Right Current Limit Flag (IFLAG_R)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_r
+              range: 3
+              description: Amplifier Right Thermal Limit Flag (TFLAG_R)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-4
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: SLV
+    - reg:
+        name: ch_7_ctl
+        width: 32
+        access: rw
+        description: Channel 7 control register
+        address: 0x00000158
+        comment: |
+          Channel 7 control register
+        children:
+          - field:
+              name: amp_en
+              range: 0
+              description: Amplifier Enable
+              comment: |
+                write 0: disable amplifier
+                write 1: enable amplifier
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-1
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_7_dac
+        width: 32
+        access: rw
+        description: DAC channel 7 control register
+        address: 0x0000015C
+        comment: |
+          DAC channel 7 control register
+        children:
+          - field:
+              name: data
+              range: 15-0
+              description: DAC data
+              comment: |
+                Write DAC data for channel
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+          - field:
+              name: wr
+              range: 16
+              description: Write DAC data to external CI
+              comment: |
+                write 0: nothing
+                write 1: DAC data written to external CI (auto-cleared)
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: MONOSTABLE
+                clock: dac_master_clk_i
+          - field:
+              name: reserved
+              range: 31-17
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+
+    - reg:
+        name: ch_8_sta
+        width: 32
+        access: ro
+        description: Channel 8 status register
+        address: 0x00000160
+        comment: |
+          Channel 8 status register
+        children:
+          - field:
+              name: amp_iflag_l
+              range: 0
+              description: Amplifier Left Current Limit Flag (IFLAG_L)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_l
+              range: 1
+              description: Amplifier Left Thermal Limit Flag (TFLAG_L)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_iflag_r
+              range: 2
+              description: Amplifier Right Current Limit Flag (IFLAG_R)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_r
+              range: 3
+              description: Amplifier Right Thermal Limit Flag (TFLAG_R)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-4
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: SLV
+    - reg:
+        name: ch_8_ctl
+        width: 32
+        access: rw
+        description: Channel 8 control register
+        address: 0x00000164
+        comment: |
+          Channel 8 control register
+        children:
+          - field:
+              name: amp_en
+              range: 0
+              description: Amplifier Enable
+              comment: |
+                write 0: disable amplifier
+                write 1: enable amplifier
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-1
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_8_dac
+        width: 32
+        access: rw
+        description: DAC channel 8 control register
+        address: 0x00000168
+        comment: |
+          DAC channel 8 control register
+        children:
+          - field:
+              name: data
+              range: 15-0
+              description: DAC data
+              comment: |
+                Write DAC data for channel
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+          - field:
+              name: wr
+              range: 16
+              description: Write DAC data to external CI
+              comment: |
+                write 0: nothing
+                write 1: DAC data written to external CI (auto-cleared)
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: MONOSTABLE
+                clock: dac_master_clk_i
+          - field:
+              name: reserved
+              range: 31-17
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+
+    - reg:
+        name: ch_9_sta
+        width: 32
+        access: ro
+        description: Channel 9 status register
+        address: 0x0000016C
+        comment: |
+          Channel 9 status register
+        children:
+          - field:
+              name: amp_iflag_l
+              range: 0
+              description: Amplifier Left Current Limit Flag (IFLAG_L)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_l
+              range: 1
+              description: Amplifier Left Thermal Limit Flag (TFLAG_L)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_iflag_r
+              range: 2
+              description: Amplifier Right Current Limit Flag (IFLAG_R)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_r
+              range: 3
+              description: Amplifier Right Thermal Limit Flag (TFLAG_R)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-4
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: SLV
+    - reg:
+        name: ch_9_ctl
+        width: 32
+        access: rw
+        description: Channel 9 control register
+        address: 0x00000170
+        comment: |
+          Channel 9 control register
+        children:
+          - field:
+              name: amp_en
+              range: 0
+              description: Amplifier Enable
+              comment: |
+                write 0: disable amplifier
+                write 1: enable amplifier
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-1
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_9_dac
+        width: 32
+        access: rw
+        description: DAC channel 9 control register
+        address: 0x00000174
+        comment: |
+          DAC channel 9 control register
+        children:
+          - field:
+              name: data
+              range: 15-0
+              description: DAC data
+              comment: |
+                Write DAC data for channel
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+          - field:
+              name: wr
+              range: 16
+              description: Write DAC data to external CI
+              comment: |
+                write 0: nothing
+                write 1: DAC data written to external CI (auto-cleared)
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: MONOSTABLE
+                clock: dac_master_clk_i
+          - field:
+              name: reserved
+              range: 31-17
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+
+    - reg:
+        name: ch_10_sta
+        width: 32
+        access: ro
+        description: Channel 10 status register
+        address: 0x00000178
+        comment: |
+          Channel 10 status register
+        children:
+          - field:
+              name: amp_iflag_l
+              range: 0
+              description: Amplifier Left Current Limit Flag (IFLAG_L)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_l
+              range: 1
+              description: Amplifier Left Thermal Limit Flag (TFLAG_L)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_iflag_r
+              range: 2
+              description: Amplifier Right Current Limit Flag (IFLAG_R)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_r
+              range: 3
+              description: Amplifier Right Thermal Limit Flag (TFLAG_R)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-4
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: SLV
+    - reg:
+        name: ch_10_ctl
+        width: 32
+        access: rw
+        description: Channel 10 control register
+        address: 0x0000017C
+        comment: |
+          Channel 10 control register
+        children:
+          - field:
+              name: amp_en
+              range: 0
+              description: Amplifier Enable
+              comment: |
+                write 0: disable amplifier
+                write 1: enable amplifier
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-1
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_10_dac
+        width: 32
+        access: rw
+        description: DAC channel 10 control register
+        address: 0x00000180
+        comment: |
+          DAC channel 10 control register
+        children:
+          - field:
+              name: data
+              range: 15-0
+              description: DAC data
+              comment: |
+                Write DAC data for channel
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+          - field:
+              name: wr
+              range: 16
+              description: Write DAC data to external CI
+              comment: |
+                write 0: nothing
+                write 1: DAC data written to external CI (auto-cleared)
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: MONOSTABLE
+                clock: dac_master_clk_i
+          - field:
+              name: reserved
+              range: 31-17
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+
+    - reg:
+        name: ch_11_sta
+        width: 32
+        access: ro
+        description: Channel 11 status register
+        address: 0x00000184
+        comment: |
+          Channel 11 status register
+        children:
+          - field:
+              name: amp_iflag_l
+              range: 0
+              description: Amplifier Left Current Limit Flag (IFLAG_L)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_l
+              range: 1
+              description: Amplifier Left Thermal Limit Flag (TFLAG_L)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_iflag_r
+              range: 2
+              description: Amplifier Right Current Limit Flag (IFLAG_R)
+              comment: |
+                read 0: current above limit
+                read 1: current under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: amp_tflag_r
+              range: 3
+              description: Amplifier Right Thermal Limit Flag (TFLAG_R)
+              comment: |
+                read 0: temperature above limit
+                read 1: temperature under limit
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-4
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: SLV
+    - reg:
+        name: ch_11_ctl
+        width: 32
+        access: rw
+        description: Channel 11 control register
+        address: 0x00000188
+        comment: |
+          Channel 11 control register
+        children:
+          - field:
+              name: amp_en
+              range: 0
+              description: Amplifier Enable
+              comment: |
+                write 0: disable amplifier
+                write 1: enable amplifier
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: reserved
+              range: 31-1
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_11_dac
+        width: 32
+        access: rw
+        description: DAC channel 11 control register
+        address: 0x0000018C
+        comment: |
+          DAC channel 11 control register
+        children:
+          - field:
+              name: data
+              range: 15-0
+              description: DAC data
+              comment: |
+                Write DAC data for channel
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+          - field:
+              name: wr
+              range: 16
+              description: Write DAC data to external CI
+              comment: |
+                write 0: nothing
+                write 1: DAC data written to external CI (auto-cleared)
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: MONOSTABLE
+                clock: dac_master_clk_i
+          - field:
+              name: reserved
+              range: 31-17
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+                clock: dac_master_clk_i
+
