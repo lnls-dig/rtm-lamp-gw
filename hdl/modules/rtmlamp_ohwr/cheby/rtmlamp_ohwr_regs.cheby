@@ -1,6 +1,6 @@
 memory-map:
   bus: wb-32-be
-  name: regs
+  name: rtmlamp_ohwr_regs
   description: RTM LAMP registers
   comment: |
     Wishbone slave for RTM LAMP core
