@@ -24,8 +24,8 @@ use ieee.numeric_std.all;
 use work.rtm_lamp_pkg.all;
 -- Wishbone definitions
 use work.wishbone_pkg.all;
--- RTM LAMP register definitions
-use work.wb_rtmlamp_ohwr_regs_pkg.all;
+-- reduce OR
+use work.gencores_pkg.all;
 
 entity xwb_rtmlamp_ohwr is
 generic (
@@ -165,18 +165,50 @@ architecture rtl of xwb_rtmlamp_ohwr is
   -- General Constants
   -----------------------------
   -- Number of bits in Wishbone register interface. Plus 2 to account for BYTE addressing
-  constant c_PERIPH_ADDR_SIZE               : natural := 6+2;
+  constant c_PERIPH_ADDR_SIZE               : natural := 7+2;
   -- Maximum number os channels
   constant c_MAX_CHANNELS                   : natural := 12;
 
   -----------------------------
   -- RTM signals
   -----------------------------
+  signal dac_data                           : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal dac_start                          : std_logic;
+  signal dac_data_from_wb                   : std_logic;
+  signal dac_data_wb                        : t_16b_word_array(c_MAX_CHANNELS-1 downto 0) := (others => (others =>'0'));
+  signal dac_wr_wb                          : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
+
   signal amp_iflag_l                        : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
   signal amp_tflag_l                        : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
   signal amp_iflag_r                        : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
   signal amp_tflag_r                        : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
   signal amp_en_ch                          : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
+
+  type wb_channel_in_regs is record
+    sta_amp_iflag_l  : std_logic;
+    sta_amp_tflag_l  : std_logic;
+    sta_amp_iflag_r  : std_logic;
+    sta_amp_tflag_r  : std_logic;
+  end record;
+
+  type wb_channel_in_regs_array is array(natural range <>) of wb_channel_in_regs;
+
+  type wb_channel_out_regs is record
+    ctl_amp_en    : std_logic;
+    dac_data      : t_16b_word;
+    dac_wr        : std_logic;
+  end record;
+
+  type wb_channel_out_regs_array is array(natural range <>) of wb_channel_out_regs;
+
+  type wb_out_regs is record
+    dac_data_from_wb  : std_logic;
+  end record;
+
+  signal wb_regs_channel_in                     : wb_channel_in_regs_array(c_MAX_CHANNELS-1 downto 0);
+  signal wb_regs_channel_out                    : wb_channel_out_regs_array(c_MAX_CHANNELS-1 downto 0);
+
+  signal wb_regs_out                            : wb_out_regs;
 
   -----------------------------
   -- Wishbone slave adapter signals/structures
@@ -184,9 +216,6 @@ architecture rtl of xwb_rtmlamp_ohwr is
   signal wb_slv_adp_out                      : t_wishbone_master_out;
   signal wb_slv_adp_in                       : t_wishbone_master_in;
   signal resized_addr                        : std_logic_vector(c_wishbone_address_width-1 downto 0);
-
-  signal rtmlamp_ohwr_regs_in                : t_rtmlamp_ohwr_regs_master_in;
-  signal rtmlamp_ohwr_regs_out               : t_rtmlamp_ohwr_regs_master_out;
 
   -- Extra Wishbone registering stage
   signal wb_slave_in                         : t_wishbone_slave_in_array (0 downto 0);
@@ -281,10 +310,10 @@ begin
   cmp_slave_adapter : wb_slave_adapter
   generic map (
     g_master_use_struct                      => true,
-    -- Cheby register map requires mode to be PIPELINED
+    -- Cheby with WBGEN register map requires mode to be PIPELINED
     g_master_mode                            => PIPELINED,
-    -- Cheby register map requires granularity to be BYTE
-    g_master_granularity                     => BYTE,
+    -- Cheby with WBGEN register map requires granularity to be WORD
+    g_master_granularity                     => WORD,
     g_slave_use_struct                       => false,
     g_slave_mode                             => c_WB_GENERICS.slave_mode,
     g_slave_granularity                      => c_WB_GENERICS.slave_granularity
@@ -323,89 +352,146 @@ begin
   cmp_rtmlamp_regs : entity work.wb_rtmlamp_ohwr_regs
     port map (
       rst_n_i                                => rst_n_i,
-      clk_i                                  => clk_i,
-      wb_i                                   => wb_slv_adp_out,
-      wb_o                                   => wb_slv_adp_in,
-      rtmlamp_ohwr_regs_i                    => rtmlamp_ohwr_regs_in,
-      rtmlamp_ohwr_regs_o                    => rtmlamp_ohwr_regs_out
+      clk_sys_i                              => clk_i,
+      wb_adr_i                               => wb_slv_adp_out.adr(6 downto 0),
+      wb_dat_i                               => wb_slv_adp_out.dat,
+      wb_dat_o                               => wb_slv_adp_in.dat,
+      wb_cyc_i                               => wb_slv_adp_out.cyc,
+      wb_sel_i                               => wb_slv_adp_out.sel,
+      wb_stb_i                               => wb_slv_adp_out.stb,
+      wb_we_i                                => wb_slv_adp_out.we,
+      wb_ack_o                               => wb_slv_adp_in.ack,
+      wb_stall_o                             => wb_slv_adp_in.stall,
+      dac_master_clk_i                       => clk_master_dac_i,
+
+      regs_sta_reserved_i                    => (others => '0'),
+
+      regs_ctl_dac_data_from_wb_o            => wb_regs_out.dac_data_from_wb,
+      regs_ctl_reserved_i                    => (others => '0'),
+
+      regs_ch_0_sta_amp_iflag_l_i            => wb_regs_channel_in(0).sta_amp_iflag_l,
+      regs_ch_0_sta_amp_tflag_l_i            => wb_regs_channel_in(0).sta_amp_tflag_l,
+      regs_ch_0_sta_amp_iflag_r_i            => wb_regs_channel_in(0).sta_amp_iflag_r,
+      regs_ch_0_sta_amp_tflag_r_i            => wb_regs_channel_in(0).sta_amp_tflag_r,
+      regs_ch_0_sta_reserved_i               => (others => '0'),
+      regs_ch_0_ctl_amp_en_o                 => wb_regs_channel_out(0).ctl_amp_en,
+      regs_ch_0_dac_data_o                   => wb_regs_channel_out(0).dac_data,
+      regs_ch_0_dac_wr_o                     => wb_regs_channel_out(0).dac_wr,
+      regs_ch_1_sta_amp_iflag_l_i            => wb_regs_channel_in(1).sta_amp_iflag_l,
+      regs_ch_1_sta_amp_tflag_l_i            => wb_regs_channel_in(1).sta_amp_tflag_l,
+      regs_ch_1_sta_amp_iflag_r_i            => wb_regs_channel_in(1).sta_amp_iflag_r,
+      regs_ch_1_sta_amp_tflag_r_i            => wb_regs_channel_in(1).sta_amp_tflag_r,
+      regs_ch_1_sta_reserved_i               => (others => '0'),
+      regs_ch_1_ctl_amp_en_o                 => wb_regs_channel_out(1).ctl_amp_en,
+      regs_ch_1_dac_data_o                   => wb_regs_channel_out(1).dac_data,
+      regs_ch_1_dac_wr_o                     => wb_regs_channel_out(1).dac_wr,
+      regs_ch_2_sta_amp_iflag_l_i            => wb_regs_channel_in(2).sta_amp_iflag_l,
+      regs_ch_2_sta_amp_tflag_l_i            => wb_regs_channel_in(2).sta_amp_tflag_l,
+      regs_ch_2_sta_amp_iflag_r_i            => wb_regs_channel_in(2).sta_amp_iflag_r,
+      regs_ch_2_sta_amp_tflag_r_i            => wb_regs_channel_in(2).sta_amp_tflag_r,
+      regs_ch_2_sta_reserved_i               => (others => '0'),
+      regs_ch_2_ctl_amp_en_o                 => wb_regs_channel_out(2).ctl_amp_en,
+      regs_ch_2_dac_data_o                   => wb_regs_channel_out(2).dac_data,
+      regs_ch_2_dac_wr_o                     => wb_regs_channel_out(2).dac_wr,
+      regs_ch_3_sta_amp_iflag_l_i            => wb_regs_channel_in(3).sta_amp_iflag_l,
+      regs_ch_3_sta_amp_tflag_l_i            => wb_regs_channel_in(3).sta_amp_tflag_l,
+      regs_ch_3_sta_amp_iflag_r_i            => wb_regs_channel_in(3).sta_amp_iflag_r,
+      regs_ch_3_sta_amp_tflag_r_i            => wb_regs_channel_in(3).sta_amp_tflag_r,
+      regs_ch_3_sta_reserved_i               => (others => '0'),
+      regs_ch_3_ctl_amp_en_o                 => wb_regs_channel_out(3).ctl_amp_en,
+      regs_ch_3_dac_data_o                   => wb_regs_channel_out(3).dac_data,
+      regs_ch_3_dac_wr_o                     => wb_regs_channel_out(3).dac_wr,
+      regs_ch_4_sta_amp_iflag_l_i            => wb_regs_channel_in(4).sta_amp_iflag_l,
+      regs_ch_4_sta_amp_tflag_l_i            => wb_regs_channel_in(4).sta_amp_tflag_l,
+      regs_ch_4_sta_amp_iflag_r_i            => wb_regs_channel_in(4).sta_amp_iflag_r,
+      regs_ch_4_sta_amp_tflag_r_i            => wb_regs_channel_in(4).sta_amp_tflag_r,
+      regs_ch_4_sta_reserved_i               => (others => '0'),
+      regs_ch_4_ctl_amp_en_o                 => wb_regs_channel_out(4).ctl_amp_en,
+      regs_ch_4_dac_data_o                   => wb_regs_channel_out(4).dac_data,
+      regs_ch_4_dac_wr_o                     => wb_regs_channel_out(4).dac_wr,
+      regs_ch_5_sta_amp_iflag_l_i            => wb_regs_channel_in(5).sta_amp_iflag_l,
+      regs_ch_5_sta_amp_tflag_l_i            => wb_regs_channel_in(5).sta_amp_tflag_l,
+      regs_ch_5_sta_amp_iflag_r_i            => wb_regs_channel_in(5).sta_amp_iflag_r,
+      regs_ch_5_sta_amp_tflag_r_i            => wb_regs_channel_in(5).sta_amp_tflag_r,
+      regs_ch_5_sta_reserved_i               => (others => '0'),
+      regs_ch_5_ctl_amp_en_o                 => wb_regs_channel_out(5).ctl_amp_en,
+      regs_ch_5_dac_data_o                   => wb_regs_channel_out(5).dac_data,
+      regs_ch_5_dac_wr_o                     => wb_regs_channel_out(5).dac_wr,
+      regs_ch_6_sta_amp_iflag_l_i            => wb_regs_channel_in(6).sta_amp_iflag_l,
+      regs_ch_6_sta_amp_tflag_l_i            => wb_regs_channel_in(6).sta_amp_tflag_l,
+      regs_ch_6_sta_amp_iflag_r_i            => wb_regs_channel_in(6).sta_amp_iflag_r,
+      regs_ch_6_sta_amp_tflag_r_i            => wb_regs_channel_in(6).sta_amp_tflag_r,
+      regs_ch_6_sta_reserved_i               => (others => '0'),
+      regs_ch_6_ctl_amp_en_o                 => wb_regs_channel_out(6).ctl_amp_en,
+      regs_ch_6_dac_data_o                   => wb_regs_channel_out(6).dac_data,
+      regs_ch_6_dac_wr_o                     => wb_regs_channel_out(6).dac_wr,
+      regs_ch_7_sta_amp_iflag_l_i            => wb_regs_channel_in(7).sta_amp_iflag_l,
+      regs_ch_7_sta_amp_tflag_l_i            => wb_regs_channel_in(7).sta_amp_tflag_l,
+      regs_ch_7_sta_amp_iflag_r_i            => wb_regs_channel_in(7).sta_amp_iflag_r,
+      regs_ch_7_sta_amp_tflag_r_i            => wb_regs_channel_in(7).sta_amp_tflag_r,
+      regs_ch_7_sta_reserved_i               => (others => '0'),
+      regs_ch_7_ctl_amp_en_o                 => wb_regs_channel_out(7).ctl_amp_en,
+      regs_ch_7_dac_data_o                   => wb_regs_channel_out(7).dac_data,
+      regs_ch_7_dac_wr_o                     => wb_regs_channel_out(7).dac_wr,
+      regs_ch_8_sta_amp_iflag_l_i            => wb_regs_channel_in(8).sta_amp_iflag_l,
+      regs_ch_8_sta_amp_tflag_l_i            => wb_regs_channel_in(8).sta_amp_tflag_l,
+      regs_ch_8_sta_amp_iflag_r_i            => wb_regs_channel_in(8).sta_amp_iflag_r,
+      regs_ch_8_sta_amp_tflag_r_i            => wb_regs_channel_in(8).sta_amp_tflag_r,
+      regs_ch_8_sta_reserved_i               => (others => '0'),
+      regs_ch_8_ctl_amp_en_o                 => wb_regs_channel_out(8).ctl_amp_en,
+      regs_ch_8_dac_data_o                   => wb_regs_channel_out(8).dac_data,
+      regs_ch_8_dac_wr_o                     => wb_regs_channel_out(8).dac_wr,
+      regs_ch_9_sta_amp_iflag_l_i            => wb_regs_channel_in(9).sta_amp_iflag_l,
+      regs_ch_9_sta_amp_tflag_l_i            => wb_regs_channel_in(9).sta_amp_tflag_l,
+      regs_ch_9_sta_amp_iflag_r_i            => wb_regs_channel_in(9).sta_amp_iflag_r,
+      regs_ch_9_sta_amp_tflag_r_i            => wb_regs_channel_in(9).sta_amp_tflag_r,
+      regs_ch_9_sta_reserved_i               => (others => '0'),
+      regs_ch_9_ctl_amp_en_o                 => wb_regs_channel_out(9).ctl_amp_en,
+      regs_ch_9_dac_data_o                   => wb_regs_channel_out(9).dac_data,
+      regs_ch_9_dac_wr_o                     => wb_regs_channel_out(9).dac_wr,
+      regs_ch_10_sta_amp_iflag_l_i           => wb_regs_channel_in(10).sta_amp_iflag_l,
+      regs_ch_10_sta_amp_tflag_l_i           => wb_regs_channel_in(10).sta_amp_tflag_l,
+      regs_ch_10_sta_amp_iflag_r_i           => wb_regs_channel_in(10).sta_amp_iflag_r,
+      regs_ch_10_sta_amp_tflag_r_i           => wb_regs_channel_in(10).sta_amp_tflag_r,
+      regs_ch_10_sta_reserved_i              => (others => '0'),
+      regs_ch_10_ctl_amp_en_o                => wb_regs_channel_out(10).ctl_amp_en,
+      regs_ch_10_dac_data_o                  => wb_regs_channel_out(10).dac_data,
+      regs_ch_10_dac_wr_o                    => wb_regs_channel_out(10).dac_wr,
+      regs_ch_11_sta_amp_iflag_l_i           => wb_regs_channel_in(11).sta_amp_iflag_l,
+      regs_ch_11_sta_amp_tflag_l_i           => wb_regs_channel_in(11).sta_amp_tflag_l,
+      regs_ch_11_sta_amp_iflag_r_i           => wb_regs_channel_in(11).sta_amp_iflag_r,
+      regs_ch_11_sta_amp_tflag_r_i           => wb_regs_channel_in(11).sta_amp_tflag_r,
+      regs_ch_11_sta_reserved_i              => (others => '0'),
+      regs_ch_11_ctl_amp_en_o                => wb_regs_channel_out(11).ctl_amp_en,
+      regs_ch_11_dac_data_o                  => wb_regs_channel_out(11).dac_data,
+      regs_ch_11_dac_wr_o                    => wb_regs_channel_out(11).dac_wr
     );
 
   -- Why can't this be nicer? All I want is a record with a record of arrays...
   -- I want to be able to do: rtmlamp_ohwr_regs_in.ch_sta[0].amp_iflag_l
-  rtmlamp_ohwr_regs_in.ch_0_sta_amp_iflag_l  <= amp_iflag_l(0);
-  rtmlamp_ohwr_regs_in.ch_0_sta_amp_tflag_l  <= amp_tflag_l(0);
-  rtmlamp_ohwr_regs_in.ch_0_sta_amp_iflag_r  <= amp_iflag_r(0);
-  rtmlamp_ohwr_regs_in.ch_0_sta_amp_tflag_r  <= amp_tflag_r(0);
+  gen_amp_flags : for i in 0 to c_MAX_CHANNELS-1 generate
 
-  rtmlamp_ohwr_regs_in.ch_1_sta_amp_iflag_l  <= amp_iflag_l(1);
-  rtmlamp_ohwr_regs_in.ch_1_sta_amp_tflag_l  <= amp_tflag_l(1);
-  rtmlamp_ohwr_regs_in.ch_1_sta_amp_iflag_r  <= amp_iflag_r(1);
-  rtmlamp_ohwr_regs_in.ch_1_sta_amp_tflag_r  <= amp_tflag_r(1);
+    wb_regs_channel_in(i).sta_amp_iflag_l  <= amp_iflag_l(i);
+    wb_regs_channel_in(i).sta_amp_tflag_l  <= amp_tflag_l(i);
+    wb_regs_channel_in(i).sta_amp_iflag_r  <= amp_iflag_r(i);
+    wb_regs_channel_in(i).sta_amp_tflag_r  <= amp_tflag_r(i);
 
-  rtmlamp_ohwr_regs_in.ch_2_sta_amp_iflag_l  <= amp_iflag_l(2);
-  rtmlamp_ohwr_regs_in.ch_2_sta_amp_tflag_l  <= amp_tflag_l(2);
-  rtmlamp_ohwr_regs_in.ch_2_sta_amp_iflag_r  <= amp_iflag_r(2);
-  rtmlamp_ohwr_regs_in.ch_2_sta_amp_tflag_r  <= amp_tflag_r(2);
+    amp_en_ch(i)   <= wb_regs_channel_out(i).ctl_amp_en;
+    dac_data_wb(i) <= wb_regs_channel_out(i).dac_data;
+    dac_wr_wb(i)   <= wb_regs_channel_out(i).dac_wr;
 
-  rtmlamp_ohwr_regs_in.ch_3_sta_amp_iflag_l  <= amp_iflag_l(3);
-  rtmlamp_ohwr_regs_in.ch_3_sta_amp_tflag_l  <= amp_tflag_l(3);
-  rtmlamp_ohwr_regs_in.ch_3_sta_amp_iflag_r  <= amp_iflag_r(3);
-  rtmlamp_ohwr_regs_in.ch_3_sta_amp_tflag_r  <= amp_tflag_r(3);
+  end generate;
 
-  rtmlamp_ohwr_regs_in.ch_4_sta_amp_iflag_l  <= amp_iflag_l(4);
-  rtmlamp_ohwr_regs_in.ch_4_sta_amp_tflag_l  <= amp_tflag_l(4);
-  rtmlamp_ohwr_regs_in.ch_4_sta_amp_iflag_r  <= amp_iflag_r(4);
-  rtmlamp_ohwr_regs_in.ch_4_sta_amp_tflag_r  <= amp_tflag_r(4);
+  dac_data_from_wb <= wb_regs_out.dac_data_from_wb;
 
-  rtmlamp_ohwr_regs_in.ch_5_sta_amp_iflag_l  <= amp_iflag_l(5);
-  rtmlamp_ohwr_regs_in.ch_5_sta_amp_tflag_l  <= amp_tflag_l(5);
-  rtmlamp_ohwr_regs_in.ch_5_sta_amp_iflag_r  <= amp_iflag_r(5);
-  rtmlamp_ohwr_regs_in.ch_5_sta_amp_tflag_r  <= amp_tflag_r(5);
+  gen_dac_data_mux : for i in 0 to dac_data'length-1 generate
 
-  rtmlamp_ohwr_regs_in.ch_6_sta_amp_iflag_l  <= amp_iflag_l(6);
-  rtmlamp_ohwr_regs_in.ch_6_sta_amp_tflag_l  <= amp_tflag_l(6);
-  rtmlamp_ohwr_regs_in.ch_6_sta_amp_iflag_r  <= amp_iflag_r(6);
-  rtmlamp_ohwr_regs_in.ch_6_sta_amp_tflag_r  <= amp_tflag_r(6);
+    dac_data(i) <= dac_data_i(i) when dac_data_from_wb = '0' else
+                   dac_data_wb(i);
 
-  rtmlamp_ohwr_regs_in.ch_7_sta_amp_iflag_l  <= amp_iflag_l(7);
-  rtmlamp_ohwr_regs_in.ch_7_sta_amp_tflag_l  <= amp_tflag_l(7);
-  rtmlamp_ohwr_regs_in.ch_7_sta_amp_iflag_r  <= amp_iflag_r(7);
-  rtmlamp_ohwr_regs_in.ch_7_sta_amp_tflag_r  <= amp_tflag_r(7);
+  end generate;
 
-  rtmlamp_ohwr_regs_in.ch_8_sta_amp_iflag_l  <= amp_iflag_l(8);
-  rtmlamp_ohwr_regs_in.ch_8_sta_amp_tflag_l  <= amp_tflag_l(8);
-  rtmlamp_ohwr_regs_in.ch_8_sta_amp_iflag_r  <= amp_iflag_r(8);
-  rtmlamp_ohwr_regs_in.ch_8_sta_amp_tflag_r  <= amp_tflag_r(8);
-
-  rtmlamp_ohwr_regs_in.ch_9_sta_amp_iflag_l  <= amp_iflag_l(9);
-  rtmlamp_ohwr_regs_in.ch_9_sta_amp_tflag_l  <= amp_tflag_l(9);
-  rtmlamp_ohwr_regs_in.ch_9_sta_amp_iflag_r  <= amp_iflag_r(9);
-  rtmlamp_ohwr_regs_in.ch_9_sta_amp_tflag_r  <= amp_tflag_r(9);
-
-  rtmlamp_ohwr_regs_in.ch_10_sta_amp_iflag_l <= amp_iflag_l(10);
-  rtmlamp_ohwr_regs_in.ch_10_sta_amp_tflag_l <= amp_tflag_l(10);
-  rtmlamp_ohwr_regs_in.ch_10_sta_amp_iflag_r <= amp_iflag_r(10);
-  rtmlamp_ohwr_regs_in.ch_10_sta_amp_tflag_r <= amp_tflag_r(10);
-
-  rtmlamp_ohwr_regs_in.ch_11_sta_amp_iflag_l <= amp_iflag_l(11);
-  rtmlamp_ohwr_regs_in.ch_11_sta_amp_tflag_l <= amp_tflag_l(11);
-  rtmlamp_ohwr_regs_in.ch_11_sta_amp_iflag_r <= amp_iflag_r(11);
-  rtmlamp_ohwr_regs_in.ch_11_sta_amp_tflag_r <= amp_tflag_r(11);
-
-  -- Why can't this be nicer? All I want is a record with a record of arrays...
-  -- I want to be able to do: rtmlamp_ohwr_regs_out.ch_ctl[0].ctl_amp_en
-  amp_en_ch(0)  <= rtmlamp_ohwr_regs_out.ch_0_ctl_amp_en;
-  amp_en_ch(1)  <= rtmlamp_ohwr_regs_out.ch_1_ctl_amp_en;
-  amp_en_ch(2)  <= rtmlamp_ohwr_regs_out.ch_2_ctl_amp_en;
-  amp_en_ch(3)  <= rtmlamp_ohwr_regs_out.ch_3_ctl_amp_en;
-  amp_en_ch(4)  <= rtmlamp_ohwr_regs_out.ch_4_ctl_amp_en;
-  amp_en_ch(5)  <= rtmlamp_ohwr_regs_out.ch_5_ctl_amp_en;
-  amp_en_ch(6)  <= rtmlamp_ohwr_regs_out.ch_6_ctl_amp_en;
-  amp_en_ch(7)  <= rtmlamp_ohwr_regs_out.ch_7_ctl_amp_en;
-  amp_en_ch(8)  <= rtmlamp_ohwr_regs_out.ch_8_ctl_amp_en;
-  amp_en_ch(9)  <= rtmlamp_ohwr_regs_out.ch_9_ctl_amp_en;
-  amp_en_ch(10) <= rtmlamp_ohwr_regs_out.ch_10_ctl_amp_en;
-  amp_en_ch(11) <= rtmlamp_ohwr_regs_out.ch_11_ctl_amp_en;
+  dac_start <= dac_start_i when dac_data_from_wb = '0' else f_reduce_or(dac_wr_wb);
 
   -----------------------------
   -- RTM LAMP
@@ -501,8 +587,8 @@ begin
     ---------------------------------------------------------------------------
     -- DAC parallel interface
     ---------------------------------------------------------------------------
-    dac_start_i                                => dac_start_i,
-    dac_data_i                                 => dac_data_i,
+    dac_start_i                                => dac_start,
+    dac_data_i                                 => dac_data,
     dac_ready_o                                => dac_ready_o,
     dac_done_pp_o                              => dac_done_pp_o,
 
