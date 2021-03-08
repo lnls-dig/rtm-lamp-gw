@@ -391,6 +391,9 @@ architecture top of afc_rtm_lamp_ctrl is
   signal clk_aux                             : std_logic;
   signal clk_aux_rstn                        : std_logic;
   signal clk_aux_rst                         : std_logic;
+  signal clk_aux_raw                         : std_logic;
+  signal clk_aux_raw_rstn                    : std_logic;
+  signal clk_aux_raw_rst                     : std_logic;
   signal clk_link01_p                        : std_logic;
   signal clk_link01_n                        : std_logic;
   signal clk_200mhz                          : std_logic;
@@ -603,6 +606,9 @@ begin
       clk_aux_o                                => clk_aux,
       rst_aux_n_o                              => clk_aux_rstn,
 
+      clk_aux_raw_o                            => clk_aux_raw,
+      rst_aux_raw_n_o                          => clk_aux_raw_rstn,
+
       clk_200mhz_o                             => clk_200mhz,
       rst_200mhz_n_o                           => clk_200mhz_rstn,
 
@@ -654,6 +660,7 @@ begin
 
   pcb_rev_id <= (others => '0');
   clk_aux_rst <= not clk_aux_rstn;
+  clk_aux_raw_rst <= not clk_aux_raw_rstn;
 
   gen_wishbone_rtm_lamp_idx : for i in 0 to c_RTM_LAMP_NUM_CORES-1 generate
 
@@ -707,10 +714,8 @@ begin
   clk_master <= clk_200mhz;
   clk_master_rstn <= clk_200mhz_rstn;
 
-  -- FIXME! Clock aux is wrong here. We need TCLKA and not some
-  -- rational number of it.
-  clk_rtm_ref <= clk_trig_ref;
-  clk_rtm_ref_rstn <= clk_trig_ref_rstn;
+  clk_rtm_ref <= clk_aux_raw;
+  clk_rtm_ref_rstn <= clk_aux_raw_rstn;
 
   cmp_rtmlamp_ohwr : xwb_rtmlamp_ohwr
   generic map (
