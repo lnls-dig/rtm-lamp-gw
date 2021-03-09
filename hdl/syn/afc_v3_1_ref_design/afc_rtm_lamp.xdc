@@ -28,6 +28,34 @@ set clk_master                                                [get_clocks -of_ob
 set clk_master_period                                         [get_property PERIOD [get_clocks $clk_master]]
 
 #######################################################################
+##                          DIFF_TERM                                ##
+#######################################################################
+
+set_property DIFF_TERM TRUE                                   [get_ports rtmlamp_adc_octo_sck_ret_n_i]
+set_property DIFF_TERM TRUE                                   [get_ports rtmlamp_adc_octo_sck_ret_p_i]
+
+set_property DIFF_TERM TRUE                                   [get_ports rtmlamp_adc_octo_sdoa_n_i]
+set_property DIFF_TERM TRUE                                   [get_ports rtmlamp_adc_octo_sdoa_p_i]
+
+set_property DIFF_TERM TRUE                                   [get_ports rtmlamp_adc_octo_sdob_n_i]
+set_property DIFF_TERM TRUE                                   [get_ports rtmlamp_adc_octo_sdob_p_i]
+
+set_property DIFF_TERM TRUE                                   [get_ports rtmlamp_adc_octo_sdoc_n_i]
+set_property DIFF_TERM TRUE                                   [get_ports rtmlamp_adc_octo_sdoc_p_i]
+
+set_property DIFF_TERM TRUE                                   [get_ports rtmlamp_adc_octo_sdod_n_i]
+set_property DIFF_TERM TRUE                                   [get_ports rtmlamp_adc_octo_sdod_p_i]
+
+set_property DIFF_TERM TRUE                                   [get_ports rtmlamp_adc_quad_sck_ret_n_i]
+set_property DIFF_TERM TRUE                                   [get_ports rtmlamp_adc_quad_sck_ret_p_i]
+
+set_property DIFF_TERM TRUE                                   [get_ports rtmlamp_adc_quad_sdoa_n_i]
+set_property DIFF_TERM TRUE                                   [get_ports rtmlamp_adc_quad_sdoa_p_i]
+
+set_property DIFF_TERM TRUE                                   [get_ports rtmlamp_adc_quad_sdoc_n_i]
+set_property DIFF_TERM TRUE                                   [get_ports rtmlamp_adc_quad_sdoc_p_i]
+
+#######################################################################
 ##                          DELAYS                                   ##
 #######################################################################
 #
