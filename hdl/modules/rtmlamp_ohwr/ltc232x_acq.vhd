@@ -321,7 +321,7 @@ begin
           when IDLE =>
             ready <= '1';
 
-            if start_i = '1' then
+            if start_cnv = '1' then
               ready <= '0';
               state_ready <= WAIT_FOR_CONV;
             end if;
