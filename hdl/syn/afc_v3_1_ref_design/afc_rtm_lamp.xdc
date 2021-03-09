@@ -27,6 +27,10 @@ create_clock -period 10.000 -name virt_rtmlamp_adc_quad_sck_ret
 set clk_master                                                [get_clocks -of_objects [get_nets clk_200mhz]]
 set clk_master_period                                         [get_property PERIOD [get_clocks $clk_master]]
 
+# Get reference clocks for ADC/DAC/etc
+set clk_adcdac_ref                                            [get_clocks -of_objects [get_nets clk_aux_raw]]
+set clk_adcdac_ref_period                                     [get_property PERIOD [get_clocks $clk_adcdac_ref]]
+
 #######################################################################
 ##                          DIFF_TERM                                ##
 #######################################################################
@@ -141,12 +145,14 @@ set_max_delay -datapath_only -from               [get_clocks $clk_master]       
 # Give it 1x destination clock.
 set_max_delay -datapath_only -from               [get_clocks clk_aux] -to [get_clocks afc_link01_clk]    $afc_link01_clk_period
 set_max_delay -datapath_only -from               [get_clocks clk_aux] -to [get_clocks $clk_master]       $clk_master_period
+set_max_delay -datapath_only -from               [get_clocks $clk_adcdac_ref] -to [get_clocks $clk_master]   $clk_master_period
 
 # CDC between FS clocks and Clk Aux (trigger clock)
 # These are using pulse_synchronizer2 which is a full feedback sync.
 # Give it 1x destination clock.
-set_max_delay -datapath_only -from               [get_clocks afc_link01_clk] -to [get_clocks clk_aux]    $clk_aux_period
-set_max_delay -datapath_only -from               [get_clocks $clk_master]    -to [get_clocks clk_aux]    $clk_aux_period
+set_max_delay -datapath_only -from               [get_clocks afc_link01_clk] -to [get_clocks clk_aux]        $clk_aux_period
+set_max_delay -datapath_only -from               [get_clocks $clk_master]    -to [get_clocks clk_aux]        $clk_aux_period
+set_max_delay -datapath_only -from               [get_clocks $clk_master]    -to [get_clocks $clk_adcdac_ref]    $clk_adcdac_ref_period
 
 #######################################################################
 ##                      Placement Constraints                        ##
