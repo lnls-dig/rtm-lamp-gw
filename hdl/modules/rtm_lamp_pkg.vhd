@@ -95,6 +95,7 @@ package rtm_lamp_pkg is
     g_BITS                                   : natural := 16;
     g_CHANNELS                               : natural := 8;
     g_DATA_LINES                             : natural := 8;
+    g_CNV_HIGH                               : real    := 30.0e-9;
     g_CNV_WAIT                               : real    := 450.0e-9
     );
   port(

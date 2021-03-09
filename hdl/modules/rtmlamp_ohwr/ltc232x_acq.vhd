@@ -47,6 +47,8 @@ entity ltc232x_acq is
     -- Number of data lines
     g_DATA_LINES                             : natural := 8;
     -- Conversion wait time
+    g_CNV_HIGH                               : real    := 30.0e-9;
+    -- Conversion wait time
     g_CNV_WAIT                               : real    := 450.0e-9
     );
   port(
@@ -125,7 +127,7 @@ architecture ltc232x_acq_arch of ltc232x_acq is
   end f_get_clk_freq;
 
   constant c_WAIT_CONV_CYCLES                : natural := integer(ceil(g_CNV_WAIT * real(f_get_clk_freq(g_USE_REF_CLK_CNV))));
-  constant c_CONV_HIGH_CYCLES                : natural := integer(ceil(30.0e-9 * real(f_get_clk_freq(g_USE_REF_CLK_CNV))));
+  constant c_CONV_HIGH_CYCLES                : natural := integer(ceil(g_CNV_HIGH * real(f_get_clk_freq(g_USE_REF_CLK_CNV))));
 
   type t_state_conv is (IDLE, CONV_HIGH, WAIT_CONV);
   signal state_conv                               : t_state_conv := IDLE;
