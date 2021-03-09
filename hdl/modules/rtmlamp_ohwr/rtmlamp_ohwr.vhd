@@ -151,6 +151,8 @@ port (
 end rtmlamp_ohwr;
 
 architecture rtl of rtmlamp_ohwr is
+  constant c_ADC_CNV_HIGH                    : real := 30.0e-9; -- minimum of 30.0e-9
+  constant c_ADC_CNV_WAIT                    : real := 450.0e-9; -- minimum of 450.0e-9
 
   signal adc_octo_valid                      : std_logic;
   signal adc_quad_valid                      : std_logic;
@@ -195,7 +197,9 @@ begin
       g_REF_CLK_CNV_FREQ                   => g_REF_CLK_FREQ,
       g_USE_REF_CLK_CNV                    => g_USE_REF_CLK,
       g_CHANNELS                           => 8,
-      g_DATA_LINES                         => 4
+      g_DATA_LINES                         => 4,
+      g_CNV_HIGH                           => c_ADC_CNV_HIGH,
+      g_CNV_WAIT                           => c_ADC_CNV_WAIT
     )
     port map(
       clk_i                                => clk_master_adc_i,
@@ -306,7 +310,9 @@ begin
         g_REF_CLK_CNV_FREQ                   => g_REF_CLK_FREQ,
         g_USE_REF_CLK_CNV                    => g_USE_REF_CLK,
         g_CHANNELS                           => 4,
-        g_DATA_LINES                         => 2
+        g_DATA_LINES                         => 2,
+        g_CNV_HIGH                           => c_ADC_CNV_HIGH,
+        g_CNV_WAIT                           => c_ADC_CNV_WAIT
       )
       port map(
         clk_i                                => clk_master_adc_i,
