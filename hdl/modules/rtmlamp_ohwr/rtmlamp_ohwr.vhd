@@ -154,6 +154,8 @@ architecture rtl of rtmlamp_ohwr is
   constant c_ADC_CNV_HIGH                    : real := 30.0e-9; -- minimum of 30.0e-9
   constant c_ADC_CNV_WAIT                    : real := 450.0e-9; -- minimum of 450.0e-9
 
+  signal dac_ldac_n                          : std_logic;
+
   signal adc_octo_valid                      : std_logic;
   signal adc_quad_valid                      : std_logic;
 
@@ -162,6 +164,7 @@ architecture rtl of rtmlamp_ohwr is
 
   signal adc_octo_sck                        : std_logic;
   signal adc_octo_sck_ret                    : std_logic;
+  signal adc_octo_cnv                        : std_logic;
   signal adc_octo_sdoa                       : std_logic;
   signal adc_octo_sdob                       : std_logic;
   signal adc_octo_sdoc                       : std_logic;
@@ -210,7 +213,7 @@ begin
 
       start_i                              => adc_start_i,
 
-      cnv_o                                => adc_octo_cnv_o,
+      cnv_o                                => adc_octo_cnv,
       sck_o                                => adc_octo_sck,
       sck_ret_i                            => adc_octo_sck_ret,
       sdo1a_i                              => adc_octo_sdoa,
@@ -228,6 +231,12 @@ begin
       ch8_o                                => adc_data(7),
       valid_o                              => adc_octo_valid
     );
+
+  -- RTM LAMP has a retiming FF with the CNV signal
+  -- connected to the CLR_N pin, with an inverter after the Q
+  -- output pin, see retiming circuit at 232x datasheet, page 32.
+  -- So we must invert the CNV signal here.
+  adc_octo_cnv_o <= not adc_octo_cnv;
 
   ---------------------------------------------------------------------------
   --                              Buffers
@@ -418,10 +427,15 @@ begin
       ready_o                                => dac_ready_o,
       done_pp_o                              => dac_done_pp_o,
       dac_cs_n_o                             => dac_cs_n_o,
-      dac_ldac_n_o                           => dac_ldac_n_o,
+      dac_ldac_n_o                           => dac_ldac_n,
       dac_sck_o                              => dac_sck_o,
       dac_sdi_o                              => dac_sdi_o
     );
+
+  -- RTM LAMP has a retiming FF with the LDAC_N signal
+  -- connected to the CLR_N pin, with an inverter after the Q
+  -- output pin. So we must invert the LDAC_N signal here.
+  dac_ldac_n_o <= not dac_ldac_n;
 
   ---------------------------------------------------------------------------
   --                              Serial regs
