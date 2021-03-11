@@ -20,6 +20,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.math_real.all;
 
 use work.rtm_lamp_pkg.all;
 
@@ -27,39 +28,63 @@ entity rtm_lamp_model_tb is
 end rtm_lamp_model_tb;
 
 architecture rtm_lamp_model_tb_arch of rtm_lamp_model_tb is
-  type sample_vector is array(11 downto 0) of std_logic_vector(15 downto 0);
+  -- Frequency in Hz, Period in s
+  constant c_CLK_ADCDAC_MASTER_PERIOD : real := 5.0e-9;
+  constant c_CLK_ADCDAC_MASTER_PERIOD_HALF : real := c_CLK_ADCDAC_MASTER_PERIOD/2.0;
+  constant c_CLK_ADCDAC_MASTER_FREQ : natural := integer(floor(1.0/c_CLK_ADCDAC_MASTER_PERIOD));
+
+  constant c_CLK_SYS_PERIOD : real := 10.0e-9;
+  constant c_CLK_SYS_PERIOD_HALF : real := c_CLK_SYS_PERIOD/2.0;
+  constant c_CLK_SYS_FREQ : natural := integer(floor(1.0/c_CLK_SYS_PERIOD));
+
+  constant c_CLK_SCLK_PERIOD : real := 10.0e-9;
+  constant c_CLK_SCLK_PERIOD_HALF : real := c_CLK_SCLK_PERIOD/2.0;
+  constant c_CLK_SCLK_FREQ : natural := integer(floor(1.0/c_CLK_SCLK_PERIOD));
+
+  constant c_CLK_DAC_SCLK_PERIOD : real := 40.0e-9;
+  constant c_CLK_DAC_SCLK_PERIOD_HALF : real := c_CLK_DAC_SCLK_PERIOD/2.0;
+  constant c_CLK_DAC_SCLK_FREQ : natural := integer(floor(1.0/c_CLK_DAC_SCLK_PERIOD));
+
+  constant c_CLK_SERIAL_REGS_PERIOD : real := 10.0e-6;
+  constant c_CLK_SERIAL_REGS_PERIOD_HALF : real := c_CLK_SERIAL_REGS_PERIOD/2.0;
+  constant c_CLK_SERIAL_REGS_FREQ : natural := integer(floor(1.0/c_CLK_SERIAL_REGS_PERIOD));
+
+  constant c_CLK_SYNC_PERIOD : real := 14.42e-9;
+  constant c_CLK_SYNC_PERIOD_HALF : real := c_CLK_SYNC_PERIOD/2.0;
+  constant c_CLK_SYNC_FREQ : natural := integer(floor(1.0/c_CLK_SYNC_PERIOD));
+
   signal clk_sys           : std_logic := '0';
   signal rst_n             : std_logic := '0';
-  signal adc_dac_100mhz_clk: std_logic := '0';
-  signal dac_50mhz_clk     : std_logic := '0';
-  signal dac_samples       : sample_vector := (others => x"8000");
-  signal dac_samples_buf   : sample_vector := (others => x"8000");
-  signal adc_samples       : sample_vector := (others => x"0000");
-  signal adc_data_c1c2     : std_logic_vector(31 downto 0);
-  signal adc_data_c3c4     : std_logic_vector(31 downto 0);
-  signal adc_data_c5c6     : std_logic_vector(31 downto 0);
-  signal adc_data_c7c8     : std_logic_vector(31 downto 0);
-  signal adc_data_c9c10    : std_logic_vector(31 downto 0);
-  signal adc_data_c11c12   : std_logic_vector(31 downto 0);
-  signal adc_read_latch    : std_logic := '0';
-  signal rtm_lamp_sync_clk : std_logic := '0';
+  signal clk_master        : std_logic := '0';
+  signal rst_master_n      : std_logic := '0';
+  signal clk_sclk          : std_logic := '0';
+  signal rst_sclk_n        : std_logic := '0';
+  signal clk_sync          : std_logic := '0';
+  signal rst_sync_n        : std_logic := '0';
+  signal dac_samples       : t_16b_word_array(11 downto 0) := (others => x"8000");
+  signal dac_ready         : std_logic;
+  signal dac_done_pp       : std_logic;
+  signal adc_data          : t_16b_word_array(11 downto 0);
+  signal adc_valid         : std_logic_vector(11 downto 0);
   signal adc_cnv           : std_logic := '0';
   signal adc_octo_clk      : std_logic := '0';
   signal adc_octo_clk_out  : std_logic;
+  signal adc_octo_clk_out_n : std_logic;
   signal adc_octo_sdoa     : std_logic;
+  signal adc_octo_sdoa_n   : std_logic;
   signal adc_octo_sdob     : std_logic;
+  signal adc_octo_sdob_n   : std_logic;
   signal adc_octo_sdoc     : std_logic;
+  signal adc_octo_sdoc_n   : std_logic;
   signal adc_octo_sdod     : std_logic;
-  signal adc_octo_sdoa_dl  : std_logic;
-  signal adc_octo_sdob_dl  : std_logic;
-  signal adc_octo_sdoc_dl  : std_logic;
-  signal adc_octo_sdod_dl  : std_logic;
+  signal adc_octo_sdod_n   : std_logic;
   signal adc_quad_clk      : std_logic := '0';
   signal adc_quad_clk_out  : std_logic;
+  signal adc_quad_clk_out_n : std_logic;
   signal adc_quad_sdoa     : std_logic;
+  signal adc_quad_sdoa_n   : std_logic;
   signal adc_quad_sdoc     : std_logic;
-  signal adc_quad_sdoa_dl  : std_logic;
-  signal adc_quad_sdoc_dl  : std_logic;
+  signal adc_quad_sdoc_n   : std_logic;
   signal dac_ldac          : std_logic := '0';
   signal dac_cs            : std_logic := '1';
   signal dac_sck           : std_logic := '0';
@@ -75,10 +100,73 @@ architecture rtm_lamp_model_tb_arch of rtm_lamp_model_tb is
   signal amp_iflag_r       : std_logic_vector(11 downto 0);
   signal amp_tflag_r       : std_logic_vector(11 downto 0);
   signal amp_en_ch         : std_logic_vector(11 downto 0);
+
+  procedure f_wait_until( signal net    : in std_logic;
+                          repeat        : positive := 1;
+                          condition     : std_logic := '1') is
+  begin
+
+    for i in 0 to repeat-1 loop
+      wait until net = condition;
+    end loop;
+
+  end f_wait_until;
 begin
+
+  p_gen_sys_clk: process
+  begin
+    loop
+      wait for c_CLK_SYS_PERIOD_HALF * 1.0e9 * 1 ns;
+      clk_sys <= not clk_sys;
+    end loop;
+  end process;
+
+  p_gen_sys_rst_n: process
+  begin
+    rst_n <= '0';
+    f_wait_until(clk_sys, 10);
+    rst_n <= '1';
+    wait;
+  end process;
+
+  p_gen_master_clk: process
+  begin
+    loop
+      wait for c_CLK_ADCDAC_MASTER_PERIOD_HALF * 1.0e9 * 1 ns;
+      clk_master <= not clk_master;
+    end loop;
+  end process;
+
+  p_rst_master_n: process
+  begin
+    rst_master_n <= '0';
+    f_wait_until(clk_master, 10);
+    rst_master_n <= '1';
+    wait;
+  end process;
+
+  p_gen_sync_clk: process
+  begin
+    loop
+      wait for c_CLK_SYNC_PERIOD_HALF * 1.0e9 * 1 ns;
+      clk_sync <= not clk_sync;
+    end loop;
+  end process;
+
+  p_rst_sync_n: process
+  begin
+    rst_sync_n <= '0';
+    f_wait_until(clk_sync, 10);
+    rst_sync_n <= '1';
+    wait;
+  end process;
+
   cmp_rtm_lamp_model: entity work.rtm_lamp_model
+    generic map(
+      g_ADC_DDR_MODE => false
+    )
     port map(
-      rtm_lamp_sync_clk_i => rtm_lamp_sync_clk, -- ADC and DAC synchronization clock
+      rtm_lamp_sync_clk_i => clk_sync, -- ADC and DAC synchronization clock
                                                 -- for conversion start
 
       adc_cnv_i => adc_cnv,             -- ADC conversion start
@@ -109,312 +197,149 @@ begin
       shift_din_i  => shift_din      -- Amplifier enable data input
       );
 
-  cmp_rtmlamp_ohwr_serial_regs : rtmlamp_ohwr_serial_regs
+  adc_octo_clk_out_n <= not adc_octo_clk_out;
+  adc_octo_sdoa_n <= not adc_octo_sdoa;
+  adc_octo_sdob_n <= not adc_octo_sdob;
+  adc_octo_sdoc_n <= not adc_octo_sdoc;
+  adc_octo_sdod_n <= not adc_octo_sdod;
+
+  adc_quad_clk_out_n <= not adc_quad_clk_out;
+  adc_quad_sdoa_n <= not adc_quad_sdoa;
+  adc_quad_sdoc_n <= not adc_quad_sdoc;
+
+  cmp_rtmlamp_ohwr : rtmlamp_ohwr
+  generic map (
+    g_SYS_CLOCK_FREQ                           => c_CLK_SYS_FREQ,
+    g_REF_CLK_FREQ                             => c_CLK_SYNC_FREQ,
+    g_USE_REF_CLK                              => true,
+    g_ADC_MASTER_CLOCK_FREQ                    => c_CLK_ADCDAC_MASTER_FREQ,
+    g_ADC_SCLK_FREQ                            => c_CLK_SCLK_FREQ,
+    g_ADC_CHANNELS                             => 12,
+    g_ADC_FIX_INV_INPUTS                       => true,
+    g_DAC_MASTER_CLOCK_FREQ                    => c_CLK_ADCDAC_MASTER_FREQ,
+    g_DAC_SCLK_FREQ                            => c_CLK_DAC_SCLK_FREQ,
+    g_DAC_CHANNELS                             => 12,
+    g_SERIAL_REG_SCLK_FREQ                     => c_CLK_SERIAL_REGS_FREQ,
+    g_SERIAL_REGS_AMP_CHANNELS                 => 12
+  )
   port map (
-    clk_i    => clk_sys,
-    rst_n_i  => rst_n,
+    clk_i                                      => clk_sys,
+    rst_n_i                                    => rst_n,
 
-    amp_status_reg_clk_o => shift_clk,
-    amp_status_reg_out_i => shift_dout,
-    amp_status_reg_pl_o  => shift_pl,
+    clk_ref_i                                  => clk_sync,
+    rst_ref_n_i                                => rst_sync_n,
 
-    amp_ctl_reg_oe_n_o => shift_oe_n,
-    amp_ctl_reg_din_o  => shift_din,
-    amp_ctl_reg_str_o  => shift_str,
+    clk_master_adc_i                           => clk_master,
+    rst_master_adc_n_i                         => rst_master_n,
 
-    amp_iflag_l_o => amp_iflag_l,
-    amp_tflag_l_o => amp_tflag_l,
-    amp_iflag_r_o => amp_iflag_r,
-    amp_tflag_r_o => amp_tflag_r,
-    amp_en_ch_i   => amp_en_ch
+    clk_master_dac_i                           => clk_master,
+    rst_master_dac_n_i                         => rst_master_n,
+
+    ---------------------------------------------------------------------------
+    -- RTM ADC interface
+    ---------------------------------------------------------------------------
+    adc_octo_cnv_o                             => adc_cnv,
+    adc_octo_sck_p_o                           => adc_octo_clk,
+    adc_octo_sck_n_o                           => open,
+    adc_octo_sck_ret_p_i                       => adc_octo_clk_out,
+    adc_octo_sck_ret_n_i                       => adc_octo_clk_out_n,
+    adc_octo_sdoa_p_i                          => adc_octo_sdoa,
+    adc_octo_sdoa_n_i                          => adc_octo_sdoa_n,
+    adc_octo_sdob_p_i                          => adc_octo_sdob,
+    adc_octo_sdob_n_i                          => adc_octo_sdob_n,
+    adc_octo_sdoc_p_i                          => adc_octo_sdoc,
+    adc_octo_sdoc_n_i                          => adc_octo_sdoc_n,
+    adc_octo_sdod_p_i                          => adc_octo_sdod,
+    adc_octo_sdod_n_i                          => adc_octo_sdod_n,
+
+    -- Only used when g_ADC_CHANNELS > 8
+    adc_quad_sck_p_o                           => adc_octo_clk,
+    adc_quad_sck_n_o                           => open,
+    adc_quad_sck_ret_p_i                       => adc_quad_clk_out,
+    adc_quad_sck_ret_n_i                       => adc_quad_clk_out_n,
+    adc_quad_sdoa_p_i                          => adc_quad_sdoa,
+    adc_quad_sdoa_n_i                          => adc_quad_sdoa_n,
+    adc_quad_sdoc_p_i                          => adc_quad_sdoc,
+    adc_quad_sdoc_n_i                          => adc_quad_sdoc_n,
+
+    ---------------------------------------------------------------------------
+    -- RTM DAC interface
+    ---------------------------------------------------------------------------
+    dac_cs_n_o                                 => dac_cs,
+    dac_ldac_n_o                               => dac_ldac,
+    dac_sck_o                                  => dac_sck,
+    dac_sdi_o                                  => dac_sdi,
+
+    ---------------------------------------------------------------------------
+    -- RTM Serial registers interface
+    ---------------------------------------------------------------------------
+    amp_shift_clk_o                            => shift_clk,
+    amp_shift_dout_i                           => shift_dout,
+    amp_shift_pl_o                             => shift_pl,
+
+    amp_shift_oe_n_o                           => shift_oe_n,
+    amp_shift_din_o                            => shift_din,
+    amp_shift_str_o                            => shift_str,
+
+    ---------------------------------------------------------------------------
+    -- FPGA interface
+    ---------------------------------------------------------------------------
+
+    ---------------------------------------------------------------------------
+    -- ADC parallel interface
+    ---------------------------------------------------------------------------
+    adc_start_i                                => '1',
+    adc_data_o                                 => adc_data,
+    adc_valid_o                                => adc_valid,
+
+    ---------------------------------------------------------------------------
+    -- DAC parallel interface
+    ---------------------------------------------------------------------------
+    dac_start_i                                => '1',
+    dac_data_i                                 => dac_samples,
+    dac_ready_o                                => dac_ready,
+    dac_done_pp_o                              => dac_done_pp,
+
+    ---------------------------------------------------------------------------
+    -- AMP parallel interface
+    ---------------------------------------------------------------------------
+
+    amp_iflag_l_o                              => amp_iflag_l,
+    amp_tflag_l_o                              => amp_tflag_l,
+    amp_iflag_r_o                              => amp_iflag_r,
+    amp_tflag_r_o                              => amp_tflag_r,
+    amp_en_ch_i                                => amp_en_ch
   );
-
-  -- The datalines should be delayed in relation to the returned adc
-  -- clock when reading in DDR mode
-  adc_octo_sdoa_dl <= transport adc_octo_sdoa after 1 ns;
-  adc_octo_sdob_dl <= transport adc_octo_sdob after 1 ns;
-  adc_octo_sdoc_dl <= transport adc_octo_sdoc after 1 ns;
-  adc_octo_sdod_dl <= transport adc_octo_sdod after 1 ns;
-  adc_quad_sdoa_dl <= transport adc_quad_sdoa after 1 ns;
-  adc_quad_sdoc_dl <= transport adc_quad_sdoc after 1 ns;
-
-  cmp_ddr_des_c1c2: entity work.ddr_des
-    generic map(
-      g_BITS => 32,
-      g_POLARITY => true,
-      g_MSB_FIRST => true
-      )
-    port map(
-      clk_ddr_i => adc_octo_clk_out,
-      data_ddr_i => adc_octo_sdoa_dl,
-      data_latch_i => adc_read_latch,
-      parallel_o => adc_data_c1c2
-      );
-
-  cmp_ddr_des_c3c4: entity work.ddr_des
-    generic map(
-      g_BITS => 32,
-      g_POLARITY => true,
-      g_MSB_FIRST => true
-      )
-    port map(
-      clk_ddr_i => adc_octo_clk_out,
-      data_ddr_i => adc_octo_sdob_dl,
-      data_latch_i => adc_read_latch,
-      parallel_o => adc_data_c3c4
-      );
-
-  cmp_ddr_des_c5c6: entity work.ddr_des
-    generic map(
-      g_BITS => 32,
-      g_POLARITY => true,
-      g_MSB_FIRST => true
-      )
-    port map(
-      clk_ddr_i => adc_octo_clk_out,
-      data_ddr_i => adc_octo_sdoc_dl,
-      data_latch_i => adc_read_latch,
-      parallel_o => adc_data_c5c6
-      );
-
-  cmp_ddr_des_c7c8: entity work.ddr_des
-    generic map(
-      g_BITS => 32,
-      g_POLARITY => true,
-      g_MSB_FIRST => true
-      )
-    port map(
-      clk_ddr_i => adc_octo_clk_out,
-      data_ddr_i => adc_octo_sdod_dl,
-      data_latch_i => adc_read_latch,
-      parallel_o => adc_data_c7c8
-      );
-
-  cmp_ddr_des_c9c10: entity work.ddr_des
-    generic map(
-      g_BITS => 32,
-      g_POLARITY => true,
-      g_MSB_FIRST => true
-      )
-    port map(
-      clk_ddr_i => adc_quad_clk_out,
-      data_ddr_i => adc_quad_sdoa_dl,
-      data_latch_i => adc_read_latch,
-      parallel_o => adc_data_c9c10
-      );
-
-  cmp_ddr_des_c11c12: entity work.ddr_des
-    generic map(
-      g_BITS => 32,
-      g_POLARITY => true,
-      g_MSB_FIRST => true
-      )
-    port map(
-      clk_ddr_i => adc_quad_clk_out,
-      data_ddr_i => adc_quad_sdoc_dl,
-      data_latch_i => adc_read_latch,
-      parallel_o => adc_data_c11c12
-      );
-
-  p_gen_sys_clk: process
-  begin
-    loop
-      wait for 5 ns;
-      clk_sys <= not clk_sys; -- 100 MHz
-    end loop;
-  end process;
-
-  p_gen_sys_rst_n: process
-  begin
-    rst_n <= '0';
-    wait for 200 ns;
-    rst_n <= '1';
-    wait;
-  end process;
-
-  p_gen_rf_clock: process
-  begin
-    loop
-      wait for 8 ns;
-      rtm_lamp_sync_clk <= not rtm_lamp_sync_clk; -- 62.5 MHz (RF/8)
-    end loop;
-  end process;
-
-  p_gen_main_clk: process
-  begin
-    loop
-      wait for 5 ns;
-      adc_dac_100mhz_clk <= not adc_dac_100mhz_clk; -- 100 MHz
-    end loop;
-  end process;
-
-  p_gen_dac_clk: process(adc_dac_100mhz_clk)
-  begin
-    if rising_edge(adc_dac_100mhz_clk) then
-      dac_50mhz_clk <= not dac_50mhz_clk;
-    end if;
-  end process;
 
   p_set_amp_en: process
   begin
-    wait until rst_n = '1';
+    f_wait_until(rst_n, 1, '1');
     amp_en_ch <= "010101010101";
-    wait for 10000*100*10 ns;
+    f_wait_until(clk_sys, 10000*100);
     amp_en_ch <= "101010101010";
-    wait for 10000*100*10 ns;
+    f_wait_until(clk_sys, 10000*100);
     amp_en_ch <= "000011110000";
-    wait for 10000*100*10 ns;
+    f_wait_until(clk_sys, 10000*100);
     amp_en_ch <= "111100001111";
-    wait for 10000*100*10 ns;
+    f_wait_until(clk_sys, 10000*100);
     wait;
   end process;
 
   p_set_vout: process
   begin
-    wait for 1 ms;
+    f_wait_until(rst_n, 1, '1');
+    f_wait_until(clk_sys, 300000);
     dac_samples <= (x"0000", x"1000", x"3000", x"4000",
                     x"5000", x"6000", x"7000", x"8000",
                     x"9000", x"A000", x"B000", x"C000");
-    wait for 3 ms;
+    f_wait_until(clk_sys, 10000*100);
     dac_samples <= (others => x"FFFF");
-    wait for 3 ms;
+    f_wait_until(clk_sys, 300000);
     dac_samples <= (x"EEEE", x"DDDD", x"CCCC", x"BBBB",
                     x"AAAA", x"9999", x"8888", x"7777",
                     x"6666", x"5555", x"4444", x"3333");
-    wait for 3 ms;
+    f_wait_until(clk_sys, 300000);
     std.env.finish;
-  end process;
-
-  p_drive_dac: process(dac_50mhz_clk)
-    type state_t is (cs_idle, data_send, delay_ldac, ldac);
-    variable state : state_t := cs_idle;
-    variable cyc_cnt : integer range 0 to 31 := 0;
-  begin
-
-    if rising_edge(dac_50mhz_clk) then
-
-      case state is
-
-        when cs_idle =>
-          if cyc_cnt = 6 then
-            state := data_send;
-            cyc_cnt := 0;
-            dac_cs <= '0';
-            dac_samples_buf <= dac_samples;
-            for i in 0 to 11 loop
-              dac_sdi(i) <= dac_samples(i)(15);
-            end loop;
-          else
-            dac_sck <= '0';
-            dac_cs <= '1';
-            cyc_cnt := cyc_cnt + 1;
-          end if;
-
-        when data_send =>
-          if cyc_cnt = 16 then
-            state := delay_ldac;
-            cyc_cnt := 0;
-            dac_cs <= '1';
-            dac_sck <= '0';
-          else
-            if dac_sck = '1' then
-              if cyc_cnt < 15 then
-                for i in 0 to 11 loop
-                  dac_sdi(i) <= dac_samples_buf(i)(14 - cyc_cnt);
-                end loop;
-              end if;
-              cyc_cnt := cyc_cnt + 1;
-              dac_sck <= '0';
-            else
-              dac_sck <= '1';
-            end if;
-          end if;
-
-        when delay_ldac =>
-          if cyc_cnt = 4 then
-            state := ldac;
-            cyc_cnt := 0;
-          else
-            cyc_cnt := cyc_cnt + 1;
-          end if;
-
-        when ldac =>
-          if cyc_cnt = 4 then
-            state := cs_idle;
-            cyc_cnt := 0;
-            dac_ldac <= '0';
-          else
-            dac_ldac <= '1';
-            cyc_cnt := cyc_cnt + 1;
-          end if;
-      end case;
-    end if;
-  end process;
-
-  p_read_adc: process(adc_dac_100mhz_clk, adc_octo_clk_out, adc_quad_clk_out)
-    type state_t is (adc_idle, adc_cnv_hold, adc_cnv_wait,
-                     adc_read, adc_copy_data);
-    variable state : state_t := adc_idle;
-    variable cyc_cnt : integer range 0 to 63 := 0;
-  begin
-    if rising_edge(adc_dac_100mhz_clk) then
-
-      case state is
-
-      when adc_idle =>
-        if cyc_cnt = 10 then
-          adc_cnv <= '0';
-          state := adc_cnv_hold;
-          cyc_cnt := 0;
-        else
-          cyc_cnt := cyc_cnt + 1;
-        end if;
-
-      when adc_cnv_hold =>
-        if cyc_cnt = 3 then
-          adc_cnv <= '1';
-          state := adc_cnv_wait;
-          cyc_cnt := 0;
-        else
-          cyc_cnt := cyc_cnt + 1;
-        end if;
-
-      when adc_cnv_wait =>
-        if cyc_cnt = 50 then
-          state := adc_read;
-          cyc_cnt := 0;
-        else
-          cyc_cnt := cyc_cnt + 1;
-        end if;
-
-      when adc_read =>
-        if cyc_cnt = 32 then
-          state := adc_copy_data;
-          cyc_cnt := 0;
-          adc_read_latch <= '1';
-        else
-          cyc_cnt := cyc_cnt + 1;
-          adc_octo_clk <= not adc_octo_clk;
-          adc_quad_clk <= not adc_quad_clk;
-        end if;
-
-      when adc_copy_data =>
-        adc_read_latch <= '0';
-        state := adc_idle;
-        adc_samples(0) <= adc_data_c1c2(31 downto 16);
-        adc_samples(1) <= adc_data_c1c2(15 downto 0);
-        adc_samples(2) <= adc_data_c3c4(31 downto 16);
-        adc_samples(3) <= adc_data_c3c4(15 downto 0);
-        adc_samples(4) <= adc_data_c5c6(31 downto 16);
-        adc_samples(5) <= adc_data_c5c6(15 downto 0);
-        adc_samples(6) <= adc_data_c7c8(31 downto 16);
-        adc_samples(7) <= adc_data_c7c8(15 downto 0);
-        adc_samples(8) <= adc_data_c9c10(31 downto 16);
-        adc_samples(9) <= adc_data_c9c10(15 downto 0);
-        adc_samples(10) <= adc_data_c11c12(31 downto 16);
-        adc_samples(11) <= adc_data_c11c12(15 downto 0);
-      end case;
-    end if;
   end process;
 
 end rtm_lamp_model_tb_arch;
