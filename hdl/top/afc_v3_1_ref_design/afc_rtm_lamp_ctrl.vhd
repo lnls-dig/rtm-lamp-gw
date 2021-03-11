@@ -737,6 +737,8 @@ begin
     g_ADC_SCLK_FREQ                            => c_SYS_CLOCK_FREQ,
     -- Number of ADC channels
     g_ADC_CHANNELS                             => c_ADC_CHANNELS,
+    -- If the ADC inputs are inverted on RTM-LAMP or not
+    g_ADC_FIX_INV_INPUTS                       => true,
     -- DAC clock frequency [Hz]. Must be a multiple of g_DAC_SCLK_FREQ
     g_DAC_MASTER_CLOCK_FREQ                    => c_DAC_MASTER_CLOCK_FREQ,
     -- DAC clock frequency [Hz]
