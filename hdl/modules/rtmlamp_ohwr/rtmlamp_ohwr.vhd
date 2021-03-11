@@ -172,6 +172,7 @@ architecture rtl of rtmlamp_ohwr is
 
   signal adc_quad_sck                        : std_logic;
   signal adc_quad_sck_ret                    : std_logic;
+  signal adc_quad_cnv                        : std_logic;
   signal adc_quad_sdoa                       : std_logic;
   signal adc_quad_sdoc                       : std_logic;
 
@@ -303,7 +304,7 @@ begin
       adc_data(11)   <= (others => '0');
       adc_quad_valid <= '0';
 
-      adc_quad_cnv_o <= '0';
+      adc_quad_cnv <= '0';
       adc_quad_sck <= '0';
 
   end generate;
@@ -332,7 +333,7 @@ begin
 
         start_i                              => adc_start_i,
 
-        cnv_o                                => adc_quad_cnv_o,
+        cnv_o                                => adc_quad_cnv,
         sck_o                                => adc_quad_sck,
         sck_ret_i                            => adc_quad_sck_ret,
         sdo1a_i                              => adc_quad_sdoa,
@@ -344,6 +345,12 @@ begin
         ch4_o                                => adc_data(11),
         valid_o                              => adc_quad_valid
       );
+
+    -- RTM LAMP has a retiming FF with the CNV signal
+    -- connected to the CLR_N pin, with an inverter after the Q
+    -- output pin, see retiming circuit at 232x datasheet, page 32.
+    -- So we must invert the CNV signal here.
+    adc_quad_cnv_o <= not adc_quad_cnv;
 
     ---------------------------------------------------------------------------
     --                              Buffers
