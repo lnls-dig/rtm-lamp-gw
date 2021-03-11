@@ -42,6 +42,8 @@ generic (
   g_ADC_SCLK_FREQ                            : natural := 100000000;
   -- Number of ADC channels
   g_ADC_CHANNELS                             : natural := 12;
+  -- If the ADC inputs are inverted on RTM-LAMP or not
+  g_ADC_FIX_INV_INPUTS                       : boolean := false;
   -- DAC clock frequency [Hz]. Must be a multiple of g_DAC_SCLK_FREQ
   g_DAC_MASTER_CLOCK_FREQ                    : natural := 200000000;
   -- DAC clock frequency [Hz]
@@ -153,11 +155,11 @@ end rtmlamp_ohwr;
 architecture rtl of rtmlamp_ohwr is
   constant c_ADC_CNV_HIGH                    : real := 30.0e-9; -- minimum of 30.0e-9
   constant c_ADC_CNV_WAIT                    : real := 450.0e-9; -- minimum of 450.0e-9
+  constant c_ADC_BITS                        : natural := 16;
+  -- quasi-offset binary to two's complement conversion factor
+  constant c_ADC_OFFB_2_TWOSCOMP_CONV        : signed(c_ADC_BITS-1 downto 0) := to_signed(-16384, c_ADC_BITS);
 
   signal dac_ldac_n                          : std_logic;
-
-  signal adc_octo_valid                      : std_logic;
-  signal adc_quad_valid                      : std_logic;
 
   signal adc_data                            : t_16b_word_array(c_MAX_ADC_CHANNELS-1 downto 0);
   signal adc_valid                           : std_logic_vector(c_MAX_ADC_CHANNELS-1 downto 0);
@@ -176,6 +178,27 @@ architecture rtl of rtmlamp_ohwr is
   signal adc_quad_sdoa                       : std_logic;
   signal adc_quad_sdoc                       : std_logic;
 
+  subtype t_adc_word is std_logic_vector(c_ADC_BITS-1 downto 0);
+  type t_adc_word_array is array(natural range <>) of t_adc_word;
+
+  type t_adc_readout is record
+    data     : t_adc_word_array(7 downto 0);
+    valid    : std_logic;
+  end record;
+
+  constant c_DUMMY_ADC_READOUT               : t_adc_readout :=
+  (
+    data => (others => (others => '0')),
+    valid => '0'
+  );
+
+  signal adc_octo_raw                        : t_adc_readout;
+  signal adc_octo_fix_inv                    : t_adc_readout;
+  signal adc_octo_scaled                     : t_adc_readout;
+
+  signal adc_quad_raw                        : t_adc_readout := c_DUMMY_ADC_READOUT;
+  signal adc_quad_fix_inv                    : t_adc_readout;
+  signal adc_quad_scaled                     : t_adc_readout;
 begin
 
   assert (g_ADC_CHANNELS <= c_MAX_ADC_CHANNELS)
@@ -200,6 +223,7 @@ begin
       g_SCLK_FREQ                          => g_ADC_SCLK_FREQ,
       g_REF_CLK_CNV_FREQ                   => g_REF_CLK_FREQ,
       g_USE_REF_CLK_CNV                    => g_USE_REF_CLK,
+      g_BITS                               => c_ADC_BITS,
       g_CHANNELS                           => 8,
       g_DATA_LINES                         => 4,
       g_CNV_HIGH                           => c_ADC_CNV_HIGH,
@@ -222,15 +246,15 @@ begin
       sdo5c_i                              => adc_octo_sdoc,
       sdo7d_i                              => adc_octo_sdod,
 
-      ch1_o                                => adc_data(0),
-      ch2_o                                => adc_data(1),
-      ch3_o                                => adc_data(2),
-      ch4_o                                => adc_data(3),
-      ch5_o                                => adc_data(4),
-      ch6_o                                => adc_data(5),
-      ch7_o                                => adc_data(6),
-      ch8_o                                => adc_data(7),
-      valid_o                              => adc_octo_valid
+      ch1_o                                => adc_octo_raw.data(0),
+      ch2_o                                => adc_octo_raw.data(1),
+      ch3_o                                => adc_octo_raw.data(2),
+      ch4_o                                => adc_octo_raw.data(3),
+      ch5_o                                => adc_octo_raw.data(4),
+      ch6_o                                => adc_octo_raw.data(5),
+      ch7_o                                => adc_octo_raw.data(6),
+      ch8_o                                => adc_octo_raw.data(7),
+      valid_o                              => adc_octo_raw.valid
     );
 
   -- RTM LAMP has a retiming FF with the CNV signal
@@ -298,11 +322,11 @@ begin
 
   gen_adc_up_to_8_channels : if g_ADC_CHANNELS <= 8 generate
 
-      adc_data(8)    <= (others => '0');
-      adc_data(9)    <= (others => '0');
-      adc_data(10)   <= (others => '0');
-      adc_data(11)   <= (others => '0');
-      adc_quad_valid <= '0';
+      adc_quad_raw.data(0)   <= (others => '0');
+      adc_quad_raw.data(1)   <= (others => '0');
+      adc_quad_raw.data(2)   <= (others => '0');
+      adc_quad_raw.data(3)   <= (others => '0');
+      adc_quad_raw.valid     <= '0';
 
       adc_quad_cnv <= '0';
       adc_quad_sck <= '0';
@@ -319,6 +343,7 @@ begin
         g_SCLK_FREQ                          => g_ADC_SCLK_FREQ,
         g_REF_CLK_CNV_FREQ                   => g_REF_CLK_FREQ,
         g_USE_REF_CLK_CNV                    => g_USE_REF_CLK,
+        g_BITS                               => c_ADC_BITS,
         g_CHANNELS                           => 4,
         g_DATA_LINES                         => 2,
         g_CNV_HIGH                           => c_ADC_CNV_HIGH,
@@ -339,11 +364,11 @@ begin
         sdo1a_i                              => adc_quad_sdoa,
         sdo5c_i                              => adc_quad_sdoc,
 
-        ch1_o                                => adc_data(8),
-        ch2_o                                => adc_data(9),
-        ch3_o                                => adc_data(10),
-        ch4_o                                => adc_data(11),
-        valid_o                              => adc_quad_valid
+        ch1_o                                => adc_quad_raw.data(0),
+        ch2_o                                => adc_quad_raw.data(1),
+        ch3_o                                => adc_quad_raw.data(2),
+        ch4_o                                => adc_quad_raw.data(3),
+        valid_o                              => adc_quad_raw.valid
       );
 
     -- RTM LAMP has a retiming FF with the CNV signal
@@ -391,15 +416,83 @@ begin
 
   end generate;
 
-  -- Aggregate all data
+  ----------------------------------------
+  -- fix possible inversion on ADC inputs.
+  ----------------------------------------
+  gen_fix_adc_inversion : if g_ADC_FIX_INV_INPUTS generate
+
+    p_fix_adc_inversion : process(clk_master_adc_i)
+    begin
+      if rising_edge(clk_master_adc_i) then
+        if rst_master_adc_n_i = '0' then
+          adc_octo_fix_inv <= c_DUMMY_ADC_READOUT;
+          adc_quad_fix_inv <= c_DUMMY_ADC_READOUT;
+        else
+          for i in 0 to 7 loop
+            adc_octo_fix_inv.data(i) <= std_logic_vector(-signed(adc_octo_raw.data(i)));
+            adc_quad_fix_inv.data(i) <= std_logic_vector(-signed(adc_quad_raw.data(i)));
+          end loop;
+
+          adc_octo_fix_inv.valid <= adc_octo_raw.valid;
+          adc_quad_fix_inv.valid <= adc_quad_raw.valid;
+        end if;
+      end if;
+    end process;
+
+  end generate;
+
+  gen_not_fix_adc_inversion : if not g_ADC_FIX_INV_INPUTS generate
+
+    adc_octo_fix_inv <= adc_octo_raw;
+    adc_quad_fix_inv <= adc_quad_raw;
+
+  end generate;
+
+  ----------------------------------------
+  -- Convert results from quasi-offset binary to twos complement.
+  ----------------------------------------
+
+  -- As RTM LAMP only uses half of the input range, the ADC
+  -- outputs at this stage would range from ~0 to 2^15-1 (32767).
+  -- We say ~0 because the ADC can output values < 0 due to noise
+  -- or offsets. So, we need to convert from this quase-offset binary
+  -- to two's complement by subtractig half the scale and not by
+  -- just using the more efficient XOR to invert the MSB.
+  p_conv_full_scale : process(clk_master_adc_i)
+  begin
+    if rising_edge(clk_master_adc_i) then
+      if rst_master_adc_n_i = '0' then
+        adc_octo_scaled <= c_DUMMY_ADC_READOUT;
+        adc_quad_scaled <= c_DUMMY_ADC_READOUT;
+      else
+        for i in 0 to 7 loop
+          adc_octo_scaled.data(i) <= std_logic_vector(
+                                     signed(adc_octo_fix_inv.data(i)) +
+                                        c_ADC_OFFB_2_TWOSCOMP_CONV);
+          adc_quad_scaled.data(i) <= std_logic_vector(
+                                     signed(adc_quad_fix_inv.data(i)) +
+                                        c_ADC_OFFB_2_TWOSCOMP_CONV);
+        end loop;
+
+        adc_octo_scaled.valid <= adc_octo_fix_inv.valid;
+        adc_quad_scaled.valid <= adc_quad_fix_inv.valid;
+      end if;
+    end if;
+  end process;
+
+  ----------------------------------------
+  -- Aggregate all data from ADC octo + quad
+  ----------------------------------------
   gen_adc_valid : for i in 0 to g_ADC_CHANNELS-1 generate
 
     gen_adc_valid_up_to_8_channels: if i < 8 generate
-      adc_valid(i) <= adc_octo_valid;
+      adc_valid(i) <= adc_octo_scaled.valid;
+      adc_data(i) <= adc_octo_scaled.data(i);
     end generate;
 
     gen_adc_valid_more_than_8_channels: if i >= 8 generate
-      adc_valid(i) <= adc_quad_valid;
+      adc_valid(i) <= adc_quad_scaled.valid;
+      adc_data(i) <= adc_quad_scaled.data(i-8);
     end generate;
 
     adc_data_o(i) <= adc_data(i);

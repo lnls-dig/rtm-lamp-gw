@@ -206,6 +206,8 @@ package rtm_lamp_pkg is
     g_ADC_SCLK_FREQ                            : natural := 100000000;
     -- Number of ADC channels
     g_ADC_CHANNELS                             : natural := 12;
+    -- If the ADC inputs are inverted on RTM-LAMP or not
+    g_ADC_FIX_INV_INPUTS                       : boolean := false;
     -- DAC clock frequency [Hz]. Must be a multiple of g_DAC_SCLK_FREQ
     g_DAC_MASTER_CLOCK_FREQ                    : natural := 200000000;
     -- DAC clock frequency [Hz]
@@ -334,6 +336,8 @@ package rtm_lamp_pkg is
     g_ADC_SCLK_FREQ                            : natural := 100000000;
     -- Number of ADC channels
     g_ADC_CHANNELS                             : natural := 12;
+    -- If the ADC inputs are inverted on RTM-LAMP or not
+    g_ADC_FIX_INV_INPUTS                       : boolean := false;
     -- DAC clock frequency [Hz]. Must be a multiple of g_DAC_SCLK_FREQ
     g_DAC_MASTER_CLOCK_FREQ                    : natural := 200000000;
     -- DAC clock frequency [Hz]
@@ -464,6 +468,8 @@ package rtm_lamp_pkg is
     g_ADC_SCLK_FREQ                            : natural := 100000000;
     -- Number of ADC channels
     g_ADC_CHANNELS                             : natural := 12;
+    -- If the ADC inputs are inverted on RTM-LAMP or not
+    g_ADC_FIX_INV_INPUTS                       : boolean := false;
     -- DAC clock frequency [Hz]. Must be a multiple of g_DAC_SCLK_FREQ
     g_DAC_MASTER_CLOCK_FREQ                    : natural := 200000000;
     -- DAC clock frequency [Hz]
