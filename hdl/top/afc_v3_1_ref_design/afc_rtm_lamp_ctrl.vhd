@@ -226,6 +226,7 @@ architecture top of afc_rtm_lamp_ctrl is
   constant c_REF_CLOCK_FREQ                  : natural := 69306000; -- RF*5/36
   constant c_ADC_MASTER_CLOCK_FREQ           : natural := 200000000;
   constant c_DAC_MASTER_CLOCK_FREQ           : natural := 200000000;
+  constant c_ADC_SCLK_FREQ                   : natural := 100000000;
   constant c_DAC_SCLK_FREQ                   : natural := 25000000;
   constant c_USE_REF_CLOCK                   : boolean := true;
   constant c_ADC_CHANNELS                    : natural := 8;
@@ -734,7 +735,7 @@ begin
     -- ADC clock frequency [Hz]. Must be a multiple of g_ADC_SCLK_FREQ
     g_ADC_MASTER_CLOCK_FREQ                    => c_ADC_MASTER_CLOCK_FREQ,
     -- ADC clock frequency [Hz]
-    g_ADC_SCLK_FREQ                            => c_SYS_CLOCK_FREQ,
+    g_ADC_SCLK_FREQ                            => c_ADC_SCLK_FREQ,
     -- Number of ADC channels
     g_ADC_CHANNELS                             => c_ADC_CHANNELS,
     -- If the ADC inputs are inverted on RTM-LAMP or not
