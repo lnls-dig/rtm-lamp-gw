@@ -111,11 +111,15 @@ architecture multi_dac_spi_ldac_arch of multi_dac_spi_ldac is
   signal done_trans_pp_fsm                   : std_logic;
   signal done_ldac_pp                        : std_logic;
   signal done_ldac_pp_ref_sys                : std_logic;
+  signal start_trans                         : std_logic;
   signal ready                               : std_logic;
   signal ldac_n                              : std_logic;
   signal ldac_wait_counter                   : integer range 0 to c_LDAC_WAIT_CYCLES := 0;
   signal ldac_width_counter                  : integer range 0 to c_LDAC_WIDTH_CYCLES := 0;
 begin
+
+
+  start_trans <= start_i and ready;
 
   cmp_multi_dac_spi : multi_dac_spi
     generic map(
@@ -127,7 +131,7 @@ begin
     port map(
       clk_i                                  => clk_i,
       rst_n_i                                => rst_n_i,
-      start_i                                => start_i,
+      start_i                                => start_trans,
       data_i                                 => data_i,
       done_pp_o                              => done_trans_pp,
       dac_cs_n_o                             => dac_cs_n_o,
@@ -258,7 +262,7 @@ begin
           when IDLE =>
             ready <= '1';
 
-            if start_i = '1' then
+            if start_trans = '1' then
               ready <= '0';
               state_ready <= WAIT_FOR_TRANS;
             end if;
