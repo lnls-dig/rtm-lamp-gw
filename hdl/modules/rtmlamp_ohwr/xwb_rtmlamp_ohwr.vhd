@@ -83,17 +83,6 @@ port (
   wb_slv_o                                   : out  t_wishbone_slave_out;
 
   ---------------------------------------------------------------------------
-  -- RTM amplifier registers serial interface
-  ---------------------------------------------------------------------------
-  amp_status_reg_clk_o                       : out  std_logic;
-  amp_status_reg_out_i                       : in   std_logic;
-  amp_status_reg_pl_o                        : out  std_logic;
-
-  amp_ctl_reg_oe_n_o                         : out  std_logic;
-  amp_ctl_reg_din_o                          : out  std_logic;
-  amp_ctl_reg_str_o                          : out  std_logic;
-
-  ---------------------------------------------------------------------------
   -- RTM ADC interface
   ---------------------------------------------------------------------------
   adc_octo_cnv_o                             : out   std_logic;
