@@ -7,9 +7,9 @@
 ##                          Clocks                                   ##
 #######################################################################
 
-# LINK01 clock. 156.25 MHz
-create_clock -period 6.400 -name afc_link01_clk [get_ports afc_link01_clk_p_i]
-set afc_link01_clk_period                       [get_property PERIOD [get_clocks afc_link01_clk]]
+# FP2_CLK1 clock. 156.25 MHz
+create_clock -period 6.400 -name afc_fp2_clk1 [get_ports afc_fp2_clk1_p_i]
+set afc_fp2_clk1_period                       [get_property PERIOD [get_clocks afc_fp2_clk1]]
 
 # Octo return clock
 create_clock -period 10.000 -name rtmlamp_adc_octo_sck_ret    [get_ports rtmlamp_adc_octo_sck_ret_p_i]
@@ -134,23 +134,23 @@ set_input_delay -clock virt_rtmlamp_adc_quad_sck_ret -min 5.0 [get_ports rtmlamp
 # CDC between Wishbone clock and Transceiver clocks
 # These are slow control registers taken care of synched by FFs.
 # Give it 1x destination clock. Could be 2x, but lets keep things tight.
-set_max_delay -datapath_only -from               [get_clocks clk_sys] -to [get_clocks afc_link01_clk]    $afc_link01_clk_period
+set_max_delay -datapath_only -from               [get_clocks clk_sys] -to [get_clocks afc_fp2_clk1]    $afc_fp2_clk1_period
 set_max_delay -datapath_only -from               [get_clocks clk_sys] -to [get_clocks $clk_master]       $clk_master_period
 
-set_max_delay -datapath_only -from               [get_clocks afc_link01_clk]    -to [get_clocks clk_sys] $clk_sys_period
+set_max_delay -datapath_only -from               [get_clocks afc_fp2_clk1]    -to [get_clocks clk_sys] $clk_sys_period
 set_max_delay -datapath_only -from               [get_clocks $clk_master]       -to [get_clocks clk_sys] $clk_sys_period
 
 # CDC between Clk Aux (trigger clock) and FS clocks
 # These are using pulse_synchronizer2 which is a full feedback sync.
 # Give it 1x destination clock.
-set_max_delay -datapath_only -from               [get_clocks clk_aux] -to [get_clocks afc_link01_clk]    $afc_link01_clk_period
+set_max_delay -datapath_only -from               [get_clocks clk_aux] -to [get_clocks afc_fp2_clk1]    $afc_fp2_clk1_period
 set_max_delay -datapath_only -from               [get_clocks clk_aux] -to [get_clocks $clk_master]       $clk_master_period
 set_max_delay -datapath_only -from               [get_clocks $clk_adcdac_ref] -to [get_clocks $clk_master]   $clk_master_period
 
 # CDC between FS clocks and Clk Aux (trigger clock)
 # These are using pulse_synchronizer2 which is a full feedback sync.
 # Give it 1x destination clock.
-set_max_delay -datapath_only -from               [get_clocks afc_link01_clk] -to [get_clocks clk_aux]        $clk_aux_period
+set_max_delay -datapath_only -from               [get_clocks afc_fp2_clk1] -to [get_clocks clk_aux]        $clk_aux_period
 set_max_delay -datapath_only -from               [get_clocks $clk_master]    -to [get_clocks clk_aux]        $clk_aux_period
 set_max_delay -datapath_only -from               [get_clocks $clk_master]    -to [get_clocks $clk_adcdac_ref]    $clk_adcdac_ref_period
 
