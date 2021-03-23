@@ -101,7 +101,7 @@ architecture multi_dac_spi_ldac_arch of multi_dac_spi_ldac is
 
   type t_state_ldac is (IDLE, WAIT_AFTER_CS, DRIVE_LDAC);
   signal state_ldac                          : t_state_ldac := IDLE;
-  type t_state_ready is (IDLE, WAIT_FOR_TRANS, WAIT_FOR_LDAC);
+  type t_state_ready is (IDLE, WAIT_FOR_START, WAIT_FOR_TRANS, WAIT_FOR_LDAC);
   signal state_ready                         : t_state_ready := IDLE;
 
   signal clk_fsm                             : std_logic;
@@ -113,6 +113,7 @@ architecture multi_dac_spi_ldac_arch of multi_dac_spi_ldac is
   signal done_ldac_pp_ref_sys                : std_logic;
   signal start_trans                         : std_logic;
   signal ready                               : std_logic;
+  signal ready_trans                         : std_logic;
   signal ldac_n                              : std_logic;
   signal ldac_wait_counter                   : integer range 0 to c_LDAC_WAIT_CYCLES := 0;
   signal ldac_width_counter                  : integer range 0 to c_LDAC_WIDTH_CYCLES := 0;
@@ -132,6 +133,7 @@ begin
       clk_i                                  => clk_i,
       rst_n_i                                => rst_n_i,
       start_i                                => start_trans,
+      ready_o                                => ready_trans,
       data_i                                 => data_i,
       done_pp_o                              => done_trans_pp,
       dac_cs_n_o                             => dac_cs_n_o,
@@ -260,8 +262,13 @@ begin
 
         case state_ready is
           when IDLE =>
-            ready <= '1';
+            -- wait for ready_trans
+            if ready_trans = '1' then
+              ready <= '1';
+              state_ready <= WAIT_FOR_START;
+            end if;
 
+          when WAIT_FOR_START =>
             if start_trans = '1' then
               ready <= '0';
               state_ready <= WAIT_FOR_TRANS;
@@ -274,7 +281,6 @@ begin
 
           when WAIT_FOR_LDAC =>
             if done_ldac_pp_ref_sys = '1' then
-              ready <= '1';
               state_ready <= IDLE;
             end if;
 
