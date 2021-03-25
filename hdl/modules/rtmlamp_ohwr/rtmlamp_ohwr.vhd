@@ -45,8 +45,6 @@ generic (
   g_ADC_CHANNELS                             : natural := 12;
   -- If the ADC inputs are inverted on RTM-LAMP or not
   g_ADC_FIX_INV_INPUTS                       : boolean := false;
-  -- DAC clock frequency [Hz]. Must be a multiple of g_DAC_SCLK_FREQ
-  g_DAC_MASTER_CLOCK_FREQ                    : natural := 100000000;
   -- DAC clock frequency [Hz]
   g_DAC_SCLK_FREQ                            : natural := 25000000;
   -- Number of DAC channels
@@ -68,12 +66,6 @@ port (
 
   rst_fast_spi_n_i                           : in  std_logic;
   clk_fast_spi_i                             : in  std_logic;
-
-  clk_master_adc_i                           : in   std_logic;
-  rst_master_adc_n_i                         : in   std_logic;
-
-  clk_master_dac_i                           : in   std_logic;
-  rst_master_dac_n_i                         : in   std_logic;
 
   ---------------------------------------------------------------------------
   -- RTM ADC interface
@@ -241,8 +233,8 @@ begin
       rst_fast_spi_n_i                     => rst_fast_spi_n_i,
       clk_fast_spi_i                       => clk_fast_spi_i,
 
-      clk_i                                => clk_master_adc_i,
-      rst_n_i                              => rst_master_adc_n_i,
+      clk_i                                => clk_i,
+      rst_n_i                              => rst_n_i,
 
       clk_ref_cnv_i                        => clk_ref_i,
       rst_ref_cnv_n_i                      => rst_ref_n_i,
@@ -364,8 +356,8 @@ begin
         rst_fast_spi_n_i                     => rst_fast_spi_n_i,
         clk_fast_spi_i                       => clk_fast_spi_i,
 
-        clk_i                                => clk_master_adc_i,
-        rst_n_i                              => rst_master_adc_n_i,
+        clk_i                                => clk_i,
+        rst_n_i                              => rst_n_i,
 
         clk_ref_cnv_i                        => clk_ref_i,
         rst_ref_cnv_n_i                      => rst_ref_n_i,
@@ -435,10 +427,10 @@ begin
   ----------------------------------------
   gen_fix_adc_inversion : if g_ADC_FIX_INV_INPUTS generate
 
-    p_fix_adc_inversion : process(clk_master_adc_i)
+    p_fix_adc_inversion : process(clk_i)
     begin
-      if rising_edge(clk_master_adc_i) then
-        if rst_master_adc_n_i = '0' then
+      if rising_edge(clk_i) then
+        if rst_n_i = '0' then
           adc_octo_fix_inv <= c_DUMMY_ADC_READOUT;
           adc_quad_fix_inv <= c_DUMMY_ADC_READOUT;
         else
@@ -472,10 +464,10 @@ begin
   -- or offsets. So, we need to convert from this quase-offset binary
   -- to two's complement by subtractig half the scale and not by
   -- just using the more efficient XOR to invert the MSB.
-  p_conv_full_scale : process(clk_master_adc_i)
+  p_conv_full_scale : process(clk_i)
   begin
-    if rising_edge(clk_master_adc_i) then
-      if rst_master_adc_n_i = '0' then
+    if rising_edge(clk_i) then
+      if rst_n_i = '0' then
         adc_octo_scaled <= c_DUMMY_ADC_READOUT;
         adc_quad_scaled <= c_DUMMY_ADC_READOUT;
       else
@@ -520,7 +512,7 @@ begin
 
   cmp_multi_dac: multi_dac_spi_ldac
     generic map(
-      g_CLK_FREQ                             => g_DAC_MASTER_CLOCK_FREQ,
+      g_CLK_FREQ                             => g_SYS_CLOCK_FREQ,
       g_SCLK_FREQ                            => g_DAC_SCLK_FREQ,
       g_REF_CLK_LDAC_FREQ                    => g_REF_CLK_FREQ,
       g_USE_REF_CLK_LDAC                     => g_USE_REF_CLK,
@@ -530,8 +522,8 @@ begin
       g_LDAC_WAIT_AFTER_CS                   => c_DAC_LDAC_WAIT_AFTER_CS
     )
     port map(
-      clk_i                                  => clk_master_dac_i,
-      rst_n_i                                => rst_master_dac_n_i,
+      clk_i                                  => clk_i,
+      rst_n_i                                => rst_n_i,
 
       clk_ref_ldac_i                         => clk_ref_i,
       rst_ref_ldac_n_i                       => rst_ref_n_i,

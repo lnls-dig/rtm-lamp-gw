@@ -29,10 +29,6 @@ end rtm_lamp_model_tb;
 
 architecture rtm_lamp_model_tb_arch of rtm_lamp_model_tb is
   -- Frequency in Hz, Period in s
-  constant c_CLK_ADCDAC_MASTER_PERIOD : real := 5.0e-9;
-  constant c_CLK_ADCDAC_MASTER_PERIOD_HALF : real := c_CLK_ADCDAC_MASTER_PERIOD/2.0;
-  constant c_CLK_ADCDAC_MASTER_FREQ : natural := integer(floor(1.0/c_CLK_ADCDAC_MASTER_PERIOD));
-
   constant c_CLK_SYS_PERIOD : real := 10.0e-9;
   constant c_CLK_SYS_PERIOD_HALF : real := c_CLK_SYS_PERIOD/2.0;
   constant c_CLK_SYS_FREQ : natural := integer(floor(1.0/c_CLK_SYS_PERIOD));
@@ -41,13 +37,13 @@ architecture rtm_lamp_model_tb_arch of rtm_lamp_model_tb is
   constant c_CLK_FAST_SPI_PERIOD_HALF : real := c_CLK_FAST_SPI_PERIOD/2.0;
   constant c_CLK_FAST_SPI_FREQ : natural := integer(floor(1.0/c_CLK_FAST_SPI_PERIOD));
 
-  constant c_CLK_SCLK_PERIOD : real := 10.0e-9;
-  constant c_CLK_SCLK_PERIOD_HALF : real := c_CLK_SCLK_PERIOD/2.0;
-  constant c_CLK_SCLK_FREQ : natural := integer(floor(1.0/c_CLK_SCLK_PERIOD));
-
   constant c_CLK_DAC_SCLK_PERIOD : real := 40.0e-9;
   constant c_CLK_DAC_SCLK_PERIOD_HALF : real := c_CLK_DAC_SCLK_PERIOD/2.0;
   constant c_CLK_DAC_SCLK_FREQ : natural := integer(floor(1.0/c_CLK_DAC_SCLK_PERIOD));
+
+  constant c_CLK_SCLK_PERIOD : real := 10.0e-9;
+  constant c_CLK_SCLK_PERIOD_HALF : real := c_CLK_SCLK_PERIOD/2.0;
+  constant c_CLK_SCLK_FREQ : natural := integer(floor(1.0/c_CLK_SCLK_PERIOD));
 
   constant c_CLK_SERIAL_REGS_PERIOD : real := 10.0e-6;
   constant c_CLK_SERIAL_REGS_PERIOD_HALF : real := c_CLK_SERIAL_REGS_PERIOD/2.0;
@@ -61,8 +57,6 @@ architecture rtm_lamp_model_tb_arch of rtm_lamp_model_tb is
   signal rst_n             : std_logic := '0';
   signal rst_fast_spi_n    : std_logic := '0';
   signal clk_fast_spi      : std_logic := '0';
-  signal clk_master        : std_logic := '0';
-  signal rst_master_n      : std_logic := '0';
   signal clk_sclk          : std_logic := '0';
   signal rst_sclk_n        : std_logic := '0';
   signal clk_sync          : std_logic := '0';
@@ -132,22 +126,6 @@ begin
     rst_n <= '0';
     f_wait_until(clk_sys, 10);
     rst_n <= '1';
-    wait;
-  end process;
-
-  p_gen_master_clk: process
-  begin
-    loop
-      wait for c_CLK_ADCDAC_MASTER_PERIOD_HALF * 1.0e9 * 1 ns;
-      clk_master <= not clk_master;
-    end loop;
-  end process;
-
-  p_rst_master_n: process
-  begin
-    rst_master_n <= '0';
-    f_wait_until(clk_master, 10);
-    rst_master_n <= '1';
     wait;
   end process;
 
@@ -238,7 +216,6 @@ begin
     g_ADC_SCLK_FREQ                            => c_CLK_SCLK_FREQ,
     g_ADC_CHANNELS                             => 12,
     g_ADC_FIX_INV_INPUTS                       => true,
-    g_DAC_MASTER_CLOCK_FREQ                    => c_CLK_ADCDAC_MASTER_FREQ,
     g_DAC_SCLK_FREQ                            => c_CLK_DAC_SCLK_FREQ,
     g_DAC_CHANNELS                             => 12,
     g_SERIAL_REG_SCLK_FREQ                     => c_CLK_SERIAL_REGS_FREQ,
@@ -253,12 +230,6 @@ begin
 
     rst_fast_spi_n_i                           => rst_fast_spi_n,
     clk_fast_spi_i                             => clk_fast_spi,
-
-    clk_master_adc_i                           => clk_master,
-    rst_master_adc_n_i                         => rst_master_n,
-
-    clk_master_dac_i                           => clk_master,
-    rst_master_dac_n_i                         => rst_master_n,
 
     ---------------------------------------------------------------------------
     -- RTM ADC interface

@@ -50,8 +50,6 @@ generic (
   g_ADC_CHANNELS                             : natural := 12;
   -- If the ADC inputs are inverted on RTM-LAMP or not
   g_ADC_FIX_INV_INPUTS                       : boolean := false;
-  -- DAC clock frequency [Hz]. Must be a multiple of g_DAC_SCLK_FREQ
-  g_DAC_MASTER_CLOCK_FREQ                    : natural := 100000000;
   -- DAC clock frequency [Hz]
   g_DAC_SCLK_FREQ                            : natural := 25000000;
   -- Number of DAC channels
@@ -73,12 +71,6 @@ port (
 
   rst_fast_spi_n_i                           : in  std_logic;
   clk_fast_spi_i                             : in  std_logic;
-
-  clk_master_adc_i                           : in   std_logic;
-  rst_master_adc_n_i                         : in   std_logic;
-
-  clk_master_dac_i                           : in   std_logic;
-  rst_master_dac_n_i                         : in   std_logic;
 
   ---------------------------------------------------------------------------
   -- Wishbone Control Interface signals
@@ -357,7 +349,7 @@ begin
       wb_we_i                                => wb_slv_adp_out.we,
       wb_ack_o                               => wb_slv_adp_in.ack,
       wb_stall_o                             => wb_slv_adp_in.stall,
-      dac_master_clk_i                       => clk_master_dac_i,
+      dac_master_clk_i                       => clk_i,
 
       rtmlamp_ohwr_regs_sta_reserved_i          => (others => '0'),
 
@@ -500,7 +492,6 @@ begin
     g_ADC_SCLK_FREQ                            => g_ADC_SCLK_FREQ,
     g_ADC_CHANNELS                             => g_ADC_CHANNELS,
     g_ADC_FIX_INV_INPUTS                       => g_ADC_FIX_INV_INPUTS,
-    g_DAC_MASTER_CLOCK_FREQ                    => g_DAC_MASTER_CLOCK_FREQ,
     g_DAC_SCLK_FREQ                            => g_DAC_SCLK_FREQ,
     g_DAC_CHANNELS                             => g_DAC_CHANNELS,
     g_SERIAL_REG_SCLK_FREQ                     => g_SERIAL_REG_SCLK_FREQ ,
@@ -518,12 +509,6 @@ begin
 
     rst_fast_spi_n_i                           => rst_fast_spi_n_i,
     clk_fast_spi_i                             => clk_fast_spi_i,
-
-    clk_master_adc_i                           => clk_master_adc_i,
-    rst_master_adc_n_i                         => rst_master_adc_n_i,
-
-    clk_master_dac_i                           => clk_master_dac_i,
-    rst_master_dac_n_i                         => rst_master_dac_n_i,
 
     ---------------------------------------------------------------------------
     -- RTM ADC interface
