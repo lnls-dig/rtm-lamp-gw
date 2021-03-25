@@ -37,7 +37,8 @@ generic (
   -- If false uses clk_i to drive CNV/LDAC
   g_USE_REF_CLK                              : boolean := false;
   -- ADC clock frequency [Hz]. Must be a multiple of g_ADC_SCLK_FREQ
-  g_ADC_MASTER_CLOCK_FREQ                    : natural := 200000000;
+  -- at 4x the frequency ADC sck frequency [Hz]
+  g_CLK_FAST_SPI_FREQ                        : natural := 400000000;
   -- ADC clock frequency [Hz]
   g_ADC_SCLK_FREQ                            : natural := 100000000;
   -- Number of ADC channels
@@ -45,7 +46,7 @@ generic (
   -- If the ADC inputs are inverted on RTM-LAMP or not
   g_ADC_FIX_INV_INPUTS                       : boolean := false;
   -- DAC clock frequency [Hz]. Must be a multiple of g_DAC_SCLK_FREQ
-  g_DAC_MASTER_CLOCK_FREQ                    : natural := 200000000;
+  g_DAC_MASTER_CLOCK_FREQ                    : natural := 100000000;
   -- DAC clock frequency [Hz]
   g_DAC_SCLK_FREQ                            : natural := 25000000;
   -- Number of DAC channels
@@ -64,6 +65,9 @@ port (
 
   clk_ref_i                                  : in   std_logic := '0';
   rst_ref_n_i                                : in   std_logic := '1';
+
+  rst_fast_spi_n_i                           : in  std_logic;
+  clk_fast_spi_i                             : in  std_logic;
 
   clk_master_adc_i                           : in   std_logic;
   rst_master_adc_n_i                         : in   std_logic;
@@ -159,6 +163,9 @@ architecture rtl of rtmlamp_ohwr is
   -- quasi-offset binary to two's complement conversion factor
   constant c_ADC_OFFB_2_TWOSCOMP_CONV        : signed(c_ADC_BITS-1 downto 0) := to_signed(-16384, c_ADC_BITS);
 
+  constant c_DAC_LDAC_WIDTH                  : real := 100.0e-9; -- minimum of 30.0e-9
+  constant c_DAC_LDAC_WAIT_AFTER_CS          : real := 100.0e-9; -- minimum of 30.0e-9
+
   signal dac_ldac_n                          : std_logic;
 
   signal adc_data                            : t_16b_word_array(c_MAX_ADC_CHANNELS-1 downto 0);
@@ -199,6 +206,7 @@ architecture rtl of rtmlamp_ohwr is
   signal adc_quad_raw                        : t_adc_readout := c_DUMMY_ADC_READOUT;
   signal adc_quad_fix_inv                    : t_adc_readout;
   signal adc_quad_scaled                     : t_adc_readout;
+
 begin
 
   assert (g_ADC_CHANNELS <= c_MAX_ADC_CHANNELS)
@@ -219,7 +227,7 @@ begin
   -- with half the number of data lines (2 channels per data line)
   cmp_ltc2320_acq: ltc232x_acq
     generic map(
-      g_CLK_FREQ                           => g_ADC_MASTER_CLOCK_FREQ,
+      g_CLK_FAST_SPI_FREQ                  => g_CLK_FAST_SPI_FREQ,
       g_SCLK_FREQ                          => g_ADC_SCLK_FREQ,
       g_REF_CLK_CNV_FREQ                   => g_REF_CLK_FREQ,
       g_USE_REF_CLK_CNV                    => g_USE_REF_CLK,
@@ -230,6 +238,9 @@ begin
       g_CNV_WAIT                           => c_ADC_CNV_WAIT
     )
     port map(
+      rst_fast_spi_n_i                     => rst_fast_spi_n_i,
+      clk_fast_spi_i                       => clk_fast_spi_i,
+
       clk_i                                => clk_master_adc_i,
       rst_n_i                              => rst_master_adc_n_i,
 
@@ -339,7 +350,7 @@ begin
     -- with half the number of data lines (2 channels per data line)
     cmp_ltc2320_acq: ltc232x_acq
       generic map(
-        g_CLK_FREQ                           => g_ADC_MASTER_CLOCK_FREQ,
+        g_CLK_FAST_SPI_FREQ                  => g_CLK_FAST_SPI_FREQ,
         g_SCLK_FREQ                          => g_ADC_SCLK_FREQ,
         g_REF_CLK_CNV_FREQ                   => g_REF_CLK_FREQ,
         g_USE_REF_CLK_CNV                    => g_USE_REF_CLK,
@@ -350,6 +361,9 @@ begin
         g_CNV_WAIT                           => c_ADC_CNV_WAIT
       )
       port map(
+        rst_fast_spi_n_i                     => rst_fast_spi_n_i,
+        clk_fast_spi_i                       => clk_fast_spi_i,
+
         clk_i                                => clk_master_adc_i,
         rst_n_i                              => rst_master_adc_n_i,
 
@@ -512,8 +526,8 @@ begin
       g_USE_REF_CLK_LDAC                     => g_USE_REF_CLK,
       g_NUM_DACS                             => g_DAC_CHANNELS,
       g_CPOL                                 => false,
-      g_LDAC_WIDTH                           => 30.0e-9,
-      g_LDAC_WAIT_AFTER_CS                   => 30.0e-9
+      g_LDAC_WIDTH                           => c_DAC_LDAC_WIDTH,
+      g_LDAC_WAIT_AFTER_CS                   => c_DAC_LDAC_WAIT_AFTER_CS
     )
     port map(
       clk_i                                  => clk_master_dac_i,

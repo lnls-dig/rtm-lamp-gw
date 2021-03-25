@@ -2,6 +2,18 @@ onerror {resume}
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider ltc232x_acq_tb
 add wave -noupdate /ltc232x_acq_tb/g_BITS
+add wave -noupdate /ltc232x_acq_tb/c_CLK_PERIOD
+add wave -noupdate /ltc232x_acq_tb/c_CLK_PERIOD_HALF
+add wave -noupdate /ltc232x_acq_tb/c_CLK_FREQ
+add wave -noupdate /ltc232x_acq_tb/c_CLK_FAST_SPI_PERIOD
+add wave -noupdate /ltc232x_acq_tb/c_CLK_FAST_SPI_PERIOD_HALF
+add wave -noupdate /ltc232x_acq_tb/c_CLK_FAST_SPI_FREQ
+add wave -noupdate /ltc232x_acq_tb/c_SCLK_PERIOD
+add wave -noupdate /ltc232x_acq_tb/c_SCLK_PERIOD_HALF
+add wave -noupdate /ltc232x_acq_tb/c_SCLK_FREQ
+add wave -noupdate /ltc232x_acq_tb/c_CLK_SYNC_PERIOD
+add wave -noupdate /ltc232x_acq_tb/c_CLK_SYNC_PERIOD_HALF
+add wave -noupdate /ltc232x_acq_tb/c_CLK_SYNC_FREQ
 add wave -noupdate /ltc232x_acq_tb/ch1_o
 add wave -noupdate /ltc232x_acq_tb/ch2_o
 add wave -noupdate /ltc232x_acq_tb/ch3_o
@@ -20,35 +32,40 @@ add wave -noupdate /ltc232x_acq_tb/ch7_sync_o
 add wave -noupdate /ltc232x_acq_tb/ch8_sync_o
 add wave -noupdate /ltc232x_acq_tb/rst_n
 add wave -noupdate /ltc232x_acq_tb/clk
+add wave -noupdate /ltc232x_acq_tb/rst_fast_spi_n
+add wave -noupdate /ltc232x_acq_tb/clk_fast_spi
 add wave -noupdate /ltc232x_acq_tb/rst_sync_n
 add wave -noupdate /ltc232x_acq_tb/clk_sync
 add wave -noupdate /ltc232x_acq_tb/start
 add wave -noupdate /ltc232x_acq_tb/sck
-add wave -noupdate /ltc232x_acq_tb/sck_sync
 add wave -noupdate /ltc232x_acq_tb/sck_ret
-add wave -noupdate /ltc232x_acq_tb/sck_ret_sync
 add wave -noupdate /ltc232x_acq_tb/cnv
-add wave -noupdate /ltc232x_acq_tb/cnv_sync
 add wave -noupdate /ltc232x_acq_tb/sdoa
 add wave -noupdate /ltc232x_acq_tb/sdob
 add wave -noupdate /ltc232x_acq_tb/sdoc
 add wave -noupdate /ltc232x_acq_tb/sdod
+add wave -noupdate /ltc232x_acq_tb/sck_sync
+add wave -noupdate /ltc232x_acq_tb/sck_ret_sync
+add wave -noupdate /ltc232x_acq_tb/cnv_sync
 add wave -noupdate /ltc232x_acq_tb/sdoa_sync
 add wave -noupdate /ltc232x_acq_tb/sdob_sync
 add wave -noupdate /ltc232x_acq_tb/sdoc_sync
 add wave -noupdate /ltc232x_acq_tb/sdod_sync
 add wave -noupdate /ltc232x_acq_tb/analog_i
 add wave -noupdate -divider ltc232x_acq
-add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_acq/c_WAIT_CONV_CYCLES
-add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_acq/c_CONV_HIGH_CYCLES
-add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_acq/g_CLK_FREQ
-add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_acq/g_SCLK_FREQ
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_CLK_FAST_SPI_FREQ
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_SCLK_FREQ
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_REF_CLK_CNV_FREQ
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_USE_REF_CLK_CNV
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_BITS
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_CHANNELS
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_DATA_LINES
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_CNV_HIGH
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/g_CNV_WAIT
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/c_WAIT_CONV_CYCLES
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/c_CONV_HIGH_CYCLES
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/rst_fast_spi_n_i
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/clk_fast_spi_i
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/rst_n_i
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/clk_i
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/rst_ref_cnv_n_i
@@ -78,6 +95,7 @@ add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/ch8_o
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/valid_o
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/state_conv
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/state_ready
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/state_ready_slv
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/clk_fsm
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/rst_fsm_n
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/start_ref_cnv
@@ -87,8 +105,30 @@ add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/start_cnv
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/start_readout_pp
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/ready_cnv
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/ready
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/ready_cnv_ref_sys
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/done_readout_pp
-add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_acq/wait_counter
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/done_readout_pp_ref_fast
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/wait_counter
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/cnv
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/sck
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/sck_ret
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/cdc_fifo_data_in
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/cdc_fifo_valid_in
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/cdc_fifo_data_out
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/cdc_fifo_valid_out
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/ch1
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/ch2
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/ch3
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/ch4
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/ch5
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/ch6
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/ch7
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/ch8
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/valid
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/data
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/trig0
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/data_1
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_acq/trig0_1
 add wave -noupdate -divider ltc2320_model
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc2320/g_REF
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc2320/g_CHANNELS
@@ -106,16 +146,19 @@ add wave -noupdate /ltc232x_acq_tb/cmp_ltc2320/delayed_cnv_n
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc2320/chn_off
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc2320/bit_indx
 add wave -noupdate -divider ltc_232x_sync_acq
-add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_sync_acq/c_WAIT_CONV_CYCLES
-add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_sync_acq/c_CONV_HIGH_CYCLES
-add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_sync_acq/g_CLK_FREQ
-add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_sync_acq/g_SCLK_FREQ
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/g_CLK_FAST_SPI_FREQ
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/g_SCLK_FREQ
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/g_REF_CLK_CNV_FREQ
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/g_USE_REF_CLK_CNV
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/g_BITS
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/g_CHANNELS
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/g_DATA_LINES
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/g_CNV_HIGH
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/g_CNV_WAIT
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/c_WAIT_CONV_CYCLES
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/c_CONV_HIGH_CYCLES
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/rst_fast_spi_n_i
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/clk_fast_spi_i
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/rst_n_i
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/clk_i
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/rst_ref_cnv_n_i
@@ -145,6 +188,7 @@ add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/ch8_o
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/valid_o
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/state_conv
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/state_ready
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/state_ready_slv
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/clk_fsm
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/rst_fsm_n
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/start_ref_cnv
@@ -154,8 +198,97 @@ add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/start_cnv
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/start_readout_pp
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/ready_cnv
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/ready
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/ready_cnv_ref_sys
 add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/done_readout_pp
-add wave -noupdate -radix unsigned /ltc232x_acq_tb/cmp_ltc232x_sync_acq/wait_counter
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/done_readout_pp_ref_fast
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/wait_counter
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cnv
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/sck
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/sck_ret
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cdc_fifo_data_in
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cdc_fifo_valid_in
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cdc_fifo_data_out
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cdc_fifo_valid_out
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/ch1
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/ch2
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/ch3
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/ch4
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/ch5
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/ch6
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/ch7
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/ch8
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/valid
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/data
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/trig0
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/data_1
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/trig0_1
+add wave -noupdate -divider ltc2320_syn_acq_cdc_fifo
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_cdc_fifo/g_data_width
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_cdc_fifo/g_size
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_cdc_fifo/clk_wr_i
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_cdc_fifo/data_i
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_cdc_fifo/valid_i
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_cdc_fifo/clk_rd_i
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_cdc_fifo/data_o
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_cdc_fifo/valid_o
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_cdc_fifo/fifo_cdc_rd
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_cdc_fifo/fifo_cdc_empty
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_cdc_fifo/fifo_cdc_valid
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_cdc_fifo/c_guard_size
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_cdc_fifo/c_almost_empty_thres
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_cdc_fifo/c_almost_full_thres
+add wave -noupdate -divider ltc2320_sync_readout
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/g_CLK_FAST_SPI_FREQ
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/g_SCLK_FREQ
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/g_BITS
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/g_CHANNELS
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/g_DATA_LINES
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/c_DDR_MODE
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/c_BITS_PER_LINE
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/c_SCK_CLK_RATIO
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/c_SCK_CLK_DIV_CNT
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/rst_fast_spi_n_i
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/clk_fast_spi_i
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/start_i
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/sck_o
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/sck_ret_i
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/ready_o
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/done_pp_o
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/sdo1a_i
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/sdo2_i
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/sdo3b_i
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/sdo4_i
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/sdo5c_i
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/sdo6_i
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/sdo7d_i
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/sdo8_i
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/ch1_o
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/ch2_o
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/ch3_o
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/ch4_o
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/ch5_o
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/ch6_o
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/ch7_o
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/ch8_o
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/valid_o
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/state
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/state_slv
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/sck_o_s
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/ch1_o_s
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/ch2_o_s
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/ch3_o_s
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/ch4_o_s
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/ch5_o_s
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/ch6_o_s
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/ch7_o_s
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/ch8_o_s
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/sck_ret_pp
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/sdo_sync_in
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/sdo_sync_out
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/bit_cnt
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/bit_read_cnt
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/data
+add wave -noupdate /ltc232x_acq_tb/cmp_ltc232x_sync_acq/cmp_ltc232x_readout/trig0
 add wave -noupdate -divider ltc2320_sync_model
 add wave -noupdate /ltc232x_acq_tb/cmp_clk_sync_ltc2320/g_REF
 add wave -noupdate /ltc232x_acq_tb/cmp_clk_sync_ltc2320/g_CHANNELS
@@ -173,7 +306,7 @@ add wave -noupdate /ltc232x_acq_tb/cmp_clk_sync_ltc2320/delayed_cnv_n
 add wave -noupdate /ltc232x_acq_tb/cmp_clk_sync_ltc2320/chn_off
 add wave -noupdate /ltc232x_acq_tb/cmp_clk_sync_ltc2320/bit_indx
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {976300 ps} 0}
+WaveRestoreCursors {{Cursor 1} {1690000 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 150
 configure wave -valuecolwidth 100
@@ -189,4 +322,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {807900 ps} {2115400 ps}
+WaveRestoreZoom {807900 ps} {2051100 ps}

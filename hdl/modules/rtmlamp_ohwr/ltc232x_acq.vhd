@@ -30,9 +30,9 @@ use work.gencores_pkg.all;
 entity ltc232x_acq is
   generic(
     -- Core clock frequency [Hz], should be an integer multiple of
-    -- g_SCLK_FREQ, at least double the frequency ADC sck frequency [Hz]
-    g_CLK_FREQ                               : natural := 100_000_000;
-    g_SCLK_FREQ                              : natural := 50_000_000;
+    -- g_SCLK_FREQ, at 4x the frequency ADC sck frequency [Hz]
+    g_CLK_FAST_SPI_FREQ                      : natural := 400_000_000;
+    g_SCLK_FREQ                              : natural := 100_000_000;
     -- Reference clock frequency [Hz], used only when g_USE_REF_CLK_CNV is
     -- set to true
     g_REF_CLK_CNV_FREQ                       : natural := 50_000_000;
@@ -52,6 +52,10 @@ entity ltc232x_acq is
     g_CNV_WAIT                               : real    := 450.0e-9
     );
   port(
+    -- Reset fast SPI clock
+    rst_fast_spi_n_i                         : in  std_logic;
+    -- Fast SPI clock
+    clk_fast_spi_i                           : in  std_logic;
     -- Reset
     rst_n_i                                  : in  std_logic;
     -- Core clock
@@ -120,7 +124,7 @@ architecture ltc232x_acq_arch of ltc232x_acq is
     if use_ref_clk_cnv then
       v_clk_freq := g_REF_CLK_CNV_FREQ;
     else
-      v_clk_freq := g_CLK_FREQ;
+      v_clk_freq := g_CLK_FAST_SPI_FREQ;
     end if;
 
     return v_clk_freq;
@@ -145,7 +149,28 @@ architecture ltc232x_acq_arch of ltc232x_acq is
   signal ready                               : std_logic;
   signal ready_cnv_ref_sys                   : std_logic;
   signal done_readout_pp                     : std_logic;
+  signal done_readout_pp_ref_fast            : std_logic;
   signal wait_counter                        : integer range 0 to c_WAIT_CONV_CYCLES := 0;
+
+  signal cnv                                 : std_logic;
+  signal sck                                 : std_logic;
+  signal sck_ret                             : std_logic;
+
+  signal cdc_fifo_data_in                    : std_logic_vector(8*g_BITS-1 downto 0);
+  signal cdc_fifo_valid_in                   : std_logic;
+  signal cdc_fifo_data_out                   : std_logic_vector(8*g_BITS-1 downto 0);
+  signal cdc_fifo_valid_out                  : std_logic;
+
+  signal ch1                                 : std_logic_vector(g_BITS-1 downto 0);
+  signal ch2                                 : std_logic_vector(g_BITS-1 downto 0);
+  signal ch3                                 : std_logic_vector(g_BITS-1 downto 0);
+  signal ch4                                 : std_logic_vector(g_BITS-1 downto 0);
+  signal ch5                                 : std_logic_vector(g_BITS-1 downto 0);
+  signal ch6                                 : std_logic_vector(g_BITS-1 downto 0);
+  signal ch7                                 : std_logic_vector(g_BITS-1 downto 0);
+  signal ch8                                 : std_logic_vector(g_BITS-1 downto 0);
+  signal valid                               : std_logic;
+
 begin
 
   -------------------------------------------
@@ -173,8 +198,8 @@ begin
 
   gen_sys_clk_cnv : if (not g_USE_REF_CLK_CNV) generate
 
-    clk_fsm <= clk_i;
-    rst_fsm_n <= rst_n_i;
+    clk_fsm <= clk_fast_spi_i;
+    rst_fsm_n <= rst_fast_spi_n_i;
 
     start_ref_cnv <= start_cnv;
 
@@ -186,7 +211,7 @@ begin
       if rst_fsm_n = '0' then               -- Reset the state_conv machine
         state_conv <= IDLE;
         wait_counter <= 0;
-        cnv_o <= '0';
+        cnv <= '0';
         done_cnv_pp <= '0';
         -- if we are in reset state we can't be ready
         ready_cnv <= '0';
@@ -214,7 +239,7 @@ begin
             ready_cnv <= '1';
 
             if start_ref_cnv = '1' then
-              cnv_o <= '1';
+              cnv <= '1';
               state_conv <= CONV_HIGH;
               ready_cnv <= '0';
             end if;
@@ -222,7 +247,7 @@ begin
           when CONV_HIGH =>
             if wait_counter = c_CONV_HIGH_CYCLES-1 then
               wait_counter <= 0;
-              cnv_o <= '0';
+              cnv <= '0';
               state_conv <= WAIT_CONV;
             else
               wait_counter <= wait_counter + 1;
@@ -250,6 +275,8 @@ begin
     d_i                                      => ready_cnv,
     q_o                                      => ready_cnv_ref_sys
   );
+
+  cnv_o <= cnv;
 
   -------------------------------------------
   --         Done conversion pulse signal synch
@@ -281,19 +308,19 @@ begin
   -------------------------------------------
   cmp_ltc232x_readout : ltc232x_readout
     generic map (
-      g_CLK_FREQ                             => g_CLK_FREQ,
+      g_CLK_FAST_SPI_FREQ                    => g_CLK_FAST_SPI_FREQ,
       g_SCLK_FREQ                            => g_SCLK_FREQ,
       g_BITS                                 => g_BITS,
       g_CHANNELS                             => g_CHANNELS,
       g_DATA_LINES                           => g_DATA_LINES
     )
     port map (
-      rst_n_i                                => rst_n_i,
-      clk_i                                  => clk_i,
+      rst_fast_spi_n_i                       => rst_fast_spi_n_i,
+      clk_fast_spi_i                         => clk_fast_spi_i,
       start_i                                => start_readout_pp,
-      sck_o                                  => sck_o,
-      sck_ret_i                              => sck_ret_i,
-      done_pp_o                              => done_readout_pp,
+      sck_o                                  => sck,
+      sck_ret_i                              => sck_ret,
+      done_pp_o                              => done_readout_pp_ref_fast,
       sdo1a_i                                => sdo1a_i,
       sdo2_i                                 => sdo2_i,
       sdo3b_i                                => sdo3b_i,
@@ -302,16 +329,71 @@ begin
       sdo6_i                                 => sdo6_i,
       sdo7d_i                                => sdo7d_i,
       sdo8_i                                 => sdo8_i,
-      ch1_o                                  => ch1_o,
-      ch2_o                                  => ch2_o,
-      ch3_o                                  => ch3_o,
-      ch4_o                                  => ch4_o,
-      ch5_o                                  => ch5_o,
-      ch6_o                                  => ch6_o,
-      ch7_o                                  => ch7_o,
-      ch8_o                                  => ch8_o,
-      valid_o                                => valid_o
+      ch1_o                                  => ch1,
+      ch2_o                                  => ch2,
+      ch3_o                                  => ch3,
+      ch4_o                                  => ch4,
+      ch5_o                                  => ch5,
+      ch6_o                                  => ch6,
+      ch7_o                                  => ch7,
+      ch8_o                                  => ch8,
+      valid_o                                => valid
     );
+
+  sck_o <= sck;
+  sck_ret <= sck_ret_i;
+
+  -----------------------------------------------------------
+  --         CDC from FAST SPI domain to CLK_SYS
+  -----------------------------------------------------------
+
+  cdc_fifo_data_in(8*g_BITS-1 downto 7*g_BITS) <= ch8;
+  cdc_fifo_data_in(7*g_BITS-1 downto 6*g_BITS) <= ch7;
+  cdc_fifo_data_in(6*g_BITS-1 downto 5*g_BITS) <= ch6;
+  cdc_fifo_data_in(5*g_BITS-1 downto 4*g_BITS) <= ch5;
+  cdc_fifo_data_in(4*g_BITS-1 downto 3*g_BITS) <= ch4;
+  cdc_fifo_data_in(3*g_BITS-1 downto 2*g_BITS) <= ch3;
+  cdc_fifo_data_in(2*g_BITS-1 downto   g_BITS) <= ch2;
+  cdc_fifo_data_in(  g_BITS-1 downto        0) <= ch1;
+  cdc_fifo_valid_in <= valid;
+
+  cmp_ltc232x_cdc_fifo : ltc232x_cdc_fifo
+  generic map
+  (
+    g_data_width                              => 8*g_BITS,
+    g_size                                    => 4
+  )
+  port map
+  (
+    clk_wr_i                                  => clk_fast_spi_i,
+    data_i                                    => cdc_fifo_data_in,
+    valid_i                                   => cdc_fifo_valid_in,
+
+    clk_rd_i                                  => clk_i,
+    data_o                                    => cdc_fifo_data_out,
+    valid_o                                   => cdc_fifo_valid_out
+  );
+
+  -- output assingments
+  ch8_o     <= cdc_fifo_data_out(8*g_BITS-1 downto 7*g_BITS);
+  ch7_o     <= cdc_fifo_data_out(7*g_BITS-1 downto 6*g_BITS);
+  ch6_o     <= cdc_fifo_data_out(6*g_BITS-1 downto 5*g_BITS);
+  ch5_o     <= cdc_fifo_data_out(5*g_BITS-1 downto 4*g_BITS);
+  ch4_o     <= cdc_fifo_data_out(4*g_BITS-1 downto 3*g_BITS);
+  ch3_o     <= cdc_fifo_data_out(3*g_BITS-1 downto 2*g_BITS);
+  ch2_o     <= cdc_fifo_data_out(2*g_BITS-1 downto   g_BITS);
+  ch1_o     <= cdc_fifo_data_out(  g_BITS-1 downto        0);
+  valid_o   <= cdc_fifo_valid_out;
+
+  cmp_done_readout_pulse_synchronizer2 : gc_pulse_synchronizer2
+  port map (
+    clk_in_i                               => clk_fast_spi_i,
+    rst_in_n_i                             => rst_fast_spi_n_i,
+    clk_out_i                              => clk_i,
+    rst_out_n_i                            => rst_n_i,
+    d_p_i                                  => done_readout_pp_ref_fast,
+    q_p_o                                  => done_readout_pp
+  );
 
   done_pp_o <= done_readout_pp;
 

@@ -88,8 +88,8 @@ package rtm_lamp_pkg is
 
   component ltc232x_acq is
   generic(
-    g_CLK_FREQ                               : natural := 100_000_000;
-    g_SCLK_FREQ                              : natural := 50_000_000;
+    g_CLK_FAST_SPI_FREQ                      : natural := 400_000_000;
+    g_SCLK_FREQ                              : natural := 100_000_000;
     g_REF_CLK_CNV_FREQ                       : natural := 50_000_000;
     g_USE_REF_CLK_CNV                        : boolean := false;
     g_BITS                                   : natural := 16;
@@ -99,6 +99,8 @@ package rtm_lamp_pkg is
     g_CNV_WAIT                               : real    := 450.0e-9
     );
   port(
+    rst_fast_spi_n_i                         : in  std_logic;
+    clk_fast_spi_i                           : in  std_logic;
     rst_n_i                                  : in  std_logic;
     clk_i                                    : in  std_logic;
     rst_ref_cnv_n_i                          : in  std_logic  := '1';
@@ -129,17 +131,35 @@ package rtm_lamp_pkg is
     );
   end component;
 
+  component ltc232x_cdc_fifo
+  generic
+  (
+    g_data_width                              : natural;
+    g_size                                    : natural
+  );
+  port
+  (
+    clk_wr_i                                  : in std_logic;
+    data_i                                    : in std_logic_vector(g_data_width-1 downto 0);
+    valid_i                                   : in std_logic;
+
+    clk_rd_i                                  : in std_logic;
+    data_o                                    : out std_logic_vector(g_data_width-1 downto 0);
+    valid_o                                   : out std_logic
+  );
+  end component;
+
   component ltc232x_readout is
   generic(
-    g_CLK_FREQ                               : natural := 100_000_000;
-    g_SCLK_FREQ                              : natural := 50_000_000;
+    g_CLK_FAST_SPI_FREQ                      : natural := 400_000_000;
+    g_SCLK_FREQ                              : natural := 100_000_000;
     g_BITS                                   : natural := 16;
     g_CHANNELS                               : natural := 8;
     g_DATA_LINES                             : natural := 8
     );
   port(
-    rst_n_i                                  : in  std_logic;
-    clk_i                                    : in  std_logic;
+    rst_fast_spi_n_i                         : in  std_logic;
+    clk_fast_spi_i                           : in  std_logic;
     start_i                                  : in  std_logic;
     sck_o                                    : out std_logic  := '0';
     sck_ret_i                                : in  std_logic;
@@ -201,7 +221,8 @@ package rtm_lamp_pkg is
     -- If false uses clk_i to drive CNV/LDAC
     g_USE_REF_CLK                              : boolean := false;
     -- ADC clock frequency [Hz]. Must be a multiple of g_ADC_SCLK_FREQ
-    g_ADC_MASTER_CLOCK_FREQ                    : natural := 200000000;
+    -- at 4x the frequency ADC sck frequency [Hz]
+    g_CLK_FAST_SPI_FREQ                        : natural := 400000000;
     -- ADC clock frequency [Hz]
     g_ADC_SCLK_FREQ                            : natural := 100000000;
     -- Number of ADC channels
@@ -209,7 +230,7 @@ package rtm_lamp_pkg is
     -- If the ADC inputs are inverted on RTM-LAMP or not
     g_ADC_FIX_INV_INPUTS                       : boolean := false;
     -- DAC clock frequency [Hz]. Must be a multiple of g_DAC_SCLK_FREQ
-    g_DAC_MASTER_CLOCK_FREQ                    : natural := 200000000;
+    g_DAC_MASTER_CLOCK_FREQ                    : natural := 100000000;
     -- DAC clock frequency [Hz]
     g_DAC_SCLK_FREQ                            : natural := 25000000;
     -- Number of DAC channels
@@ -228,6 +249,9 @@ package rtm_lamp_pkg is
 
     clk_ref_i                                  : in   std_logic := '0';
     rst_ref_n_i                                : in   std_logic := '1';
+
+    rst_fast_spi_n_i                           : in  std_logic;
+    clk_fast_spi_i                             : in  std_logic;
 
     clk_master_adc_i                           : in   std_logic;
     rst_master_adc_n_i                         : in   std_logic;
@@ -331,7 +355,8 @@ package rtm_lamp_pkg is
     -- If false uses clk_i to drive CNV/LDAC
     g_USE_REF_CLK                              : boolean := false;
     -- ADC clock frequency [Hz]. Must be a multiple of g_ADC_SCLK_FREQ
-    g_ADC_MASTER_CLOCK_FREQ                    : natural := 200000000;
+    -- at 4x the frequency ADC sck frequency [Hz]
+    g_CLK_FAST_SPI_FREQ                        : natural := 400000000;
     -- ADC clock frequency [Hz]
     g_ADC_SCLK_FREQ                            : natural := 100000000;
     -- Number of ADC channels
@@ -339,7 +364,7 @@ package rtm_lamp_pkg is
     -- If the ADC inputs are inverted on RTM-LAMP or not
     g_ADC_FIX_INV_INPUTS                       : boolean := false;
     -- DAC clock frequency [Hz]. Must be a multiple of g_DAC_SCLK_FREQ
-    g_DAC_MASTER_CLOCK_FREQ                    : natural := 200000000;
+    g_DAC_MASTER_CLOCK_FREQ                    : natural := 100000000;
     -- DAC clock frequency [Hz]
     g_DAC_SCLK_FREQ                            : natural := 25000000;
     -- Number of DAC channels
@@ -358,6 +383,9 @@ package rtm_lamp_pkg is
 
     clk_ref_i                                  : in   std_logic := '0';
     rst_ref_n_i                                : in   std_logic := '1';
+
+    rst_fast_spi_n_i                           : in  std_logic;
+    clk_fast_spi_i                             : in  std_logic;
 
     clk_master_adc_i                           : in   std_logic;
     rst_master_adc_n_i                         : in   std_logic;
@@ -463,7 +491,8 @@ package rtm_lamp_pkg is
     -- If false uses clk_i to drive CNV/LDAC
     g_USE_REF_CLK                              : boolean := false;
     -- ADC clock frequency [Hz]. Must be a multiple of g_ADC_SCLK_FREQ
-    g_ADC_MASTER_CLOCK_FREQ                    : natural := 200000000;
+    -- at 4x the frequency ADC sck frequency [Hz]
+    g_CLK_FAST_SPI_FREQ                        : natural := 400000000;
     -- ADC clock frequency [Hz]
     g_ADC_SCLK_FREQ                            : natural := 100000000;
     -- Number of ADC channels
@@ -471,7 +500,7 @@ package rtm_lamp_pkg is
     -- If the ADC inputs are inverted on RTM-LAMP or not
     g_ADC_FIX_INV_INPUTS                       : boolean := false;
     -- DAC clock frequency [Hz]. Must be a multiple of g_DAC_SCLK_FREQ
-    g_DAC_MASTER_CLOCK_FREQ                    : natural := 200000000;
+    g_DAC_MASTER_CLOCK_FREQ                    : natural := 100000000;
     -- DAC clock frequency [Hz]
     g_DAC_SCLK_FREQ                            : natural := 25000000;
     -- Number of DAC channels
@@ -490,6 +519,9 @@ package rtm_lamp_pkg is
 
     clk_ref_i                                  : in   std_logic := '0';
     rst_ref_n_i                                : in   std_logic := '1';
+
+    rst_fast_spi_n_i                           : in  std_logic;
+    clk_fast_spi_i                             : in  std_logic;
 
     clk_master_adc_i                           : in   std_logic;
     rst_master_adc_n_i                         : in   std_logic;

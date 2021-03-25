@@ -40,7 +40,8 @@ generic (
   -- If false uses clk_i to drive CNV/LDAC
   g_USE_REF_CLK                              : boolean := false;
   -- ADC clock frequency [Hz]. Must be a multiple of g_ADC_SCLK_FREQ
-  g_ADC_MASTER_CLOCK_FREQ                    : natural := 200000000;
+  -- at 4x the frequency ADC sck frequency [Hz]
+  g_CLK_FAST_SPI_FREQ                        : natural := 400000000;
   -- ADC clock frequency [Hz]
   g_ADC_SCLK_FREQ                            : natural := 100000000;
   -- Number of ADC channels
@@ -48,7 +49,7 @@ generic (
   -- If the ADC inputs are inverted on RTM-LAMP or not
   g_ADC_FIX_INV_INPUTS                       : boolean := false;
   -- DAC clock frequency [Hz]. Must be a multiple of g_DAC_SCLK_FREQ
-  g_DAC_MASTER_CLOCK_FREQ                    : natural := 200000000;
+  g_DAC_MASTER_CLOCK_FREQ                    : natural := 100000000;
   -- DAC clock frequency [Hz]
   g_DAC_SCLK_FREQ                            : natural := 25000000;
   -- Number of DAC channels
@@ -67,6 +68,9 @@ port (
 
   clk_ref_i                                  : in   std_logic := '0';
   rst_ref_n_i                                : in   std_logic := '1';
+
+  rst_fast_spi_n_i                           : in  std_logic;
+  clk_fast_spi_i                             : in  std_logic;
 
   clk_master_adc_i                           : in   std_logic;
   rst_master_adc_n_i                         : in   std_logic;
@@ -188,7 +192,7 @@ begin
     g_SYS_CLOCK_FREQ                           => g_SYS_CLOCK_FREQ,
     g_REF_CLK_FREQ                             => g_REF_CLK_FREQ,
     g_USE_REF_CLK                              => g_USE_REF_CLK ,
-    g_ADC_MASTER_CLOCK_FREQ                    => g_ADC_MASTER_CLOCK_FREQ,
+    g_CLK_FAST_SPI_FREQ                        => g_CLK_FAST_SPI_FREQ,
     g_ADC_SCLK_FREQ                            => g_ADC_SCLK_FREQ ,
     g_ADC_CHANNELS                             => g_ADC_CHANNELS,
     g_ADC_FIX_INV_INPUTS                       => g_ADC_FIX_INV_INPUTS,
@@ -207,6 +211,9 @@ begin
 
     clk_ref_i                                  => clk_ref_i,
     rst_ref_n_i                                => rst_ref_n_i,
+
+    rst_fast_spi_n_i                           => rst_fast_spi_n_i,
+    clk_fast_spi_i                             => clk_fast_spi_i,
 
     clk_master_adc_i                           => clk_master_adc_i,
     rst_master_adc_n_i                         => rst_master_adc_n_i,

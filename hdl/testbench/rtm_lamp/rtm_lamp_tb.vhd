@@ -37,6 +37,10 @@ architecture rtm_lamp_model_tb_arch of rtm_lamp_model_tb is
   constant c_CLK_SYS_PERIOD_HALF : real := c_CLK_SYS_PERIOD/2.0;
   constant c_CLK_SYS_FREQ : natural := integer(floor(1.0/c_CLK_SYS_PERIOD));
 
+  constant c_CLK_FAST_SPI_PERIOD : real := 2.5e-9;
+  constant c_CLK_FAST_SPI_PERIOD_HALF : real := c_CLK_FAST_SPI_PERIOD/2.0;
+  constant c_CLK_FAST_SPI_FREQ : natural := integer(floor(1.0/c_CLK_FAST_SPI_PERIOD));
+
   constant c_CLK_SCLK_PERIOD : real := 10.0e-9;
   constant c_CLK_SCLK_PERIOD_HALF : real := c_CLK_SCLK_PERIOD/2.0;
   constant c_CLK_SCLK_FREQ : natural := integer(floor(1.0/c_CLK_SCLK_PERIOD));
@@ -55,6 +59,8 @@ architecture rtm_lamp_model_tb_arch of rtm_lamp_model_tb is
 
   signal clk_sys           : std_logic := '0';
   signal rst_n             : std_logic := '0';
+  signal rst_fast_spi_n    : std_logic := '0';
+  signal clk_fast_spi      : std_logic := '0';
   signal clk_master        : std_logic := '0';
   signal rst_master_n      : std_logic := '0';
   signal clk_sclk          : std_logic := '0';
@@ -145,6 +151,22 @@ begin
     wait;
   end process;
 
+  p_gen_fast_spi_clk: process
+  begin
+    loop
+      clk_fast_spi <= not clk_fast_spi;
+      wait for c_CLK_FAST_SPI_PERIOD_HALF * 1.0e9 * 1 ns;
+    end loop;
+  end process;
+
+  p_rst_fast_spi_n: process
+  begin
+    rst_fast_spi_n <= '0';
+    f_wait_until(clk_fast_spi, 2);
+    rst_fast_spi_n <= '1';
+    wait;
+  end process;
+
   p_gen_sync_clk: process
   begin
     loop
@@ -212,7 +234,7 @@ begin
     g_SYS_CLOCK_FREQ                           => c_CLK_SYS_FREQ,
     g_REF_CLK_FREQ                             => c_CLK_SYNC_FREQ,
     g_USE_REF_CLK                              => true,
-    g_ADC_MASTER_CLOCK_FREQ                    => c_CLK_ADCDAC_MASTER_FREQ,
+    g_CLK_FAST_SPI_FREQ                        => c_CLK_FAST_SPI_FREQ,
     g_ADC_SCLK_FREQ                            => c_CLK_SCLK_FREQ,
     g_ADC_CHANNELS                             => 12,
     g_ADC_FIX_INV_INPUTS                       => true,
@@ -228,6 +250,9 @@ begin
 
     clk_ref_i                                  => clk_sync,
     rst_ref_n_i                                => rst_sync_n,
+
+    rst_fast_spi_n_i                           => rst_fast_spi_n,
+    clk_fast_spi_i                             => clk_fast_spi,
 
     clk_master_adc_i                           => clk_master,
     rst_master_adc_n_i                         => rst_master_n,

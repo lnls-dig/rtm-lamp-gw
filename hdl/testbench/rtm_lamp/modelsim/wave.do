@@ -7,6 +7,9 @@ add wave -noupdate /rtm_lamp_model_tb/c_CLK_ADCDAC_MASTER_FREQ
 add wave -noupdate /rtm_lamp_model_tb/c_CLK_SYS_PERIOD
 add wave -noupdate /rtm_lamp_model_tb/c_CLK_SYS_PERIOD_HALF
 add wave -noupdate /rtm_lamp_model_tb/c_CLK_SYS_FREQ
+add wave -noupdate /rtm_lamp_model_tb/c_CLK_FAST_SPI_PERIOD
+add wave -noupdate /rtm_lamp_model_tb/c_CLK_FAST_SPI_PERIOD_HALF
+add wave -noupdate /rtm_lamp_model_tb/c_CLK_FAST_SPI_FREQ
 add wave -noupdate /rtm_lamp_model_tb/c_CLK_SCLK_PERIOD
 add wave -noupdate /rtm_lamp_model_tb/c_CLK_SCLK_PERIOD_HALF
 add wave -noupdate /rtm_lamp_model_tb/c_CLK_SCLK_FREQ
@@ -21,6 +24,8 @@ add wave -noupdate /rtm_lamp_model_tb/c_CLK_SYNC_PERIOD_HALF
 add wave -noupdate /rtm_lamp_model_tb/c_CLK_SYNC_FREQ
 add wave -noupdate /rtm_lamp_model_tb/clk_sys
 add wave -noupdate /rtm_lamp_model_tb/rst_n
+add wave -noupdate /rtm_lamp_model_tb/rst_fast_spi_n
+add wave -noupdate /rtm_lamp_model_tb/clk_fast_spi
 add wave -noupdate /rtm_lamp_model_tb/clk_master
 add wave -noupdate /rtm_lamp_model_tb/rst_master_n
 add wave -noupdate /rtm_lamp_model_tb/clk_sclk
@@ -134,15 +139,10 @@ add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_en_regs(0)/cmp_
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_en_regs(0)/cmp_shift_reg_74hc595_model/qp
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtm_lamp_model/gen_amp_en_regs(0)/cmp_shift_reg_74hc595_model/q7s
 add wave -noupdate -divider rtmlamp_ohwr
-add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/c_ADC_CNV_HIGH
-add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/c_ADC_CNV_WAIT
-add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/c_ADC_BITS
-add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/c_ADC_OFFB_2_TWOSCOMP_CONV
-add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/c_DUMMY_ADC_READOUT
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_SYS_CLOCK_FREQ
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_REF_CLK_FREQ
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_USE_REF_CLK
-add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_ADC_MASTER_CLOCK_FREQ
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_CLK_FAST_SPI_FREQ
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_ADC_SCLK_FREQ
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_ADC_CHANNELS
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_ADC_FIX_INV_INPUTS
@@ -151,10 +151,19 @@ add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_DAC_SCLK_FREQ
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_DAC_CHANNELS
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_SERIAL_REG_SCLK_FREQ
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_SERIAL_REGS_AMP_CHANNELS
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/c_ADC_CNV_HIGH
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/c_ADC_CNV_WAIT
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/c_ADC_BITS
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/c_ADC_OFFB_2_TWOSCOMP_CONV
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/c_DAC_LDAC_WIDTH
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/c_DAC_LDAC_WAIT_AFTER_CS
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/c_DUMMY_ADC_READOUT
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/clk_i
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/rst_n_i
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/clk_ref_i
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/rst_ref_n_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/rst_fast_spi_n_i
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/clk_fast_spi_i
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/clk_master_adc_i
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/rst_master_adc_n_i
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/clk_master_dac_i
@@ -219,14 +228,14 @@ add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_quad_sck_ret
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_quad_cnv
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_quad_sdoa
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_quad_sdoc
-add wave -noupdate -radix decimal -childformat {{/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data -radix decimal -childformat {{/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(7) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(6) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(5) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(4) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(3) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(2) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(1) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(0) -radix decimal}}} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.valid -radix decimal}} -subitemconfig {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data {-radix decimal -childformat {{/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(7) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(6) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(5) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(4) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(3) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(2) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(1) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(0) -radix decimal}} -expand} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(7) {-radix decimal} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(6) {-radix decimal} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(5) {-radix decimal} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(4) {-radix decimal} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(3) {-radix decimal} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(2) {-radix decimal} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(1) {-radix decimal} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.data(0) {-radix decimal} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw.valid {-radix decimal}} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw
-add wave -noupdate -radix decimal -childformat {{/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data -radix decimal -childformat {{/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(7) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(6) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(5) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(4) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(3) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(2) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(1) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(0) -radix decimal}}} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.valid -radix decimal}} -subitemconfig {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data {-radix decimal -childformat {{/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(7) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(6) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(5) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(4) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(3) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(2) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(1) -radix decimal} {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(0) -radix decimal}} -expand} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(7) {-radix decimal} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(6) {-radix decimal} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(5) {-radix decimal} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(4) {-radix decimal} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(3) {-radix decimal} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(2) {-radix decimal} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(1) {-radix decimal} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.data(0) {-radix decimal} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv.valid {-radix decimal}} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv
-add wave -noupdate -radix decimal -subitemconfig {/rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_scaled.data -expand} /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_scaled
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_raw
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_fix_inv
+add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_scaled
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_quad_raw
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_quad_fix_inv
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_quad_scaled
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {10287511 ns} 0}
+WaveRestoreCursors {{Cursor 1} {3665479 ns} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 251
 configure wave -valuecolwidth 116
@@ -242,4 +251,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {10287373 ns} {10287838 ns}
+WaveRestoreZoom {3665381 ns} {3665846 ns}
