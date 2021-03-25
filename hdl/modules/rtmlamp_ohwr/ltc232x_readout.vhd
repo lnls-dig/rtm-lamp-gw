@@ -188,6 +188,18 @@ architecture ltc232x_readout_arch of ltc232x_readout is
   constant c_SCK_CLK_RATIO: natural := (g_CLK_FAST_SPI_FREQ / g_SCLK_FREQ);
   constant c_SCK_CLK_DIV_CNT: natural := (c_SCK_CLK_RATIO / 2) - 1;
 
+  -- place all SPI readout signals into IOB for optimal timing
+  attribute IOB              : string;
+  attribute IOB of sck_ret_i : signal is "TRUE";
+  attribute IOB of sdo1a_i   : signal is "TRUE";
+  attribute IOB of sdo2_i    : signal is "TRUE";
+  attribute IOB of sdo3b_i   : signal is "TRUE";
+  attribute IOB of sdo4_i    : signal is "TRUE";
+  attribute IOB of sdo5c_i   : signal is "TRUE";
+  attribute IOB of sdo6_i    : signal is "TRUE";
+  attribute IOB of sdo7d_i   : signal is "TRUE";
+  attribute IOB of sdo8_i    : signal is "TRUE";
+
   type t_state is (IDLE, READ_DATA);
   signal state: t_state := IDLE;
 
@@ -201,9 +213,11 @@ architecture ltc232x_readout_arch of ltc232x_readout is
   signal ch7_o_s: std_logic_vector(g_BITS-1 downto 0) := (others =>'0');
   signal ch8_o_s: std_logic_vector(g_BITS-1 downto 0) := (others =>'0');
 
-  signal sck_ret_pp   : std_logic;
-  signal sdo_sync_in  : std_logic_vector(g_DATA_LINES-1 downto 0) := (others => '0');
-  signal sdo_sync_out : std_logic_vector(g_DATA_LINES-1 downto 0) := (others => '0');
+  signal sck_ret_pp       : std_logic;
+  signal sck_ret_reg_pp   : std_logic;
+  signal sdo_sync_in      : std_logic_vector(g_DATA_LINES-1 downto 0) := (others => '0');
+  signal sdo_sync_out     : std_logic_vector(g_DATA_LINES-1 downto 0) := (others => '0');
+  signal sdo_sync_reg_out : std_logic_vector(g_DATA_LINES-1 downto 0) := (others => '0');
 
   signal bit_cnt: integer range 0 to c_BITS_PER_LINE := 0;
   signal bit_read_cnt: integer range 0 to c_BITS_PER_LINE := 0;
@@ -234,6 +248,18 @@ begin
     ppulse_o      => sck_ret_pp
   );
 
+  -- additional regs to ease timing
+  cmp_sck_ret_reg : gc_sync_register
+  generic map (
+    g_width         => 1
+  )
+  port map (
+    clk_i           => clk_fast_spi_i,
+    rst_n_a_i       => rst_fast_spi_n_i,
+    d_i(0)          => sck_ret_pp,
+    q_o(0)          => sck_ret_reg_pp
+  );
+
   ltc_8_datalines:
   if g_DATA_LINES = 8 generate
     sdo_sync_in <= (sdo1a_i, sdo2_i, sdo3b_i, sdo4_i,
@@ -256,7 +282,7 @@ begin
   end generate;
 
   gen_sdo_sync : for i in 0 to g_DATA_LINES-1 generate
-    cmp_sync_sck_ret : gc_sync_ffs
+    cmp_sync_sdo : gc_sync_ffs
     port map (
       clk_i         => clk_fast_spi_i,
       rst_n_i       => rst_fast_spi_n_i,
@@ -264,6 +290,18 @@ begin
       synced_o      => sdo_sync_out(i)
     );
   end generate;
+
+  -- additional regs to ease timing
+  cmp_sdo_reg : gc_sync_register
+  generic map (
+    g_width         => g_DATA_LINES
+  )
+  port map (
+    clk_i           => clk_fast_spi_i,
+    rst_n_a_i       => rst_fast_spi_n_i,
+    d_i             => sdo_sync_out,
+    q_o             => sdo_sync_reg_out
+  );
 
   p_read_ltc232x: process(clk_fast_spi_i)
   begin
@@ -315,36 +353,36 @@ begin
               sck_div_cnt <= sck_div_cnt + 1;
             end if;
 
-            if sck_ret_pp = '1' then
+            if sck_ret_reg_pp = '1' then
               -- Each combination of the number of data lines and input
               -- channels requires a different capture logic.
               if g_DATA_LINES = 8 and g_CHANNELS = 8 then
-                ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & sdo_sync_out(7);
-                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & sdo_sync_out(6);
-                ch3_o_s <= ch3_o_s(g_BITS-2 downto 0) & sdo_sync_out(5);
-                ch4_o_s <= ch4_o_s(g_BITS-2 downto 0) & sdo_sync_out(4);
-                ch5_o_s <= ch5_o_s(g_BITS-2 downto 0) & sdo_sync_out(3);
-                ch6_o_s <= ch6_o_s(g_BITS-2 downto 0) & sdo_sync_out(2);
-                ch7_o_s <= ch7_o_s(g_BITS-2 downto 0) & sdo_sync_out(1);
-                ch8_o_s <= ch8_o_s(g_BITS-2 downto 0) & sdo_sync_out(0);
+                ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(7);
+                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(6);
+                ch3_o_s <= ch3_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(5);
+                ch4_o_s <= ch4_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(4);
+                ch5_o_s <= ch5_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(3);
+                ch6_o_s <= ch6_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(2);
+                ch7_o_s <= ch7_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(1);
+                ch8_o_s <= ch8_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(0);
               elsif g_DATA_LINES = 4 and g_CHANNELS = 8 then
                 ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & ch2_o_s(g_BITS-1);
-                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & sdo_sync_out(3);
+                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(3);
                 ch3_o_s <= ch3_o_s(g_BITS-2 downto 0) & ch4_o_s(g_BITS-1);
-                ch4_o_s <= ch4_o_s(g_BITS-2 downto 0) & sdo_sync_out(2);
+                ch4_o_s <= ch4_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(2);
                 ch5_o_s <= ch5_o_s(g_BITS-2 downto 0) & ch6_o_s(g_BITS-1);
-                ch6_o_s <= ch6_o_s(g_BITS-2 downto 0) & sdo_sync_out(1);
+                ch6_o_s <= ch6_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(1);
                 ch7_o_s <= ch7_o_s(g_BITS-2 downto 0) & ch8_o_s(g_BITS-1);
-                ch8_o_s <= ch8_o_s(g_BITS-2 downto 0) & sdo_sync_out(0);
+                ch8_o_s <= ch8_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(0);
               elsif g_DATA_LINES = 2 and g_CHANNELS = 8 then
                 ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & ch2_o_s(g_BITS-1);
                 ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & ch3_o_s(g_BITS-1);
                 ch3_o_s <= ch3_o_s(g_BITS-2 downto 0) & ch4_o_s(g_BITS-1);
-                ch4_o_s <= ch4_o_s(g_BITS-2 downto 0) & sdo_sync_out(1);
+                ch4_o_s <= ch4_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(1);
                 ch5_o_s <= ch5_o_s(g_BITS-2 downto 0) & ch6_o_s(g_BITS-1);
                 ch6_o_s <= ch6_o_s(g_BITS-2 downto 0) & ch7_o_s(g_BITS-1);
                 ch7_o_s <= ch7_o_s(g_BITS-2 downto 0) & ch8_o_s(g_BITS-1);
-                ch8_o_s <= ch8_o_s(g_BITS-2 downto 0) & sdo_sync_out(0);
+                ch8_o_s <= ch8_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(0);
               elsif g_DATA_LINES = 1 and g_CHANNELS = 8 then
                 ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & ch2_o_s(g_BITS-1);
                 ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & ch3_o_s(g_BITS-1);
@@ -353,30 +391,30 @@ begin
                 ch5_o_s <= ch5_o_s(g_BITS-2 downto 0) & ch6_o_s(g_BITS-1);
                 ch6_o_s <= ch6_o_s(g_BITS-2 downto 0) & ch7_o_s(g_BITS-1);
                 ch7_o_s <= ch7_o_s(g_BITS-2 downto 0) & ch8_o_s(g_BITS-1);
-                ch8_o_s <= ch8_o_s(g_BITS-2 downto 0) & sdo_sync_out(0);
+                ch8_o_s <= ch8_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(0);
               elsif g_DATA_LINES = 4 and g_CHANNELS = 4 then
-                ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & sdo_sync_out(3);
-                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & sdo_sync_out(2);
-                ch3_o_s <= ch3_o_s(g_BITS-2 downto 0) & sdo_sync_out(1);
-                ch4_o_s <= ch4_o_s(g_BITS-2 downto 0) & sdo_sync_out(0);
+                ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(3);
+                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(2);
+                ch3_o_s <= ch3_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(1);
+                ch4_o_s <= ch4_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(0);
               elsif g_DATA_LINES = 2 and g_CHANNELS = 4 then
                 ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & ch2_o_s(g_BITS-1);
-                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & sdo_sync_out(1);
+                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(1);
                 ch3_o_s <= ch3_o_s(g_BITS-2 downto 0) & ch4_o_s(g_BITS-1);
-                ch4_o_s <= ch4_o_s(g_BITS-2 downto 0) & sdo_sync_out(0);
+                ch4_o_s <= ch4_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(0);
               elsif g_DATA_LINES = 1 and g_CHANNELS = 4 then
                 ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & ch2_o_s(g_BITS-1);
                 ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & ch3_o_s(g_BITS-1);
                 ch3_o_s <= ch3_o_s(g_BITS-2 downto 0) & ch4_o_s(g_BITS-1);
-                ch4_o_s <= ch4_o_s(g_BITS-2 downto 0) & sdo_sync_out(0);
+                ch4_o_s <= ch4_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(0);
               elsif g_DATA_LINES = 2 and g_CHANNELS = 2 then
-                ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & sdo_sync_out(1);
-                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & sdo_sync_out(0);
+                ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(1);
+                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(0);
               elsif g_DATA_LINES = 1 and g_CHANNELS = 2 then
                 ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & ch2_o_s(g_BITS-1);
-                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & sdo_sync_out(0);
+                ch2_o_s <= ch2_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(0);
               elsif g_DATA_LINES = 1 and g_CHANNELS = 1 then
-                ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & sdo_sync_out(0);
+                ch1_o_s <= ch1_o_s(g_BITS-2 downto 0) & sdo_sync_reg_out(0);
               end if;
 
               -- Count the amount of bits read in a single dataline
