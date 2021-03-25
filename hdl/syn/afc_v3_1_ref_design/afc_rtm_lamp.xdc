@@ -23,9 +23,13 @@ set rtmlamp_adc_quad_sck_ret_clk_period                       [get_property PERI
 # Virtual clock for Quad return clock
 create_clock -period 10.000 -name virt_rtmlamp_adc_quad_sck_ret
 
-# Get master clocks for ADC/DAC/etc
-set clk_master                                                [get_clocks -of_objects [get_nets clk_200mhz]]
-set clk_master_period                                         [get_property PERIOD [get_clocks $clk_master]]
+# Get master clock for DAC
+set clk_dac_master                                            [get_clocks -of_objects [get_nets clk_sys]]
+set clk_dac_master_period                                     [get_property PERIOD [get_clocks $clk_dac_master]]
+
+# Get master clock for ADC
+set clk_fast_spi                                              [get_clocks -of_objects [get_nets clk_user2]]
+set clk_fast_spi_period                                       [get_property PERIOD [get_clocks $clk_fast_spi]]
 
 # Get reference clocks for ADC/DAC/etc
 set clk_adcdac_ref                                            [get_clocks -of_objects [get_nets clk_aux_raw]]
@@ -134,25 +138,37 @@ set_input_delay -clock virt_rtmlamp_adc_quad_sck_ret -min 5.0 [get_ports rtmlamp
 # CDC between Wishbone clock and Transceiver clocks
 # These are slow control registers taken care of synched by FFs.
 # Give it 1x destination clock. Could be 2x, but lets keep things tight.
-set_max_delay -datapath_only -from               [get_clocks clk_sys] -to [get_clocks afc_fp2_clk1]    $afc_fp2_clk1_period
-set_max_delay -datapath_only -from               [get_clocks clk_sys] -to [get_clocks $clk_master]       $clk_master_period
+set_max_delay -datapath_only -from               [get_clocks clk_sys] -to [get_clocks afc_fp2_clk1]     $afc_fp2_clk1_period
+#set_max_delay -datapath_only -from               [get_clocks clk_sys] -to [get_clocks $clk_dac_master]  $clk_dac_master_period
 
 set_max_delay -datapath_only -from               [get_clocks afc_fp2_clk1]    -to [get_clocks clk_sys] $clk_sys_period
-set_max_delay -datapath_only -from               [get_clocks $clk_master]       -to [get_clocks clk_sys] $clk_sys_period
+#set_max_delay -datapath_only -from               [get_clocks $clk_dac_master] -to [get_clocks clk_sys] $clk_sys_period
+
+# CDC FIFO between FAST SPI and CLK SYS domains
+set_max_delay -datapath_only -from               [get_clocks clk_sys] -to [get_clocks $clk_fast_spi]  $clk_fast_spi_period
+set_max_delay -datapath_only -from               [get_clocks $clk_fast_spi] -to [get_clocks clk_sys] $clk_sys_period
 
 # CDC between Clk Aux (trigger clock) and FS clocks
 # These are using pulse_synchronizer2 which is a full feedback sync.
 # Give it 1x destination clock.
-set_max_delay -datapath_only -from               [get_clocks clk_aux] -to [get_clocks afc_fp2_clk1]    $afc_fp2_clk1_period
-set_max_delay -datapath_only -from               [get_clocks clk_aux] -to [get_clocks $clk_master]       $clk_master_period
-set_max_delay -datapath_only -from               [get_clocks $clk_adcdac_ref] -to [get_clocks $clk_master]   $clk_master_period
+set_max_delay -datapath_only -from               [get_clocks clk_aux] -to [get_clocks afc_fp2_clk1]             $afc_fp2_clk1_period
+set_max_delay -datapath_only -from               [get_clocks clk_aux] -to [get_clocks $clk_dac_master]          $clk_dac_master_period
+set_max_delay -datapath_only -from               [get_clocks $clk_adcdac_ref] -to [get_clocks $clk_dac_master]  $clk_dac_master_period
+# CDC for done/ready flags
+set_max_delay -datapath_only -from               [get_clocks $clk_adcdac_ref] -to [get_clocks $clk_fast_spi]  $clk_fast_spi_period
 
 # CDC between FS clocks and Clk Aux (trigger clock)
 # These are using pulse_synchronizer2 which is a full feedback sync.
 # Give it 1x destination clock.
-set_max_delay -datapath_only -from               [get_clocks afc_fp2_clk1] -to [get_clocks clk_aux]        $clk_aux_period
-set_max_delay -datapath_only -from               [get_clocks $clk_master]    -to [get_clocks clk_aux]        $clk_aux_period
-set_max_delay -datapath_only -from               [get_clocks $clk_master]    -to [get_clocks $clk_adcdac_ref]    $clk_adcdac_ref_period
+set_max_delay -datapath_only -from               [get_clocks afc_fp2_clk1] -to [get_clocks clk_aux]                 $clk_aux_period
+set_max_delay -datapath_only -from               [get_clocks $clk_dac_master]    -to [get_clocks clk_aux]           $clk_aux_period
+set_max_delay -datapath_only -from               [get_clocks $clk_dac_master]    -to [get_clocks $clk_adcdac_ref]   $clk_adcdac_ref_period
+# CDC for done/ready flags
+set_max_delay -datapath_only -from               [get_clocks $clk_fast_spi]      -to [get_clocks $clk_adcdac_ref]   $clk_adcdac_ref_period
+
+# FAST SPI clock and SCK_RET are async, They are dealt with 2-stage synchronizers
+set_clock_groups -asynchronous -group [get_clocks $clk_fast_spi] \
+    -group {virt_rtmlamp_adc_octo_sck_ret virt_rtmlamp_adc_quad_sck_ret}
 
 #######################################################################
 ##                      Placement Constraints                        ##

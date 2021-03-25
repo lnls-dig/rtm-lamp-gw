@@ -224,8 +224,8 @@ architecture top of afc_rtm_lamp_ctrl is
   -----------------------------------------------------------------------------
   constant c_SYS_CLOCK_FREQ                  : natural := 100000000;
   constant c_REF_CLOCK_FREQ                  : natural := 69306000; -- RF*5/36
-  constant c_ADC_MASTER_CLOCK_FREQ           : natural := 200000000;
-  constant c_DAC_MASTER_CLOCK_FREQ           : natural := 200000000;
+  constant c_FAST_SPI_FREQ                   : natural := 400000000;
+  constant c_DAC_MASTER_CLOCK_FREQ           : natural := 100000000;
   constant c_ADC_SCLK_FREQ                   : natural := 100000000;
   constant c_DAC_SCLK_FREQ                   : natural := 25000000;
   constant c_USE_REF_CLOCK                   : boolean := true;
@@ -239,7 +239,7 @@ architecture top of afc_rtm_lamp_ctrl is
 
   constant c_RTM_LAMP_ID                     : natural := 0;
 
-  constant c_SLV_RTM_LAMP_CORE_IDS           : t_natural_array(c_RTM_LAMP_NUM_CORES-1 downto 0) :=
+  constant c_SLV_RTM_LAMP_CORE_IDS           : t_num_array(c_RTM_LAMP_NUM_CORES-1 downto 0) :=
     f_gen_ramp(0, c_RTM_LAMP_NUM_CORES);
 
   constant c_AFC_SI57x_I2C_FREQ              : natural := 400000;
@@ -399,10 +399,12 @@ architecture top of afc_rtm_lamp_ctrl is
   signal clk_fp2_clk1_n                      : std_logic;
   signal clk_200mhz                          : std_logic;
   signal clk_200mhz_rstn                     : std_logic;
-  signal clk_master                          : std_logic;
-  signal clk_master_rstn                     : std_logic;
+  signal clk_fast_spi                        : std_logic;
+  signal clk_fast_spi_rstn                   : std_logic;
   signal clk_pcie                            : std_logic;
   signal clk_pcie_rstn                       : std_logic;
+  signal clk_user2                           : std_logic;
+  signal clk_user2_rstn                      : std_logic;
   signal clk_trig_ref                        : std_logic;
   signal clk_trig_ref_rstn                   : std_logic;
 
@@ -437,10 +439,11 @@ begin
 
   cmp_afc_base_acq : afc_base_acq
     generic map (
-      g_DIVCLK_DIVIDE                          => 1,
-      g_CLKBOUT_MULT_F                         => 8,
-      g_CLK0_DIVIDE_F                          => 8, -- 100 MHz
-      g_CLK1_DIVIDE                            => 5, -- Must be 200 MHz
+      g_DIVCLK_DIVIDE                          => 5,
+      g_CLKBOUT_MULT_F                         => 48,
+      g_CLK0_DIVIDE_F                          => 12,   -- 100 MHz
+      g_CLK1_DIVIDE                            => 6,    -- Must be 200 MHz
+      g_CLK2_DIVIDE                            => 3,    -- 400 MHz
       g_SYS_CLOCK_FREQ                         => c_SYS_CLOCK_FREQ,
       -- AFC Si57x parameters
       g_AFC_SI57x_I2C_FREQ                     => c_AFC_SI57x_I2C_FREQ,
@@ -616,6 +619,9 @@ begin
       clk_pcie_o                               => clk_pcie,
       rst_pcie_n_o                             => clk_pcie_rstn,
 
+      clk_user2_o                              => clk_user2,
+      rst_user2_n_o                            => clk_user2_rstn,
+
       clk_trig_ref_o                           => clk_trig_ref,
       rst_trig_ref_n_o                         => clk_trig_ref_rstn,
 
@@ -712,8 +718,8 @@ begin
 
   -- Keep it so it's easier to apply constraints on all nets that use this clock
   -- name
-  clk_master <= clk_200mhz;
-  clk_master_rstn <= clk_200mhz_rstn;
+  clk_fast_spi <= clk_user2;
+  clk_fast_spi_rstn <= clk_user2_rstn;
 
   clk_rtm_ref <= clk_aux_raw;
   clk_rtm_ref_rstn <= clk_aux_raw_rstn;
@@ -733,7 +739,7 @@ begin
     -- If false uses clk_i to drive CNV/LDAC
     g_USE_REF_CLK                              => c_USE_REF_CLOCK,
     -- ADC clock frequency [Hz]. Must be a multiple of g_ADC_SCLK_FREQ
-    g_ADC_MASTER_CLOCK_FREQ                    => c_ADC_MASTER_CLOCK_FREQ,
+    g_CLK_FAST_SPI_FREQ                        => c_FAST_SPI_FREQ,
     -- ADC clock frequency [Hz]
     g_ADC_SCLK_FREQ                            => c_ADC_SCLK_FREQ,
     -- Number of ADC channels
@@ -757,11 +763,14 @@ begin
     clk_ref_i                                  => clk_rtm_ref,
     rst_ref_n_i                                => clk_rtm_ref_rstn,
 
-    clk_master_adc_i                           => clk_master,
-    rst_master_adc_n_i                         => clk_master_rstn,
+    clk_fast_spi_i                             => clk_fast_spi,
+    rst_fast_spi_n_i                           => clk_fast_spi_rstn,
 
-    clk_master_dac_i                           => clk_master,
-    rst_master_dac_n_i                         => clk_master_rstn,
+    clk_master_adc_i                           => clk_sys,
+    rst_master_adc_n_i                         => clk_sys_rstn,
+
+    clk_master_dac_i                           => clk_sys,
+    rst_master_dac_n_i                         => clk_sys_rstn,
 
     ---------------------------------------------------------------------------
     -- Wishbone Control Interface signals
@@ -842,8 +851,8 @@ begin
   --                          Acquisition                             --
   ----------------------------------------------------------------------
 
-  fs_clk_array(c_ACQ_CORE_0_ID)   <= clk_master;
-  fs_rst_n_array(c_ACQ_CORE_0_ID) <= clk_master_rstn;
+  fs_clk_array(c_ACQ_CORE_0_ID)   <= clk_sys;
+  fs_rst_n_array(c_ACQ_CORE_0_ID) <= clk_sys_rstn;
 
   gen_acq_clks : for i in 0 to c_ACQ_NUM_CORES-1 generate
 
