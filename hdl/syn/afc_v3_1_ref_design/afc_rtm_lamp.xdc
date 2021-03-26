@@ -110,19 +110,23 @@ set_property DIFF_TERM TRUE                                   [get_ports rtmlamp
 # data     __XXXX____Rise_Data____XXXX__
 #
 
-set_input_delay -clock virt_rtmlamp_adc_octo_sck_ret -max 6.5 [get_ports rtmlamp_adc_octo_sdoa_p_i];
-set_input_delay -clock virt_rtmlamp_adc_octo_sck_ret -min 5.0 [get_ports rtmlamp_adc_octo_sdoa_p_i];
-set_input_delay -clock virt_rtmlamp_adc_octo_sck_ret -max 6.5 [get_ports rtmlamp_adc_octo_sdob_p_i];
-set_input_delay -clock virt_rtmlamp_adc_octo_sck_ret -min 5.0 [get_ports rtmlamp_adc_octo_sdob_p_i];
-set_input_delay -clock virt_rtmlamp_adc_octo_sck_ret -max 6.5 [get_ports rtmlamp_adc_octo_sdoc_p_i];
-set_input_delay -clock virt_rtmlamp_adc_octo_sck_ret -min 5.0 [get_ports rtmlamp_adc_octo_sdoc_p_i];
-set_input_delay -clock virt_rtmlamp_adc_octo_sck_ret -max 6.5 [get_ports rtmlamp_adc_octo_sdod_p_i];
-set_input_delay -clock virt_rtmlamp_adc_octo_sck_ret -min 5.0 [get_ports rtmlamp_adc_octo_sdod_p_i];
-
-set_input_delay -clock virt_rtmlamp_adc_quad_sck_ret -max 6.5 [get_ports rtmlamp_adc_quad_sdoa_p_i];
-set_input_delay -clock virt_rtmlamp_adc_quad_sck_ret -min 5.0 [get_ports rtmlamp_adc_quad_sdoa_p_i];
-set_input_delay -clock virt_rtmlamp_adc_quad_sck_ret -max 6.5 [get_ports rtmlamp_adc_quad_sdoc_p_i];
-set_input_delay -clock virt_rtmlamp_adc_quad_sck_ret -min 5.0 [get_ports rtmlamp_adc_quad_sdoc_p_i];
+# These will be ignored by a clock set_clock_groups -asynchronous, but we
+# keep it here for reference. Also we sample SDO/SCK with IOB FF, so there is
+# not much the tool can improve.
+#
+# set_input_delay -clock virt_rtmlamp_adc_octo_sck_ret -max 6.5 [get_ports rtmlamp_adc_octo_sdoa_p_i];
+# set_input_delay -clock virt_rtmlamp_adc_octo_sck_ret -min 5.0 [get_ports rtmlamp_adc_octo_sdoa_p_i];
+# set_input_delay -clock virt_rtmlamp_adc_octo_sck_ret -max 6.5 [get_ports rtmlamp_adc_octo_sdob_p_i];
+# set_input_delay -clock virt_rtmlamp_adc_octo_sck_ret -min 5.0 [get_ports rtmlamp_adc_octo_sdob_p_i];
+# set_input_delay -clock virt_rtmlamp_adc_octo_sck_ret -max 6.5 [get_ports rtmlamp_adc_octo_sdoc_p_i];
+# set_input_delay -clock virt_rtmlamp_adc_octo_sck_ret -min 5.0 [get_ports rtmlamp_adc_octo_sdoc_p_i];
+# set_input_delay -clock virt_rtmlamp_adc_octo_sck_ret -max 6.5 [get_ports rtmlamp_adc_octo_sdod_p_i];
+# set_input_delay -clock virt_rtmlamp_adc_octo_sck_ret -min 5.0 [get_ports rtmlamp_adc_octo_sdod_p_i];
+#
+# set_input_delay -clock virt_rtmlamp_adc_quad_sck_ret -max 6.5 [get_ports rtmlamp_adc_quad_sdoa_p_i];
+# set_input_delay -clock virt_rtmlamp_adc_quad_sck_ret -min 5.0 [get_ports rtmlamp_adc_quad_sdoa_p_i];
+# set_input_delay -clock virt_rtmlamp_adc_quad_sck_ret -max 6.5 [get_ports rtmlamp_adc_quad_sdoc_p_i];
+# set_input_delay -clock virt_rtmlamp_adc_quad_sck_ret -min 5.0 [get_ports rtmlamp_adc_quad_sdoc_p_i];
 
 #######################################################################
 ##                          DELAY values                             ##
@@ -166,9 +170,13 @@ set_max_delay -datapath_only -from               [get_clocks $clk_dac_master]   
 # CDC for done/ready flags
 set_max_delay -datapath_only -from               [get_clocks $clk_fast_spi]      -to [get_clocks $clk_adcdac_ref]   $clk_adcdac_ref_period
 
-# FAST SPI clock and SCK_RET are async, They are dealt with 2-stage synchronizers
+# FAST SPI clock and SCK_RET/VIRT_SCK_RET (for data) are async.
+# They are dealt with 2-stage synchronizers
 set_clock_groups -asynchronous -group [get_clocks $clk_fast_spi] \
-    -group {virt_rtmlamp_adc_octo_sck_ret virt_rtmlamp_adc_quad_sck_ret}
+    -group {virt_rtmlamp_adc_octo_sck_ret \
+            virt_rtmlamp_adc_quad_sck_ret \
+            rtmlamp_adc_octo_sck_ret \
+            rtmlamp_adc_quad_sck_ret}
 
 #######################################################################
 ##                      Placement Constraints                        ##
