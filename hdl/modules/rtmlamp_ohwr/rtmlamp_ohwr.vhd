@@ -219,6 +219,7 @@ begin
   -- with half the number of data lines (2 channels per data line)
   cmp_ltc2320_acq: ltc232x_acq
     generic map(
+      g_SYS_CLOCK_FREQ                     => g_SYS_CLOCK_FREQ,
       g_CLK_FAST_SPI_FREQ                  => g_CLK_FAST_SPI_FREQ,
       g_SCLK_FREQ                          => g_ADC_SCLK_FREQ,
       g_REF_CLK_CNV_FREQ                   => g_REF_CLK_FREQ,
@@ -342,6 +343,7 @@ begin
     -- with half the number of data lines (2 channels per data line)
     cmp_ltc2320_acq: ltc232x_acq
       generic map(
+        g_SYS_CLOCK_FREQ                     => g_SYS_CLOCK_FREQ,
         g_CLK_FAST_SPI_FREQ                  => g_CLK_FAST_SPI_FREQ,
         g_SCLK_FREQ                          => g_ADC_SCLK_FREQ,
         g_REF_CLK_CNV_FREQ                   => g_REF_CLK_FREQ,

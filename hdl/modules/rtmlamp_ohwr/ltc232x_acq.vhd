@@ -29,6 +29,8 @@ use work.gencores_pkg.all;
 
 entity ltc232x_acq is
   generic(
+    -- System clock frequency [Hz]
+    g_SYS_CLOCK_FREQ                         : natural := 100_000_000;
     -- Core clock frequency [Hz], should be an integer multiple of
     -- g_SCLK_FREQ, at 4x the frequency ADC sck frequency [Hz]
     g_CLK_FAST_SPI_FREQ                      : natural := 400_000_000;
@@ -124,7 +126,7 @@ architecture ltc232x_acq_arch of ltc232x_acq is
     if use_ref_clk_cnv then
       v_clk_freq := g_REF_CLK_CNV_FREQ;
     else
-      v_clk_freq := g_CLK_FAST_SPI_FREQ;
+      v_clk_freq := g_SYS_CLOCK_FREQ;
     end if;
 
     return v_clk_freq;
@@ -142,13 +144,13 @@ architecture ltc232x_acq_arch of ltc232x_acq is
   signal rst_fsm_n                           : std_logic;
   signal start_ref_cnv                       : std_logic;
   signal done_cnv_pp                         : std_logic;
+  signal done_cnv_pp_ref_fast                : std_logic := '0';
   signal done_cnv_pp_ref_sys                 : std_logic := '0';
   signal start_cnv                           : std_logic := '0';
-  signal start_readout_pp                    : std_logic;
   signal ready_cnv                           : std_logic;
   signal ready                               : std_logic;
   signal ready_cnv_ref_sys                   : std_logic;
-  signal done_readout_pp                     : std_logic;
+  signal done_readout_pp_ref_sys             : std_logic;
   signal done_readout_pp_ref_fast            : std_logic;
   signal wait_counter                        : integer range 0 to c_WAIT_CONV_CYCLES := 0;
 
@@ -198,8 +200,8 @@ begin
 
   gen_sys_clk_cnv : if (not g_USE_REF_CLK_CNV) generate
 
-    clk_fsm <= clk_fast_spi_i;
-    rst_fsm_n <= rst_fast_spi_n_i;
+    clk_fsm <= clk_i;
+    rst_fsm_n <= rst_n_i;
 
     start_ref_cnv <= start_cnv;
 
@@ -268,22 +270,32 @@ begin
     end if;
   end process;
 
-  cmp_gc_sync_ffs : gc_sync
-  port map (
-    clk_i                                    => clk_i,
-    rst_n_a_i                                => rst_n_i,
-    d_i                                      => ready_cnv,
-    q_o                                      => ready_cnv_ref_sys
-  );
-
   cnv_o <= cnv;
+
+  gen_ref_clk_ready_cnv : if (g_USE_REF_CLK_CNV) generate
+
+    cmp_gc_sync_ffs : gc_sync
+    port map (
+      clk_i                                    => clk_i,
+      rst_n_a_i                                => rst_n_i,
+      d_i                                      => ready_cnv,
+      q_o                                      => ready_cnv_ref_sys
+    );
+
+  end generate;
+
+  gen_sys_clk_ready_cnv : if (not g_USE_REF_CLK_CNV) generate
+
+    ready_cnv_ref_sys <= ready_cnv;
+
+  end generate;
 
   -------------------------------------------
   --         Done conversion pulse signal synch
   -------------------------------------------
-  gen_ref_clk_done_cnv_pp : if (g_USE_REF_CLK_CNV) generate
+  gen_ref_clk_done_cnv : if (g_USE_REF_CLK_CNV) generate
 
-    cmp_done_gc_pulse_synchronizer2 : gc_pulse_synchronizer2
+    cmp_done_gc_sys_pulse_synchronizer2 : gc_pulse_synchronizer2
     port map (
       clk_in_i                               => clk_fsm,
       rst_in_n_i                             => rst_fsm_n,
@@ -292,16 +304,23 @@ begin
       d_p_i                                  => done_cnv_pp,
       q_p_o                                  => done_cnv_pp_ref_sys
     );
+  end generate;
 
-    start_readout_pp <= done_cnv_pp_ref_sys;
+  gen_sys_clk_done_cnv : if (not g_USE_REF_CLK_CNV) generate
+
+    done_cnv_pp_ref_sys <= done_cnv_pp;
 
   end generate;
 
-  gen_sys_clk_done_cnv_pp : if (not g_USE_REF_CLK_CNV) generate
-
-    start_readout_pp <= done_cnv_pp;
-
-  end generate;
+  cmp_done_gc_pulse_synchronizer2 : gc_pulse_synchronizer2
+  port map (
+    clk_in_i                               => clk_fsm,
+    rst_in_n_i                             => rst_fsm_n,
+    clk_out_i                              => clk_fast_spi_i,
+    rst_out_n_i                            => rst_fast_spi_n_i,
+    d_p_i                                  => done_cnv_pp,
+    q_p_o                                  => done_cnv_pp_ref_fast
+  );
 
   -------------------------------------------
   --         ADC readout
@@ -317,7 +336,7 @@ begin
     port map (
       rst_fast_spi_n_i                       => rst_fast_spi_n_i,
       clk_fast_spi_i                         => clk_fast_spi_i,
-      start_i                                => start_readout_pp,
+      start_i                                => done_cnv_pp_ref_fast,
       sck_o                                  => sck,
       sck_ret_i                              => sck_ret,
       done_pp_o                              => done_readout_pp_ref_fast,
@@ -392,10 +411,10 @@ begin
     clk_out_i                              => clk_i,
     rst_out_n_i                            => rst_n_i,
     d_p_i                                  => done_readout_pp_ref_fast,
-    q_p_o                                  => done_readout_pp
+    q_p_o                                  => done_readout_pp_ref_sys
   );
 
-  done_pp_o <= done_readout_pp;
+  done_pp_o <= done_readout_pp_ref_sys;
 
   ----------------------------------------
   --         Drive ready logic
@@ -423,12 +442,12 @@ begin
             end if;
 
           when WAIT_FOR_CONV =>
-            if start_readout_pp = '1' then
+            if done_cnv_pp_ref_sys = '1' then
               state_ready <= WAIT_FOR_READOUT;
             end if;
 
           when WAIT_FOR_READOUT =>
-            if done_readout_pp = '1' then
+            if done_readout_pp_ref_sys = '1' then
               state_ready <= IDLE;
             end if;
 

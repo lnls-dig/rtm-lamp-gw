@@ -1,9 +1,6 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider rtm_lamp_model_tb
-add wave -noupdate /rtm_lamp_model_tb/c_CLK_ADCDAC_MASTER_PERIOD
-add wave -noupdate /rtm_lamp_model_tb/c_CLK_ADCDAC_MASTER_PERIOD_HALF
-add wave -noupdate /rtm_lamp_model_tb/c_CLK_ADCDAC_MASTER_FREQ
 add wave -noupdate /rtm_lamp_model_tb/c_CLK_SYS_PERIOD
 add wave -noupdate /rtm_lamp_model_tb/c_CLK_SYS_PERIOD_HALF
 add wave -noupdate /rtm_lamp_model_tb/c_CLK_SYS_FREQ
@@ -26,8 +23,6 @@ add wave -noupdate /rtm_lamp_model_tb/clk_sys
 add wave -noupdate /rtm_lamp_model_tb/rst_n
 add wave -noupdate /rtm_lamp_model_tb/rst_fast_spi_n
 add wave -noupdate /rtm_lamp_model_tb/clk_fast_spi
-add wave -noupdate /rtm_lamp_model_tb/clk_master
-add wave -noupdate /rtm_lamp_model_tb/rst_master_n
 add wave -noupdate /rtm_lamp_model_tb/clk_sclk
 add wave -noupdate /rtm_lamp_model_tb/rst_sclk_n
 add wave -noupdate /rtm_lamp_model_tb/clk_sync
@@ -146,7 +141,6 @@ add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_CLK_FAST_SPI_FREQ
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_ADC_SCLK_FREQ
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_ADC_CHANNELS
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_ADC_FIX_INV_INPUTS
-add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_DAC_MASTER_CLOCK_FREQ
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_DAC_SCLK_FREQ
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_DAC_CHANNELS
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/g_SERIAL_REG_SCLK_FREQ
@@ -164,10 +158,6 @@ add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/clk_ref_i
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/rst_ref_n_i
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/rst_fast_spi_n_i
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/clk_fast_spi_i
-add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/clk_master_adc_i
-add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/rst_master_adc_n_i
-add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/clk_master_dac_i
-add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/rst_master_dac_n_i
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_cnv_o
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_sck_p_o
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_sck_n_o
@@ -214,7 +204,7 @@ add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/amp_iflag_r_o
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/amp_tflag_r_o
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/amp_en_ch_i
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/dac_ldac_n
-add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_data
+add wave -noupdate -expand /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_data
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_valid
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_sck
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_octo_sck_ret
@@ -235,7 +225,7 @@ add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_quad_raw
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_quad_fix_inv
 add wave -noupdate /rtm_lamp_model_tb/cmp_rtmlamp_ohwr/adc_quad_scaled
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {3665479 ns} 0}
+WaveRestoreCursors {{Cursor 1} {856 ns} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 251
 configure wave -valuecolwidth 116
@@ -251,4 +241,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {3665381 ns} {3665846 ns}
+WaveRestoreZoom {720 ns} {1575 ns}

@@ -88,6 +88,7 @@ package rtm_lamp_pkg is
 
   component ltc232x_acq is
   generic(
+    g_SYS_CLOCK_FREQ                         : natural := 100_000_000;
     g_CLK_FAST_SPI_FREQ                      : natural := 400_000_000;
     g_SCLK_FREQ                              : natural := 100_000_000;
     g_REF_CLK_CNV_FREQ                       : natural := 50_000_000;
