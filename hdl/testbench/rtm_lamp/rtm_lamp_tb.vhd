@@ -249,7 +249,7 @@ begin
     adc_octo_sdod_n_i                          => adc_octo_sdod_n,
 
     -- Only used when g_ADC_CHANNELS > 8
-    adc_quad_sck_p_o                           => adc_octo_clk,
+    adc_quad_sck_p_o                           => adc_quad_clk,
     adc_quad_sck_n_o                           => open,
     adc_quad_sck_ret_p_i                       => adc_quad_clk_out,
     adc_quad_sck_ret_n_i                       => adc_quad_clk_out_n,
