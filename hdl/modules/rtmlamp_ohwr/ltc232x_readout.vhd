@@ -188,18 +188,6 @@ architecture ltc232x_readout_arch of ltc232x_readout is
   constant c_SCK_CLK_RATIO: natural := (g_CLK_FAST_SPI_FREQ / g_SCLK_FREQ);
   constant c_SCK_CLK_DIV_CNT: natural := (c_SCK_CLK_RATIO / 2) - 1;
 
-  -- place all SPI readout signals into IOB for optimal timing
-  attribute IOB              : string;
-  attribute IOB of sck_ret_i : signal is "TRUE";
-  attribute IOB of sdo1a_i   : signal is "TRUE";
-  attribute IOB of sdo2_i    : signal is "TRUE";
-  attribute IOB of sdo3b_i   : signal is "TRUE";
-  attribute IOB of sdo4_i    : signal is "TRUE";
-  attribute IOB of sdo5c_i   : signal is "TRUE";
-  attribute IOB of sdo6_i    : signal is "TRUE";
-  attribute IOB of sdo7d_i   : signal is "TRUE";
-  attribute IOB of sdo8_i    : signal is "TRUE";
-
   type t_state is (IDLE, READ_DATA);
   signal state: t_state := IDLE;
 
