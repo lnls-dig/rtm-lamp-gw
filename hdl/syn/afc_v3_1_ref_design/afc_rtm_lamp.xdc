@@ -178,7 +178,9 @@ set_clock_groups -asynchronous -group [get_clocks $clk_fast_spi] \
             rtmlamp_adc_octo_sck_ret \
             rtmlamp_adc_quad_sck_ret}
 
-# reset from UART
+# reset from UART. ORed with a negative reset pulse and an extension of it.
+# That's why we have two sets of constraints. How to get all startpoints with
+# a single set?
 #
 # Get all start valid startpoints from all the pins connected to the uart_rstn nets;
 # filter it for leaf nodes and outputs;
@@ -186,6 +188,15 @@ set_clock_groups -asynchronous -group [get_clocks $clk_fast_spi] \
 set uart_rstn_startpoints          [all_fanin -flat -only_cells -startpoints_only \
     [ get_pins -of_objects [ get_nets -hier -filter {NAME =~ *uart_rstn} ] -filter {IS_LEAF && (DIRECTION == "OUT")} ]]
 set_max_delay -datapath_only -from [ get_cells $uart_rstn_startpoints ]  -to [ get_clocks $clk_fast_spi ] $clk_sys_period
+
+# reset from button
+set button_exted_rstn_startpoints          [all_fanin -flat -only_cells -startpoints_only \
+    [ get_pins -of_objects [ get_nets -hier -filter {NAME =~ *cmp_button_sys_rst/extended_int_reg*} ] -filter {IS_LEAF && (DIRECTION == "OUT")} ]]
+set_max_delay -datapath_only -from [ get_cells $button_exted_rstn_startpoints ]  -to [ get_clocks $clk_fast_spi ] $clk_sys_period
+
+set button_pp_rstn_startpoints          [all_fanin -flat -only_cells -startpoints_only \
+    [ get_pins -of_objects [ get_nets -hier -filter {NAME =~ *cmp_button_sys_ffs/*rst_button_sys_pp*} ] -filter {IS_LEAF && (DIRECTION == "OUT")} ]]
+set_max_delay -datapath_only -from [ get_cells $button_pp_rstn_startpoints ]  -to [ get_clocks $clk_fast_spi ] $clk_sys_period
 
 #######################################################################
 ##                      Placement Constraints                        ##
