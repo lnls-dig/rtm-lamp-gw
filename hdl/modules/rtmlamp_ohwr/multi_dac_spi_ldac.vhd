@@ -98,6 +98,13 @@ architecture multi_dac_spi_ldac_arch of multi_dac_spi_ldac is
 
   constant c_LDAC_WAIT_CYCLES                : natural := integer(ceil(g_LDAC_WAIT_AFTER_CS * real(f_get_clk_freq(g_USE_REF_CLK_LDAC))));
   constant c_LDAC_WIDTH_CYCLES               : natural := integer(ceil(g_LDAC_WIDTH * real(f_get_clk_freq(g_USE_REF_CLK_LDAC))));
+  constant c_NUM_CLKS                        : natural := 2;
+
+  signal multi_aasd_arst                     : std_logic;
+  signal multi_aasd_clks                     : std_logic_vector(c_NUM_CLKS-1 downto 0);
+  signal multi_aasd_rst_n                    : std_logic_vector(c_NUM_CLKS-1 downto 0);
+  signal rst_n                               : std_logic;
+  signal rst_ref_ldac_n                      : std_logic;
 
   type t_state_ldac is (IDLE, WAIT_AFTER_CS, DRIVE_LDAC);
   signal state_ldac                          : t_state_ldac := IDLE;
@@ -119,6 +126,26 @@ architecture multi_dac_spi_ldac_arch of multi_dac_spi_ldac is
   signal ldac_width_counter                  : integer range 0 to c_LDAC_WIDTH_CYCLES := 0;
 begin
 
+  cmp_multi_aasd_reset : gc_reset_multi_aasd
+  generic map (
+    g_CLOCKS                                 => c_NUM_CLKS,
+    g_RST_LEN                                => 16
+  )
+  port map (
+    arst_i                                   => multi_aasd_arst,
+    clks_i                                   => multi_aasd_clks,
+    rst_n_o                                  => multi_aasd_rst_n
+  );
+
+  multi_aasd_arst    <= not (rst_n_i and rst_ref_ldac_n_i);
+  multi_aasd_clks(0) <= clk_i;
+  multi_aasd_clks(1) <= clk_ref_ldac_i;
+  rst_n              <= multi_aasd_rst_n(0);
+  rst_ref_ldac_n     <= multi_aasd_rst_n(1);
+
+  ------------------------------------------
+  --         DAC transfer
+  ------------------------------------------
 
   start_trans <= start_i and ready;
 
@@ -131,7 +158,7 @@ begin
     )
     port map(
       clk_i                                  => clk_i,
-      rst_n_i                                => rst_n_i,
+      rst_n_i                                => rst_n,
       start_i                                => start_trans,
       ready_o                                => ready_trans,
       data_i                                 => data_i,
@@ -147,12 +174,12 @@ begin
   gen_ref_clk_done_trans_pp : if (g_USE_REF_CLK_LDAC) generate
 
     clk_fsm <= clk_ref_ldac_i;
-    rst_fsm_n <= rst_ref_ldac_n_i;
+    rst_fsm_n <= rst_ref_ldac_n;
 
     cmp_done_ldac_gc_pulse_synchronizer2 : gc_pulse_synchronizer2
     port map (
       clk_in_i                               => clk_i,
-      rst_in_n_i                             => rst_n_i,
+      rst_in_n_i                             => rst_n,
       clk_out_i                              => clk_fsm,
       rst_out_n_i                            => rst_fsm_n,
       -- pulse input (clk_in_i domain)
@@ -168,7 +195,7 @@ begin
   gen_sys_clk_done_trans_pp : if (not g_USE_REF_CLK_LDAC) generate
 
     clk_fsm <= clk_i;
-    rst_fsm_n <= rst_n_i;
+    rst_fsm_n <= rst_n;
     done_trans_pp_fsm <= done_trans_pp;
 
   end generate;
@@ -230,9 +257,9 @@ begin
     cmp_done_trans_gc_pulse_synchronizer2 : gc_pulse_synchronizer2
     port map (
       clk_in_i                               => clk_ref_ldac_i,
-      rst_in_n_i                             => rst_ref_ldac_n_i,
+      rst_in_n_i                             => rst_ref_ldac_n,
       clk_out_i                              => clk_i,
-      rst_out_n_i                            => rst_n_i,
+      rst_out_n_i                            => rst_n,
       -- pulse input (clk_in_i domain)
       d_p_i                                  => done_ldac_pp,
       -- pulse output (clk_out_i domain)
@@ -255,7 +282,7 @@ begin
   p_drive_ready : process(clk_i)
   begin
     if rising_edge(clk_i) then
-      if rst_n_i = '0' then
+      if rst_n = '0' then
         state_ready <= IDLE;
         ready <= '0';
       else
