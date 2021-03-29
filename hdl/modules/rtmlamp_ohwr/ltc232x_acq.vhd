@@ -134,6 +134,14 @@ architecture ltc232x_acq_arch of ltc232x_acq is
 
   constant c_WAIT_CONV_CYCLES                : natural := integer(ceil(g_CNV_WAIT * real(f_get_clk_freq(g_USE_REF_CLK_CNV))));
   constant c_CONV_HIGH_CYCLES                : natural := integer(ceil(g_CNV_HIGH * real(f_get_clk_freq(g_USE_REF_CLK_CNV))));
+  constant c_NUM_CLKS                        : natural := 3;
+
+  signal multi_aasd_arst                     : std_logic;
+  signal multi_aasd_clks                     : std_logic_vector(c_NUM_CLKS-1 downto 0);
+  signal multi_aasd_rst_n                    : std_logic_vector(c_NUM_CLKS-1 downto 0);
+  signal rst_n                               : std_logic;
+  signal rst_ref_cnv_n                       : std_logic;
+  signal rst_fast_spi_n                      : std_logic;
 
   type t_state_conv is (IDLE, CONV_HIGH, WAIT_CONV);
   signal state_conv                               : t_state_conv := IDLE;
@@ -177,6 +185,25 @@ architecture ltc232x_acq_arch of ltc232x_acq is
 
 begin
 
+  cmp_multi_aasd_reset : gc_reset_multi_aasd
+  generic map (
+    g_CLOCKS                                 => c_NUM_CLKS,
+    g_RST_LEN                                => 16
+  )
+  port map (
+    arst_i                                   => multi_aasd_arst,
+    clks_i                                   => multi_aasd_clks,
+    rst_n_o                                  => multi_aasd_rst_n
+  );
+
+  multi_aasd_arst    <= not (rst_n_i and rst_ref_cnv_n_i and rst_fast_spi_n_i);
+  multi_aasd_clks(0) <= clk_i;
+  multi_aasd_clks(1) <= clk_ref_cnv_i;
+  multi_aasd_clks(2) <= clk_fast_spi_i;
+  rst_n              <= multi_aasd_rst_n(0);
+  rst_ref_cnv_n      <= multi_aasd_rst_n(1);
+  rst_fast_spi_n     <= multi_aasd_rst_n(2);
+
   -------------------------------------------
   --         Reference clock and CNV start
   -------------------------------------------
@@ -186,12 +213,12 @@ begin
   gen_ref_clk_cnv : if (g_USE_REF_CLK_CNV) generate
 
     clk_fsm <= clk_ref_cnv_i;
-    rst_fsm_n <= rst_ref_cnv_n_i;
+    rst_fsm_n <= rst_ref_cnv_n;
 
     cmp_start_gc_pulse_synchronizer2 : gc_pulse_synchronizer2
     port map (
       clk_in_i                               => clk_i,
-      rst_in_n_i                             => rst_n_i,
+      rst_in_n_i                             => rst_n,
       clk_out_i                              => clk_fsm,
       rst_out_n_i                            => rst_fsm_n,
       d_p_i                                  => start_cnv,
@@ -203,7 +230,7 @@ begin
   gen_sys_clk_cnv : if (not g_USE_REF_CLK_CNV) generate
 
     clk_fsm <= clk_i;
-    rst_fsm_n <= rst_n_i;
+    rst_fsm_n <= rst_n;
 
     start_ref_cnv <= start_cnv;
 
@@ -279,7 +306,7 @@ begin
     cmp_gc_sync_ffs : gc_sync
     port map (
       clk_i                                    => clk_i,
-      rst_n_a_i                                => rst_n_i,
+      rst_n_a_i                                => rst_n,
       d_i                                      => ready_cnv,
       q_o                                      => ready_cnv_ref_sys
     );
@@ -302,7 +329,7 @@ begin
       clk_in_i                               => clk_fsm,
       rst_in_n_i                             => rst_fsm_n,
       clk_out_i                              => clk_i,
-      rst_out_n_i                            => rst_n_i,
+      rst_out_n_i                            => rst_n,
       d_p_i                                  => done_cnv_pp,
       q_p_o                                  => done_cnv_pp_ref_sys
     );
@@ -319,7 +346,7 @@ begin
     clk_in_i                               => clk_fsm,
     rst_in_n_i                             => rst_fsm_n,
     clk_out_i                              => clk_fast_spi_i,
-    rst_out_n_i                            => rst_fast_spi_n_i,
+    rst_out_n_i                            => rst_fast_spi_n,
     d_p_i                                  => done_cnv_pp,
     q_p_o                                  => done_cnv_pp_ref_fast
   );
@@ -336,7 +363,7 @@ begin
       g_DATA_LINES                           => g_DATA_LINES
     )
     port map (
-      rst_fast_spi_n_i                       => rst_fast_spi_n_i,
+      rst_fast_spi_n_i                       => rst_fast_spi_n,
       clk_fast_spi_i                         => clk_fast_spi_i,
       start_i                                => done_cnv_pp_ref_fast,
       sck_o                                  => sck,
@@ -368,7 +395,7 @@ begin
   cmp_gc_sync_ffs : gc_sync
   port map (
     clk_i                                    => clk_fast_spi_i,
-    rst_n_a_i                                => rst_fast_spi_n_i,
+    rst_n_a_i                                => rst_fast_spi_n,
     d_i                                      => ready_readout_ref_fast,
     q_o                                      => ready_readout_ref_sys
   );
@@ -418,9 +445,9 @@ begin
   cmp_done_readout_pulse_synchronizer2 : gc_pulse_synchronizer2
   port map (
     clk_in_i                               => clk_fast_spi_i,
-    rst_in_n_i                             => rst_fast_spi_n_i,
+    rst_in_n_i                             => rst_fast_spi_n,
     clk_out_i                              => clk_i,
-    rst_out_n_i                            => rst_n_i,
+    rst_out_n_i                            => rst_n,
     d_p_i                                  => done_readout_pp_ref_fast,
     q_p_o                                  => done_readout_pp_ref_sys
   );
@@ -433,7 +460,7 @@ begin
   p_drive_ready : process(clk_i)
   begin
     if rising_edge(clk_i) then
-      if rst_n_i = '0' then
+      if rst_n = '0' then
         state_ready <= IDLE;
         ready <= '0';
       else
