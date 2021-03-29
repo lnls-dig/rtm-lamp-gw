@@ -152,6 +152,8 @@ architecture ltc232x_acq_arch of ltc232x_acq is
   signal ready_cnv_ref_sys                   : std_logic;
   signal done_readout_pp_ref_sys             : std_logic;
   signal done_readout_pp_ref_fast            : std_logic;
+  signal ready_readout_ref_sys               : std_logic;
+  signal ready_readout_ref_fast              : std_logic;
   signal wait_counter                        : integer range 0 to c_WAIT_CONV_CYCLES := 0;
 
   signal cnv                                 : std_logic;
@@ -339,6 +341,7 @@ begin
       start_i                                => done_cnv_pp_ref_fast,
       sck_o                                  => sck,
       sck_ret_i                              => sck_ret,
+      ready_o                                => ready_readout_ref_fast,
       done_pp_o                              => done_readout_pp_ref_fast,
       sdo1a_i                                => sdo1a_i,
       sdo2_i                                 => sdo2_i,
@@ -361,6 +364,14 @@ begin
 
   sck_o <= sck;
   sck_ret <= sck_ret_i;
+
+  cmp_gc_sync_ffs : gc_sync
+  port map (
+    clk_i                                    => clk_fast_spi_i,
+    rst_n_a_i                                => rst_fast_spi_n_i,
+    d_i                                      => ready_readout_ref_fast,
+    q_o                                      => ready_readout_ref_sys
+  );
 
   -----------------------------------------------------------
   --         CDC from FAST SPI domain to CLK_SYS
@@ -430,7 +441,8 @@ begin
         case state_ready is
           when IDLE =>
             -- wait for ready_cnv
-            if ready_cnv_ref_sys = '1' then
+            if ready_cnv_ref_sys = '1' and
+              ready_readout_ref_sys = '1' then
               ready <= '1';
               state_ready <= WAIT_FOR_START;
             end if;
