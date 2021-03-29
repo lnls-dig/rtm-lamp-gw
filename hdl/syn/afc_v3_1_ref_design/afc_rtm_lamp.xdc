@@ -178,6 +178,15 @@ set_clock_groups -asynchronous -group [get_clocks $clk_fast_spi] \
             rtmlamp_adc_octo_sck_ret \
             rtmlamp_adc_quad_sck_ret}
 
+# reset from UART
+#
+# Get all start valid startpoints from all the pins connected to the uart_rstn nets;
+# filter it for leaf nodes and outputs;
+# set max_delay from all those cells to all valid endpoints at the clk_fast_spi domain
+set uart_rstn_startpoints          [all_fanin -flat -only_cells -startpoints_only \
+    [ get_pins -of_objects [ get_nets -hier -filter {NAME =~ *uart_rstn} ] -filter {IS_LEAF && (DIRECTION == "OUT")} ]]
+set_max_delay -datapath_only -from [ get_cells $uart_rstn_startpoints ]  -to [ get_clocks $clk_fast_spi ] $clk_sys_period
+
 #######################################################################
 ##                      Placement Constraints                        ##
 #######################################################################
