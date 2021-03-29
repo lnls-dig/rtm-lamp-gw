@@ -120,6 +120,8 @@ architecture multi_dac_spi_ldac_arch of multi_dac_spi_ldac is
   signal done_ldac_pp_ref_sys                : std_logic;
   signal start_trans                         : std_logic;
   signal ready                               : std_logic;
+  signal ready_ldac                          : std_logic;
+  signal ready_ldac_ref_sys                  : std_logic;
   signal ready_trans                         : std_logic;
   signal ldac_n                              : std_logic;
   signal ldac_wait_counter                   : integer range 0 to c_LDAC_WAIT_CYCLES := 0;
@@ -213,6 +215,7 @@ begin
         ldac_wait_counter <= 0;
         ldac_width_counter <= 0;
         done_ldac_pp <= '0';
+        ready_ldac <= '0';
       else
         -- done_ldac_pp signal is only asserted for 1 clock cycle
         done_ldac_pp <= '0';
@@ -220,10 +223,12 @@ begin
         case state_ldac is
 
           when IDLE =>
+            ready_ldac <= '1';
 
             if done_trans_pp_fsm = '1' then
               ldac_wait_counter <= 0;
               state_ldac <= WAIT_AFTER_CS;
+              ready_ldac <= '0';
             end if;
 
           when WAIT_AFTER_CS =>
@@ -240,6 +245,7 @@ begin
               ldac_n <= '1';
               state_ldac <= IDLE;
               done_ldac_pp <= '1';
+              ready_ldac <= '1';
             else
               ldac_width_counter <= ldac_width_counter+1;
             end if;
@@ -276,6 +282,14 @@ begin
 
   done_pp_o <= done_ldac_pp_ref_sys;
 
+  cmp_gc_sync_ffs : gc_sync
+  port map (
+    clk_i                                    => clk_i,
+    rst_n_a_i                                => rst_n,
+    d_i                                      => ready_ldac,
+    q_o                                      => ready_ldac_ref_sys
+  );
+
   ----------------------------------
   --         Ready drive
   ----------------------------------
@@ -290,7 +304,8 @@ begin
         case state_ready is
           when IDLE =>
             -- wait for ready_trans
-            if ready_trans = '1' then
+            if ready_trans = '1' and
+               ready_ldac_ref_sys = '1' then
               ready <= '1';
               state_ready <= WAIT_FOR_START;
             end if;
