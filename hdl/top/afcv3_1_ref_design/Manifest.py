@@ -1,5 +1,5 @@
 files = [
-    "afc_rtm_lamp_ctrl.vhd",
+    "afcv3_1_rtm_lamp_ctrl.vhd",
 ]
 
 fetchto = "../../ip_cores"

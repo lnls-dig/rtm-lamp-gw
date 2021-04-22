@@ -50,7 +50,7 @@ use work.pcie_cntr_axi_pkg.all;
 -- RTM LAMP definitions
 use work.rtm_lamp_pkg.all;
 
-entity afc_rtm_lamp_ctrl is
+entity afcv3_1_rtm_lamp_ctrl is
 generic (
   -- Number of DAC channels
   g_DAC_CHANNELS                             : natural := 8
@@ -215,9 +215,9 @@ port (
   rtmlamp_amp_shift_din_o                    : out   std_logic;
   rtmlamp_amp_shift_str_o                    : out   std_logic
 );
-end entity afc_rtm_lamp_ctrl;
+end entity afcv3_1_rtm_lamp_ctrl;
 
-architecture top of afc_rtm_lamp_ctrl is
+architecture top of afcv3_1_rtm_lamp_ctrl is
 
   -----------------------------------------------------------------------------
   -- General constants

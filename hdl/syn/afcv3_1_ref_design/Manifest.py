@@ -11,8 +11,8 @@ if locals().get('fetchto', None) is None:
 syn_device = "xc7a200t"
 syn_grade = "-2"
 syn_package = "ffg1156"
-syn_top = "afc_rtm_lamp_ctrl"
-syn_project = "afc_rtm_lamp_ctrl"
+syn_top = "afcv3_1_rtm_lamp_ctrl"
+syn_project = "afcv3_1_rtm_lamp_ctrl"
 syn_tool = "vivado"
 syn_properties = [
     ["steps.synth_design.args.more options", "-verbose"],
@@ -37,8 +37,8 @@ else:
 # other .xdc. We need this as we depend on variables defined
 # on afc_base xdc files.
 xdc_files = [
-    "afc_rtm_lamp_ohwr.xdc",
-    "afc_rtm_lamp.xdc",
+    "afcv3_1_rtm_lamp_ohwr.xdc",
+    "afcv3_1_rtm_lamp.xdc",
 ]
 
 additional_xdc = []
@@ -47,6 +47,6 @@ for f in xdc_files:
 
 modules = {
     "local" : [
-        "../../top/afc_v3_1_ref_design",
+        "../../top/afcv3_1_ref_design",
     ]
 }
