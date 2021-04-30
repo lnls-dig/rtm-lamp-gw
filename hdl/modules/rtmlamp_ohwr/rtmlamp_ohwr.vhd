@@ -24,6 +24,8 @@ use ieee.numeric_std.all;
 use work.rtm_lamp_pkg.all;
 -- generic buffers
 use work.platform_generic_pkg.all;
+-- Genrams
+use work.genram_pkg.all;
 
 entity rtmlamp_ohwr is
 generic (
@@ -192,13 +194,26 @@ architecture rtl of rtmlamp_ohwr is
   );
 
   signal adc_octo_raw                        : t_adc_readout;
+  signal adc_octo_raw_flat_data              : std_logic_vector(8*c_ADC_BITS-1 downto 0);
+  signal adc_octo_raw_flat_we                : std_logic;
+  signal adc_octo_synched_flat_data          : std_logic_vector(8*c_ADC_BITS-1 downto 0);
+  signal adc_octo_synched_flat_empty         : std_logic;
+  signal adc_octo_synched                    : t_adc_readout;
   signal adc_octo_fix_inv                    : t_adc_readout;
   signal adc_octo_scaled                     : t_adc_readout;
 
   signal adc_quad_raw                        : t_adc_readout := c_DUMMY_ADC_READOUT;
+  signal adc_quad_raw_flat_data              : std_logic_vector(4*c_ADC_BITS-1 downto 0) := (others => '0');
+  signal adc_quad_raw_flat_we                : std_logic := '0';
+  signal adc_quad_synched_flat_data          : std_logic_vector(4*c_ADC_BITS-1 downto 0) := (others => '0');
+  signal adc_quad_synched_flat_empty         : std_logic := '0';
+  signal adc_quad_synched                    : t_adc_readout := c_DUMMY_ADC_READOUT;
   signal adc_quad_fix_inv                    : t_adc_readout;
   signal adc_quad_scaled                     : t_adc_readout;
 
+  signal adc_synched_flat_empty              : std_logic;
+  signal adc_synched_flat_rd                 : std_logic;
+  signal adc_synched_flat_valid              : std_logic;
 begin
 
   assert (g_ADC_CHANNELS <= c_MAX_ADC_CHANNELS)
@@ -266,6 +281,30 @@ begin
   -- output pin, see retiming circuit at 232x datasheet, page 32.
   -- So we must invert the CNV signal here.
   adc_octo_cnv_o <= not adc_octo_cnv;
+
+  gen_flat_ltc232x_octo : for i in 0 to 7 generate
+    adc_octo_raw_flat_data((i+1)*c_ADC_BITS-1 downto i*c_ADC_BITS) <=
+      adc_octo_raw.data(i);
+  end generate;
+
+  adc_octo_raw_flat_we <= adc_octo_raw.valid;
+
+  cmp_ltc232x_octo_fifo : inferred_sync_fifo
+  generic map
+  (
+    g_data_width                              => 8*c_ADC_BITS,
+    g_size                                    => 4
+  )
+  port map
+  (
+    clk_i                                     => clk_i,
+    d_i                                       => adc_octo_raw_flat_data,
+    we_i                                      => adc_octo_raw_flat_we,
+
+    q_o                                       => adc_octo_synched_flat_data,
+    rd_i                                      => adc_synched_flat_rd,
+    empty_o                                   => adc_octo_synched_flat_empty
+  );
 
   ---------------------------------------------------------------------------
   --                              Buffers
@@ -335,6 +374,9 @@ begin
       adc_quad_cnv <= '0';
       adc_quad_sck <= '0';
 
+      adc_quad_synched_flat_data <= (others => '0');
+      adc_quad_synched_flat_empty <= '0';
+
   end generate;
 
   gen_adc_more_than_8_channels : if g_ADC_CHANNELS > 8 generate
@@ -385,6 +427,30 @@ begin
     -- So we must invert the CNV signal here.
     adc_quad_cnv_o <= not adc_quad_cnv;
 
+    gen_flat_ltc232x_quad : for i in 0 to 3 generate
+      adc_quad_raw_flat_data((i+1)*c_ADC_BITS-1 downto i*c_ADC_BITS) <=
+        adc_quad_raw.data(i);
+    end generate;
+
+    adc_quad_raw_flat_we <= adc_quad_raw.valid;
+
+    cmp_ltc232x_quad_fifo : inferred_sync_fifo
+    generic map
+    (
+      g_data_width                            => 4*c_ADC_BITS,
+      g_size                                  => 4
+    )
+    port map
+    (
+      clk_i                                   => clk_i,
+      d_i                                     => adc_quad_raw_flat_data,
+      we_i                                    => adc_quad_raw_flat_we,
+
+      q_o                                     => adc_quad_synched_flat_data,
+      rd_i                                    => adc_synched_flat_rd,
+      empty_o                                 => adc_quad_synched_flat_empty
+    );
+
     ---------------------------------------------------------------------------
     --                              Buffers
     ---------------------------------------------------------------------------
@@ -425,6 +491,36 @@ begin
   end generate;
 
   ----------------------------------------
+  -- Aggregate OCTO/QUAD ADC data to a single stream
+  ----------------------------------------
+
+  adc_synched_flat_empty <= adc_octo_synched_flat_empty or adc_quad_synched_flat_empty;
+  adc_synched_flat_rd <= '1' when adc_synched_flat_empty = '0' else '0';
+
+  p_gen_adc_synched_valid: process (clk_i)
+  begin
+    if rising_edge (clk_i) then
+      adc_synched_flat_valid <= adc_synched_flat_rd;
+
+      if adc_synched_flat_empty = '1' then
+        adc_synched_flat_valid <= '0';
+      end if;
+    end if;
+  end process;
+
+  gen_rec_ltc232x_octo : for i in 0 to 7 generate
+    adc_octo_synched.data(i) <= adc_octo_synched_flat_data((i+1)*c_ADC_BITS-1 downto i*c_ADC_BITS);
+  end generate;
+
+  adc_octo_synched.valid <= adc_synched_flat_valid;
+
+  gen_rec_ltc232x_quad : for i in 0 to 3 generate
+    adc_quad_synched.data(i) <= adc_quad_synched_flat_data((i+1)*c_ADC_BITS-1 downto i*c_ADC_BITS);
+  end generate;
+
+  adc_quad_synched.valid <= adc_synched_flat_valid;
+
+  ----------------------------------------
   -- fix possible inversion on ADC inputs.
   ----------------------------------------
   gen_fix_adc_inversion : if g_ADC_FIX_INV_INPUTS generate
@@ -437,12 +533,12 @@ begin
           adc_quad_fix_inv <= c_DUMMY_ADC_READOUT;
         else
           for i in 0 to 7 loop
-            adc_octo_fix_inv.data(i) <= std_logic_vector(-signed(adc_octo_raw.data(i)));
-            adc_quad_fix_inv.data(i) <= std_logic_vector(-signed(adc_quad_raw.data(i)));
+            adc_octo_fix_inv.data(i) <= std_logic_vector(-signed(adc_octo_synched.data(i)));
+            adc_quad_fix_inv.data(i) <= std_logic_vector(-signed(adc_quad_synched.data(i)));
           end loop;
 
-          adc_octo_fix_inv.valid <= adc_octo_raw.valid;
-          adc_quad_fix_inv.valid <= adc_quad_raw.valid;
+          adc_octo_fix_inv.valid <= adc_octo_synched.valid;
+          adc_quad_fix_inv.valid <= adc_quad_synched.valid;
         end if;
       end if;
     end process;
@@ -451,8 +547,8 @@ begin
 
   gen_not_fix_adc_inversion : if not g_ADC_FIX_INV_INPUTS generate
 
-    adc_octo_fix_inv <= adc_octo_raw;
-    adc_quad_fix_inv <= adc_quad_raw;
+    adc_octo_fix_inv <= adc_octo_synched;
+    adc_quad_fix_inv <= adc_quad_synched;
 
   end generate;
 
