@@ -162,9 +162,12 @@ architecture rtl of rtmlamp_ohwr is
 
   signal dac_ldac_n                          : std_logic;
 
+  signal adc_start                           : std_logic;
+  signal adc_ready                           : std_logic;
   signal adc_data                            : t_16b_word_array(c_MAX_ADC_CHANNELS-1 downto 0);
   signal adc_valid                           : std_logic_vector(c_MAX_ADC_CHANNELS-1 downto 0);
 
+  signal adc_octo_ready                      : std_logic;
   signal adc_octo_sck                        : std_logic;
   signal adc_octo_sck_ret                    : std_logic;
   signal adc_octo_cnv                        : std_logic;
@@ -173,6 +176,7 @@ architecture rtl of rtmlamp_ohwr is
   signal adc_octo_sdoc                       : std_logic;
   signal adc_octo_sdod                       : std_logic;
 
+  signal adc_quad_ready                      : std_logic := '1';
   signal adc_quad_sck                        : std_logic;
   signal adc_quad_sck_ret                    : std_logic;
   signal adc_quad_cnv                        : std_logic;
@@ -255,8 +259,9 @@ begin
       clk_ref_cnv_i                        => clk_ref_i,
       rst_ref_cnv_n_i                      => rst_ref_n_i,
 
-      start_i                              => adc_start_i,
+      start_i                              => adc_start,
 
+      ready_o                              => adc_octo_ready,
       cnv_o                                => adc_octo_cnv,
       sck_o                                => adc_octo_sck,
       sck_ret_i                            => adc_octo_sck_ret,
@@ -371,6 +376,7 @@ begin
       adc_quad_raw.data(3)   <= (others => '0');
       adc_quad_raw.valid     <= '0';
 
+      adc_quad_ready <= '1';
       adc_quad_cnv <= '0';
       adc_quad_sck <= '0';
 
@@ -406,8 +412,9 @@ begin
         clk_ref_cnv_i                        => clk_ref_i,
         rst_ref_cnv_n_i                      => rst_ref_n_i,
 
-        start_i                              => adc_start_i,
+        start_i                              => adc_start,
 
+        ready_o                              => adc_quad_ready,
         cnv_o                                => adc_quad_cnv,
         sck_o                                => adc_quad_sck,
         sck_ret_i                            => adc_quad_sck_ret,
@@ -489,6 +496,22 @@ begin
     );
 
   end generate;
+
+  adc_ready <= adc_octo_ready and adc_quad_ready;
+
+  ----------------------------------------
+  -- ADC start when both are ready
+  ----------------------------------------
+  p_gen_adc_start_valid: process (clk_i)
+  begin
+    if rising_edge (clk_i) then
+      if rst_n_i = '0' then
+        adc_start <= '0';
+      else
+        adc_start <= adc_start_i and adc_ready;
+      end if;
+    end if;
+  end process;
 
   ----------------------------------------
   -- Aggregate OCTO/QUAD ADC data to a single stream
