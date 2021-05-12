@@ -9,4 +9,5 @@ files = [
     "wb_rtmlamp_ohwr.vhd",
     "xwb_rtmlamp_ohwr.vhd",
     "cheby/wb_rtmlamp_ohwr_regs.vhd",
+    "pi_controller.vhd",
 ]
