@@ -79,9 +79,15 @@ begin
       if not ((signed(sum) >= signed(c_ctrl_sig_o_max) and signed(err_ti_shifted) > 0) or
               (signed(sum) <= signed(c_ctrl_sig_o_min) and signed(err_ti_shifted) < 0)) then
         pre_acc := resize(signed(acc), pre_acc'length) + resize(err_ti_shifted, pre_acc'length);
-        acc <= c_acc_max when signed(pre_acc) > signed(c_acc_max) else
-               c_acc_min when signed(pre_acc) < signed(c_acc_min) else
-               resize(pre_acc, acc'length);
+
+        if signed(pre_acc) > signed(c_acc_max) then
+          acc <= c_acc_max;
+        elsif signed(pre_acc) < signed(c_acc_min) then
+          acc <= c_acc_min;
+        else
+          acc <= resize(pre_acc, acc'length);
+        end if;
+
       end if;
       sum <= resize(acc(acc'left downto g_PRECISION), sum'length) + resize(err_kp_shifted(err_kp_shifted'left downto g_PRECISION), sum'length);
     end if;
