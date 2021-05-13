@@ -50,7 +50,12 @@ entity pi_controller is
       -- Controller output signal (2's complement)
       ctrl_sig_o: out std_logic_vector(g_PRECISION-1 downto 0);
       -- Controller output valid signal
-      ctrl_sig_valid_o: out std_logic
+      ctrl_sig_valid_o: out std_logic;
+      -- Monitoring outputs
+      dbg_acc_o : out std_logic_vector(g_PRECISION*2-1 downto 0);
+      dbg_acc_valid_o : out std_logic;
+      dbg_sum_o : out std_logic_vector(g_PRECISION downto 0);
+      dbg_sum_valid_o : out std_logic
     );
 end pi_controller;
 
@@ -227,4 +232,11 @@ begin
 
   ctrl_sig_o <= ctrl_sig;
   ctrl_sig_valid_o <= ctrl_sig_valid;
+
+  -- monitoring
+  dbg_acc_o <= std_logic_vector(acc);
+  dbg_acc_valid_o <= acc_valid;
+  dbg_sum_o <= std_logic_vector(sum);
+  dbg_sum_valid_o <= sum_valid;
+
 end pi_controller_arch;
