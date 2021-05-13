@@ -580,6 +580,44 @@ package rtm_lamp_pkg is
   );
   end component;
 
+  component pi_controller
+  generic
+    (
+      -- Number of bits for
+      g_PRECISION: integer := 16
+    );
+  port
+    (
+      -- Reset
+      rst_n_i:    in  std_logic;
+      -- Core clock
+      clk_i:      in  std_logic;
+      -- Proportional constant (2's complement)
+      kp_i:       in  std_logic_vector(g_PRECISION-1 downto 0);
+      -- Number of bit shifts to the right for kp
+      kp_shift_i: in  integer range 0 to (2*g_PRECISION)-1;
+      -- Integral constant (2's complement)
+      ti_i:       in  std_logic_vector(g_PRECISION-1 downto 0);
+      -- Number of bit shifts to the right for ti
+      ti_shift_i: in  integer range 0 to (2*g_PRECISION)-1;
+      -- Controller set-point (2's complement)
+      ctrl_sp_i: in  std_logic_vector(g_PRECISION-1 downto 0);
+      -- Controller feedback signal (2's complement)
+      ctrl_fb_i:  in  std_logic_vector(g_PRECISION-1 downto 0);
+      -- Controller feedback valid signal
+      ctrl_fb_valid_i: in std_logic;
+      -- Controller output signal (2's complement)
+      ctrl_sig_o: out std_logic_vector(g_PRECISION-1 downto 0);
+      -- Controller output valid signal
+      ctrl_sig_valid_o: out std_logic;
+      -- Monitoring outputs
+      dbg_acc_o : out std_logic_vector(g_PRECISION*2-1 downto 0);
+      dbg_acc_valid_o : out std_logic;
+      dbg_sum_o : out std_logic_vector(g_PRECISION downto 0);
+      dbg_sum_valid_o : out std_logic
+    );
+  end component;
+
   --------------------------------------------------------------------
   -- SDB Devices Structures
   --------------------------------------------------------------------
