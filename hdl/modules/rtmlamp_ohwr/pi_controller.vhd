@@ -54,6 +54,12 @@ architecture pi_controller_arch of pi_controller is
   signal acc: signed((g_PRECISION*2)-1 downto 0) := (others => '0');
   signal sum: signed(g_PRECISION downto 0) := (others => '0');
   signal err: signed(g_PRECISION-1 downto 0);
+  signal kp_reg: std_logic_vector(g_PRECISION-1 downto 0);
+  signal ti_reg: std_logic_vector(g_PRECISION-1 downto 0);
+  signal err_kp_pre: signed((g_PRECISION*2)-1 downto 0);
+  signal err_ti_pre: signed((g_PRECISION*2)-1 downto 0);
+  signal err_kp: signed((g_PRECISION*2)-1 downto 0);
+  signal err_ti: signed((g_PRECISION*2)-1 downto 0);
   signal err_kp_shifted: signed((g_PRECISION*2)-1 downto 0) := (others => '0');
   signal err_ti_shifted: signed((g_PRECISION*2)-1 downto 0) := (others => '0');
 
@@ -65,7 +71,8 @@ begin
                 c_ctrl_sig_o_min when signed(sum) < signed(c_ctrl_sig_o_min) else
                 std_logic_vector(resize(sum, ctrl_sig_o'length));
 
-  err <= signed(ctrl_sp_i) - signed(ctrl_fb_i);
+  err_ti_shifted <= shift_right(err_ti, ti_shift_i);
+  err_kp_shifted <= shift_right(err_kp, kp_shift_i);
 
   process(clk_i)
     constant c_acc_max: signed(acc'range) := '0' & (acc'left-1 downto 0 => '1');
@@ -76,11 +83,25 @@ begin
       if rst_n_i = '0' then
         acc <= (others => '0');
         sum <= (others => '0');
-        err_ti_shifted <= (others => '0');
-        err_kp_shifted <= (others => '0');
+        err <= (others => '0');
+        ti_reg <= (others => '0');
+        kp_reg <= (others => '0');
+        err_ti_pre <= (others => '0');
+        err_kp_pre <= (others => '0');
+        err_ti <= (others => '0');
+        err_kp <= (others => '0');
       else
-        err_ti_shifted <= shift_right(signed(ti_i) * err, ti_shift_i);
-        err_kp_shifted <= shift_right(signed(kp_i) * err, kp_shift_i);
+        err <= signed(ctrl_sp_i) - signed(ctrl_fb_i);
+
+        -- input mult pipeline reg
+        ti_reg <= ti_i;
+        kp_reg <= kp_i;
+        -- mult
+        err_ti_pre <= signed(ti_reg) * err;
+        err_kp_pre <= signed(kp_reg) * err;
+        -- output mult pipeline reg
+        err_ti <= err_ti_pre;
+        err_kp <= err_kp_pre;
 
         if not ((signed(sum) >= signed(c_ctrl_sig_o_max) and signed(err_ti_shifted) > 0) or
                 (signed(sum) <= signed(c_ctrl_sig_o_min) and signed(err_ti_shifted) < 0)) then
