@@ -218,6 +218,66 @@ architecture rtl of rtmlamp_ohwr is
   signal adc_synched_flat_empty              : std_logic;
   signal adc_synched_flat_rd                 : std_logic;
   signal adc_synched_flat_valid              : std_logic;
+
+  signal dac_start                           : std_logic;
+  signal dac_valid                           : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+  signal dac_data                            : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+
+  subtype t_acc_word is std_logic_vector(c_ADC_BITS*2-1 downto 0);
+  type t_acc_word_array is array(natural range <>) of t_acc_word;
+
+  subtype t_sum_word is std_logic_vector(c_ADC_BITS downto 0);
+  type t_sum_word_array is array(natural range <>) of t_sum_word;
+
+  signal dbg_pi_acc                          : t_acc_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal dbg_pi_acc_valid                    : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+  signal dbg_pi_sum                          : t_sum_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal dbg_pi_sum_valid                    : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+
+  -----------------------------------------------------------------------------
+  -- VIO/ILA signals
+  -----------------------------------------------------------------------------
+
+  signal probe_in0                           : std_logic_vector(63 downto 0);
+  signal probe_in1                           : std_logic_vector(63 downto 0);
+
+  signal probe_out0                          : std_logic_vector(63 downto 0);
+  signal probe_out1                          : std_logic_vector(63 downto 0);
+
+  signal data                                : std_logic_vector(255 downto 0);
+  signal trig0                               : std_logic_vector(7 downto 0);
+
+  signal pi_kp                               : std_logic_vector(c_ADC_BITS-1 downto 0);
+  signal pi_ti                               : std_logic_vector(c_ADC_BITS-1 downto 0);
+  signal pi_sp                               : std_logic_vector(c_ADC_BITS-1 downto 0);
+  signal pi_enable                           : std_logic;
+  signal dac_data_vio                        : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal dac_data_offset                     : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal dac_valid_vio                       : std_logic;
+
+  signal dac_data_from_pi                    : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal dac_data_offset_from_pi             : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal dac_valid_from_pi                   : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+  signal dac_valid_offset_from_pi            : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+
+  attribute MARK_DEBUG                       : string;
+  attribute MARK_DEBUG of pi_kp              : signal is "TRUE";
+  attribute MARK_DEBUG of pi_ti              : signal is "TRUE";
+  attribute MARK_DEBUG of pi_sp              : signal is "TRUE";
+  attribute MARK_DEBUG of pi_enable          : signal is "TRUE";
+  attribute MARK_DEBUG of dac_data_vio       : signal is "TRUE";
+  attribute MARK_DEBUG of dac_data_offset    : signal is "TRUE";
+  attribute MARK_DEBUG of dac_valid_vio      : signal is "TRUE";
+
+  attribute DONT_TOUCH                       : string;
+  attribute DONT_TOUCH of pi_kp              : signal is "TRUE";
+  attribute DONT_TOUCH of pi_ti              : signal is "TRUE";
+  attribute DONT_TOUCH of pi_sp              : signal is "TRUE";
+  attribute DONT_TOUCH of pi_enable          : signal is "TRUE";
+  attribute DONT_TOUCH of dac_data_vio       : signal is "TRUE";
+  attribute DONT_TOUCH of dac_data_offset    : signal is "TRUE";
+  attribute DONT_TOUCH of dac_valid_vio      : signal is "TRUE";
+
 begin
 
   assert (g_ADC_CHANNELS <= c_MAX_ADC_CHANNELS)
@@ -649,8 +709,8 @@ begin
       clk_ref_ldac_i                         => clk_ref_i,
       rst_ref_ldac_n_i                       => rst_ref_n_i,
 
-      start_i                                => dac_start_i,
-      data_i                                 => dac_data_i,
+      start_i                                => dac_start,
+      data_i                                 => dac_data,
       ready_o                                => dac_ready_o,
       done_pp_o                              => dac_done_pp_o,
       dac_cs_n_o                             => dac_cs_n_o,
@@ -663,6 +723,50 @@ begin
   -- connected to the CLR_N pin, with an inverter after the Q
   -- output pin. So we must invert the LDAC_N signal here.
   dac_ldac_n_o <= not dac_ldac_n;
+
+  ---------------------------------------------------------------------------
+  --                              PI Controller
+  ---------------------------------------------------------------------------
+  gen_pi_controller : for i in 0 to g_ADC_CHANNELS-1 generate
+    cmp_pi_controller : pi_controller
+      generic map (
+        g_PRECISION                          => c_ADC_BITS
+      )
+      port map (
+        rst_n_i                              => rst_n_i,
+        clk_i                                => clk_i,
+
+        kp_i                                 => pi_kp,
+        kp_shift_i                           => 0,
+        ti_i                                 => pi_ti,
+        ti_shift_i                           => 0,
+
+        ctrl_sp_i                            => pi_sp,
+
+        ctrl_fb_i                            => adc_data(i),
+        ctrl_fb_valid_i                      => adc_valid(i),
+
+        ctrl_sig_o                           => dac_data_from_pi(i),
+        ctrl_sig_valid_o                     => dac_valid_from_pi(i),
+
+        dbg_acc_o                            => dbg_pi_acc(i),
+        dbg_acc_valid_o                      => dbg_pi_acc_valid(i),
+        dbg_sum_o                            => dbg_pi_sum(i),
+        dbg_sum_valid_o                      => dbg_pi_sum_valid(i)
+      );
+  end generate;
+
+  dac_start <= dac_valid(0);
+
+  gen_dac_data_from_pi : for i in 0 to g_DAC_CHANNELS-1 generate
+
+    dac_data_offset_from_pi(i) <= std_logic_vector(32768 + signed(dac_data_from_pi(i)));
+    dac_valid_offset_from_pi(i) <= dac_valid_from_pi(i);
+
+    dac_data(i) <= dac_data_offset_from_pi(i) when pi_enable = '1' else dac_data_offset(i);
+    dac_valid(i) <= dac_valid_offset_from_pi(i) when pi_enable = '1' else dac_valid_vio;
+
+  end generate;
 
   ---------------------------------------------------------------------------
   --                              Serial regs
@@ -694,5 +798,78 @@ begin
     amp_tflag_r_o                            => amp_tflag_r_o,
     amp_en_ch_i                              => amp_en_ch_i
   );
+
+  ila_core_inst : entity work.ila_t8_d256_s8192_cap
+  port map (
+    clk             => clk_i,
+    probe0          => data,
+    probe1          => trig0
+  );
+
+  trig0(0)          <= adc_valid(0);
+  trig0(1)          <= dac_start;
+  trig0(2)          <= dbg_pi_acc_valid(0);
+  trig0(3)          <= dbg_pi_sum_valid(0);
+  trig0(4)          <= '0';
+  trig0(5)          <= '0';
+  trig0(6)          <= '0';
+  trig0(7)          <= '0';
+
+  data(0)           <= adc_valid(0);
+  data(1)           <= dac_start;
+  data(2)           <= dbg_pi_acc_valid(0);
+  data(3)           <= dbg_pi_sum_valid(0);
+  data(4)           <= '0';
+  data(5)           <= '0';
+  data(6)           <= '0';
+  data(7)           <= '0';
+  data(15 downto 8) <= (others => '0');
+
+  data(31 downto 16)   <= adc_data(0);
+  data(47 downto 32)   <= adc_data(1);
+  data(63 downto 48)   <= adc_data(2);
+  data(79 downto 64)   <= adc_data(3);
+  data(95 downto 80)   <= dac_data(0);
+  data(111 downto 96)  <= dac_data(1);
+  data(127 downto 112) <= dac_data(2);
+  data(143 downto 128) <= dac_data(3);
+  data(175 downto 144) <= dbg_pi_acc(0);
+  data(192 downto 176) <= dbg_pi_sum(0);
+
+  data(207 downto 193) <= (others => '0');
+  data(223 downto 208) <= (others => '0');
+  data(239 downto 224) <= (others => '0');
+  data(255 downto 240) <= (others => '0');
+
+  ------------------------------------------------------------------------
+  ----                          VIO                                     --
+  ------------------------------------------------------------------------
+  cmp_vio_din2_w64_dout2_w64 : entity work.vio_din2_w64_dout2_w64
+  port map (
+    clk                                      => clk_i,
+    probe_in0                                => probe_in0,
+    probe_in1                                => probe_in1,
+    probe_out0                               => probe_out0,
+    probe_out1                               => probe_out1
+  );
+
+  probe_in0(63 downto 0) <= (others => '0');
+  probe_in1(63 downto 0) <= (others => '0');
+
+  pi_kp         <= probe_out0(15 downto 0);
+  pi_ti         <= probe_out0(31 downto 16);
+  pi_sp         <= probe_out0(47 downto 32);
+  pi_enable     <= probe_out0(48);
+  dac_valid_vio <= probe_out0(49);
+
+  dac_data_vio(0) <= probe_out1(15 downto 0);
+  dac_data_vio(1) <= probe_out1(31 downto 16);
+  dac_data_vio(2) <= probe_out1(47 downto 32);
+  dac_data_vio(3) <= probe_out1(63 downto 48);
+
+  dac_data_offset(0)  <= std_logic_vector(32768 + signed(dac_data_vio(0)));
+  dac_data_offset(1)  <= std_logic_vector(32768 + signed(dac_data_vio(1)));
+  dac_data_offset(2)  <= std_logic_vector(32768 + signed(dac_data_vio(2)));
+  dac_data_offset(3)  <= std_logic_vector(32768 + signed(dac_data_vio(3)));
 
 end rtl;
