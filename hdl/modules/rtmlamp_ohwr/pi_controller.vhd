@@ -53,7 +53,7 @@ end pi_controller;
 architecture pi_controller_arch of pi_controller is
   signal acc: signed((g_PRECISION*2)-1 downto 0) := (others => '0');
   signal sum: signed(g_PRECISION downto 0) := (others => '0');
-  signal err: signed(g_PRECISION-1 downto 0) := (others => '0');
+  signal err: signed(g_PRECISION-1 downto 0);
   signal err_kp_shifted: signed((g_PRECISION*2)-1 downto 0) := (others => '0');
   signal err_ti_shifted: signed((g_PRECISION*2)-1 downto 0) := (others => '0');
 
@@ -73,23 +73,30 @@ begin
     variable pre_acc: signed((g_PRECISION*2) downto 0) := (others => '0');
   begin
     if rising_edge(clk_i) then
-      err_ti_shifted <= shift_right(signed(ti_i) * err, ti_shift_i);
-      err_kp_shifted <= shift_right(signed(kp_i) * err, kp_shift_i);
+      if rst_n_i = '0' then
+        acc <= (others => '0');
+        sum <= (others => '0');
+        err_ti_shifted <= (others => '0');
+        err_kp_shifted <= (others => '0');
+      else
+        err_ti_shifted <= shift_right(signed(ti_i) * err, ti_shift_i);
+        err_kp_shifted <= shift_right(signed(kp_i) * err, kp_shift_i);
 
-      if not ((signed(sum) >= signed(c_ctrl_sig_o_max) and signed(err_ti_shifted) > 0) or
-              (signed(sum) <= signed(c_ctrl_sig_o_min) and signed(err_ti_shifted) < 0)) then
-        pre_acc := resize(signed(acc), pre_acc'length) + resize(err_ti_shifted, pre_acc'length);
+        if not ((signed(sum) >= signed(c_ctrl_sig_o_max) and signed(err_ti_shifted) > 0) or
+                (signed(sum) <= signed(c_ctrl_sig_o_min) and signed(err_ti_shifted) < 0)) then
+          pre_acc := resize(signed(acc), pre_acc'length) + resize(err_ti_shifted, pre_acc'length);
 
-        if signed(pre_acc) > signed(c_acc_max) then
-          acc <= c_acc_max;
-        elsif signed(pre_acc) < signed(c_acc_min) then
-          acc <= c_acc_min;
-        else
-          acc <= resize(pre_acc, acc'length);
+          if signed(pre_acc) > signed(c_acc_max) then
+            acc <= c_acc_max;
+          elsif signed(pre_acc) < signed(c_acc_min) then
+            acc <= c_acc_min;
+          else
+            acc <= resize(pre_acc, acc'length);
+          end if;
+
         end if;
-
+        sum <= resize(acc(acc'left downto g_PRECISION), sum'length) + resize(err_kp_shifted(err_kp_shifted'left downto g_PRECISION), sum'length);
       end if;
-      sum <= resize(acc(acc'left downto g_PRECISION), sum'length) + resize(err_kp_shifted(err_kp_shifted'left downto g_PRECISION), sum'length);
     end if;
   end process;
 end pi_controller_arch;
