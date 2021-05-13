@@ -251,6 +251,9 @@ architecture rtl of rtmlamp_ohwr is
   signal pi_ti                               : std_logic_vector(c_ADC_BITS-1 downto 0);
   signal pi_sp                               : std_logic_vector(c_ADC_BITS-1 downto 0);
   signal pi_enable                           : std_logic;
+  signal pi_kp_shift                         : integer range 0 to (2*c_ADC_BITS)-1;
+  signal pi_ti_shift                         : integer range 0 to (2*c_ADC_BITS)-1;
+
   signal dac_data_vio                        : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
   signal dac_data_offset                     : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
   signal dac_valid_vio                       : std_logic;
@@ -268,6 +271,8 @@ architecture rtl of rtmlamp_ohwr is
   attribute MARK_DEBUG of dac_data_vio       : signal is "TRUE";
   attribute MARK_DEBUG of dac_data_offset    : signal is "TRUE";
   attribute MARK_DEBUG of dac_valid_vio      : signal is "TRUE";
+  attribute MARK_DEBUG of pi_kp_shift        : signal is "TRUE";
+  attribute MARK_DEBUG of pi_ti_shift        : signal is "TRUE";
 
   attribute DONT_TOUCH                       : string;
   attribute DONT_TOUCH of pi_kp              : signal is "TRUE";
@@ -277,6 +282,8 @@ architecture rtl of rtmlamp_ohwr is
   attribute DONT_TOUCH of dac_data_vio       : signal is "TRUE";
   attribute DONT_TOUCH of dac_data_offset    : signal is "TRUE";
   attribute DONT_TOUCH of dac_valid_vio      : signal is "TRUE";
+  attribute DONT_TOUCH of pi_kp_shift        : signal is "TRUE";
+  attribute DONT_TOUCH of pi_ti_shift        : signal is "TRUE";
 
 begin
 
@@ -737,9 +744,9 @@ begin
         clk_i                                => clk_i,
 
         kp_i                                 => pi_kp,
-        kp_shift_i                           => 0,
+        kp_shift_i                           => pi_kp_shift,
         ti_i                                 => pi_ti,
-        ti_shift_i                           => 0,
+        ti_shift_i                           => pi_ti_shift,
 
         ctrl_sp_i                            => pi_sp,
 
@@ -861,6 +868,9 @@ begin
   pi_sp         <= probe_out0(47 downto 32);
   pi_enable     <= probe_out0(48);
   dac_valid_vio <= probe_out0(49);
+
+  pi_kp_shift <= to_integer(unsigned(probe_out0(56 downto 50)));
+  pi_ti_shift <= to_integer(unsigned(probe_out0(63 downto 57)));
 
   dac_data_vio(0) <= probe_out1(15 downto 0);
   dac_data_vio(1) <= probe_out1(31 downto 16);
