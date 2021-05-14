@@ -135,6 +135,9 @@ port (
   dac_ready_o                                : out  std_logic;
   dac_done_pp_o                              : out  std_logic;
 
+  dbg_dac_start_o                            : out  std_logic;
+  dbg_dac_data_o                             : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+
   ---------------------------------------------------------------------------
   -- AMP parallel interface
   ---------------------------------------------------------------------------
@@ -784,6 +787,12 @@ begin
 
   end generate;
 
+  dbg_dac_start_o <= dac_start;
+
+  gen_dac_data_dbg : for i in 0 to g_DAC_CHANNELS-1 generate
+    dbg_dac_data_o(i)  <= std_logic_vector(signed(dac_data(i)) - 32767);
+  end generate;
+
   ---------------------------------------------------------------------------
   --                              Serial regs
   ---------------------------------------------------------------------------
@@ -884,9 +893,9 @@ begin
   dac_data_vio(2) <= probe_out1(47 downto 32);
   dac_data_vio(3) <= probe_out1(63 downto 48);
 
-  dac_data_offset(0)  <= std_logic_vector(32768 + signed(dac_data_vio(0)));
-  dac_data_offset(1)  <= std_logic_vector(32768 + signed(dac_data_vio(1)));
-  dac_data_offset(2)  <= std_logic_vector(32768 + signed(dac_data_vio(2)));
-  dac_data_offset(3)  <= std_logic_vector(32768 + signed(dac_data_vio(3)));
+  dac_data_offset(0)  <= std_logic_vector(32767 + signed(dac_data_vio(0)));
+  dac_data_offset(1)  <= std_logic_vector(32767 + signed(dac_data_vio(1)));
+  dac_data_offset(2)  <= std_logic_vector(32767 + signed(dac_data_vio(2)));
+  dac_data_offset(3)  <= std_logic_vector(32767 + signed(dac_data_vio(3)));
 
 end rtl;
