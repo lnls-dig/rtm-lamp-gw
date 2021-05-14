@@ -35,12 +35,10 @@ entity pi_controller is
       clk_i:      in  std_logic;
       -- Proportional constant (2's complement)
       kp_i:       in  std_logic_vector(g_PRECISION-1 downto 0);
-      -- Number of bit shifts to the right for kp
-      kp_shift_i: in  integer range 0 to (2*g_PRECISION)-1;
       -- Integral constant (2's complement)
       ti_i:       in  std_logic_vector(g_PRECISION-1 downto 0);
-      -- Number of bit shifts to the right for ti
-      ti_shift_i: in  integer range 0 to (2*g_PRECISION)-1;
+      -- Number of bit shifts to the right for acc
+      acc_shift_i: in  integer range 0 to (2*g_PRECISION)-1;
       -- Controller set-point (2's complement)
       ctrl_sp_i: in  std_logic_vector(g_PRECISION-1 downto 0);
       -- Controller feedback signal (2's complement)
@@ -52,8 +50,14 @@ entity pi_controller is
       -- Controller output valid signal
       ctrl_sig_valid_o: out std_logic;
       -- Monitoring outputs
+      dbg_err_ti_o: out std_logic_vector(g_PRECISION*2-1 downto 0);
+      dbg_err_kp_o: out std_logic_vector(g_PRECISION*2-1 downto 0);
+      dbg_err_mult_valid_o: out std_logic;
+      dbg_err_mult_shifted_valid_o: out std_logic;
       dbg_acc_o : out std_logic_vector(g_PRECISION*2-1 downto 0);
       dbg_acc_valid_o : out std_logic;
+      dbg_acc_shifted_o : out std_logic_vector(g_PRECISION*2-1 downto 0);
+      dbg_acc_shifted_valid_o : out std_logic;
       dbg_sum_o : out std_logic_vector(g_PRECISION downto 0);
       dbg_sum_valid_o : out std_logic
     );
@@ -64,6 +68,8 @@ architecture pi_controller_arch of pi_controller is
   signal pre_acc_valid : std_logic;
   signal acc: signed((g_PRECISION*2)-1 downto 0) := (others => '0');
   signal acc_valid : std_logic;
+  signal acc_shifted: signed((g_PRECISION*2)-1 downto 0) := (others => '0');
+  signal acc_shifted_valid : std_logic;
   signal sum: signed(g_PRECISION downto 0) := (others => '0');
   signal sum_valid : std_logic;
   signal err: signed(g_PRECISION-1 downto 0);
@@ -76,9 +82,6 @@ architecture pi_controller_arch of pi_controller is
   signal err_kp: signed((g_PRECISION*2)-1 downto 0);
   signal err_ti: signed((g_PRECISION*2)-1 downto 0);
   signal err_mult_valid : std_logic;
-  signal err_kp_shifted: signed((g_PRECISION*2)-1 downto 0) := (others => '0');
-  signal err_ti_shifted: signed((g_PRECISION*2)-1 downto 0) := (others => '0');
-  signal err_mult_shifted_valid : std_logic;
   signal ctrl_fb_valid: std_logic;
   signal ctrl_fb: std_logic_vector(g_PRECISION-1 downto 0);
   signal ctrl_sig: std_logic_vector(g_PRECISION-1 downto 0);
@@ -155,10 +158,6 @@ architecture pi_controller_arch of pi_controller is
 
 begin
 
-  err_ti_shifted <= shift_right(err_ti, ti_shift_i);
-  err_kp_shifted <= shift_right(err_kp, kp_shift_i);
-  err_mult_shifted_valid <= err_mult_valid;
-
   process(clk_i)
   begin
     if rising_edge(clk_i) then
@@ -205,23 +204,27 @@ begin
         err_mult_valid <= err_mult_pre_valid;
 
         -- integral stage
-        if err_mult_shifted_valid = '1' and (
-                not ((signed(sum) >= signed(c_ctrl_sig_max) and signed(err_ti_shifted) > 0) or
-                (signed(sum) <= signed(c_ctrl_sig_min) and signed(err_ti_shifted) < 0))) then
+        if err_mult_valid = '1' and (
+                not ((signed(sum) >= signed(c_ctrl_sig_max) and signed(err_ti) > 0) or
+                (signed(sum) <= signed(c_ctrl_sig_min) and signed(err_ti) < 0))) then
           pre_acc <= resize(signed(acc), pre_acc'length) +
-                     resize(err_ti_shifted, pre_acc'length);
+                     resize(err_ti, pre_acc'length);
         end if;
-        pre_acc_valid <= err_mult_shifted_valid;
+        pre_acc_valid <= err_mult_valid;
 
         acc <= signed(f_saturate(std_logic_vector(pre_acc), acc'left));
         acc_valid <= pre_acc_valid;
 
+        -- shift stage
+        acc_shifted <= shift_right(acc, acc_shift_i);
+        acc_shifted_valid <= acc_valid;
+
         -- proportional stage
-        if acc_valid = '1' then
-          sum <= resize(acc(acc'left downto g_PRECISION), sum'length) +
-                  resize(err_kp_shifted(err_kp_shifted'left downto g_PRECISION), sum'length);
+        if acc_shifted_valid = '1' then
+          sum <= resize(acc_shifted(acc_shifted'left downto g_PRECISION), sum'length) +
+                  resize(err_kp(err_kp'left downto g_PRECISION), sum'length);
         end if;
-        sum_valid <= acc_valid;
+        sum_valid <= acc_shifted_valid;
 
         ctrl_sig <= f_saturate(std_logic_vector(sum), ctrl_sig'left);
         ctrl_sig_valid <= sum_valid;
@@ -236,7 +239,12 @@ begin
   -- monitoring
   dbg_acc_o <= std_logic_vector(acc);
   dbg_acc_valid_o <= acc_valid;
+  dbg_acc_shifted_o <= std_logic_vector(acc_shifted);
+  dbg_acc_shifted_valid_o <= acc_shifted_valid;
   dbg_sum_o <= std_logic_vector(sum);
   dbg_sum_valid_o <= sum_valid;
+  dbg_err_ti_o <= std_logic_vector(err_ti);
+  dbg_err_kp_o <= std_logic_vector(err_kp);
+  dbg_err_mult_valid_o <= err_mult_valid;
 
 end pi_controller_arch;
