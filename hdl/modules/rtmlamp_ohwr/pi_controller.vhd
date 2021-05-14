@@ -156,6 +156,28 @@ architecture pi_controller_arch of pi_controller is
     return v_x_sat;
   end f_saturate;
 
+  -- round using "convergent rounding" method
+  function f_convergent_round(x : std_logic_vector; x_new_msb : natural)
+    return std_logic_vector
+  is
+    constant x_old_msb : natural := x'left;
+    constant x_extra_msb : natural := x_old_msb - x_new_msb - 1;
+    variable v_x_conv : std_logic_vector(x_new_msb downto 0);
+  begin
+    -- if it's midscale (tie), converge to even integers
+    if (unsigned(x(x_extra_msb downto 0)) =
+        unsigned('1' & f_replicate('0', x_extra_msb))) then
+      v_x_conv := std_logic_vector(unsigned(x(x_old_msb downto x_extra_msb+1)) +
+                                   unsigned'("" & x(x_extra_msb+1)));
+    -- otherwise, round to nearest integer
+    else
+      v_x_conv := std_logic_vector(unsigned(x(x_old_msb downto x_extra_msb+1)) +
+                                   unsigned'("" & x(x_extra_msb)));
+    end if;
+
+    return v_x_conv;
+  end f_convergent_round;
+
 begin
 
   process(clk_i)
@@ -221,8 +243,8 @@ begin
 
         -- proportional stage
         if acc_shifted_valid = '1' then
-          sum <= resize(acc_shifted(acc_shifted'left downto g_PRECISION), sum'length) +
-                  resize(err_kp(err_kp'left downto g_PRECISION), sum'length);
+          sum <= signed(f_convergent_round(std_logic_vector(acc_shifted), sum'left)) +
+                  signed(f_convergent_round(std_logic_vector(err_kp), sum'left));
         end if;
         sum_valid <= acc_shifted_valid;
 
