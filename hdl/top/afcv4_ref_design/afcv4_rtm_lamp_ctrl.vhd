@@ -260,6 +260,8 @@ architecture top of afcv4_rtm_lamp_ctrl is
 
   signal rtmlamp_dac_start                   : std_logic := '1';
   signal rtmlamp_dac_data                    : t_16b_word_array(c_DAC_CHANNELS-1 downto 0);
+  signal rtmlamp_dbg_dac_start               : std_logic;
+  signal rtmlamp_dbg_dac_data                : t_16b_word_array(c_DAC_CHANNELS-1 downto 0);
   signal rtmlamp_dac_ready                   : std_logic;
   signal rtmlamp_dac_done_pp                 : std_logic;
 
@@ -303,8 +305,8 @@ architecture top of afcv4_rtm_lamp_ctrl is
   constant c_ACQ_NUM_CHANNELS                : natural := 1; -- RTM_LAMP Acquisition
 
   constant c_FACQ_PARAMS_RTM_LAMP                 : t_facq_chan_param := (
-    width                                    => to_unsigned(256, c_ACQ_CHAN_CMPLT_WIDTH_LOG2),
-    num_atoms                                => to_unsigned(16, c_ACQ_NUM_ATOMS_WIDTH_LOG2),
+    width                                    => to_unsigned(512, c_ACQ_CHAN_CMPLT_WIDTH_LOG2),
+    num_atoms                                => to_unsigned(32, c_ACQ_NUM_ATOMS_WIDTH_LOG2),
     atom_width                               => to_unsigned(16, c_ACQ_ATOM_WIDTH_LOG2)
   );
 
@@ -828,7 +830,10 @@ begin
     dac_start_i                                => rtmlamp_dac_start,
     dac_data_i                                 => rtmlamp_dac_data,
     dac_ready_o                                => rtmlamp_dac_ready,
-    dac_done_pp_o                              => rtmlamp_dac_done_pp
+    dac_done_pp_o                              => rtmlamp_dac_done_pp,
+
+    dbg_dac_start_o                            => rtmlamp_dbg_dac_start,
+    dbg_dac_data_o                             => rtmlamp_dbg_dac_data
   );
 
   ----------------------------------------------------------------------
@@ -847,7 +852,7 @@ begin
 
   -- RTM_LAMP data
 
-  gen_rtm_acq_data : for i in 0 to c_ADC_CHANNELS-1 generate
+  gen_rtm_acq_adc_data : for i in 0 to c_ADC_CHANNELS-1 generate
 
     acq_data(c_ACQ_CORE_0_ID)(
       (i+1)*to_integer(c_FACQ_CHANNELS(c_ACQ_RTM_LAMP_ID).atom_width)-1
@@ -857,7 +862,17 @@ begin
 
   end generate;
 
-  gen_rtm_acq_data_unused : for i in c_ADC_CHANNELS to
+  gen_rtm_acq_dac_data : for i in c_ADC_CHANNELS to c_ADC_CHANNELS+c_DAC_CHANNELS-1 generate
+
+    acq_data(c_ACQ_CORE_0_ID)(
+      (i+1)*to_integer(c_FACQ_CHANNELS(c_ACQ_RTM_LAMP_ID).atom_width)-1
+      downto
+      i*to_integer(c_FACQ_CHANNELS(c_ACQ_RTM_LAMP_ID).atom_width))
+    <= rtmlamp_dbg_dac_data(i-c_ADC_CHANNELS);
+
+  end generate;
+
+  gen_rtm_acq_dac_data_unused : for i in c_ADC_CHANNELS+c_DAC_CHANNELS to
       to_integer(c_FACQ_CHANNELS(c_ACQ_RTM_LAMP_ID).num_atoms)-1 generate
 
     acq_data(c_ACQ_CORE_0_ID)(
