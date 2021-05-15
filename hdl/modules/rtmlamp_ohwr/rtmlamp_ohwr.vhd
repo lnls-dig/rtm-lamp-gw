@@ -160,8 +160,8 @@ architecture rtl of rtmlamp_ohwr is
   -- quasi-offset binary to two's complement conversion factor
   constant c_ADC_OFFB_2_TWOSCOMP_CONV        : signed(c_ADC_BITS-1 downto 0) := to_signed(-16384, c_ADC_BITS);
 
-  constant c_DAC_LDAC_WIDTH                  : real := 100.0e-9; -- minimum of 30.0e-9
-  constant c_DAC_LDAC_WAIT_AFTER_CS          : real := 100.0e-9; -- minimum of 30.0e-9
+  constant c_DAC_LDAC_WIDTH                  : real := 30.0e-9; -- minimum of 30.0e-9
+  constant c_DAC_LDAC_WAIT_AFTER_CS          : real := 30.0e-9; -- minimum of 30.0e-9
 
   signal dac_ldac_n                          : std_logic;
 
