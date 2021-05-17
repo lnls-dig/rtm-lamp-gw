@@ -238,8 +238,9 @@ architecture rtl of rtmlamp_ohwr is
 
   signal dbg_pi_acc                          : t_acc_word_array(g_DAC_CHANNELS-1 downto 0);
   signal dbg_pi_acc_valid                    : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
-  signal dbg_pi_acc_shifted                  : t_acc_word_array(g_DAC_CHANNELS-1 downto 0);
-  signal dbg_pi_acc_shifted_valid            : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+  signal dbg_pi_ti_shifted                   : t_acc_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal dbg_pi_kp_shifted                   : t_acc_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal dbg_pi_shifted_valid                : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
   signal dbg_pi_sum                          : t_sum_word_array(g_DAC_CHANNELS-1 downto 0);
   signal dbg_pi_sum_valid                    : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
 
@@ -259,10 +260,15 @@ architecture rtl of rtmlamp_ohwr is
   signal pi_kp                               : std_logic_vector(c_ADC_BITS-1 downto 0);
   signal pi_ti                               : std_logic_vector(c_ADC_BITS-1 downto 0);
   signal pi_sp                               : std_logic_vector(c_ADC_BITS-1 downto 0);
-  signal pi_enable                           : std_logic;
-  signal triang_enable                       : std_logic;
-  signal pi_acc_shift                        : integer range 0 to (2*c_ADC_BITS)-1;
+  signal pi_enable                           : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+  signal pi_square_enable                    : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+  signal triang_enable                       : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+  signal pi_ti_shift                         : integer range 0 to (2*c_ADC_BITS)-1;
+  signal pi_kp_shift                         : integer range 0 to (2*c_ADC_BITS)-1;
   signal amp_enable                          : std_logic_vector(11 downto 0);
+
+  signal pi_sp_to_pi                         : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal pi_sp_from_square                   : std_logic_vector(c_ADC_BITS-1 downto 0);
 
   signal dac_data_vio                        : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
   signal dac_data_offset                     : t_16b_word_array(g_DAC_CHANNELS-1 downto 0) :=
@@ -280,8 +286,9 @@ architecture rtl of rtmlamp_ohwr is
         (others => std_logic_vector(to_signed(32767, 16)));
   signal dac_valid_from_triang               : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
   signal dac_valid_offset_from_triang        : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
-  signal dac_triang_counter_max              : integer range 0 to (2**22-1);
+  signal dac_mode_counter_max                : integer range 0 to (2**22-1);
   signal dac_triang_counter                  : integer range 0 to (2**22-1);
+  signal dac_square_counter                  : integer range 0 to (2**22-1);
   signal dac_data_counter                    : integer range -1024 to 1023;
   signal dac_data_counter_up                 : std_logic;
 
@@ -289,29 +296,33 @@ architecture rtl of rtmlamp_ohwr is
   attribute MARK_DEBUG of pi_kp              : signal is "TRUE";
   attribute MARK_DEBUG of pi_ti              : signal is "TRUE";
   attribute MARK_DEBUG of pi_sp              : signal is "TRUE";
+  attribute MARK_DEBUG of pi_square_enable   : signal is "TRUE";
   attribute MARK_DEBUG of pi_enable          : signal is "TRUE";
   attribute MARK_DEBUG of triang_enable      : signal is "TRUE";
   attribute MARK_DEBUG of dac_data_vio       : signal is "TRUE";
   attribute MARK_DEBUG of dac_data_offset    : signal is "TRUE";
   attribute MARK_DEBUG of dac_valid_vio      : signal is "TRUE";
-  attribute MARK_DEBUG of pi_acc_shift       : signal is "TRUE";
+  attribute MARK_DEBUG of pi_ti_shift        : signal is "TRUE";
+  attribute MARK_DEBUG of pi_kp_shift        : signal is "TRUE";
   attribute MARK_DEBUG of amp_enable         : signal is "TRUE";
   attribute MARK_DEBUG of dbg_pi_err_ti      : signal is "TRUE";
-  attribute MARK_DEBUG of dac_triang_counter_max       : signal is "TRUE";
+  attribute MARK_DEBUG of dac_mode_counter_max       : signal is "TRUE";
 
   attribute DONT_TOUCH                       : string;
   attribute DONT_TOUCH of pi_kp              : signal is "TRUE";
   attribute DONT_TOUCH of pi_ti              : signal is "TRUE";
   attribute DONT_TOUCH of pi_sp              : signal is "TRUE";
+  attribute DONT_TOUCH of pi_square_enable   : signal is "TRUE";
   attribute DONT_TOUCH of pi_enable          : signal is "TRUE";
   attribute DONT_TOUCH of triang_enable      : signal is "TRUE";
   attribute DONT_TOUCH of dac_data_vio       : signal is "TRUE";
   attribute DONT_TOUCH of dac_data_offset    : signal is "TRUE";
   attribute DONT_TOUCH of dac_valid_vio      : signal is "TRUE";
-  attribute DONT_TOUCH of pi_acc_shift       : signal is "TRUE";
+  attribute DONT_TOUCH of pi_ti_shift        : signal is "TRUE";
+  attribute DONT_TOUCH of pi_kp_shift        : signal is "TRUE";
   attribute DONT_TOUCH of amp_enable         : signal is "TRUE";
   attribute DONT_TOUCH of dbg_pi_err_ti      : signal is "TRUE";
-  attribute DONT_TOUCH of dac_triang_counter_max       : signal is "TRUE";
+  attribute DONT_TOUCH of dac_mode_counter_max       : signal is "TRUE";
 
 begin
 
@@ -773,9 +784,10 @@ begin
 
         kp_i                                 => pi_kp,
         ti_i                                 => pi_ti,
-        acc_shift_i                          => pi_acc_shift,
+        ti_shift_i                           => pi_ti_shift,
+        kp_shift_i                           => pi_kp_shift,
 
-        ctrl_sp_i                            => pi_sp,
+        ctrl_sp_i                            => pi_sp_to_pi(i),
 
         ctrl_fb_i                            => adc_data(i),
         ctrl_fb_valid_i                      => adc_valid(i),
@@ -786,10 +798,11 @@ begin
         dbg_err_ti_o                         => dbg_pi_err_ti(i),
         dbg_err_kp_o                         => dbg_pi_err_kp(i),
         dbg_err_mult_valid_o                 => dbg_pi_err_mult_valid(i),
+        dbg_err_ti_shifted_o                 => dbg_pi_ti_shifted(i),
+        dbg_err_kp_shifted_o                 => dbg_pi_kp_shifted(i),
+        dbg_err_shifted_valid_o              => dbg_pi_shifted_valid(i),
         dbg_acc_o                            => dbg_pi_acc(i),
         dbg_acc_valid_o                      => dbg_pi_acc_valid(i),
-        dbg_acc_shifted_o                    => dbg_pi_acc_shifted(i),
-        dbg_acc_shifted_valid_o              => dbg_pi_acc_shifted_valid(i),
         dbg_sum_o                            => dbg_pi_sum(i),
         dbg_sum_valid_o                      => dbg_pi_sum_valid(i)
       );
@@ -805,12 +818,15 @@ begin
     dac_data_offset_from_triang(i) <= std_logic_vector(32767 + signed(dac_data_from_triang(i)));
     dac_valid_offset_from_triang(i) <= dac_valid_from_triang(i);
 
-    dac_data(i) <= dac_data_offset_from_pi(i) when pi_enable = '1' else
-                   dac_data_offset_from_triang(i) when triang_enable = '1' else
+    dac_data(i) <= dac_data_offset_from_pi(i) when pi_enable(i) = '1' else
+                   dac_data_offset_from_triang(i) when triang_enable(i) = '1' else
                    dac_data_offset(i);
-    dac_valid(i) <= dac_valid_offset_from_pi(i) when pi_enable = '1' else
-                    dac_valid_offset_from_triang(i) when triang_enable = '1' else
+    dac_valid(i) <= dac_valid_offset_from_pi(i) when pi_enable(i) = '1' else
+                    dac_valid_offset_from_triang(i) when triang_enable(i) = '1' else
                     dac_valid_vio;
+
+    pi_sp_to_pi(i) <= pi_sp_from_square when pi_square_enable(i) = '1' else
+                      pi_sp;
 
   end generate;
 
@@ -832,10 +848,11 @@ begin
           dac_data_from_triang(i) <= (others => '0');
           dac_valid_from_triang(i) <= '0';
           dac_triang_counter <= 0;
+          pi_sp_from_square <= (others => '0');
           dac_data_counter <= 0;
           dac_data_counter_up <= '1';
         else
-          if dac_triang_counter = dac_triang_counter_max then
+          if dac_triang_counter = dac_mode_counter_max then
             dac_triang_counter <= 0;
             dac_valid_from_triang(i) <= '1';
             dac_data_from_triang(i) <= std_logic_vector(to_signed(dac_data_counter, dac_data_from_triang(i)'length));
@@ -846,12 +863,16 @@ begin
                 dac_data_counter_up <= '0';
                 dac_data_counter <= dac_data_counter - 1;
               end if;
+
+              pi_sp_from_square <= (others => '0');
             else
               dac_data_counter <= dac_data_counter - 1;
               if dac_data_counter = -1024 then
                 dac_data_counter_up <= '1';
                 dac_data_counter <= dac_data_counter + 1;
               end if;
+
+              pi_sp_from_square <= pi_sp;
             end if;
 
           else
@@ -935,7 +956,7 @@ begin
   data(192 downto 176) <= dbg_pi_sum(0);
 
   data(223 downto 193) <= std_logic_vector(resize(signed(dbg_pi_err_ti(0)), 31));
-  data(254 downto 224) <= std_logic_vector(resize(signed(dbg_pi_acc_shifted(0)), 31));
+  data(254 downto 224) <= std_logic_vector(resize(signed(dbg_pi_ti_shifted(0)), 31));
   data(255)            <= '0';
 
   ------------------------------------------------------------------------
@@ -953,21 +974,23 @@ begin
   probe_in0 <= (others => '0');
   probe_in1 <= (others => '0');
 
-  dac_triang_counter_max <= to_integer(unsigned(probe_out0(21 downto 0)));
-  --pi_kp         <= probe_out0(15 downto 0);
-  pi_ti         <= probe_out0(37 downto 22);
-  pi_sp         <= probe_out0(53 downto 38);
-  pi_enable     <= probe_out0(54);
-  dac_valid_vio <= probe_out0(55);
-  triang_enable <= probe_out0(56);
+  pi_kp                  <= probe_out0(15 downto 0);
+  pi_ti                  <= probe_out0(31 downto 16);
+  pi_sp                  <= probe_out0(47 downto 32);
 
-  pi_acc_shift <= to_integer(unsigned(probe_out0(63 downto 57)));
-  amp_enable   <= probe_out0(75 downto 64);
+  dac_mode_counter_max   <= to_integer(unsigned(probe_out0(69 downto 48)));
+  pi_ti_shift            <= to_integer(unsigned(probe_out0(76 downto 70)));
+  amp_enable             <= probe_out0(88 downto 77);
+  pi_enable              <= probe_out0(100 downto 89);
+  triang_enable          <= probe_out0(112 downto 101);
+  dac_valid_vio          <= probe_out0(113);
+  pi_kp_shift            <= to_integer(unsigned(probe_out0(120 downto 114)));
 
-  dac_data_vio(0) <= probe_out1(15 downto 0);
-  dac_data_vio(1) <= probe_out1(31 downto 16);
-  dac_data_vio(2) <= probe_out1(47 downto 32);
-  dac_data_vio(3) <= probe_out1(63 downto 48);
+  dac_data_vio(0)  <= probe_out1(15 downto 0);
+  dac_data_vio(1)  <= probe_out1(31 downto 16);
+  dac_data_vio(2)  <= probe_out1(47 downto 32);
+  dac_data_vio(3)  <= probe_out1(63 downto 48);
+  pi_square_enable <= probe_out1(75 downto 64);
 
   dac_data_offset(0)  <= std_logic_vector(32767 + signed(dac_data_vio(0)));
   dac_data_offset(1)  <= std_logic_vector(32767 + signed(dac_data_vio(1)));
