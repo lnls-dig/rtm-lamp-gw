@@ -36,11 +36,11 @@ entity pi_controller is
       -- Proportional constant (2's complement)
       kp_i:       in  std_logic_vector(g_PRECISION-1 downto 0);
       -- Number of bit shifts to the right for kp
-      kp_shift_i: in  integer range 0 to (2*g_PRECISION)-1;
+      kp_shift_i: in  integer range -(2*g_PRECISION) to (2*g_PRECISION)-1;
       -- Integral constant (2's complement)
       ti_i:       in  std_logic_vector(g_PRECISION-1 downto 0);
       -- Number of bit shifts to the right for ti
-      ti_shift_i: in  integer range 0 to (2*g_PRECISION)-1;
+      ti_shift_i: in  integer range -(2*g_PRECISION) to (2*g_PRECISION)-1;
       -- Controller set-point (2's complement)
       ctrl_sp_i: in  std_logic_vector(g_PRECISION-1 downto 0);
       -- Controller feedback signal (2's complement)
@@ -232,8 +232,17 @@ begin
         err_mult_valid <= err_mult_pre_valid;
 
         -- shift stage
-        err_ti_shifted <= shift_right(shift_left(signed(err_ti), 16), ti_shift_i);
-        err_kp_shifted <= shift_right(shift_left(signed(err_kp), 16), kp_shift_i);
+        if ti_shift_i >= 0 then
+          err_ti_shifted <= shift_right(signed(err_ti), ti_shift_i);
+        else
+          err_ti_shifted <= shift_left(signed(err_ti), -ti_shift_i);
+        end if;
+
+        if kp_shift_i >= 0 then
+            err_kp_shifted <= shift_right(signed(err_kp), kp_shift_i);
+        else
+            err_kp_shifted <= shift_left(signed(err_kp), -kp_shift_i);
+        end if;
         err_shifted_valid <= err_mult_valid;
 
         -- integral stage

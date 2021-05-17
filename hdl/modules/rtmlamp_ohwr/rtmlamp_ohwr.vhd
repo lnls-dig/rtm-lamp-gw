@@ -263,8 +263,8 @@ architecture rtl of rtmlamp_ohwr is
   signal pi_enable                           : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
   signal pi_square_enable                    : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
   signal triang_enable                       : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
-  signal pi_ti_shift                         : integer range 0 to (2*c_ADC_BITS)-1;
-  signal pi_kp_shift                         : integer range 0 to (2*c_ADC_BITS)-1;
+  signal pi_ti_shift                         : integer range -(2*c_ADC_BITS) to (2*c_ADC_BITS)-1;
+  signal pi_kp_shift                         : integer range -(2*c_ADC_BITS) to (2*c_ADC_BITS)-1;
   signal amp_enable                          : std_logic_vector(11 downto 0);
 
   signal pi_sp_to_pi                         : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
