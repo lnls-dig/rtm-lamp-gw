@@ -607,11 +607,11 @@ package rtm_lamp_pkg is
       -- Proportional constant (2's complement)
       kp_i:       in  std_logic_vector(g_PRECISION-1 downto 0);
       -- Number of bit shifts to the right for kp
-      kp_shift_i: in  integer range 0 to (2*g_PRECISION)-1;
+      kp_shift_i: in  integer range -(2*g_PRECISION) to (2*g_PRECISION)-1;
       -- Integral constant (2's complement)
       ti_i:       in  std_logic_vector(g_PRECISION-1 downto 0);
       -- Number of bit shifts to the right for ti
-      ti_shift_i: in  integer range 0 to (2*g_PRECISION)-1;
+      ti_shift_i: in  integer range -(2*g_PRECISION) to (2*g_PRECISION)-1;
       -- Controller set-point (2's complement)
       ctrl_sp_i: in  std_logic_vector(g_PRECISION-1 downto 0);
       -- Controller feedback signal (2's complement)

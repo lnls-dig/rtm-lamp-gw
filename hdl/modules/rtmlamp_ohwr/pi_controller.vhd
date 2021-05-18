@@ -179,12 +179,19 @@ architecture pi_controller_arch of pi_controller is
                                    unsigned'("" & x(x_extra_msb)));
     end if;
 
+    -- overflow, saturate
+    if v_x_conv(v_x_conv'left) /= x(x_old_msb) then
+      return x(x_old_msb) & f_replicate(not x(x_old_msb), x_new_msb);
+    end if;
+
     return v_x_conv;
   end f_convergent_round;
 
 begin
 
   process(clk_i)
+    variable v_err_kp_shifted: signed((g_PRECISION*2)-1 downto 0) := (others => '0');
+    variable v_err_ti_shifted: signed((g_PRECISION*2)-1 downto 0) := (others => '0');
   begin
     if rising_edge(clk_i) then
       if rst_n_i = '0' then
@@ -234,16 +241,29 @@ begin
 
         -- shift stage
         if ti_shift_i >= 0 then
-          err_ti_shifted <= shift_right(signed(err_ti), ti_shift_i);
+          v_err_ti_shifted := shift_right(signed(err_ti), ti_shift_i);
         else
-          err_ti_shifted <= shift_left(signed(err_ti), -ti_shift_i);
+          v_err_ti_shifted := shift_left(signed(err_ti), -ti_shift_i);
+        end if;
+
+        if v_err_ti_shifted(v_err_ti_shifted'left) /= err_ti(err_ti'left) then
+          err_ti_shifted <= signed(std_logic(err_ti(err_ti'left)) & f_replicate(not err_ti(err_ti'left), err_ti'length-1));
+        else
+          err_ti_shifted <= v_err_ti_shifted;
         end if;
 
         if kp_shift_i >= 0 then
-            err_kp_shifted <= shift_right(signed(err_kp), kp_shift_i);
+          v_err_kp_shifted := shift_right(signed(err_kp), kp_shift_i);
         else
-            err_kp_shifted <= shift_left(signed(err_kp), -kp_shift_i);
+          v_err_kp_shifted := shift_left(signed(err_kp), -kp_shift_i);
         end if;
+
+        if v_err_kp_shifted(v_err_kp_shifted'left) /= err_kp(err_kp'left) then
+          err_kp_shifted <= signed(std_logic(err_kp(err_kp'left)) & f_replicate(not err_kp(err_kp'left), err_kp'length-1));
+        else
+          err_kp_shifted <= v_err_kp_shifted;
+        end if;
+
         err_shifted_valid <= err_mult_valid;
 
         -- integral stage
@@ -260,8 +280,8 @@ begin
 
         -- proportional stage
         if acc_valid = '1' then
-          sum <= signed(f_convergent_round(std_logic_vector(acc), sum'left)) +
-                  signed(f_convergent_round(std_logic_vector(err_kp_shifted), sum'left));
+          sum <= signed(resize(signed(f_convergent_round(std_logic_vector(acc), sum'left-1)), sum'length)) +
+                  signed(resize(signed(f_convergent_round(std_logic_vector(err_kp_shifted), sum'left-1)), sum'length));
         end if;
         sum_valid <= acc_valid;
 
