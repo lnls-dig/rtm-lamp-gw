@@ -137,6 +137,7 @@ port (
 
   dbg_dac_start_o                            : out  std_logic;
   dbg_dac_data_o                             : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+  dbg_pi_ctrl_sp_o                           : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
 
   ---------------------------------------------------------------------------
   -- AMP parallel interface
@@ -233,6 +234,7 @@ architecture rtl of rtmlamp_ohwr is
   type t_sum_word_array is array(natural range <>) of t_sum_word;
 
   signal dbg_pi_err_ti                       : t_acc_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal dbg_pi_ctrl_sp                      : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
   signal dbg_pi_err_kp                       : t_acc_word_array(g_DAC_CHANNELS-1 downto 0);
   signal dbg_pi_err_mult_valid               : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
 
@@ -795,6 +797,7 @@ begin
         ctrl_sig_o                           => dac_data_from_pi(i),
         ctrl_sig_valid_o                     => dac_valid_from_pi(i),
 
+        dbg_ctrl_sp_o                        => dbg_pi_ctrl_sp(i),
         dbg_err_ti_o                         => dbg_pi_err_ti(i),
         dbg_err_kp_o                         => dbg_pi_err_kp(i),
         dbg_err_mult_valid_o                 => dbg_pi_err_mult_valid(i),
@@ -835,6 +838,8 @@ begin
   gen_dac_data_dbg : for i in 0 to g_DAC_CHANNELS-1 generate
     dbg_dac_data_o(i)  <= std_logic_vector(signed(dac_data(i)) - 32767);
   end generate;
+
+  dbg_pi_ctrl_sp_o <= dbg_pi_ctrl_sp;
 
   ---------------------------------------------------------------------------
   --                              Triang wave

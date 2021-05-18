@@ -149,7 +149,11 @@ port (
   dac_start_i                                : in   std_logic;
   dac_data_i                                 : in   std_logic_vector(16*g_DAC_CHANNELS-1 downto 0);
   dac_ready_o                                : out  std_logic;
-  dac_done_pp_o                              : out  std_logic
+  dac_done_pp_o                              : out  std_logic;
+
+  dbg_dac_start_o                            : out  std_logic;
+  dbg_dac_data_o                             : out  std_logic_vector(16*g_DAC_CHANNELS-1 downto 0);
+  dbg_pi_ctrl_sp_o                           : out  std_logic_vector(16*g_DAC_CHANNELS-1 downto 0)
 );
 end wb_rtmlamp_ohwr;
 
@@ -160,6 +164,9 @@ architecture rtl of wb_rtmlamp_ohwr is
 
   signal adc_data                            : t_16b_word_array(g_ADC_CHANNELS-1 downto 0);
   signal dac_data                            : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+
+  signal dbg_dac_data                        : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal dbg_pi_ctrl_sp                      : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
 
 begin
 
@@ -270,6 +277,10 @@ begin
     adc_data_o                                 => adc_data,
     adc_valid_o                                => adc_valid_o,
 
+    dbg_dac_start_o                            => dbg_dac_start_o,
+    dbg_dac_data_o                             => dbg_dac_data,
+    dbg_pi_ctrl_sp_o                           => dbg_pi_ctrl_sp,
+
     ---------------------------------------------------------------------------
     -- DAC parallel interface
     ---------------------------------------------------------------------------
@@ -280,7 +291,9 @@ begin
   );
 
   gen_adc_plain_data : for i in 0 to g_ADC_CHANNELS-1 generate
-    adc_data_o(16*(i+1)-1 downto 16*i) <= adc_data(i);
+    adc_data_o(16*(i+1)-1 downto 16*i)       <= adc_data(i);
+    dbg_dac_data_o(16*(i+1)-1 downto 16*i)   <= dbg_dac_data(i);
+    dbg_pi_ctrl_sp_o(16*(i+1)-1 downto 16*i) <= dbg_pi_ctrl_sp(i);
   end generate;
 
   gen_dac_plain_data : for i in 0 to g_DAC_CHANNELS-1 generate

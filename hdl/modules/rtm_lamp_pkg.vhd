@@ -320,6 +320,7 @@ package rtm_lamp_pkg is
 
     dbg_dac_start_o                            : out  std_logic;
     dbg_dac_data_o                             : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+    dbg_pi_ctrl_sp_o                           : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
 
     ---------------------------------------------------------------------------
     -- AMP parallel interface
@@ -460,7 +461,11 @@ package rtm_lamp_pkg is
     dac_start_i                                : in   std_logic;
     dac_data_i                                 : in   std_logic_vector(16*g_DAC_CHANNELS-1 downto 0);
     dac_ready_o                                : out  std_logic;
-    dac_done_pp_o                              : out  std_logic
+    dac_done_pp_o                              : out  std_logic;
+
+    dbg_dac_start_o                            : out  std_logic;
+    dbg_dac_data_o                             : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+    dbg_pi_ctrl_sp_o                           : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0)
   );
   end component;
 
@@ -582,7 +587,8 @@ package rtm_lamp_pkg is
     dac_done_pp_o                              : out  std_logic;
 
     dbg_dac_start_o                            : out  std_logic;
-    dbg_dac_data_o                             : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0)
+    dbg_dac_data_o                             : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+    dbg_pi_ctrl_sp_o                           : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0)
   );
   end component;
 
@@ -617,6 +623,7 @@ package rtm_lamp_pkg is
       -- Controller output valid signal
       ctrl_sig_valid_o: out std_logic;
       -- Monitoring outputs
+      dbg_ctrl_sp_o: out std_logic_vector(g_PRECISION-1 downto 0);
       dbg_err_ti_o: out std_logic_vector(g_PRECISION*2-1 downto 0);
       dbg_err_kp_o: out std_logic_vector(g_PRECISION*2-1 downto 0);
       dbg_err_mult_valid_o : out std_logic;

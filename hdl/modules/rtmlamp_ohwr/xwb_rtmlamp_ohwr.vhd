@@ -145,7 +145,8 @@ port (
   dac_done_pp_o                              : out  std_logic;
 
   dbg_dac_start_o                            : out  std_logic;
-  dbg_dac_data_o                             : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0)
+  dbg_dac_data_o                             : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+  dbg_pi_ctrl_sp_o                           : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0)
 );
 end xwb_rtmlamp_ohwr;
 
@@ -573,6 +574,7 @@ begin
 
     dbg_dac_start_o                            => dbg_dac_start_o,
     dbg_dac_data_o                             => dbg_dac_data_o,
+    dbg_pi_ctrl_sp_o                           => dbg_pi_ctrl_sp_o,
 
     ---------------------------------------------------------------------------
     -- DAC parallel interface

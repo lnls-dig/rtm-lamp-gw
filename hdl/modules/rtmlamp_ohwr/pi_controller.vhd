@@ -52,6 +52,7 @@ entity pi_controller is
       -- Controller output valid signal
       ctrl_sig_valid_o: out std_logic;
       -- Monitoring outputs
+      dbg_ctrl_sp_o: out std_logic_vector(g_PRECISION-1 downto 0);
       dbg_err_ti_o: out std_logic_vector(g_PRECISION*2-1 downto 0);
       dbg_err_kp_o: out std_logic_vector(g_PRECISION*2-1 downto 0);
       dbg_err_mult_valid_o : out std_logic;
@@ -275,6 +276,7 @@ begin
   ctrl_sig_valid_o <= ctrl_sig_valid;
 
   -- monitoring
+  dbg_ctrl_sp_o <= std_logic_vector(ctrl_sp_i);
   dbg_err_ti_o <= std_logic_vector(err_ti);
   dbg_err_kp_o <= std_logic_vector(err_kp);
   dbg_err_mult_valid_o <= err_mult_valid;
