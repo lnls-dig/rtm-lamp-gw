@@ -280,8 +280,8 @@ begin
 
         -- proportional stage
         if acc_valid = '1' then
-          sum <= signed(resize(signed(f_convergent_round(std_logic_vector(acc), sum'left-1)), sum'length)) +
-                  signed(resize(signed(f_convergent_round(std_logic_vector(err_kp_shifted), sum'left-1)), sum'length));
+          sum <= signed(f_convergent_round(std_logic_vector(acc), sum'left)) +
+                  signed(f_convergent_round(std_logic_vector(err_kp_shifted), sum'left));
         end if;
         sum_valid <= acc_valid;
 
