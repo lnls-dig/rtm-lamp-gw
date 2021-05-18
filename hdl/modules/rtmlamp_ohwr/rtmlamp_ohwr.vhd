@@ -815,10 +815,10 @@ begin
 
   gen_dac_data : for i in 0 to g_DAC_CHANNELS-1 generate
 
-    dac_data_offset_from_pi(i) <= std_logic_vector(32767 + signed(dac_data_from_pi(i)));
+    dac_data_offset_from_pi(i) <= std_logic_vector(dac_data_from_pi(i) xor x"80");
     dac_valid_offset_from_pi(i) <= dac_valid_from_pi(i);
 
-    dac_data_offset_from_triang(i) <= std_logic_vector(32767 + signed(dac_data_from_triang(i)));
+    dac_data_offset_from_triang(i) <= std_logic_vector(dac_data_from_triang(i) xor x"80");
     dac_valid_offset_from_triang(i) <= dac_valid_from_triang(i);
 
     dac_data(i) <= dac_data_offset_from_pi(i) when pi_enable(i) = '1' else
@@ -836,7 +836,7 @@ begin
   dbg_dac_start_o <= dac_start;
 
   gen_dac_data_dbg : for i in 0 to g_DAC_CHANNELS-1 generate
-    dbg_dac_data_o(i)  <= std_logic_vector(signed(dac_data(i)) - 32767);
+    dbg_dac_data_o(i)  <= std_logic_vector(dac_data(i) xor x"80");
   end generate;
 
   dbg_pi_ctrl_sp_o <= dbg_pi_ctrl_sp;
@@ -997,9 +997,9 @@ begin
   dac_data_vio(3)  <= probe_out1(63 downto 48);
   pi_square_enable <= probe_out1(75 downto 64);
 
-  dac_data_offset(0)  <= std_logic_vector(32767 + signed(dac_data_vio(0)));
-  dac_data_offset(1)  <= std_logic_vector(32767 + signed(dac_data_vio(1)));
-  dac_data_offset(2)  <= std_logic_vector(32767 + signed(dac_data_vio(2)));
-  dac_data_offset(3)  <= std_logic_vector(32767 + signed(dac_data_vio(3)));
+  dac_data_offset(0)  <= std_logic_vector(dac_data_vio(0) xor x"80");
+  dac_data_offset(1)  <= std_logic_vector(dac_data_vio(1) xor x"80");
+  dac_data_offset(2)  <= std_logic_vector(dac_data_vio(2) xor x"80");
+  dac_data_offset(3)  <= std_logic_vector(dac_data_vio(3) xor x"80");
 
 end rtl;
