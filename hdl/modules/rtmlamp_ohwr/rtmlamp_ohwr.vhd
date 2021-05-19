@@ -26,6 +26,8 @@ use work.rtm_lamp_pkg.all;
 use work.platform_generic_pkg.all;
 -- Genrams
 use work.genram_pkg.all;
+-- Common gencores
+use work.gencores_pkg.all;
 
 entity rtmlamp_ohwr is
 generic (
@@ -171,6 +173,9 @@ architecture rtl of rtmlamp_ohwr is
   signal adc_data                            : t_16b_word_array(c_MAX_ADC_CHANNELS-1 downto 0);
   signal adc_valid                           : std_logic_vector(c_MAX_ADC_CHANNELS-1 downto 0);
 
+  signal pi_err                              : t_16b_word_array(c_MAX_ADC_CHANNELS-1 downto 0);
+  signal pi_err_valid                        : std_logic_vector(c_MAX_ADC_CHANNELS-1 downto 0);
+
   signal adc_octo_ready                      : std_logic;
   signal adc_octo_sck                        : std_logic;
   signal adc_octo_sck_ret                    : std_logic;
@@ -259,8 +264,10 @@ architecture rtl of rtmlamp_ohwr is
   signal data                                : std_logic_vector(255 downto 0);
   signal trig0                               : std_logic_vector(7 downto 0);
 
-  signal pi_kp                               : std_logic_vector(c_ADC_BITS-1 downto 0);
-  signal pi_ti                               : std_logic_vector(c_ADC_BITS-1 downto 0);
+  constant c_COEFF_BITS                      : natural := 25;
+
+  signal pi_kp                               : std_logic_vector(c_COEFF_BITS-1 downto 0);
+  signal pi_ti                               : std_logic_vector(c_COEFF_BITS-1 downto 0);
   signal pi_sp                               : std_logic_vector(c_ADC_BITS-1 downto 0);
   signal pi_enable                           : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
   signal pi_square_enable                    : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
@@ -776,49 +783,85 @@ begin
   --                              PI Controller
   ---------------------------------------------------------------------------
   gen_pi_controller : for i in 0 to g_ADC_CHANNELS-1 generate
-    cmp_pi_controller : pi_controller
-      generic map (
-        g_PRECISION                          => c_ADC_BITS
+
+    p_err_calc : process(clk_i)
+    begin
+      if rising_edge(clk_i) then
+        if rst_n_i = '0' then
+          pi_err(i) <= (others => '0');
+          pi_err_valid(i) <= '0';
+        else
+          pi_err_valid(i) <= adc_valid(i);
+          if adc_valid(i) = '1' then
+            pi_err(i) <= std_logic_vector(signed(pi_sp_to_pi(i)) - signed(adc_data(i)));
+          end if;
+        end if;
+      end if;
+    end process;
+
+    cmp_gc_dual_pi_controller : gc_dual_pi_controller
+      generic map(
+        g_error_bits          => 16,
+        g_dacval_bits         => 16,
+        g_output_bias         => 32767,
+        g_integrator_fracbits => 16,
+        g_integrator_overbits => 6,
+        g_coef_bits           => 25
       )
       port map (
-        rst_n_i                              => rst_n_i,
-        clk_i                                => clk_i,
+        clk_sys_i      => clk_i,
+        rst_n_sysclk_i => rst_n_i,
 
-        kp_i                                 => pi_kp,
-        ti_i                                 => pi_ti,
-        ti_shift_i                           => pi_ti_shift,
-        kp_shift_i                           => pi_kp_shift,
+    -------------------------------------------------------------------------------
+    -- Phase & frequency error inputs
+    -------------------------------------------------------------------------------
 
-        ctrl_sp_i                            => pi_sp_to_pi(i),
+        phase_err_i       => (others => '0'),
+        phase_err_stb_p_i => '0',
 
-        ctrl_fb_i                            => adc_data(i),
-        ctrl_fb_valid_i                      => adc_valid(i),
+        freq_err_i        => pi_err(i),
+        freq_err_stb_p_i  => pi_err_valid(i),
 
-        ctrl_sig_o                           => dac_data_from_pi(i),
-        ctrl_sig_valid_o                     => dac_valid_from_pi(i),
+    -- mode select input: 1 = frequency mode, 0 = phase mode
+        mode_sel_i => '1',
 
-        dbg_ctrl_sp_o                        => dbg_pi_ctrl_sp(i),
-        dbg_err_ti_o                         => dbg_pi_err_ti(i),
-        dbg_err_kp_o                         => dbg_pi_err_kp(i),
-        dbg_err_mult_valid_o                 => dbg_pi_err_mult_valid(i),
-        dbg_err_ti_shifted_o                 => dbg_pi_ti_shifted(i),
-        dbg_err_kp_shifted_o                 => dbg_pi_kp_shifted(i),
-        dbg_err_shifted_valid_o              => dbg_pi_shifted_valid(i),
-        dbg_acc_o                            => dbg_pi_acc(i),
-        dbg_acc_valid_o                      => dbg_pi_acc_valid(i),
-        dbg_sum_o                            => dbg_pi_sum(i),
-        dbg_sum_valid_o                      => dbg_pi_sum_valid(i)
-      );
+    -------------------------------------------------------------------------------
+    -- DAC Output
+    -------------------------------------------------------------------------------
+
+        dac_val_o       => dac_data_from_pi(i),
+        dac_val_stb_p_o => dac_valid_from_pi(i),
+
+    -------------------------------------------------------------------------------
+    -- Wishbone regs
+    -------------------------------------------------------------------------------
+
+    -- PLL enable
+        pll_pcr_enable_i => '1',
+
+    -- PI force freq mode. '1' causes the PI to stay in frequency lock mode all the
+    -- time.
+        pll_pcr_force_f_i => '1',
+
+    -- Frequency Kp/Ki
+        pll_fbgr_f_kp_i => pi_kp,
+        pll_fbgr_f_ki_i => pi_ti,
+
+    -- Phase Kp/Ki
+        pll_pbgr_p_kp_i => (others => '0'),
+        pll_pbgr_p_ki_i => (others => '0')
+    );
   end generate;
 
   dac_start <= dac_valid(0);
 
   gen_dac_data : for i in 0 to g_DAC_CHANNELS-1 generate
 
-    dac_data_offset_from_pi(i) <= std_logic_vector(dac_data_from_pi(i) xor x"80");
+    -- already biased
+    dac_data_offset_from_pi(i) <= dac_data_from_pi(i);
     dac_valid_offset_from_pi(i) <= dac_valid_from_pi(i);
 
-    dac_data_offset_from_triang(i) <= std_logic_vector(dac_data_from_triang(i) xor x"80");
+    dac_data_offset_from_triang(i) <= std_logic_vector(dac_data_from_triang(i) xor x"8000");
     dac_valid_offset_from_triang(i) <= dac_valid_from_triang(i);
 
     dac_data(i) <= dac_data_offset_from_pi(i) when pi_enable(i) = '1' else
@@ -836,7 +879,7 @@ begin
   dbg_dac_start_o <= dac_start;
 
   gen_dac_data_dbg : for i in 0 to g_DAC_CHANNELS-1 generate
-    dbg_dac_data_o(i)  <= std_logic_vector(dac_data(i) xor x"80");
+    dbg_dac_data_o(i)  <= std_logic_vector(dac_data(i) xor x"8000");
   end generate;
 
   dbg_pi_ctrl_sp_o <= dbg_pi_ctrl_sp;
@@ -932,8 +975,8 @@ begin
 
   trig0(0)          <= adc_valid(0);
   trig0(1)          <= dac_start;
-  trig0(2)          <= dbg_pi_acc_valid(0);
-  trig0(3)          <= dbg_pi_sum_valid(0);
+  trig0(2)          <= '0';
+  trig0(3)          <= '0';
   trig0(4)          <= '0';
   trig0(5)          <= '0';
   trig0(6)          <= '0';
@@ -941,8 +984,8 @@ begin
 
   data(0)           <= adc_valid(0);
   data(1)           <= dac_start;
-  data(2)           <= dbg_pi_acc_valid(0);
-  data(3)           <= dbg_pi_sum_valid(0);
+  data(2)           <= '0';
+  data(3)           <= '0';
   data(4)           <= '0';
   data(5)           <= '0';
   data(6)           <= '0';
@@ -957,11 +1000,11 @@ begin
   data(111 downto 96)  <= dac_data(1);
   data(127 downto 112) <= dac_data(2);
   data(143 downto 128) <= dac_data(3);
-  data(175 downto 144) <= dbg_pi_acc(0);
-  data(192 downto 176) <= dbg_pi_sum(0);
+  data(175 downto 144) <= (others => '0');
+  data(192 downto 176) <= (others => '0');
 
-  data(223 downto 193) <= std_logic_vector(resize(signed(dbg_pi_err_ti(0)), 31));
-  data(254 downto 224) <= std_logic_vector(resize(signed(dbg_pi_ti_shifted(0)), 31));
+  data(223 downto 193) <= (others => '0');
+  data(254 downto 224) <= (others => '0');
   data(255)            <= '0';
 
   ------------------------------------------------------------------------
@@ -979,17 +1022,15 @@ begin
   probe_in0 <= (others => '0');
   probe_in1 <= (others => '0');
 
-  pi_kp                  <= probe_out0(15 downto 0);
-  pi_ti                  <= probe_out0(31 downto 16);
-  pi_sp                  <= probe_out0(47 downto 32);
+  pi_kp                  <= probe_out0(24 downto 0);
+  pi_ti                  <= probe_out0(49 downto 25);
+  pi_sp                  <= probe_out0(65 downto 50);
 
-  dac_mode_counter_max   <= to_integer(unsigned(probe_out0(69 downto 48)));
-  pi_ti_shift            <= to_integer(unsigned(probe_out0(76 downto 70)));
-  amp_enable             <= probe_out0(88 downto 77);
-  pi_enable              <= probe_out0(100 downto 89);
-  triang_enable          <= probe_out0(112 downto 101);
-  dac_valid_vio          <= probe_out0(113);
-  pi_kp_shift            <= to_integer(unsigned(probe_out0(120 downto 114)));
+  dac_mode_counter_max   <= to_integer(unsigned(probe_out0(87 downto 66)));
+  amp_enable             <= probe_out0(99 downto 88);
+  pi_enable              <= probe_out0(111 downto 100);
+  triang_enable          <= probe_out0(123 downto 112);
+  dac_valid_vio          <= probe_out0(124);
 
   dac_data_vio(0)  <= probe_out1(15 downto 0);
   dac_data_vio(1)  <= probe_out1(31 downto 16);
@@ -997,9 +1038,9 @@ begin
   dac_data_vio(3)  <= probe_out1(63 downto 48);
   pi_square_enable <= probe_out1(75 downto 64);
 
-  dac_data_offset(0)  <= std_logic_vector(dac_data_vio(0) xor x"80");
-  dac_data_offset(1)  <= std_logic_vector(dac_data_vio(1) xor x"80");
-  dac_data_offset(2)  <= std_logic_vector(dac_data_vio(2) xor x"80");
-  dac_data_offset(3)  <= std_logic_vector(dac_data_vio(3) xor x"80");
+  dac_data_offset(0)  <= std_logic_vector(dac_data_vio(0) xor x"8000");
+  dac_data_offset(1)  <= std_logic_vector(dac_data_vio(1) xor x"8000");
+  dac_data_offset(2)  <= std_logic_vector(dac_data_vio(2) xor x"8000");
+  dac_data_offset(3)  <= std_logic_vector(dac_data_vio(3) xor x"8000");
 
 end rtl;
