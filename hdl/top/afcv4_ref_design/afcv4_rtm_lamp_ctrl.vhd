@@ -874,17 +874,6 @@ begin
 
   end generate;
 
-  gen_rtm_acq_dac_data_unused : for i in c_ADC_CHANNELS+c_DAC_CHANNELS to
-      to_integer(c_FACQ_CHANNELS(c_ACQ_RTM_LAMP_ID).num_atoms)-1 generate
-
-    acq_data(c_ACQ_CORE_0_ID)(
-      (i+1)*to_integer(c_FACQ_CHANNELS(c_ACQ_RTM_LAMP_ID).atom_width)-1
-      downto
-      i*to_integer(c_FACQ_CHANNELS(c_ACQ_RTM_LAMP_ID).atom_width))
-    <= (others => '0');
-
-  end generate;
-
   acq_data(c_ACQ_CORE_0_ID)(
       (c_ADC_CHANNELS+c_DAC_CHANNELS+1)*to_integer(c_FACQ_CHANNELS(c_ACQ_RTM_LAMP_ID).atom_width)-1
       downto
