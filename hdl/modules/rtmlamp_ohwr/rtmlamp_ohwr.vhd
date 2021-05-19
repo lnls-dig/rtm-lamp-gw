@@ -879,6 +879,8 @@ begin
 
   end generate;
 
+  dbg_pi_ctrl_sp <= pi_sp_to_pi;
+
   dbg_dac_start_o <= dac_start;
 
   gen_dac_data_dbg : for i in 0 to g_DAC_CHANNELS-1 generate

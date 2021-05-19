@@ -262,6 +262,7 @@ architecture top of afcv4_rtm_lamp_ctrl is
   signal rtmlamp_dac_data                    : t_16b_word_array(c_DAC_CHANNELS-1 downto 0);
   signal rtmlamp_dbg_dac_start               : std_logic;
   signal rtmlamp_dbg_dac_data                : t_16b_word_array(c_DAC_CHANNELS-1 downto 0);
+  signal rtmlamp_dbg_pi_ctrl_sp              : t_16b_word_array(c_DAC_CHANNELS-1 downto 0);
   signal rtmlamp_dac_ready                   : std_logic;
   signal rtmlamp_dac_done_pp                 : std_logic;
 
@@ -833,7 +834,8 @@ begin
     dac_done_pp_o                              => rtmlamp_dac_done_pp,
 
     dbg_dac_start_o                            => rtmlamp_dbg_dac_start,
-    dbg_dac_data_o                             => rtmlamp_dbg_dac_data
+    dbg_dac_data_o                             => rtmlamp_dbg_dac_data,
+    dbg_pi_ctrl_sp_o                           => rtmlamp_dbg_pi_ctrl_sp
   );
 
   ----------------------------------------------------------------------
@@ -882,6 +884,12 @@ begin
     <= (others => '0');
 
   end generate;
+
+  acq_data(c_ACQ_CORE_0_ID)(
+      (c_ADC_CHANNELS+c_DAC_CHANNELS+1)*to_integer(c_FACQ_CHANNELS(c_ACQ_RTM_LAMP_ID).atom_width)-1
+      downto
+      (c_ADC_CHANNELS+c_DAC_CHANNELS)*to_integer(c_FACQ_CHANNELS(c_ACQ_RTM_LAMP_ID).atom_width))
+    <= rtmlamp_dbg_pi_ctrl_sp(0);
 
   acq_data_valid(c_ACQ_CORE_0_ID) <= rtmlamp_adc_valid(0);
 
