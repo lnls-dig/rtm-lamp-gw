@@ -269,6 +269,7 @@ architecture rtl of rtmlamp_ohwr is
   signal pi_kp                               : std_logic_vector(c_COEFF_BITS-1 downto 0);
   signal pi_ti                               : std_logic_vector(c_COEFF_BITS-1 downto 0);
   signal pi_sp                               : std_logic_vector(c_ADC_BITS-1 downto 0);
+  signal pi_sp_lim_neg                       : std_logic_vector(c_ADC_BITS-1 downto 0);
   signal pi_enable                           : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
   signal pi_square_enable                    : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
   signal triang_enable                       : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
@@ -298,13 +299,14 @@ architecture rtl of rtmlamp_ohwr is
   signal dac_mode_counter_max                : integer range 0 to (2**22-1);
   signal dac_triang_counter                  : integer range 0 to (2**22-1);
   signal dac_square_counter                  : integer range 0 to (2**22-1);
-  signal dac_data_counter                    : integer range -1024 to 1023;
+  signal dac_data_counter                    : integer range -(2**(pi_sp'length-1)) to 2**(pi_sp'length-1)-1;
   signal dac_data_counter_up                 : std_logic;
 
   attribute MARK_DEBUG                       : string;
   attribute MARK_DEBUG of pi_kp              : signal is "TRUE";
   attribute MARK_DEBUG of pi_ti              : signal is "TRUE";
   attribute MARK_DEBUG of pi_sp              : signal is "TRUE";
+  attribute MARK_DEBUG of pi_sp_lim_neg      : signal is "TRUE";
   attribute MARK_DEBUG of pi_square_enable   : signal is "TRUE";
   attribute MARK_DEBUG of pi_enable          : signal is "TRUE";
   attribute MARK_DEBUG of triang_enable      : signal is "TRUE";
@@ -321,6 +323,7 @@ architecture rtl of rtmlamp_ohwr is
   attribute DONT_TOUCH of pi_kp              : signal is "TRUE";
   attribute DONT_TOUCH of pi_ti              : signal is "TRUE";
   attribute DONT_TOUCH of pi_sp              : signal is "TRUE";
+  attribute DONT_TOUCH of pi_sp_lim_neg      : signal is "TRUE";
   attribute DONT_TOUCH of pi_square_enable   : signal is "TRUE";
   attribute DONT_TOUCH of pi_enable          : signal is "TRUE";
   attribute DONT_TOUCH of triang_enable      : signal is "TRUE";
@@ -801,55 +804,55 @@ begin
 
     cmp_gc_dual_pi_controller : gc_dual_pi_controller
       generic map(
-        g_error_bits          => 16,
-        g_dacval_bits         => 16,
-        g_output_bias         => 32767,
-        g_integrator_fracbits => 16,
-        g_integrator_overbits => 6,
-        g_coef_bits           => 25
+        g_error_bits                       => 16,
+        g_dacval_bits                      => 16,
+        g_output_bias                      => 32767,
+        g_integrator_fracbits              => 16,
+        g_integrator_overbits              => 6,
+        g_coef_bits                        => 25
       )
       port map (
-        clk_sys_i      => clk_i,
-        rst_n_sysclk_i => rst_n_i,
+        clk_sys_i                          => clk_i,
+        rst_n_sysclk_i                     => rst_n_i,
 
     -------------------------------------------------------------------------------
     -- Phase & frequency error inputs
     -------------------------------------------------------------------------------
 
-        phase_err_i       => (others => '0'),
-        phase_err_stb_p_i => '0',
+        phase_err_i                        => (others => '0'),
+        phase_err_stb_p_i                  => '0',
 
-        freq_err_i        => pi_err(i),
-        freq_err_stb_p_i  => pi_err_valid(i),
+        freq_err_i                         => pi_err(i),
+        freq_err_stb_p_i                   => pi_err_valid(i),
 
     -- mode select input: 1 = frequency mode, 0 = phase mode
-        mode_sel_i => '1',
+        mode_sel_i                         => '1',
 
     -------------------------------------------------------------------------------
     -- DAC Output
     -------------------------------------------------------------------------------
 
-        dac_val_o       => dac_data_from_pi(i),
-        dac_val_stb_p_o => dac_valid_from_pi(i),
+        dac_val_o                          => dac_data_from_pi(i),
+        dac_val_stb_p_o                    => dac_valid_from_pi(i),
 
     -------------------------------------------------------------------------------
     -- Wishbone regs
     -------------------------------------------------------------------------------
 
     -- PLL enable
-        pll_pcr_enable_i => '1',
+        pll_pcr_enable_i                   => '1',
 
     -- PI force freq mode. '1' causes the PI to stay in frequency lock mode all the
     -- time.
-        pll_pcr_force_f_i => '1',
+        pll_pcr_force_f_i                  => '1',
 
     -- Frequency Kp/Ki
-        pll_fbgr_f_kp_i => pi_kp,
-        pll_fbgr_f_ki_i => pi_ti,
+        pll_fbgr_f_kp_i                    => pi_kp,
+        pll_fbgr_f_ki_i                    => pi_ti,
 
     -- Phase Kp/Ki
-        pll_pbgr_p_kp_i => (others => '0'),
-        pll_pbgr_p_ki_i => (others => '0')
+        pll_pbgr_p_kp_i                    => (others => '0'),
+        pll_pbgr_p_ki_i                    => (others => '0')
     );
   end generate;
 
@@ -907,20 +910,20 @@ begin
 
             if dac_data_counter_up = '1' then
               dac_data_counter <= dac_data_counter + 1;
-              if dac_data_counter = 1023 then
+              if dac_data_counter = to_integer(signed(pi_sp)) then
                 dac_data_counter_up <= '0';
                 dac_data_counter <= dac_data_counter - 1;
               end if;
 
-              pi_sp_from_square <= (others => '0');
+              pi_sp_from_square <= pi_sp;
             else
               dac_data_counter <= dac_data_counter - 1;
-              if dac_data_counter = -1024 then
+              if dac_data_counter = to_integer(signed(pi_sp_lim_neg)) then
                 dac_data_counter_up <= '1';
                 dac_data_counter <= dac_data_counter + 1;
               end if;
 
-              pi_sp_from_square <= pi_sp;
+              pi_sp_from_square <= pi_sp_lim_neg;
             end if;
 
           else
@@ -1032,11 +1035,12 @@ begin
   triang_enable          <= probe_out0(123 downto 112);
   dac_valid_vio          <= probe_out0(124);
 
-  dac_data_vio(0)  <= probe_out1(15 downto 0);
-  dac_data_vio(1)  <= probe_out1(31 downto 16);
-  dac_data_vio(2)  <= probe_out1(47 downto 32);
-  dac_data_vio(3)  <= probe_out1(63 downto 48);
-  pi_square_enable <= probe_out1(75 downto 64);
+  dac_data_vio(0)        <= probe_out1(15 downto 0);
+  dac_data_vio(1)        <= probe_out1(31 downto 16);
+  dac_data_vio(2)        <= probe_out1(47 downto 32);
+  dac_data_vio(3)        <= probe_out1(63 downto 48);
+  pi_square_enable       <= probe_out1(75 downto 64);
+  pi_sp_lim_neg          <= probe_out1(91 downto 76);
 
   dac_data_offset(0)  <= std_logic_vector(dac_data_vio(0) xor x"8000");
   dac_data_offset(1)  <= std_logic_vector(dac_data_vio(1) xor x"8000");
