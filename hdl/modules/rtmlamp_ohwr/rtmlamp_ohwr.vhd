@@ -269,7 +269,7 @@ architecture rtl of rtmlamp_ohwr is
   signal pi_kp                               : std_logic_vector(c_COEFF_BITS-1 downto 0);
   signal pi_ti                               : std_logic_vector(c_COEFF_BITS-1 downto 0);
   signal pi_sp                               : std_logic_vector(c_ADC_BITS-1 downto 0);
-  signal pi_sp_lim_neg                       : std_logic_vector(c_ADC_BITS-1 downto 0);
+  signal pi_sp_lim_inf                       : std_logic_vector(c_ADC_BITS-1 downto 0);
   signal pi_enable                           : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
   signal pi_square_enable                    : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
   signal triang_enable                       : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
@@ -279,6 +279,7 @@ architecture rtl of rtmlamp_ohwr is
 
   signal pi_sp_to_pi                         : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
   signal pi_sp_from_square                   : std_logic_vector(c_ADC_BITS-1 downto 0);
+  signal pi_sp_from_square_max_min           : std_logic;
 
   signal dac_data_vio                        : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
   signal dac_data_offset                     : t_16b_word_array(g_DAC_CHANNELS-1 downto 0) :=
@@ -306,7 +307,7 @@ architecture rtl of rtmlamp_ohwr is
   attribute MARK_DEBUG of pi_kp              : signal is "TRUE";
   attribute MARK_DEBUG of pi_ti              : signal is "TRUE";
   attribute MARK_DEBUG of pi_sp              : signal is "TRUE";
-  attribute MARK_DEBUG of pi_sp_lim_neg      : signal is "TRUE";
+  attribute MARK_DEBUG of pi_sp_lim_inf      : signal is "TRUE";
   attribute MARK_DEBUG of pi_square_enable   : signal is "TRUE";
   attribute MARK_DEBUG of pi_enable          : signal is "TRUE";
   attribute MARK_DEBUG of triang_enable      : signal is "TRUE";
@@ -323,7 +324,7 @@ architecture rtl of rtmlamp_ohwr is
   attribute DONT_TOUCH of pi_kp              : signal is "TRUE";
   attribute DONT_TOUCH of pi_ti              : signal is "TRUE";
   attribute DONT_TOUCH of pi_sp              : signal is "TRUE";
-  attribute DONT_TOUCH of pi_sp_lim_neg      : signal is "TRUE";
+  attribute DONT_TOUCH of pi_sp_lim_inf      : signal is "TRUE";
   attribute DONT_TOUCH of pi_square_enable   : signal is "TRUE";
   attribute DONT_TOUCH of pi_enable          : signal is "TRUE";
   attribute DONT_TOUCH of triang_enable      : signal is "TRUE";
@@ -902,6 +903,7 @@ begin
           dac_valid_from_triang(i) <= '0';
           dac_triang_counter <= 0;
           pi_sp_from_square <= (others => '0');
+          pi_sp_from_square_max_min <= '0';
           dac_data_counter <= 0;
           dac_data_counter_up <= '1';
         else
@@ -910,22 +912,25 @@ begin
             dac_valid_from_triang(i) <= '1';
             dac_data_from_triang(i) <= std_logic_vector(to_signed(dac_data_counter, dac_data_from_triang(i)'length));
 
+            pi_sp_from_square_max_min <= not pi_sp_from_square_max_min;
+            if pi_sp_from_square_max_min = '0' then
+              pi_sp_from_square <= pi_sp;
+            else
+              pi_sp_from_square <= pi_sp_lim_inf;
+            end if;
+
             if dac_data_counter_up = '1' then
               dac_data_counter <= dac_data_counter + 1;
               if dac_data_counter = to_integer(signed(pi_sp)) then
                 dac_data_counter_up <= '0';
                 dac_data_counter <= dac_data_counter - 1;
               end if;
-
-              pi_sp_from_square <= pi_sp;
             else
               dac_data_counter <= dac_data_counter - 1;
-              if dac_data_counter = to_integer(signed(pi_sp_lim_neg)) then
+              if dac_data_counter = to_integer(signed(pi_sp_lim_inf)) then
                 dac_data_counter_up <= '1';
                 dac_data_counter <= dac_data_counter + 1;
               end if;
-
-              pi_sp_from_square <= pi_sp_lim_neg;
             end if;
 
           else
@@ -1042,7 +1047,7 @@ begin
   dac_data_vio(2)        <= probe_out1(47 downto 32);
   dac_data_vio(3)        <= probe_out1(63 downto 48);
   pi_square_enable       <= probe_out1(75 downto 64);
-  pi_sp_lim_neg          <= probe_out1(91 downto 76);
+  pi_sp_lim_inf          <= probe_out1(91 downto 76);
 
   dac_data_offset(0)  <= std_logic_vector(dac_data_vio(0) xor x"8000");
   dac_data_offset(1)  <= std_logic_vector(dac_data_vio(1) xor x"8000");
