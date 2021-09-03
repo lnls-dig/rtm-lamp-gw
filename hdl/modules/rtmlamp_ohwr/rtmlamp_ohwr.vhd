@@ -1048,15 +1048,15 @@ begin
   probe_in0 <= (others => '0');
   probe_in1 <= (others => '0');
 
-  pi_kp                  <= probe_out0(24 downto 0);
-  pi_ti                  <= probe_out0(49 downto 25);
-  pi_sp                  <= probe_out0(65 downto 50);
+  pi_kp                  <= probe_out0(25 downto 0);
+  pi_ti                  <= probe_out0(51 downto 26);
+  pi_sp                  <= probe_out0(67 downto 52);
 
-  dac_mode_counter_max   <= to_integer(unsigned(probe_out0(87 downto 66)));
-  amp_enable             <= probe_out0(99 downto 88);
-  pi_enable              <= probe_out0(111 downto 100);
-  triang_enable          <= probe_out0(123 downto 112);
-  dac_valid_vio          <= probe_out0(124);
+  dac_mode_counter_max   <= to_integer(unsigned(probe_out0(89 downto 68)));
+  amp_enable             <= probe_out0(101 downto 90);
+  pi_enable              <= probe_out0(113 downto 102);
+  triang_enable          <= probe_out0(125 downto 114);
+  dac_valid_vio          <= probe_out0(126);
 
   dac_data_vio(0)        <= probe_out1(15 downto 0);
   dac_data_vio(1)        <= probe_out1(31 downto 16);
