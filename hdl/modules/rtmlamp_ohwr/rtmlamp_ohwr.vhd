@@ -265,7 +265,7 @@ architecture rtl of rtmlamp_ohwr is
   signal data                                : std_logic_vector(255 downto 0);
   signal trig0                               : std_logic_vector(7 downto 0);
 
-  constant c_COEFF_BITS                      : natural := 25;
+  constant c_COEFF_BITS                      : natural := 26;
 
   signal pi_kp                               : std_logic_vector(c_COEFF_BITS-1 downto 0);
   signal pi_ti                               : std_logic_vector(c_COEFF_BITS-1 downto 0);
@@ -818,7 +818,7 @@ begin
         g_output_bias                      => 32768,
         g_integrator_fracbits              => 16,
         g_integrator_overbits              => 6,
-        g_coef_bits                        => 25
+        g_coef_bits                        => c_COEFF_BITS
       )
       port map (
         clk_sys_i                          => clk_i,
