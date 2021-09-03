@@ -214,6 +214,7 @@ architecture rtl of rtmlamp_ohwr is
   signal adc_octo_synched                    : t_adc_readout;
   signal adc_octo_fix_inv                    : t_adc_readout;
   signal adc_octo_scaled                     : t_adc_readout;
+  signal adc_octo_done_cnv_pp                : std_logic;
 
   signal adc_quad_raw                        : t_adc_readout := c_DUMMY_ADC_READOUT;
   signal adc_quad_raw_flat_data              : std_logic_vector(4*c_ADC_BITS-1 downto 0) := (others => '0');
@@ -387,6 +388,7 @@ begin
       start_i                              => adc_start,
 
       ready_o                              => adc_octo_ready,
+      done_cnv_pp_ref_sys_o                => adc_octo_done_cnv_pp,
       cnv_o                                => adc_octo_cnv,
       sck_o                                => adc_octo_sck,
       sck_ret_i                            => adc_octo_sck_ret,
@@ -801,8 +803,8 @@ begin
           pi_err(i) <= (others => '0');
           pi_err_valid(i) <= '0';
         else
-          pi_err_valid(i) <= adc_valid(i);
-          if adc_valid(i) = '1' then
+          pi_err_valid(i) <= adc_octo_done_cnv_pp;
+          if adc_octo_done_cnv_pp = '1' then
             pi_err(i) <= std_logic_vector(signed(pi_sp_to_pi(i)) - signed(adc_data(i)));
           end if;
         end if;
