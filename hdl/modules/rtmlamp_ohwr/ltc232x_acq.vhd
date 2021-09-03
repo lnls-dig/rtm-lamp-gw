@@ -81,6 +81,8 @@ entity ltc232x_acq is
     ready_o                                  : out std_logic := '0';
     -- pulse when finished acquisition
     done_pp_o                                : out std_logic;
+    -- pulse when finished CNV drive
+    done_cnv_pp_ref_sys_o                    : out std_logic;
     -- ADC output SDO1/SDOA
     sdo1a_i                                  : in  std_logic;
     -- ADC output SDO2
@@ -340,6 +342,8 @@ begin
     done_cnv_pp_ref_sys <= done_cnv_pp;
 
   end generate;
+
+done_cnv_pp_ref_sys_o <= done_cnv_pp_ref_sys;
 
   cmp_done_gc_pulse_synchronizer2 : gc_pulse_synchronizer2
   port map (

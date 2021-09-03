@@ -112,6 +112,7 @@ package rtm_lamp_pkg is
     sck_ret_i                                : in  std_logic;
     ready_o                                  : out std_logic  := '0';
     done_pp_o                                : out std_logic;
+    done_cnv_pp_ref_sys_o                    : out std_logic;
     sdo1a_i                                  : in  std_logic;
     sdo2_i                                   : in  std_logic  := '0';
     sdo3b_i                                  : in  std_logic  := '0';
