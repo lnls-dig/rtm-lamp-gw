@@ -28,7 +28,7 @@ end multi_dac_spi_ldac_tb;
 
 architecture multi_dac_spi_ldac_tb_arch of multi_dac_spi_ldac_tb is
   -- Frequency in Hz, Period in s
-  constant c_CLK_PERIOD : real := 5.0e-9;
+  constant c_CLK_PERIOD : real := 10.0e-9;
   constant c_CLK_PERIOD_HALF : real := c_CLK_PERIOD/2.0;
   constant c_CLK_FREQ : natural := integer(floor(1.0/c_CLK_PERIOD));
   constant c_SCLK_PERIOD : real := 40.0e-9;
