@@ -110,13 +110,10 @@ begin
 
     dac_start <= '1';
     f_wait_until(clk, 2);
-    dac_start <= '0';
     f_wait_until(clk, 200);
     dac_data <= (x"5555", x"AAAA", x"8000", x"0001", others => x"BEEF");
     f_wait_until(clk, 2);
-    dac_start <= '1';
     f_wait_until(clk, 2);
-    dac_start <= '0';
     f_wait_until(clk, 200);
     std.env.finish;
   end process;
