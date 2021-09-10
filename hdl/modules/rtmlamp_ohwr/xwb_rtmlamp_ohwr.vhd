@@ -57,7 +57,15 @@ generic (
   -- Serial registers clock frequency [Hz]
   g_SERIAL_REG_SCLK_FREQ                     : natural := 100000;
   -- Number of AMP channels
-  g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12
+  g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12;
+  -- Number of for PI coeficients
+  g_PI_COEFF_BITS                            : natural := 26;
+  -- Number od ADC bits
+  g_ADC_BITS                                 : natural := 16;
+  -- Use Chipscope or not
+  g_WITH_CHIPSCOPE                           : boolean := false;
+  -- Use VIO or not
+  g_WITH_VIO                                 : boolean := false
 );
 port (
   ---------------------------------------------------------------------------
@@ -146,6 +154,12 @@ port (
 
   dbg_dac_start_o                            : out  std_logic;
   dbg_dac_data_o                             : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+
+  ---------------------------------------------------------------------------
+  -- PI parameters
+  ---------------------------------------------------------------------------
+
+  -- debug output to monitor PI Setpoint
   dbg_pi_ctrl_sp_o                           : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0)
 );
 end xwb_rtmlamp_ohwr;
@@ -169,11 +183,24 @@ architecture rtl of xwb_rtmlamp_ohwr is
   signal dac_data_wb                        : t_16b_word_array(c_MAX_CHANNELS-1 downto 0) := (others => (others =>'0'));
   signal dac_wr_wb                          : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
 
+  signal amp_sta_ctl_rw                     : std_logic := '0';
   signal amp_iflag_l                        : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
   signal amp_tflag_l                        : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
   signal amp_iflag_r                        : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
   signal amp_tflag_r                        : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
   signal amp_en_ch                          : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
+
+  signal pi_kp                              : std_logic_vector(g_PI_COEFF_BITS-1 downto 0) := (others => '0');
+  signal pi_ti                              : std_logic_vector(g_PI_COEFF_BITS-1 downto 0) := (others => '0');
+  signal pi_sp                              : std_logic_vector(g_ADC_BITS-1 downto 0) := (others => '0');
+
+  signal pi_ol_mode_triang_enable           : std_logic_vector(g_DAC_CHANNELS-1 downto 0) := (others => '0');
+  signal pi_ol_mode_square_enable           : std_logic_vector(g_DAC_CHANNELS-1 downto 0) := (others => '0');
+  signal pi_ol_dac_mode_counter_max         : unsigned(21 downto 0) := (others => '0');
+  signal pi_sp_lim_inf                      : std_logic_vector(g_ADC_BITS-1 downto 0) := (others => '0');
+
+  signal pi_sp_mode_square_enable           : std_logic_vector(g_DAC_CHANNELS-1 downto 0) := (others => '0');
+  signal pi_enable                          : std_logic_vector(g_DAC_CHANNELS-1 downto 0) := (others => '0');
 
   type wb_channel_in_regs is record
     sta_amp_iflag_l  : std_logic;
@@ -572,22 +599,56 @@ begin
     adc_data_o                                 => adc_data_o,
     adc_valid_o                                => adc_valid_o,
 
-    dbg_dac_start_o                            => dbg_dac_start_o,
-    dbg_dac_data_o                             => dbg_dac_data_o,
-    dbg_pi_ctrl_sp_o                           => dbg_pi_ctrl_sp_o,
-
     ---------------------------------------------------------------------------
     -- DAC parallel interface
     ---------------------------------------------------------------------------
-    dac_start_i                                => dac_start,
-    dac_data_i                                 => dac_data,
+    dac_start_i                                => dac_start_i,
+    dac_data_i                                 => dac_data_i,
     dac_ready_o                                => dac_ready_o,
     dac_done_pp_o                              => dac_done_pp_o,
+
+    dbg_dac_start_o                            => dbg_dac_start_o,
+    dbg_dac_data_o                             => dbg_dac_data_o,
+
+    ---------------------------------------------------------------------------
+    -- PI parameters
+    ---------------------------------------------------------------------------
+    -- Kp parameter
+    pi_kp_i                                    => pi_kp,
+    -- Ti parameter
+    pi_ti_i                                    => pi_ti,
+    -- Setpoint parameter
+    pi_sp_i                                    => pi_sp,
+
+    -- select if we want a triangular wave directly at the DAC inputs. Limits defined by
+    -- pi_sp_i and pi_sp_lim_inf_i
+    pi_ol_mode_triang_enable_i                 => pi_ol_mode_triang_enable,
+    -- select if we want a square wave directly at the DAC inputs. Limits defined by
+    -- pi_sp_i and pi_sp_lim_inf_i
+    pi_ol_mode_square_enable_i                 => pi_ol_mode_square_enable,
+    -- defines the period of both triang/square modes in ADC clock ticks
+    pi_ol_dac_mode_counter_max_i               => pi_ol_dac_mode_counter_max,
+    -- defines the other limit for triang/square modes. pi_sp_i being one and
+    -- pi_sp_lim_inf_i the other
+    pi_sp_lim_inf_i                            => pi_sp_lim_inf,
+
+    -- select if we want a square wave at the PI inputs
+    pi_sp_mode_square_enable_i                 => pi_sp_mode_square_enable,
+
+    -- enagble or disable PI controller. if pi_enable_i = 0, then dac_data_i/dac_start_i
+    -- takes effect and the RTM board can be controller in open_loop. Otherwise, pi_ol modes
+     -- take effect and lastly, if everything = 0, pi_sp_i takes effect to set PI setpoint
+    pi_enable_i                                => pi_enable,
+
+    -- debug output to monitor PI Setpoint
+    dbg_pi_ctrl_sp_o                           => dbg_pi_ctrl_sp_o,
 
     ---------------------------------------------------------------------------
     -- AMP parallel interface
     ---------------------------------------------------------------------------
-    amp_sta_ctl_rw_i                           => '1',
+    -- Set to 1 to read and write all AMP parameters listed at the AMP
+    -- parallel interface
+    amp_sta_ctl_rw_i                           => amp_sta_ctl_rw,
 
     amp_iflag_l_o                              => amp_iflag_l,
     amp_tflag_l_o                              => amp_tflag_l,

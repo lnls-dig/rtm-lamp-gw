@@ -56,7 +56,15 @@ generic (
   -- Serial registers clock frequency [Hz]
   g_SERIAL_REG_SCLK_FREQ                     : natural := 100000;
   -- Number of AMP channels
-  g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12
+  g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12;
+  -- Number of for PI coeficients
+  g_PI_COEFF_BITS                            : natural := 26;
+  -- Number od ADC bits
+  g_ADC_BITS                                 : natural := 16;
+  -- Use Chipscope or not
+  g_WITH_CHIPSCOPE                           : boolean := false;
+  -- Use VIO or not
+  g_WITH_VIO                                 : boolean := false
 );
 port (
   ---------------------------------------------------------------------------
@@ -139,6 +147,38 @@ port (
 
   dbg_dac_start_o                            : out  std_logic;
   dbg_dac_data_o                             : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+
+  ---------------------------------------------------------------------------
+  -- PI parameters
+  ---------------------------------------------------------------------------
+  -- Kp parameter
+  pi_kp_i                                    : in   std_logic_vector(g_PI_COEFF_BITS-1 downto 0);
+  -- Ti parameter
+  pi_ti_i                                    : in   std_logic_vector(g_PI_COEFF_BITS-1 downto 0);
+  -- Setpoint parameter
+  pi_sp_i                                    : in   std_logic_vector(g_ADC_BITS-1 downto 0);
+
+  -- select if we want a triangular wave directly at the DAC inputs. Limits defined by
+  -- pi_sp_i and pi_sp_lim_inf_i
+  pi_ol_mode_triang_enable_i                 : in   std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+  -- select if we want a square wave directly at the DAC inputs. Limits defined by
+  -- pi_sp_i and pi_sp_lim_inf_i
+  pi_ol_mode_square_enable_i                 : in   std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+  -- defines the period of both triang/square modes in ADC clock ticks
+  pi_ol_dac_mode_counter_max_i               : in   unsigned(21 downto 0);
+  -- defines the other limit for triang/square modes. pi_sp_i being one and
+  -- pi_sp_lim_inf_i the other
+  pi_sp_lim_inf_i                            : in   std_logic_vector(g_ADC_BITS-1 downto 0);
+
+  -- select if we want a square wave at the PI inputs
+  pi_sp_mode_square_enable_i                 : in   std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+
+  -- enagble or disable PI controller. if pi_enable_i = 0, then dac_data_i/dac_start_i
+  -- takes effect and the RTM board can be controller in open_loop. Otherwise, pi_ol modes
+   -- take effect and lastly, if everything = 0, pi_sp_i takes effect to set PI setpoint
+  pi_enable_i                                : in   std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+
+  -- debug output to monitor PI Setpoint
   dbg_pi_ctrl_sp_o                           : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
 
   ---------------------------------------------------------------------------
@@ -159,9 +199,8 @@ end rtmlamp_ohwr;
 architecture rtl of rtmlamp_ohwr is
   constant c_ADC_CNV_HIGH                    : real := 30.0e-9; -- minimum of 30.0e-9
   constant c_ADC_CNV_WAIT                    : real := 450.0e-9; -- minimum of 450.0e-9
-  constant c_ADC_BITS                        : natural := 16;
   -- quasi-offset binary to two's complement conversion factor
-  constant c_ADC_OFFB_2_TWOSCOMP_CONV        : signed(c_ADC_BITS-1 downto 0) := to_signed(-16384, c_ADC_BITS);
+  constant c_ADC_OFFB_2_TWOSCOMP_CONV        : signed(g_ADC_BITS-1 downto 0) := to_signed(-16384, g_ADC_BITS);
 
   constant c_DAC_LDAC_WIDTH                  : real := 30.0e-9; -- minimum of 30.0e-9
   constant c_DAC_LDAC_WAIT_AFTER_CS          : real := 30.0e-9; -- minimum of 30.0e-9
@@ -192,7 +231,7 @@ architecture rtl of rtmlamp_ohwr is
   signal adc_quad_sdoa                       : std_logic;
   signal adc_quad_sdoc                       : std_logic;
 
-  subtype t_adc_word is std_logic_vector(c_ADC_BITS-1 downto 0);
+  subtype t_adc_word is std_logic_vector(g_ADC_BITS-1 downto 0);
   type t_adc_word_array is array(natural range <>) of t_adc_word;
 
   type t_adc_readout is record
@@ -207,9 +246,9 @@ architecture rtl of rtmlamp_ohwr is
   );
 
   signal adc_octo_raw                        : t_adc_readout;
-  signal adc_octo_raw_flat_data              : std_logic_vector(8*c_ADC_BITS-1 downto 0);
+  signal adc_octo_raw_flat_data              : std_logic_vector(8*g_ADC_BITS-1 downto 0);
   signal adc_octo_raw_flat_we                : std_logic;
-  signal adc_octo_synched_flat_data          : std_logic_vector(8*c_ADC_BITS-1 downto 0);
+  signal adc_octo_synched_flat_data          : std_logic_vector(8*g_ADC_BITS-1 downto 0);
   signal adc_octo_synched_flat_empty         : std_logic;
   signal adc_octo_synched                    : t_adc_readout;
   signal adc_octo_fix_inv                    : t_adc_readout;
@@ -217,9 +256,9 @@ architecture rtl of rtmlamp_ohwr is
   signal adc_octo_done_cnv_pp                : std_logic;
 
   signal adc_quad_raw                        : t_adc_readout := c_DUMMY_ADC_READOUT;
-  signal adc_quad_raw_flat_data              : std_logic_vector(4*c_ADC_BITS-1 downto 0) := (others => '0');
+  signal adc_quad_raw_flat_data              : std_logic_vector(4*g_ADC_BITS-1 downto 0) := (others => '0');
   signal adc_quad_raw_flat_we                : std_logic := '0';
-  signal adc_quad_synched_flat_data          : std_logic_vector(4*c_ADC_BITS-1 downto 0) := (others => '0');
+  signal adc_quad_synched_flat_data          : std_logic_vector(4*g_ADC_BITS-1 downto 0) := (others => '0');
   signal adc_quad_synched_flat_empty         : std_logic := '0';
   signal adc_quad_synched                    : t_adc_readout := c_DUMMY_ADC_READOUT;
   signal adc_quad_fix_inv                    : t_adc_readout;
@@ -233,10 +272,10 @@ architecture rtl of rtmlamp_ohwr is
   signal dac_valid                           : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
   signal dac_data                            : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
 
-  subtype t_acc_word is std_logic_vector(c_ADC_BITS*2-1 downto 0);
+  subtype t_acc_word is std_logic_vector(g_ADC_BITS*2-1 downto 0);
   type t_acc_word_array is array(natural range <>) of t_acc_word;
 
-  subtype t_sum_word is std_logic_vector(c_ADC_BITS downto 0);
+  subtype t_sum_word is std_logic_vector(g_ADC_BITS downto 0);
   type t_sum_word_array is array(natural range <>) of t_sum_word;
 
   signal dbg_pi_err_ti                       : t_acc_word_array(g_DAC_CHANNELS-1 downto 0);
@@ -265,47 +304,44 @@ architecture rtl of rtmlamp_ohwr is
   signal data                                : std_logic_vector(255 downto 0);
   signal trig0                               : std_logic_vector(7 downto 0);
 
-  constant c_COEFF_BITS                      : natural := 26;
-
-  signal pi_kp                               : std_logic_vector(c_COEFF_BITS-1 downto 0);
-  signal pi_ti                               : std_logic_vector(c_COEFF_BITS-1 downto 0);
-  signal pi_sp                               : std_logic_vector(c_ADC_BITS-1 downto 0);
-  signal pi_sp_lim_inf                       : std_logic_vector(c_ADC_BITS-1 downto 0);
+  signal pi_kp                               : std_logic_vector(g_PI_COEFF_BITS-1 downto 0);
+  signal pi_ti                               : std_logic_vector(g_PI_COEFF_BITS-1 downto 0);
+  signal pi_sp                               : std_logic_vector(g_ADC_BITS-1 downto 0);
+  signal pi_sp_lim_inf                       : std_logic_vector(g_ADC_BITS-1 downto 0);
   signal pi_enable                           : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
   signal pi_square_enable                    : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
   signal triang_enable                       : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
   signal square_enable                       : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
-  signal pi_ti_shift                         : integer range -(2*c_ADC_BITS) to (2*c_ADC_BITS)-1;
-  signal pi_kp_shift                         : integer range -(2*c_ADC_BITS) to (2*c_ADC_BITS)-1;
+  signal pi_ti_shift                         : integer range -(2*g_ADC_BITS) to (2*g_ADC_BITS)-1;
+  signal pi_kp_shift                         : integer range -(2*g_ADC_BITS) to (2*g_ADC_BITS)-1;
   signal amp_enable                          : std_logic_vector(11 downto 0);
 
   signal pi_sp_to_pi                         : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
-  signal pi_sp_from_square                   : std_logic_vector(c_ADC_BITS-1 downto 0);
+  signal pi_sp_from_square                   : std_logic_vector(g_ADC_BITS-1 downto 0);
   signal pi_sp_from_square_valid             : std_logic;
-  signal pi_sp_offset_from_square            : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
-  signal pi_sp_offset_from_square_valid      : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+  signal dac_ol_data_offset_from_square      : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal dac_ol_data_offset_from_square_valid : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
   signal pi_sp_from_square_max_min           : std_logic;
 
   signal dac_data_vio                        : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
-  signal dac_data_offset                     : t_16b_word_array(g_DAC_CHANNELS-1 downto 0) :=
+  signal dac_ol_data_offset                  : t_16b_word_array(g_DAC_CHANNELS-1 downto 0) :=
         (others => std_logic_vector(to_signed(32767, 16)));
-  signal dac_valid_vio                       : std_logic;
+  signal dac_ol_valid                        : std_logic;
 
   signal dac_data_from_pi                    : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
-  signal dac_data_offset_from_pi             : t_16b_word_array(g_DAC_CHANNELS-1 downto 0) :=
+  signal dac_cl_data_offset_from_pi          : t_16b_word_array(g_DAC_CHANNELS-1 downto 0) :=
         (others => std_logic_vector(to_signed(32767, 16)));
   signal dac_valid_from_pi                   : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
-  signal dac_valid_offset_from_pi            : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+  signal dac_cl_valid_offset_from_pi         : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
 
   signal dac_data_from_triang                : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
-  signal dac_data_offset_from_triang         : t_16b_word_array(g_DAC_CHANNELS-1 downto 0) :=
+  signal dac_ol_data_offset_from_triang      : t_16b_word_array(g_DAC_CHANNELS-1 downto 0) :=
         (others => std_logic_vector(to_signed(32767, 16)));
   signal dac_valid_from_triang               : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
-  signal dac_valid_offset_from_triang        : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
-  signal dac_mode_counter_max                : integer range 0 to (2**22-1);
-  signal dac_triang_counter                  : integer range 0 to (2**22-1);
-  signal dac_square_counter                  : integer range 0 to (2**22-1);
-  signal dac_data_counter                    : integer range -(2**(pi_sp'length-1)) to 2**(pi_sp'length-1)-1;
+  signal dac_ol_valid_offset_from_triang     : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+  signal dac_mode_counter_max                : unsigned(21 downto 0);
+  signal dac_period_counter                  : unsigned(21 downto 0);
+  signal dac_data_counter                    : signed(pi_sp'length-1 downto 0);
   signal dac_data_counter_up                 : std_logic;
 
   attribute MARK_DEBUG                       : string;
@@ -318,13 +354,13 @@ architecture rtl of rtmlamp_ohwr is
   attribute MARK_DEBUG of triang_enable      : signal is "TRUE";
   attribute MARK_DEBUG of square_enable      : signal is "TRUE";
   attribute MARK_DEBUG of dac_data_vio       : signal is "TRUE";
-  attribute MARK_DEBUG of dac_data_offset    : signal is "TRUE";
-  attribute MARK_DEBUG of dac_valid_vio      : signal is "TRUE";
+  attribute MARK_DEBUG of dac_ol_data_offset : signal is "TRUE";
+  attribute MARK_DEBUG of dac_ol_valid       : signal is "TRUE";
   attribute MARK_DEBUG of pi_ti_shift        : signal is "TRUE";
   attribute MARK_DEBUG of pi_kp_shift        : signal is "TRUE";
   attribute MARK_DEBUG of amp_enable         : signal is "TRUE";
   attribute MARK_DEBUG of dbg_pi_err_ti      : signal is "TRUE";
-  attribute MARK_DEBUG of dac_mode_counter_max       : signal is "TRUE";
+  attribute MARK_DEBUG of dac_mode_counter_max : signal is "TRUE";
 
   attribute DONT_TOUCH                       : string;
   attribute DONT_TOUCH of pi_kp              : signal is "TRUE";
@@ -336,13 +372,13 @@ architecture rtl of rtmlamp_ohwr is
   attribute DONT_TOUCH of triang_enable      : signal is "TRUE";
   attribute DONT_TOUCH of square_enable      : signal is "TRUE";
   attribute DONT_TOUCH of dac_data_vio       : signal is "TRUE";
-  attribute DONT_TOUCH of dac_data_offset    : signal is "TRUE";
-  attribute DONT_TOUCH of dac_valid_vio      : signal is "TRUE";
+  attribute DONT_TOUCH of dac_ol_data_offset : signal is "TRUE";
+  attribute DONT_TOUCH of dac_ol_valid       : signal is "TRUE";
   attribute DONT_TOUCH of pi_ti_shift        : signal is "TRUE";
   attribute DONT_TOUCH of pi_kp_shift        : signal is "TRUE";
   attribute DONT_TOUCH of amp_enable         : signal is "TRUE";
   attribute DONT_TOUCH of dbg_pi_err_ti      : signal is "TRUE";
-  attribute DONT_TOUCH of dac_mode_counter_max       : signal is "TRUE";
+  attribute DONT_TOUCH of dac_mode_counter_max : signal is "TRUE";
 
 begin
 
@@ -369,7 +405,7 @@ begin
       g_SCLK_FREQ                          => g_ADC_SCLK_FREQ,
       g_REF_CLK_CNV_FREQ                   => g_REF_CLK_FREQ,
       g_USE_REF_CLK_CNV                    => g_USE_REF_CLK,
-      g_BITS                               => c_ADC_BITS,
+      g_BITS                               => g_ADC_BITS,
       g_CHANNELS                           => 8,
       g_DATA_LINES                         => 4,
       g_CNV_HIGH                           => c_ADC_CNV_HIGH,
@@ -415,7 +451,7 @@ begin
   adc_octo_cnv_o <= not adc_octo_cnv;
 
   gen_flat_ltc232x_octo : for i in 0 to 7 generate
-    adc_octo_raw_flat_data((i+1)*c_ADC_BITS-1 downto i*c_ADC_BITS) <=
+    adc_octo_raw_flat_data((i+1)*g_ADC_BITS-1 downto i*g_ADC_BITS) <=
       adc_octo_raw.data(i);
   end generate;
 
@@ -424,7 +460,7 @@ begin
   cmp_ltc232x_octo_fifo : inferred_sync_fifo
   generic map
   (
-    g_data_width                              => 8*c_ADC_BITS,
+    g_data_width                              => 8*g_ADC_BITS,
     g_size                                    => 4
   )
   port map
@@ -523,7 +559,7 @@ begin
         g_SCLK_FREQ                          => g_ADC_SCLK_FREQ,
         g_REF_CLK_CNV_FREQ                   => g_REF_CLK_FREQ,
         g_USE_REF_CLK_CNV                    => g_USE_REF_CLK,
-        g_BITS                               => c_ADC_BITS,
+        g_BITS                               => g_ADC_BITS,
         g_CHANNELS                           => 4,
         g_DATA_LINES                         => 2,
         g_CNV_HIGH                           => c_ADC_CNV_HIGH,
@@ -562,7 +598,7 @@ begin
     adc_quad_cnv_o <= not adc_quad_cnv;
 
     gen_flat_ltc232x_quad : for i in 0 to 3 generate
-      adc_quad_raw_flat_data((i+1)*c_ADC_BITS-1 downto i*c_ADC_BITS) <=
+      adc_quad_raw_flat_data((i+1)*g_ADC_BITS-1 downto i*g_ADC_BITS) <=
         adc_quad_raw.data(i);
     end generate;
 
@@ -571,7 +607,7 @@ begin
     cmp_ltc232x_quad_fifo : inferred_sync_fifo
     generic map
     (
-      g_data_width                            => 4*c_ADC_BITS,
+      g_data_width                            => 4*g_ADC_BITS,
       g_size                                  => 4
     )
     port map
@@ -659,13 +695,13 @@ begin
   end process;
 
   gen_rec_ltc232x_octo : for i in 0 to 7 generate
-    adc_octo_synched.data(i) <= adc_octo_synched_flat_data((i+1)*c_ADC_BITS-1 downto i*c_ADC_BITS);
+    adc_octo_synched.data(i) <= adc_octo_synched_flat_data((i+1)*g_ADC_BITS-1 downto i*g_ADC_BITS);
   end generate;
 
   adc_octo_synched.valid <= adc_synched_flat_valid;
 
   gen_rec_ltc232x_quad : for i in 0 to 3 generate
-    adc_quad_synched.data(i) <= adc_quad_synched_flat_data((i+1)*c_ADC_BITS-1 downto i*c_ADC_BITS);
+    adc_quad_synched.data(i) <= adc_quad_synched_flat_data((i+1)*g_ADC_BITS-1 downto i*g_ADC_BITS);
   end generate;
 
   adc_quad_synched.valid <= adc_synched_flat_valid;
@@ -818,7 +854,7 @@ begin
         g_output_bias                      => 32768,
         g_integrator_fracbits              => 16,
         g_integrator_overbits              => 6,
-        g_coef_bits                        => c_COEFF_BITS
+        g_coef_bits                        => g_PI_COEFF_BITS
       )
       port map (
         clk_sys_i                          => clk_i,
@@ -870,23 +906,23 @@ begin
   gen_dac_data : for i in 0 to g_DAC_CHANNELS-1 generate
 
     -- already biased
-    dac_data_offset_from_pi(i) <= dac_data_from_pi(i);
-    dac_valid_offset_from_pi(i) <= dac_valid_from_pi(i);
+    dac_cl_data_offset_from_pi(i) <= dac_data_from_pi(i);
+    dac_cl_valid_offset_from_pi(i) <= dac_valid_from_pi(i);
 
-    dac_data_offset_from_triang(i) <= std_logic_vector(dac_data_from_triang(i) xor x"8000");
-    dac_valid_offset_from_triang(i) <= dac_valid_from_triang(i);
+    dac_ol_data_offset_from_triang(i) <= std_logic_vector(dac_data_from_triang(i) xor x"8000");
+    dac_ol_valid_offset_from_triang(i) <= dac_valid_from_triang(i);
 
-    pi_sp_offset_from_square(i) <= std_logic_vector(pi_sp_from_square xor x"8000");
-    pi_sp_offset_from_square_valid(i) <= pi_sp_from_square_valid;
+    dac_ol_data_offset_from_square(i) <= std_logic_vector(pi_sp_from_square xor x"8000");
+    dac_ol_data_offset_from_square_valid(i) <= pi_sp_from_square_valid;
 
-    dac_data(i) <= dac_data_offset_from_pi(i) when pi_enable(i) = '1' else
-                   dac_data_offset_from_triang(i) when triang_enable(i) = '1' else
-                   pi_sp_offset_from_square(i) when square_enable(i) = '1' else
-                   dac_data_offset(i);
-    dac_valid(i) <= dac_valid_offset_from_pi(i) when pi_enable(i) = '1' else
-                    dac_valid_offset_from_triang(i) when triang_enable(i) = '1' else
-                    pi_sp_offset_from_square_valid(i) when square_enable(i) = '1' else
-                    dac_valid_vio;
+    dac_data(i) <= dac_cl_data_offset_from_pi(i) when pi_enable(i) = '1' else
+                   dac_ol_data_offset_from_triang(i) when triang_enable(i) = '1' else
+                   dac_ol_data_offset_from_square(i) when square_enable(i) = '1' else
+                   dac_ol_data_offset(i);
+    dac_valid(i) <= dac_cl_valid_offset_from_pi(i) when pi_enable(i) = '1' else
+                    dac_ol_valid_offset_from_triang(i) when triang_enable(i) = '1' else
+                    dac_ol_data_offset_from_square_valid(i) when square_enable(i) = '1' else
+                    dac_ol_valid;
 
     pi_sp_to_pi(i) <= pi_sp_from_square when pi_square_enable(i) = '1' else
                       pi_sp;
@@ -906,25 +942,25 @@ begin
   ---------------------------------------------------------------------------
   --                              Triang wave
   ---------------------------------------------------------------------------
-  gen_triang : for i in 0 to g_DAC_CHANNELS-1 generate
+  gen_test_patterns : for i in 0 to g_DAC_CHANNELS-1 generate
 
-    p_triang_wave : process (clk_i)
+    p_patterns : process (clk_i)
     begin
       if rising_edge(clk_i) then
         if rst_n_i = '0' then
           dac_data_from_triang(i) <= (others => '0');
           dac_valid_from_triang(i) <= '0';
-          dac_triang_counter <= 0;
+          dac_period_counter <= (others => '0');
           pi_sp_from_square <= (others => '0');
           pi_sp_from_square_valid <= '0';
           pi_sp_from_square_max_min <= '0';
-          dac_data_counter <= 0;
+          dac_data_counter <= (others => '0');
           dac_data_counter_up <= '1';
         else
-          if dac_triang_counter = dac_mode_counter_max then
-            dac_triang_counter <= 0;
+          if dac_period_counter = dac_mode_counter_max then
+            dac_period_counter <= (others => '0');
             dac_valid_from_triang(i) <= '1';
-            dac_data_from_triang(i) <= std_logic_vector(to_signed(dac_data_counter, dac_data_from_triang(i)'length));
+            dac_data_from_triang(i) <= std_logic_vector(dac_data_counter);
 
             pi_sp_from_square_max_min <= not pi_sp_from_square_max_min;
             pi_sp_from_square_valid <= '1';
@@ -950,7 +986,7 @@ begin
 
           else
             pi_sp_from_square_valid <= '0';
-            dac_triang_counter <= dac_triang_counter + 1;
+            dac_period_counter <= dac_period_counter + 1;
             dac_valid_from_triang(i) <= '0';
           end if;
 
@@ -992,83 +1028,120 @@ begin
     amp_en_ch_i                              => amp_enable
   );
 
-  ila_core_inst : entity work.ila_t8_d256_s8192_cap
-  port map (
-    clk             => clk_i,
-    probe0          => data,
-    probe1          => trig0
-  );
+  ------------------------------------------------------------------------
+  ----                          Chipscope                               --
+  ------------------------------------------------------------------------
 
-  trig0(0)          <= adc_valid(0);
-  trig0(1)          <= dac_start;
-  trig0(2)          <= '0';
-  trig0(3)          <= '0';
-  trig0(4)          <= '0';
-  trig0(5)          <= '0';
-  trig0(6)          <= '0';
-  trig0(7)          <= '0';
+  gen_with_chipscope : if g_WITH_CHIPSCOPE generate
 
-  data(0)           <= adc_valid(0);
-  data(1)           <= dac_start;
-  data(2)           <= '0';
-  data(3)           <= '0';
-  data(4)           <= '0';
-  data(5)           <= '0';
-  data(6)           <= '0';
-  data(7)           <= '0';
-  data(15 downto 8) <= (others => '0');
+    ila_core_inst : entity work.ila_t8_d256_s8192_cap
+    port map (
+      clk             => clk_i,
+      probe0          => data,
+      probe1          => trig0
+    );
 
-  data(31 downto 16)   <= adc_data(0);
-  data(47 downto 32)   <= adc_data(1);
-  data(63 downto 48)   <= adc_data(2);
-  data(79 downto 64)   <= adc_data(3);
-  data(95 downto 80)   <= dac_data(0);
-  data(111 downto 96)  <= dac_data(1);
-  data(127 downto 112) <= dac_data(2);
-  data(143 downto 128) <= dac_data(3);
-  data(175 downto 144) <= (others => '0');
-  data(192 downto 176) <= (others => '0');
+    trig0(0)          <= adc_valid(0);
+    trig0(1)          <= dac_start;
+    trig0(2)          <= '0';
+    trig0(3)          <= '0';
+    trig0(4)          <= '0';
+    trig0(5)          <= '0';
+    trig0(6)          <= '0';
+    trig0(7)          <= '0';
 
-  data(223 downto 193) <= (others => '0');
-  data(254 downto 224) <= (others => '0');
-  data(255)            <= '0';
+    data(0)           <= adc_valid(0);
+    data(1)           <= dac_start;
+    data(2)           <= '0';
+    data(3)           <= '0';
+    data(4)           <= '0';
+    data(5)           <= '0';
+    data(6)           <= '0';
+    data(7)           <= '0';
+    data(15 downto 8) <= (others => '0');
+
+    data(31 downto 16)   <= adc_data(0);
+    data(47 downto 32)   <= adc_data(1);
+    data(63 downto 48)   <= adc_data(2);
+    data(79 downto 64)   <= adc_data(3);
+    data(95 downto 80)   <= dac_data(0);
+    data(111 downto 96)  <= dac_data(1);
+    data(127 downto 112) <= dac_data(2);
+    data(143 downto 128) <= dac_data(3);
+    data(175 downto 144) <= (others => '0');
+    data(192 downto 176) <= (others => '0');
+
+    data(223 downto 193) <= (others => '0');
+    data(254 downto 224) <= (others => '0');
+    data(255)            <= '0';
+
+  end generate;
 
   ------------------------------------------------------------------------
   ----                          VIO                                     --
   ------------------------------------------------------------------------
-  cmp_vio_din2_w128_dout2_w128 : entity work.vio_din2_w128_dout2_w128
-  port map (
-    clk                                      => clk_i,
-    probe_in0                                => probe_in0,
-    probe_in1                                => probe_in1,
-    probe_out0                               => probe_out0,
-    probe_out1                               => probe_out1
-  );
 
-  probe_in0 <= (others => '0');
-  probe_in1 <= (others => '0');
+  gen_with_vio : if g_WITH_VIO generate
 
-  pi_kp                  <= probe_out0(25 downto 0);
-  pi_ti                  <= probe_out0(51 downto 26);
-  pi_sp                  <= probe_out0(67 downto 52);
+    cmp_vio_din2_w128_dout2_w128 : entity work.vio_din2_w128_dout2_w128
+    port map (
+      clk                                      => clk_i,
+      probe_in0                                => probe_in0,
+      probe_in1                                => probe_in1,
+      probe_out0                               => probe_out0,
+      probe_out1                               => probe_out1
+    );
 
-  dac_mode_counter_max   <= to_integer(unsigned(probe_out0(89 downto 68)));
-  amp_enable             <= probe_out0(101 downto 90);
-  pi_enable              <= probe_out0(113 downto 102);
-  triang_enable          <= probe_out0(125 downto 114);
-  dac_valid_vio          <= probe_out0(126);
+    probe_in0 <= (others => '0');
+    probe_in1 <= (others => '0');
 
-  dac_data_vio(0)        <= probe_out1(15 downto 0);
-  dac_data_vio(1)        <= probe_out1(31 downto 16);
-  dac_data_vio(2)        <= probe_out1(47 downto 32);
-  dac_data_vio(3)        <= probe_out1(63 downto 48);
-  pi_square_enable       <= probe_out1(75 downto 64);
-  pi_sp_lim_inf          <= probe_out1(91 downto 76);
-  square_enable          <= probe_out1(103 downto 92);
+    pi_kp                  <= probe_out0(25 downto 0);
+    pi_ti                  <= probe_out0(51 downto 26);
+    pi_sp                  <= probe_out0(67 downto 52);
 
-  dac_data_offset(0)  <= std_logic_vector(dac_data_vio(0) xor x"8000");
-  dac_data_offset(1)  <= std_logic_vector(dac_data_vio(1) xor x"8000");
-  dac_data_offset(2)  <= std_logic_vector(dac_data_vio(2) xor x"8000");
-  dac_data_offset(3)  <= std_logic_vector(dac_data_vio(3) xor x"8000");
+    dac_mode_counter_max   <= unsigned(probe_out0(89 downto 68));
+    amp_enable             <= probe_out0(101 downto 90);
+    pi_enable              <= probe_out0(113 downto 102);
+    triang_enable          <= probe_out0(125 downto 114);
+    dac_ol_valid           <= probe_out0(126);
+
+    dac_data_vio(0)        <= probe_out1(15 downto 0);
+    dac_data_vio(1)        <= probe_out1(31 downto 16);
+    dac_data_vio(2)        <= probe_out1(47 downto 32);
+    dac_data_vio(3)        <= probe_out1(63 downto 48);
+    pi_square_enable       <= probe_out1(75 downto 64);
+    pi_sp_lim_inf          <= probe_out1(91 downto 76);
+    square_enable          <= probe_out1(103 downto 92);
+
+    dac_ol_data_offset(0)  <= std_logic_vector(dac_data_vio(0) xor x"8000");
+    dac_ol_data_offset(1)  <= std_logic_vector(dac_data_vio(1) xor x"8000");
+    dac_ol_data_offset(2)  <= std_logic_vector(dac_data_vio(2) xor x"8000");
+    dac_ol_data_offset(3)  <= std_logic_vector(dac_data_vio(3) xor x"8000");
+
+  end generate;
+
+  gen_without_vio : if not g_WITH_VIO generate
+
+    pi_kp                  <= pi_kp_i;
+    pi_ti                  <= pi_ti_i;
+    pi_sp                  <= pi_sp_i;
+
+    amp_enable             <= amp_en_ch_i;
+    pi_enable              <= pi_enable_i;
+
+    triang_enable          <= pi_ol_mode_triang_enable_i;
+    square_enable          <= pi_ol_mode_square_enable_i;
+    dac_mode_counter_max   <= pi_ol_dac_mode_counter_max_i;
+
+    pi_square_enable       <= pi_sp_mode_square_enable_i;
+    pi_sp_lim_inf          <= pi_sp_lim_inf_i;
+
+    gen_dac_ol_data_offset : for i in 0 to g_DAC_CHANNELS-1 generate
+      dac_ol_data_offset(i)  <= std_logic_vector(dac_data_i(i) xor x"8000");
+    end generate;
+
+    dac_ol_valid           <= dac_start_i;
+
+  end generate;
 
 end rtl;

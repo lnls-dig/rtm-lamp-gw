@@ -55,7 +55,15 @@ generic (
   -- Serial registers clock frequency [Hz]
   g_SERIAL_REG_SCLK_FREQ                     : natural := 100000;
   -- Number of AMP channels
-  g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12
+  g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12;
+  -- Number of for PI coeficients
+  g_PI_COEFF_BITS                            : natural := 26;
+  -- Number od ADC bits
+  g_ADC_BITS                                 : natural := 16;
+  -- Use Chipscope or not
+  g_WITH_CHIPSCOPE                           : boolean := false;
+  -- Use VIO or not
+  g_WITH_VIO                                 : boolean := false
 );
 port (
   ---------------------------------------------------------------------------
@@ -147,13 +155,18 @@ port (
   -- DAC parallel interface
   ---------------------------------------------------------------------------
   dac_start_i                                : in   std_logic;
-  dac_data_i                                 : in   std_logic_vector(16*g_DAC_CHANNELS-1 downto 0);
+  dac_data_i                                 : in   std_logic_vector(16*g_ADC_CHANNELS-1 downto 0);
   dac_ready_o                                : out  std_logic;
   dac_done_pp_o                              : out  std_logic;
 
   dbg_dac_start_o                            : out  std_logic;
-  dbg_dac_data_o                             : out  std_logic_vector(16*g_DAC_CHANNELS-1 downto 0);
-  dbg_pi_ctrl_sp_o                           : out  std_logic_vector(16*g_DAC_CHANNELS-1 downto 0)
+  dbg_dac_data_o                             : out  std_logic_vector(16*g_ADC_CHANNELS-1 downto 0);
+
+  ---------------------------------------------------------------------------
+  -- PI parameters
+  ---------------------------------------------------------------------------
+  -- debug output to monitor PI Setpoint
+  dbg_pi_ctrl_sp_o                           : out  std_logic_vector(16*g_ADC_CHANNELS-1 downto 0)
 );
 end wb_rtmlamp_ohwr;
 
@@ -277,17 +290,22 @@ begin
     adc_data_o                                 => adc_data,
     adc_valid_o                                => adc_valid_o,
 
-    dbg_dac_start_o                            => dbg_dac_start_o,
-    dbg_dac_data_o                             => dbg_dac_data,
-    dbg_pi_ctrl_sp_o                           => dbg_pi_ctrl_sp,
-
     ---------------------------------------------------------------------------
     -- DAC parallel interface
     ---------------------------------------------------------------------------
     dac_start_i                                => dac_start_i,
     dac_data_i                                 => dac_data,
     dac_ready_o                                => dac_ready_o,
-    dac_done_pp_o                              => dac_done_pp_o
+    dac_done_pp_o                              => dac_done_pp_o,
+
+    dbg_dac_start_o                            => dbg_dac_start_o,
+    dbg_dac_data_o                             => dbg_dac_data,
+
+    ---------------------------------------------------------------------------
+    -- PI parameters
+    ---------------------------------------------------------------------------
+    -- debug output to monitor PI Setpoint
+    dbg_pi_ctrl_sp_o                           => dbg_pi_ctrl_sp
   );
 
   gen_adc_plain_data : for i in 0 to g_ADC_CHANNELS-1 generate
