@@ -320,13 +320,13 @@ architecture rtl of rtmlamp_ohwr is
   signal pi_sp_from_square                   : std_logic_vector(g_ADC_BITS-1 downto 0);
   signal pi_sp_from_square_valid             : std_logic;
   signal dac_ol_data_offset_from_square      : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
-  signal dac_ol_data_offset_from_square_valid : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+  signal dac_ol_valid_offset_from_square : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
   signal pi_sp_from_square_max_min           : std_logic;
 
   signal dac_data_vio                        : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
   signal dac_ol_data_offset                  : t_16b_word_array(g_DAC_CHANNELS-1 downto 0) :=
         (others => std_logic_vector(to_signed(32767, 16)));
-  signal dac_ol_valid                        : std_logic;
+  signal dac_ol_valid_offset                 : std_logic;
 
   signal dac_data_from_pi                    : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
   signal dac_cl_data_offset_from_pi          : t_16b_word_array(g_DAC_CHANNELS-1 downto 0) :=
@@ -355,7 +355,7 @@ architecture rtl of rtmlamp_ohwr is
   attribute MARK_DEBUG of square_enable      : signal is "TRUE";
   attribute MARK_DEBUG of dac_data_vio       : signal is "TRUE";
   attribute MARK_DEBUG of dac_ol_data_offset : signal is "TRUE";
-  attribute MARK_DEBUG of dac_ol_valid       : signal is "TRUE";
+  attribute MARK_DEBUG of dac_ol_valid_offset : signal is "TRUE";
   attribute MARK_DEBUG of pi_ti_shift        : signal is "TRUE";
   attribute MARK_DEBUG of pi_kp_shift        : signal is "TRUE";
   attribute MARK_DEBUG of amp_enable         : signal is "TRUE";
@@ -373,7 +373,7 @@ architecture rtl of rtmlamp_ohwr is
   attribute DONT_TOUCH of square_enable      : signal is "TRUE";
   attribute DONT_TOUCH of dac_data_vio       : signal is "TRUE";
   attribute DONT_TOUCH of dac_ol_data_offset : signal is "TRUE";
-  attribute DONT_TOUCH of dac_ol_valid       : signal is "TRUE";
+  attribute DONT_TOUCH of dac_ol_valid_offset : signal is "TRUE";
   attribute DONT_TOUCH of pi_ti_shift        : signal is "TRUE";
   attribute DONT_TOUCH of pi_kp_shift        : signal is "TRUE";
   attribute DONT_TOUCH of amp_enable         : signal is "TRUE";
@@ -913,7 +913,7 @@ begin
     dac_ol_valid_offset_from_triang(i) <= dac_valid_from_triang(i);
 
     dac_ol_data_offset_from_square(i) <= std_logic_vector(pi_sp_from_square xor x"8000");
-    dac_ol_data_offset_from_square_valid(i) <= pi_sp_from_square_valid;
+    dac_ol_valid_offset_from_square(i) <= pi_sp_from_square_valid;
 
     dac_data(i) <= dac_cl_data_offset_from_pi(i) when pi_enable(i) = '1' else
                    dac_ol_data_offset_from_triang(i) when triang_enable(i) = '1' else
@@ -921,8 +921,8 @@ begin
                    dac_ol_data_offset(i);
     dac_valid(i) <= dac_cl_valid_offset_from_pi(i) when pi_enable(i) = '1' else
                     dac_ol_valid_offset_from_triang(i) when triang_enable(i) = '1' else
-                    dac_ol_data_offset_from_square_valid(i) when square_enable(i) = '1' else
-                    dac_ol_valid;
+                    dac_ol_valid_offset_from_square(i) when square_enable(i) = '1' else
+                    dac_ol_valid_offset;
 
     pi_sp_to_pi(i) <= pi_sp_from_square when pi_square_enable(i) = '1' else
                       pi_sp;
@@ -1103,7 +1103,7 @@ begin
     amp_enable             <= probe_out0(101 downto 90);
     pi_enable              <= probe_out0(113 downto 102);
     triang_enable          <= probe_out0(125 downto 114);
-    dac_ol_valid           <= probe_out0(126);
+    dac_ol_valid_offset    <= probe_out0(126);
 
     dac_data_vio(0)        <= probe_out1(15 downto 0);
     dac_data_vio(1)        <= probe_out1(31 downto 16);
@@ -1137,10 +1137,10 @@ begin
     pi_sp_lim_inf          <= pi_sp_lim_inf_i;
 
     gen_dac_ol_data_offset : for i in 0 to g_DAC_CHANNELS-1 generate
-      dac_ol_data_offset(i)  <= std_logic_vector(dac_data_i(i) xor x"8000");
+      dac_ol_data_offset(i) <= std_logic_vector(dac_data_i(i) xor x"8000");
     end generate;
 
-    dac_ol_valid           <= dac_start_i;
+    dac_ol_valid_offset    <= dac_start_i;
 
   end generate;
 
