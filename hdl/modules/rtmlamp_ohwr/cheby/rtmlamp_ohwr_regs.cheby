@@ -144,15 +144,49 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
           - field:
-              name: reserved
-              range: 31-1
-              description: reserved
+              name: pi_ol_triang_enable
+              range: 1
+              description: PI open-loop triangular test mode
               comment: |
-                reserved
+                write 0: disable PI triangular test mode
+                write 1: enable PI triangular test mode
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
-                type: SLV
+                type: BIT
+          - field:
+              name: pi_ol_square_enable
+              range: 2
+              description: PI open-loop square test mode
+              comment: |
+                write 0: disable PI square test mode
+                write 1: enable PI square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_sp_square_enable
+              range: 3
+              description: PI setpoint square test mode
+              comment: |
+                write 0: disable PI setpoint square test mode
+                write 1: enable PI setpoint square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_enable
+              range: 4
+              description: PI enable
+              comment: |
+                write 0: disable PI control
+                write 1: enable PI control
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
     - reg:
         name: ch_0_dac
         width: 32
@@ -281,15 +315,49 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
           - field:
-              name: reserved
-              range: 31-1
-              description: reserved
+              name: pi_ol_triang_enable
+              range: 1
+              description: PI open-loop triangular test mode
               comment: |
-                reserved
+                write 0: disable PI triangular test mode
+                write 1: enable PI triangular test mode
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
-                type: SLV
+                type: BIT
+          - field:
+              name: pi_ol_square_enable
+              range: 2
+              description: PI open-loop square test mode
+              comment: |
+                write 0: disable PI square test mode
+                write 1: enable PI square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_sp_square_enable
+              range: 3
+              description: PI setpoint square test mode
+              comment: |
+                write 0: disable PI setpoint square test mode
+                write 1: enable PI setpoint square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_enable
+              range: 4
+              description: PI enable
+              comment: |
+                write 0: disable PI control
+                write 1: enable PI control
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
     - reg:
         name: ch_1_dac
         width: 32
@@ -418,15 +486,49 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
           - field:
-              name: reserved
-              range: 31-1
-              description: reserved
+              name: pi_ol_triang_enable
+              range: 1
+              description: PI open-loop triangular test mode
               comment: |
-                reserved
+                write 0: disable PI triangular test mode
+                write 1: enable PI triangular test mode
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
-                type: SLV
+                type: BIT
+          - field:
+              name: pi_ol_square_enable
+              range: 2
+              description: PI open-loop square test mode
+              comment: |
+                write 0: disable PI square test mode
+                write 1: enable PI square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_sp_square_enable
+              range: 3
+              description: PI setpoint square test mode
+              comment: |
+                write 0: disable PI setpoint square test mode
+                write 1: enable PI setpoint square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_enable
+              range: 4
+              description: PI enable
+              comment: |
+                write 0: disable PI control
+                write 1: enable PI control
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
     - reg:
         name: ch_2_dac
         width: 32
@@ -555,15 +657,49 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
           - field:
-              name: reserved
-              range: 31-1
-              description: reserved
+              name: pi_ol_triang_enable
+              range: 1
+              description: PI open-loop triangular test mode
               comment: |
-                reserved
+                write 0: disable PI triangular test mode
+                write 1: enable PI triangular test mode
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
-                type: SLV
+                type: BIT
+          - field:
+              name: pi_ol_square_enable
+              range: 2
+              description: PI open-loop square test mode
+              comment: |
+                write 0: disable PI square test mode
+                write 1: enable PI square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_sp_square_enable
+              range: 3
+              description: PI setpoint square test mode
+              comment: |
+                write 0: disable PI setpoint square test mode
+                write 1: enable PI setpoint square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_enable
+              range: 4
+              description: PI enable
+              comment: |
+                write 0: disable PI control
+                write 1: enable PI control
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
     - reg:
         name: ch_3_dac
         width: 32
@@ -692,15 +828,49 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
           - field:
-              name: reserved
-              range: 31-1
-              description: reserved
+              name: pi_ol_triang_enable
+              range: 1
+              description: PI open-loop triangular test mode
               comment: |
-                reserved
+                write 0: disable PI triangular test mode
+                write 1: enable PI triangular test mode
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
-                type: SLV
+                type: BIT
+          - field:
+              name: pi_ol_square_enable
+              range: 2
+              description: PI open-loop square test mode
+              comment: |
+                write 0: disable PI square test mode
+                write 1: enable PI square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_sp_square_enable
+              range: 3
+              description: PI setpoint square test mode
+              comment: |
+                write 0: disable PI setpoint square test mode
+                write 1: enable PI setpoint square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_enable
+              range: 4
+              description: PI enable
+              comment: |
+                write 0: disable PI control
+                write 1: enable PI control
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
     - reg:
         name: ch_4_dac
         width: 32
@@ -829,15 +999,49 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
           - field:
-              name: reserved
-              range: 31-1
-              description: reserved
+              name: pi_ol_triang_enable
+              range: 1
+              description: PI open-loop triangular test mode
               comment: |
-                reserved
+                write 0: disable PI triangular test mode
+                write 1: enable PI triangular test mode
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
-                type: SLV
+                type: BIT
+          - field:
+              name: pi_ol_square_enable
+              range: 2
+              description: PI open-loop square test mode
+              comment: |
+                write 0: disable PI square test mode
+                write 1: enable PI square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_sp_square_enable
+              range: 3
+              description: PI setpoint square test mode
+              comment: |
+                write 0: disable PI setpoint square test mode
+                write 1: enable PI setpoint square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_enable
+              range: 4
+              description: PI enable
+              comment: |
+                write 0: disable PI control
+                write 1: enable PI control
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
     - reg:
         name: ch_5_dac
         width: 32
@@ -966,15 +1170,49 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
           - field:
-              name: reserved
-              range: 31-1
-              description: reserved
+              name: pi_ol_triang_enable
+              range: 1
+              description: PI open-loop triangular test mode
               comment: |
-                reserved
+                write 0: disable PI triangular test mode
+                write 1: enable PI triangular test mode
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
-                type: SLV
+                type: BIT
+          - field:
+              name: pi_ol_square_enable
+              range: 2
+              description: PI open-loop square test mode
+              comment: |
+                write 0: disable PI square test mode
+                write 1: enable PI square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_sp_square_enable
+              range: 3
+              description: PI setpoint square test mode
+              comment: |
+                write 0: disable PI setpoint square test mode
+                write 1: enable PI setpoint square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_enable
+              range: 4
+              description: PI enable
+              comment: |
+                write 0: disable PI control
+                write 1: enable PI control
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
     - reg:
         name: ch_6_dac
         width: 32
@@ -1103,15 +1341,49 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
           - field:
-              name: reserved
-              range: 31-1
-              description: reserved
+              name: pi_ol_triang_enable
+              range: 1
+              description: PI open-loop triangular test mode
               comment: |
-                reserved
+                write 0: disable PI triangular test mode
+                write 1: enable PI triangular test mode
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
-                type: SLV
+                type: BIT
+          - field:
+              name: pi_ol_square_enable
+              range: 2
+              description: PI open-loop square test mode
+              comment: |
+                write 0: disable PI square test mode
+                write 1: enable PI square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_sp_square_enable
+              range: 3
+              description: PI setpoint square test mode
+              comment: |
+                write 0: disable PI setpoint square test mode
+                write 1: enable PI setpoint square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_enable
+              range: 4
+              description: PI enable
+              comment: |
+                write 0: disable PI control
+                write 1: enable PI control
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
     - reg:
         name: ch_7_dac
         width: 32
@@ -1240,15 +1512,49 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
           - field:
-              name: reserved
-              range: 31-1
-              description: reserved
+              name: pi_ol_triang_enable
+              range: 1
+              description: PI open-loop triangular test mode
               comment: |
-                reserved
+                write 0: disable PI triangular test mode
+                write 1: enable PI triangular test mode
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
-                type: SLV
+                type: BIT
+          - field:
+              name: pi_ol_square_enable
+              range: 2
+              description: PI open-loop square test mode
+              comment: |
+                write 0: disable PI square test mode
+                write 1: enable PI square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_sp_square_enable
+              range: 3
+              description: PI setpoint square test mode
+              comment: |
+                write 0: disable PI setpoint square test mode
+                write 1: enable PI setpoint square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_enable
+              range: 4
+              description: PI enable
+              comment: |
+                write 0: disable PI control
+                write 1: enable PI control
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
     - reg:
         name: ch_8_dac
         width: 32
@@ -1377,15 +1683,49 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
           - field:
-              name: reserved
-              range: 31-1
-              description: reserved
+              name: pi_ol_triang_enable
+              range: 1
+              description: PI open-loop triangular test mode
               comment: |
-                reserved
+                write 0: disable PI triangular test mode
+                write 1: enable PI triangular test mode
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
-                type: SLV
+                type: BIT
+          - field:
+              name: pi_ol_square_enable
+              range: 2
+              description: PI open-loop square test mode
+              comment: |
+                write 0: disable PI square test mode
+                write 1: enable PI square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_sp_square_enable
+              range: 3
+              description: PI setpoint square test mode
+              comment: |
+                write 0: disable PI setpoint square test mode
+                write 1: enable PI setpoint square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_enable
+              range: 4
+              description: PI enable
+              comment: |
+                write 0: disable PI control
+                write 1: enable PI control
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
     - reg:
         name: ch_9_dac
         width: 32
@@ -1514,15 +1854,49 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
           - field:
-              name: reserved
-              range: 31-1
-              description: reserved
+              name: pi_ol_triang_enable
+              range: 1
+              description: PI open-loop triangular test mode
               comment: |
-                reserved
+                write 0: disable PI triangular test mode
+                write 1: enable PI triangular test mode
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
-                type: SLV
+                type: BIT
+          - field:
+              name: pi_ol_square_enable
+              range: 2
+              description: PI open-loop square test mode
+              comment: |
+                write 0: disable PI square test mode
+                write 1: enable PI square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_sp_square_enable
+              range: 3
+              description: PI setpoint square test mode
+              comment: |
+                write 0: disable PI setpoint square test mode
+                write 1: enable PI setpoint square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_enable
+              range: 4
+              description: PI enable
+              comment: |
+                write 0: disable PI control
+                write 1: enable PI control
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
     - reg:
         name: ch_10_dac
         width: 32
@@ -1651,15 +2025,49 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
           - field:
-              name: reserved
-              range: 31-1
-              description: reserved
+              name: pi_ol_triang_enable
+              range: 1
+              description: PI open-loop triangular test mode
               comment: |
-                reserved
+                write 0: disable PI triangular test mode
+                write 1: enable PI triangular test mode
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
-                type: SLV
+                type: BIT
+          - field:
+              name: pi_ol_square_enable
+              range: 2
+              description: PI open-loop square test mode
+              comment: |
+                write 0: disable PI square test mode
+                write 1: enable PI square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_sp_square_enable
+              range: 3
+              description: PI setpoint square test mode
+              comment: |
+                write 0: disable PI setpoint square test mode
+                write 1: enable PI setpoint square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_enable
+              range: 4
+              description: PI enable
+              comment: |
+                write 0: disable PI control
+                write 1: enable PI control
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
     - reg:
         name: ch_11_dac
         width: 32
@@ -1703,4 +2111,113 @@ memory-map:
                 access_dev: READ_ONLY
                 type: SLV
                 clock: dac_master_clk_i
-
+    - reg:
+        name: pi_kp
+        width: 32
+        access: rw
+        description: PI KP parameter
+        address: 0x00000190
+        comment: |
+          PI KP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI KP
+              comment: |
+                PI KP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: pi_ti
+        width: 32
+        access: rw
+        description: PI TI parameter
+        address: 0x00000194
+        comment: |
+          PI TI parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI TI
+              comment: |
+                PI TI
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: pi_sp
+        width: 32
+        access: rw
+        description: PI Setpoint parameter
+        address: 0x00000198
+        comment: |
+          PI SP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI SP
+              comment: |
+                PI SP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: pi_ol_dac_cnt_max
+        width: 32
+        access: rw
+        description: |
+          PI open-loop DAC test mode period, in clock ticks.
+          This defines the period of open-loop test waveforms
+        address: 0x0000019C
+        comment: |
+          PI open-loop DAC test mode period, in clock ticks.
+          This defines the period of open-loop test waveforms
+        children:
+          - field:
+              name: data
+              range: 21-0
+              description: PI open-loop DAC test mode period, in clock ticks
+              comment: |
+                PI open-loop DAC test mode period, in clock ticks
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-22
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
+                type: SLV
+    - reg:
+        name: pi_sp_lim_inf
+        width: 32
+        access: rw
+        description: |
+          PI open-loop DAC test mode inferior limit. The upper limit is the setpoint itself.
+        address: 0x000001A0
+        comment: |
+          PI open-loop DAC test mode inferior limit
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: |
+                PI open-loop DAC test mode inferior limit. The upper limit is the setpoint itself.
+              comment: |
+                PI open-loop DAC test mode inferior limit
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV

@@ -87,15 +87,49 @@ reg = Template(
                 access_dev: READ_ONLY
                 type: BIT
           - field:
-              name: reserved
-              range: 31-1
-              description: reserved
+              name: pi_ol_triang_enable
+              range: 1
+              description: PI open-loop triangular test mode
               comment: |
-                reserved
+                write 0: disable PI triangular test mode
+                write 1: enable PI triangular test mode
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
-                type: SLV
+                type: BIT
+          - field:
+              name: pi_ol_square_enable
+              range: 2
+              description: PI open-loop square test mode
+              comment: |
+                write 0: disable PI square test mode
+                write 1: enable PI square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_sp_square_enable
+              range: 3
+              description: PI setpoint square test mode
+              comment: |
+                write 0: disable PI setpoint square test mode
+                write 1: enable PI setpoint square test mode
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_enable
+              range: 4
+              description: PI enable
+              comment: |
+                write 0: disable PI control
+                write 1: enable PI control
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
     - reg:
         name: ch_${CHAN_NUM}_dac
         width: 32

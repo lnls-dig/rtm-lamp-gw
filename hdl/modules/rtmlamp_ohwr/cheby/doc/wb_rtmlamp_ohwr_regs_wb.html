@@ -319,6 +319,41 @@
 <td class="td_code">ch_11_dac</td>
 <td class="td_code">ch_11_dac</td>
 </tr>
+<tr class="tr_odd">
+<td class="td_code">0x190</td>
+<td>REG</td>
+<td><A href="#pi_kp">pi_kp</a></td>
+<td class="td_code">pi_kp</td>
+<td class="td_code">pi_kp</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x194</td>
+<td>REG</td>
+<td><A href="#pi_ti">pi_ti</a></td>
+<td class="td_code">pi_ti</td>
+<td class="td_code">pi_ti</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x198</td>
+<td>REG</td>
+<td><A href="#pi_sp">pi_sp</a></td>
+<td class="td_code">pi_sp</td>
+<td class="td_code">pi_sp</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x19c</td>
+<td>REG</td>
+<td><A href="#pi_ol_dac_cnt_max">pi_ol_dac_cnt_max</a></td>
+<td class="td_code">pi_ol_dac_cnt_max</td>
+<td class="td_code">pi_ol_dac_cnt_max</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x1a0</td>
+<td>REG</td>
+<td><A href="#pi_sp_lim_inf">pi_sp_lim_inf</a></td>
+<td class="td_code">pi_sp_lim_inf</td>
+<td class="td_code">pi_sp_lim_inf</td>
+</tr>
 </table>
 
 <h3><a name="sect_3_0">2. Register description</a></h3>
@@ -583,7 +618,14 @@ Channel 0 control register
  <td class="td_bit" colspan="1">24</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[30:23]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -596,7 +638,14 @@ Channel 0 control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[22:15]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -609,7 +658,14 @@ Channel 0 control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[14:7]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -622,7 +678,13 @@ Channel 0 control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">pi_enable</td>
+ <td class="td_field" colspan="1">pi_sp_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_triang_enable</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -632,9 +694,21 @@ amp_en
 </b>[<i>rw</i>]: Amplifier Enable
 <br>write 0: disable amplifier<br>write 1: enable amplifier
 <li><b>
-reserved
-</b>[<i>rw</i>]: reserved
-<br>reserved
+pi_ol_triang_enable
+</b>[<i>rw</i>]: PI open-loop triangular test mode
+<br>write 0: disable PI triangular test mode<br>write 1: enable PI triangular test mode
+<li><b>
+pi_ol_square_enable
+</b>[<i>rw</i>]: PI open-loop square test mode
+<br>write 0: disable PI square test mode<br>write 1: enable PI square test mode
+<li><b>
+pi_sp_square_enable
+</b>[<i>rw</i>]: PI setpoint square test mode
+<br>write 0: disable PI setpoint square test mode<br>write 1: enable PI setpoint square test mode
+<li><b>
+pi_enable
+</b>[<i>rw</i>]: PI enable
+<br>write 0: disable PI control<br>write 1: enable PI control
 </ul>
 <a name="ch_0_dac"></a>
 <h3><a name="sect_3_5">2.5. ch_0_dac</a></h3>
@@ -830,7 +904,14 @@ Channel 1 control register
  <td class="td_bit" colspan="1">24</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[30:23]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -843,7 +924,14 @@ Channel 1 control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[22:15]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -856,7 +944,14 @@ Channel 1 control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[14:7]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -869,7 +964,13 @@ Channel 1 control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">pi_enable</td>
+ <td class="td_field" colspan="1">pi_sp_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_triang_enable</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -879,9 +980,21 @@ amp_en
 </b>[<i>rw</i>]: Amplifier Enable
 <br>write 0: disable amplifier<br>write 1: enable amplifier
 <li><b>
-reserved
-</b>[<i>rw</i>]: reserved
-<br>reserved
+pi_ol_triang_enable
+</b>[<i>rw</i>]: PI open-loop triangular test mode
+<br>write 0: disable PI triangular test mode<br>write 1: enable PI triangular test mode
+<li><b>
+pi_ol_square_enable
+</b>[<i>rw</i>]: PI open-loop square test mode
+<br>write 0: disable PI square test mode<br>write 1: enable PI square test mode
+<li><b>
+pi_sp_square_enable
+</b>[<i>rw</i>]: PI setpoint square test mode
+<br>write 0: disable PI setpoint square test mode<br>write 1: enable PI setpoint square test mode
+<li><b>
+pi_enable
+</b>[<i>rw</i>]: PI enable
+<br>write 0: disable PI control<br>write 1: enable PI control
 </ul>
 <a name="ch_1_dac"></a>
 <h3><a name="sect_3_8">2.8. ch_1_dac</a></h3>
@@ -1077,7 +1190,14 @@ Channel 2 control register
  <td class="td_bit" colspan="1">24</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[30:23]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -1090,7 +1210,14 @@ Channel 2 control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[22:15]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -1103,7 +1230,14 @@ Channel 2 control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[14:7]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -1116,7 +1250,13 @@ Channel 2 control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">pi_enable</td>
+ <td class="td_field" colspan="1">pi_sp_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_triang_enable</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -1126,9 +1266,21 @@ amp_en
 </b>[<i>rw</i>]: Amplifier Enable
 <br>write 0: disable amplifier<br>write 1: enable amplifier
 <li><b>
-reserved
-</b>[<i>rw</i>]: reserved
-<br>reserved
+pi_ol_triang_enable
+</b>[<i>rw</i>]: PI open-loop triangular test mode
+<br>write 0: disable PI triangular test mode<br>write 1: enable PI triangular test mode
+<li><b>
+pi_ol_square_enable
+</b>[<i>rw</i>]: PI open-loop square test mode
+<br>write 0: disable PI square test mode<br>write 1: enable PI square test mode
+<li><b>
+pi_sp_square_enable
+</b>[<i>rw</i>]: PI setpoint square test mode
+<br>write 0: disable PI setpoint square test mode<br>write 1: enable PI setpoint square test mode
+<li><b>
+pi_enable
+</b>[<i>rw</i>]: PI enable
+<br>write 0: disable PI control<br>write 1: enable PI control
 </ul>
 <a name="ch_2_dac"></a>
 <h3><a name="sect_3_11">2.11. ch_2_dac</a></h3>
@@ -1324,7 +1476,14 @@ Channel 3 control register
  <td class="td_bit" colspan="1">24</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[30:23]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -1337,7 +1496,14 @@ Channel 3 control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[22:15]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -1350,7 +1516,14 @@ Channel 3 control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[14:7]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -1363,7 +1536,13 @@ Channel 3 control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">pi_enable</td>
+ <td class="td_field" colspan="1">pi_sp_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_triang_enable</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -1373,9 +1552,21 @@ amp_en
 </b>[<i>rw</i>]: Amplifier Enable
 <br>write 0: disable amplifier<br>write 1: enable amplifier
 <li><b>
-reserved
-</b>[<i>rw</i>]: reserved
-<br>reserved
+pi_ol_triang_enable
+</b>[<i>rw</i>]: PI open-loop triangular test mode
+<br>write 0: disable PI triangular test mode<br>write 1: enable PI triangular test mode
+<li><b>
+pi_ol_square_enable
+</b>[<i>rw</i>]: PI open-loop square test mode
+<br>write 0: disable PI square test mode<br>write 1: enable PI square test mode
+<li><b>
+pi_sp_square_enable
+</b>[<i>rw</i>]: PI setpoint square test mode
+<br>write 0: disable PI setpoint square test mode<br>write 1: enable PI setpoint square test mode
+<li><b>
+pi_enable
+</b>[<i>rw</i>]: PI enable
+<br>write 0: disable PI control<br>write 1: enable PI control
 </ul>
 <a name="ch_3_dac"></a>
 <h3><a name="sect_3_14">2.14. ch_3_dac</a></h3>
@@ -1571,7 +1762,14 @@ Channel 4 control register
  <td class="td_bit" colspan="1">24</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[30:23]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -1584,7 +1782,14 @@ Channel 4 control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[22:15]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -1597,7 +1802,14 @@ Channel 4 control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[14:7]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -1610,7 +1822,13 @@ Channel 4 control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">pi_enable</td>
+ <td class="td_field" colspan="1">pi_sp_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_triang_enable</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -1620,9 +1838,21 @@ amp_en
 </b>[<i>rw</i>]: Amplifier Enable
 <br>write 0: disable amplifier<br>write 1: enable amplifier
 <li><b>
-reserved
-</b>[<i>rw</i>]: reserved
-<br>reserved
+pi_ol_triang_enable
+</b>[<i>rw</i>]: PI open-loop triangular test mode
+<br>write 0: disable PI triangular test mode<br>write 1: enable PI triangular test mode
+<li><b>
+pi_ol_square_enable
+</b>[<i>rw</i>]: PI open-loop square test mode
+<br>write 0: disable PI square test mode<br>write 1: enable PI square test mode
+<li><b>
+pi_sp_square_enable
+</b>[<i>rw</i>]: PI setpoint square test mode
+<br>write 0: disable PI setpoint square test mode<br>write 1: enable PI setpoint square test mode
+<li><b>
+pi_enable
+</b>[<i>rw</i>]: PI enable
+<br>write 0: disable PI control<br>write 1: enable PI control
 </ul>
 <a name="ch_4_dac"></a>
 <h3><a name="sect_3_17">2.17. ch_4_dac</a></h3>
@@ -1818,7 +2048,14 @@ Channel 5 control register
  <td class="td_bit" colspan="1">24</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[30:23]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -1831,7 +2068,14 @@ Channel 5 control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[22:15]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -1844,7 +2088,14 @@ Channel 5 control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[14:7]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -1857,7 +2108,13 @@ Channel 5 control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">pi_enable</td>
+ <td class="td_field" colspan="1">pi_sp_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_triang_enable</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -1867,9 +2124,21 @@ amp_en
 </b>[<i>rw</i>]: Amplifier Enable
 <br>write 0: disable amplifier<br>write 1: enable amplifier
 <li><b>
-reserved
-</b>[<i>rw</i>]: reserved
-<br>reserved
+pi_ol_triang_enable
+</b>[<i>rw</i>]: PI open-loop triangular test mode
+<br>write 0: disable PI triangular test mode<br>write 1: enable PI triangular test mode
+<li><b>
+pi_ol_square_enable
+</b>[<i>rw</i>]: PI open-loop square test mode
+<br>write 0: disable PI square test mode<br>write 1: enable PI square test mode
+<li><b>
+pi_sp_square_enable
+</b>[<i>rw</i>]: PI setpoint square test mode
+<br>write 0: disable PI setpoint square test mode<br>write 1: enable PI setpoint square test mode
+<li><b>
+pi_enable
+</b>[<i>rw</i>]: PI enable
+<br>write 0: disable PI control<br>write 1: enable PI control
 </ul>
 <a name="ch_5_dac"></a>
 <h3><a name="sect_3_20">2.20. ch_5_dac</a></h3>
@@ -2065,7 +2334,14 @@ Channel 6 control register
  <td class="td_bit" colspan="1">24</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[30:23]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -2078,7 +2354,14 @@ Channel 6 control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[22:15]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -2091,7 +2374,14 @@ Channel 6 control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[14:7]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -2104,7 +2394,13 @@ Channel 6 control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">pi_enable</td>
+ <td class="td_field" colspan="1">pi_sp_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_triang_enable</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -2114,9 +2410,21 @@ amp_en
 </b>[<i>rw</i>]: Amplifier Enable
 <br>write 0: disable amplifier<br>write 1: enable amplifier
 <li><b>
-reserved
-</b>[<i>rw</i>]: reserved
-<br>reserved
+pi_ol_triang_enable
+</b>[<i>rw</i>]: PI open-loop triangular test mode
+<br>write 0: disable PI triangular test mode<br>write 1: enable PI triangular test mode
+<li><b>
+pi_ol_square_enable
+</b>[<i>rw</i>]: PI open-loop square test mode
+<br>write 0: disable PI square test mode<br>write 1: enable PI square test mode
+<li><b>
+pi_sp_square_enable
+</b>[<i>rw</i>]: PI setpoint square test mode
+<br>write 0: disable PI setpoint square test mode<br>write 1: enable PI setpoint square test mode
+<li><b>
+pi_enable
+</b>[<i>rw</i>]: PI enable
+<br>write 0: disable PI control<br>write 1: enable PI control
 </ul>
 <a name="ch_6_dac"></a>
 <h3><a name="sect_3_23">2.23. ch_6_dac</a></h3>
@@ -2312,7 +2620,14 @@ Channel 7 control register
  <td class="td_bit" colspan="1">24</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[30:23]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -2325,7 +2640,14 @@ Channel 7 control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[22:15]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -2338,7 +2660,14 @@ Channel 7 control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[14:7]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -2351,7 +2680,13 @@ Channel 7 control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">pi_enable</td>
+ <td class="td_field" colspan="1">pi_sp_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_triang_enable</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -2361,9 +2696,21 @@ amp_en
 </b>[<i>rw</i>]: Amplifier Enable
 <br>write 0: disable amplifier<br>write 1: enable amplifier
 <li><b>
-reserved
-</b>[<i>rw</i>]: reserved
-<br>reserved
+pi_ol_triang_enable
+</b>[<i>rw</i>]: PI open-loop triangular test mode
+<br>write 0: disable PI triangular test mode<br>write 1: enable PI triangular test mode
+<li><b>
+pi_ol_square_enable
+</b>[<i>rw</i>]: PI open-loop square test mode
+<br>write 0: disable PI square test mode<br>write 1: enable PI square test mode
+<li><b>
+pi_sp_square_enable
+</b>[<i>rw</i>]: PI setpoint square test mode
+<br>write 0: disable PI setpoint square test mode<br>write 1: enable PI setpoint square test mode
+<li><b>
+pi_enable
+</b>[<i>rw</i>]: PI enable
+<br>write 0: disable PI control<br>write 1: enable PI control
 </ul>
 <a name="ch_7_dac"></a>
 <h3><a name="sect_3_26">2.26. ch_7_dac</a></h3>
@@ -2559,7 +2906,14 @@ Channel 8 control register
  <td class="td_bit" colspan="1">24</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[30:23]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -2572,7 +2926,14 @@ Channel 8 control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[22:15]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -2585,7 +2946,14 @@ Channel 8 control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[14:7]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -2598,7 +2966,13 @@ Channel 8 control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">pi_enable</td>
+ <td class="td_field" colspan="1">pi_sp_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_triang_enable</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -2608,9 +2982,21 @@ amp_en
 </b>[<i>rw</i>]: Amplifier Enable
 <br>write 0: disable amplifier<br>write 1: enable amplifier
 <li><b>
-reserved
-</b>[<i>rw</i>]: reserved
-<br>reserved
+pi_ol_triang_enable
+</b>[<i>rw</i>]: PI open-loop triangular test mode
+<br>write 0: disable PI triangular test mode<br>write 1: enable PI triangular test mode
+<li><b>
+pi_ol_square_enable
+</b>[<i>rw</i>]: PI open-loop square test mode
+<br>write 0: disable PI square test mode<br>write 1: enable PI square test mode
+<li><b>
+pi_sp_square_enable
+</b>[<i>rw</i>]: PI setpoint square test mode
+<br>write 0: disable PI setpoint square test mode<br>write 1: enable PI setpoint square test mode
+<li><b>
+pi_enable
+</b>[<i>rw</i>]: PI enable
+<br>write 0: disable PI control<br>write 1: enable PI control
 </ul>
 <a name="ch_8_dac"></a>
 <h3><a name="sect_3_29">2.29. ch_8_dac</a></h3>
@@ -2806,7 +3192,14 @@ Channel 9 control register
  <td class="td_bit" colspan="1">24</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[30:23]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -2819,7 +3212,14 @@ Channel 9 control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[22:15]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -2832,7 +3232,14 @@ Channel 9 control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[14:7]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -2845,7 +3252,13 @@ Channel 9 control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">pi_enable</td>
+ <td class="td_field" colspan="1">pi_sp_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_triang_enable</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -2855,9 +3268,21 @@ amp_en
 </b>[<i>rw</i>]: Amplifier Enable
 <br>write 0: disable amplifier<br>write 1: enable amplifier
 <li><b>
-reserved
-</b>[<i>rw</i>]: reserved
-<br>reserved
+pi_ol_triang_enable
+</b>[<i>rw</i>]: PI open-loop triangular test mode
+<br>write 0: disable PI triangular test mode<br>write 1: enable PI triangular test mode
+<li><b>
+pi_ol_square_enable
+</b>[<i>rw</i>]: PI open-loop square test mode
+<br>write 0: disable PI square test mode<br>write 1: enable PI square test mode
+<li><b>
+pi_sp_square_enable
+</b>[<i>rw</i>]: PI setpoint square test mode
+<br>write 0: disable PI setpoint square test mode<br>write 1: enable PI setpoint square test mode
+<li><b>
+pi_enable
+</b>[<i>rw</i>]: PI enable
+<br>write 0: disable PI control<br>write 1: enable PI control
 </ul>
 <a name="ch_9_dac"></a>
 <h3><a name="sect_3_32">2.32. ch_9_dac</a></h3>
@@ -3053,7 +3478,14 @@ Channel 10 control register
  <td class="td_bit" colspan="1">24</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[30:23]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -3066,7 +3498,14 @@ Channel 10 control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[22:15]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -3079,7 +3518,14 @@ Channel 10 control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[14:7]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -3092,7 +3538,13 @@ Channel 10 control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">pi_enable</td>
+ <td class="td_field" colspan="1">pi_sp_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_triang_enable</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -3102,9 +3554,21 @@ amp_en
 </b>[<i>rw</i>]: Amplifier Enable
 <br>write 0: disable amplifier<br>write 1: enable amplifier
 <li><b>
-reserved
-</b>[<i>rw</i>]: reserved
-<br>reserved
+pi_ol_triang_enable
+</b>[<i>rw</i>]: PI open-loop triangular test mode
+<br>write 0: disable PI triangular test mode<br>write 1: enable PI triangular test mode
+<li><b>
+pi_ol_square_enable
+</b>[<i>rw</i>]: PI open-loop square test mode
+<br>write 0: disable PI square test mode<br>write 1: enable PI square test mode
+<li><b>
+pi_sp_square_enable
+</b>[<i>rw</i>]: PI setpoint square test mode
+<br>write 0: disable PI setpoint square test mode<br>write 1: enable PI setpoint square test mode
+<li><b>
+pi_enable
+</b>[<i>rw</i>]: PI enable
+<br>write 0: disable PI control<br>write 1: enable PI control
 </ul>
 <a name="ch_10_dac"></a>
 <h3><a name="sect_3_35">2.35. ch_10_dac</a></h3>
@@ -3300,7 +3764,14 @@ Channel 11 control register
  <td class="td_bit" colspan="1">24</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[30:23]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -3313,7 +3784,14 @@ Channel 11 control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[22:15]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -3326,7 +3804,14 @@ Channel 11 control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_field" colspan="8">reserved[14:7]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -3339,7 +3824,13 @@ Channel 11 control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_field" colspan="7">reserved[6:0]</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">pi_enable</td>
+ <td class="td_field" colspan="1">pi_sp_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_square_enable</td>
+ <td class="td_field" colspan="1">pi_ol_triang_enable</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -3349,9 +3840,21 @@ amp_en
 </b>[<i>rw</i>]: Amplifier Enable
 <br>write 0: disable amplifier<br>write 1: enable amplifier
 <li><b>
-reserved
-</b>[<i>rw</i>]: reserved
-<br>reserved
+pi_ol_triang_enable
+</b>[<i>rw</i>]: PI open-loop triangular test mode
+<br>write 0: disable PI triangular test mode<br>write 1: enable PI triangular test mode
+<li><b>
+pi_ol_square_enable
+</b>[<i>rw</i>]: PI open-loop square test mode
+<br>write 0: disable PI square test mode<br>write 1: enable PI square test mode
+<li><b>
+pi_sp_square_enable
+</b>[<i>rw</i>]: PI setpoint square test mode
+<br>write 0: disable PI setpoint square test mode<br>write 1: enable PI setpoint square test mode
+<li><b>
+pi_enable
+</b>[<i>rw</i>]: PI enable
+<br>write 0: disable PI control<br>write 1: enable PI control
 </ul>
 <a name="ch_11_dac"></a>
 <h3><a name="sect_3_38">2.38. ch_11_dac</a></h3>
@@ -3432,6 +3935,367 @@ wr
 reserved
 </b>[<i>rw</i>]: reserved
 <br>reserved
+</ul>
+<a name="pi_kp"></a>
+<h3><a name="sect_3_39">2.39. pi_kp</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">pi_kp</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x190</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">pi_kp</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x190</td></tr>
+</table>
+<p>
+PI KP parameter
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[31:24]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[23:16]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+data
+</b>[<i>rw</i>]: PI KP
+<br>PI KP
+</ul>
+<a name="pi_ti"></a>
+<h3><a name="sect_3_40">2.40. pi_ti</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">pi_ti</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x194</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">pi_ti</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x194</td></tr>
+</table>
+<p>
+PI TI parameter
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[31:24]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[23:16]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+data
+</b>[<i>rw</i>]: PI TI
+<br>PI TI
+</ul>
+<a name="pi_sp"></a>
+<h3><a name="sect_3_41">2.41. pi_sp</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">pi_sp</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x198</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">pi_sp</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x198</td></tr>
+</table>
+<p>
+PI Setpoint parameter
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[31:24]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[23:16]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+data
+</b>[<i>rw</i>]: PI SP
+<br>PI SP
+</ul>
+<a name="pi_ol_dac_cnt_max"></a>
+<h3><a name="sect_3_42">2.42. pi_ol_dac_cnt_max</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">pi_ol_dac_cnt_max</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x19c</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">pi_ol_dac_cnt_max</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x19c</td></tr>
+</table>
+<p>
+PI open-loop DAC test mode period, in clock ticks.<br>This defines the period of open-loop test waveforms<br>
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">reserved[9:2]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="2">reserved[1:0]</td>
+ <td class="td_field" colspan="6">data[21:16]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+data
+</b>[<i>rw</i>]: PI open-loop DAC test mode period, in clock ticks
+<br>PI open-loop DAC test mode period, in clock ticks
+<li><b>
+reserved
+</b>[<i>rw</i>]: reserved
+<br>reserved
+</ul>
+<a name="pi_sp_lim_inf"></a>
+<h3><a name="sect_3_43">2.43. pi_sp_lim_inf</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">pi_sp_lim_inf</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x1a0</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">pi_sp_lim_inf</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x1a0</td></tr>
+</table>
+<p>
+PI open-loop DAC test mode inferior limit. The upper limit is the setpoint itself.<br>
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[31:24]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[23:16]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+data
+</b>[<i>rw</i>]: PI open-loop DAC test mode inferior limit. The upper limit is the setpoint itself.
+
+<br>PI open-loop DAC test mode inferior limit
 </ul>
 
 
