@@ -183,7 +183,6 @@ architecture rtl of xwb_rtmlamp_ohwr is
   signal dac_data_wb                         : t_16b_word_array(c_MAX_CHANNELS-1 downto 0) := (others => (others =>'0'));
   signal dac_wr_wb                           : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
 
-  signal amp_sta_ctl_rw                      : std_logic := '0';
   signal amp_iflag_l                         : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
   signal amp_tflag_l                         : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
   signal amp_iflag_r                         : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
@@ -591,7 +590,11 @@ begin
     g_DAC_SCLK_FREQ                            => g_DAC_SCLK_FREQ,
     g_DAC_CHANNELS                             => g_DAC_CHANNELS,
     g_SERIAL_REG_SCLK_FREQ                     => g_SERIAL_REG_SCLK_FREQ ,
-    g_SERIAL_REGS_AMP_CHANNELS                 => g_SERIAL_REGS_AMP_CHANNELS
+    g_SERIAL_REGS_AMP_CHANNELS                 => g_SERIAL_REGS_AMP_CHANNELS,
+    g_PI_COEFF_BITS                            => g_PI_COEFF_BITS,
+    g_ADC_BITS                                 => g_ADC_BITS,
+    g_WITH_CHIPSCOPE                           => g_WITH_CHIPSCOPE,
+    g_WITH_VIO                                 => g_WITH_VIO
   )
   port map (
     ---------------------------------------------------------------------------
@@ -667,8 +670,8 @@ begin
     ---------------------------------------------------------------------------
     -- DAC parallel interface
     ---------------------------------------------------------------------------
-    dac_start_i                                => dac_start_i,
-    dac_data_i                                 => dac_data_i,
+    dac_start_i                                => dac_start,
+    dac_data_i                                 => dac_data,
     dac_ready_o                                => dac_ready_o,
     dac_done_pp_o                              => dac_done_pp_o,
 
@@ -713,7 +716,7 @@ begin
     ---------------------------------------------------------------------------
     -- Set to 1 to read and write all AMP parameters listed at the AMP
     -- parallel interface
-    amp_sta_ctl_rw_i                           => amp_sta_ctl_rw,
+    amp_sta_ctl_rw_i                           => '1',
 
     amp_iflag_l_o                              => amp_iflag_l,
     amp_tflag_l_o                              => amp_tflag_l,
