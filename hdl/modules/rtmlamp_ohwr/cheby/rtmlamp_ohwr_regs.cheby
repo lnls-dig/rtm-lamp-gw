@@ -60,6 +60,10 @@ memory-map:
                 access_dev: WRITE_ONLY
                 type: SLV
                 clock: dac_master_clk_i
+
+
+
+
     - reg:
         name: ch_0_sta
         width: 32
@@ -188,11 +192,68 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
     - reg:
+        name: ch_0_pi_kp
+        width: 32
+        access: rw
+        description: PI KP parameter
+        address: 0x00000108
+        comment: |
+          PI KP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI KP
+              comment: |
+                PI KP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_0_pi_ti
+        width: 32
+        access: rw
+        description: PI TI parameter
+        address: 0x0000010C
+        comment: |
+          PI TI parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI TI
+              comment: |
+                PI TI
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_0_pi_sp
+        width: 32
+        access: rw
+        description: PI Setpoint parameter
+        address: 0x00000110
+        comment: |
+          PI SP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI SP
+              comment: |
+                PI SP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
         name: ch_0_dac
         width: 32
         access: rw
         description: DAC channel 0 control register
-        address: 0x00000108
+        address: 0x00000114
         comment: |
           DAC channel 0 control register
         children:
@@ -236,7 +297,7 @@ memory-map:
         width: 32
         access: ro
         description: Channel 1 status register
-        address: 0x0000010C
+        address: 0x00000118
         comment: |
           Channel 1 status register
         children:
@@ -299,7 +360,7 @@ memory-map:
         width: 32
         access: rw
         description: Channel 1 control register
-        address: 0x00000110
+        address: 0x0000011C
         comment: |
           Channel 1 control register
         children:
@@ -359,11 +420,68 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
     - reg:
+        name: ch_1_pi_kp
+        width: 32
+        access: rw
+        description: PI KP parameter
+        address: 0x00000120
+        comment: |
+          PI KP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI KP
+              comment: |
+                PI KP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_1_pi_ti
+        width: 32
+        access: rw
+        description: PI TI parameter
+        address: 0x00000124
+        comment: |
+          PI TI parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI TI
+              comment: |
+                PI TI
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_1_pi_sp
+        width: 32
+        access: rw
+        description: PI Setpoint parameter
+        address: 0x00000128
+        comment: |
+          PI SP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI SP
+              comment: |
+                PI SP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
         name: ch_1_dac
         width: 32
         access: rw
         description: DAC channel 1 control register
-        address: 0x00000114
+        address: 0x0000012C
         comment: |
           DAC channel 1 control register
         children:
@@ -407,7 +525,7 @@ memory-map:
         width: 32
         access: ro
         description: Channel 2 status register
-        address: 0x00000118
+        address: 0x00000130
         comment: |
           Channel 2 status register
         children:
@@ -470,7 +588,7 @@ memory-map:
         width: 32
         access: rw
         description: Channel 2 control register
-        address: 0x0000011C
+        address: 0x00000134
         comment: |
           Channel 2 control register
         children:
@@ -530,11 +648,68 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
     - reg:
+        name: ch_2_pi_kp
+        width: 32
+        access: rw
+        description: PI KP parameter
+        address: 0x00000138
+        comment: |
+          PI KP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI KP
+              comment: |
+                PI KP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_2_pi_ti
+        width: 32
+        access: rw
+        description: PI TI parameter
+        address: 0x0000013C
+        comment: |
+          PI TI parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI TI
+              comment: |
+                PI TI
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_2_pi_sp
+        width: 32
+        access: rw
+        description: PI Setpoint parameter
+        address: 0x00000140
+        comment: |
+          PI SP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI SP
+              comment: |
+                PI SP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
         name: ch_2_dac
         width: 32
         access: rw
         description: DAC channel 2 control register
-        address: 0x00000120
+        address: 0x00000144
         comment: |
           DAC channel 2 control register
         children:
@@ -578,7 +753,7 @@ memory-map:
         width: 32
         access: ro
         description: Channel 3 status register
-        address: 0x00000124
+        address: 0x00000148
         comment: |
           Channel 3 status register
         children:
@@ -641,7 +816,7 @@ memory-map:
         width: 32
         access: rw
         description: Channel 3 control register
-        address: 0x00000128
+        address: 0x0000014C
         comment: |
           Channel 3 control register
         children:
@@ -701,11 +876,68 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
     - reg:
+        name: ch_3_pi_kp
+        width: 32
+        access: rw
+        description: PI KP parameter
+        address: 0x00000150
+        comment: |
+          PI KP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI KP
+              comment: |
+                PI KP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_3_pi_ti
+        width: 32
+        access: rw
+        description: PI TI parameter
+        address: 0x00000154
+        comment: |
+          PI TI parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI TI
+              comment: |
+                PI TI
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_3_pi_sp
+        width: 32
+        access: rw
+        description: PI Setpoint parameter
+        address: 0x00000158
+        comment: |
+          PI SP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI SP
+              comment: |
+                PI SP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
         name: ch_3_dac
         width: 32
         access: rw
         description: DAC channel 3 control register
-        address: 0x0000012C
+        address: 0x0000015C
         comment: |
           DAC channel 3 control register
         children:
@@ -749,7 +981,7 @@ memory-map:
         width: 32
         access: ro
         description: Channel 4 status register
-        address: 0x00000130
+        address: 0x00000160
         comment: |
           Channel 4 status register
         children:
@@ -812,7 +1044,7 @@ memory-map:
         width: 32
         access: rw
         description: Channel 4 control register
-        address: 0x00000134
+        address: 0x00000164
         comment: |
           Channel 4 control register
         children:
@@ -872,11 +1104,68 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
     - reg:
+        name: ch_4_pi_kp
+        width: 32
+        access: rw
+        description: PI KP parameter
+        address: 0x00000168
+        comment: |
+          PI KP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI KP
+              comment: |
+                PI KP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_4_pi_ti
+        width: 32
+        access: rw
+        description: PI TI parameter
+        address: 0x0000016C
+        comment: |
+          PI TI parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI TI
+              comment: |
+                PI TI
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_4_pi_sp
+        width: 32
+        access: rw
+        description: PI Setpoint parameter
+        address: 0x00000170
+        comment: |
+          PI SP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI SP
+              comment: |
+                PI SP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
         name: ch_4_dac
         width: 32
         access: rw
         description: DAC channel 4 control register
-        address: 0x00000138
+        address: 0x00000174
         comment: |
           DAC channel 4 control register
         children:
@@ -920,7 +1209,7 @@ memory-map:
         width: 32
         access: ro
         description: Channel 5 status register
-        address: 0x0000013C
+        address: 0x00000178
         comment: |
           Channel 5 status register
         children:
@@ -983,7 +1272,7 @@ memory-map:
         width: 32
         access: rw
         description: Channel 5 control register
-        address: 0x00000140
+        address: 0x0000017C
         comment: |
           Channel 5 control register
         children:
@@ -1043,11 +1332,68 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
     - reg:
+        name: ch_5_pi_kp
+        width: 32
+        access: rw
+        description: PI KP parameter
+        address: 0x00000180
+        comment: |
+          PI KP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI KP
+              comment: |
+                PI KP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_5_pi_ti
+        width: 32
+        access: rw
+        description: PI TI parameter
+        address: 0x00000184
+        comment: |
+          PI TI parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI TI
+              comment: |
+                PI TI
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_5_pi_sp
+        width: 32
+        access: rw
+        description: PI Setpoint parameter
+        address: 0x00000188
+        comment: |
+          PI SP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI SP
+              comment: |
+                PI SP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
         name: ch_5_dac
         width: 32
         access: rw
         description: DAC channel 5 control register
-        address: 0x00000144
+        address: 0x0000018C
         comment: |
           DAC channel 5 control register
         children:
@@ -1091,7 +1437,7 @@ memory-map:
         width: 32
         access: ro
         description: Channel 6 status register
-        address: 0x00000148
+        address: 0x00000190
         comment: |
           Channel 6 status register
         children:
@@ -1154,7 +1500,7 @@ memory-map:
         width: 32
         access: rw
         description: Channel 6 control register
-        address: 0x0000014C
+        address: 0x00000194
         comment: |
           Channel 6 control register
         children:
@@ -1214,11 +1560,68 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
     - reg:
+        name: ch_6_pi_kp
+        width: 32
+        access: rw
+        description: PI KP parameter
+        address: 0x00000198
+        comment: |
+          PI KP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI KP
+              comment: |
+                PI KP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_6_pi_ti
+        width: 32
+        access: rw
+        description: PI TI parameter
+        address: 0x0000019C
+        comment: |
+          PI TI parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI TI
+              comment: |
+                PI TI
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_6_pi_sp
+        width: 32
+        access: rw
+        description: PI Setpoint parameter
+        address: 0x000001A0
+        comment: |
+          PI SP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI SP
+              comment: |
+                PI SP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
         name: ch_6_dac
         width: 32
         access: rw
         description: DAC channel 6 control register
-        address: 0x00000150
+        address: 0x000001A4
         comment: |
           DAC channel 6 control register
         children:
@@ -1262,7 +1665,7 @@ memory-map:
         width: 32
         access: ro
         description: Channel 7 status register
-        address: 0x00000154
+        address: 0x000001A8
         comment: |
           Channel 7 status register
         children:
@@ -1325,7 +1728,7 @@ memory-map:
         width: 32
         access: rw
         description: Channel 7 control register
-        address: 0x00000158
+        address: 0x000001AC
         comment: |
           Channel 7 control register
         children:
@@ -1385,11 +1788,68 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
     - reg:
+        name: ch_7_pi_kp
+        width: 32
+        access: rw
+        description: PI KP parameter
+        address: 0x000001B0
+        comment: |
+          PI KP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI KP
+              comment: |
+                PI KP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_7_pi_ti
+        width: 32
+        access: rw
+        description: PI TI parameter
+        address: 0x000001B4
+        comment: |
+          PI TI parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI TI
+              comment: |
+                PI TI
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_7_pi_sp
+        width: 32
+        access: rw
+        description: PI Setpoint parameter
+        address: 0x000001B8
+        comment: |
+          PI SP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI SP
+              comment: |
+                PI SP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
         name: ch_7_dac
         width: 32
         access: rw
         description: DAC channel 7 control register
-        address: 0x0000015C
+        address: 0x000001BC
         comment: |
           DAC channel 7 control register
         children:
@@ -1433,7 +1893,7 @@ memory-map:
         width: 32
         access: ro
         description: Channel 8 status register
-        address: 0x00000160
+        address: 0x000001C0
         comment: |
           Channel 8 status register
         children:
@@ -1496,7 +1956,7 @@ memory-map:
         width: 32
         access: rw
         description: Channel 8 control register
-        address: 0x00000164
+        address: 0x000001C4
         comment: |
           Channel 8 control register
         children:
@@ -1556,11 +2016,68 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
     - reg:
+        name: ch_8_pi_kp
+        width: 32
+        access: rw
+        description: PI KP parameter
+        address: 0x000001C8
+        comment: |
+          PI KP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI KP
+              comment: |
+                PI KP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_8_pi_ti
+        width: 32
+        access: rw
+        description: PI TI parameter
+        address: 0x000001CC
+        comment: |
+          PI TI parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI TI
+              comment: |
+                PI TI
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_8_pi_sp
+        width: 32
+        access: rw
+        description: PI Setpoint parameter
+        address: 0x000001D0
+        comment: |
+          PI SP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI SP
+              comment: |
+                PI SP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
         name: ch_8_dac
         width: 32
         access: rw
         description: DAC channel 8 control register
-        address: 0x00000168
+        address: 0x000001D4
         comment: |
           DAC channel 8 control register
         children:
@@ -1604,7 +2121,7 @@ memory-map:
         width: 32
         access: ro
         description: Channel 9 status register
-        address: 0x0000016C
+        address: 0x000001D8
         comment: |
           Channel 9 status register
         children:
@@ -1667,7 +2184,7 @@ memory-map:
         width: 32
         access: rw
         description: Channel 9 control register
-        address: 0x00000170
+        address: 0x000001DC
         comment: |
           Channel 9 control register
         children:
@@ -1727,11 +2244,68 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
     - reg:
+        name: ch_9_pi_kp
+        width: 32
+        access: rw
+        description: PI KP parameter
+        address: 0x000001E0
+        comment: |
+          PI KP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI KP
+              comment: |
+                PI KP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_9_pi_ti
+        width: 32
+        access: rw
+        description: PI TI parameter
+        address: 0x000001E4
+        comment: |
+          PI TI parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI TI
+              comment: |
+                PI TI
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_9_pi_sp
+        width: 32
+        access: rw
+        description: PI Setpoint parameter
+        address: 0x000001E8
+        comment: |
+          PI SP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI SP
+              comment: |
+                PI SP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
         name: ch_9_dac
         width: 32
         access: rw
         description: DAC channel 9 control register
-        address: 0x00000174
+        address: 0x000001EC
         comment: |
           DAC channel 9 control register
         children:
@@ -1775,7 +2349,7 @@ memory-map:
         width: 32
         access: ro
         description: Channel 10 status register
-        address: 0x00000178
+        address: 0x000001F0
         comment: |
           Channel 10 status register
         children:
@@ -1838,7 +2412,7 @@ memory-map:
         width: 32
         access: rw
         description: Channel 10 control register
-        address: 0x0000017C
+        address: 0x000001F4
         comment: |
           Channel 10 control register
         children:
@@ -1898,11 +2472,68 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
     - reg:
+        name: ch_10_pi_kp
+        width: 32
+        access: rw
+        description: PI KP parameter
+        address: 0x000001F8
+        comment: |
+          PI KP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI KP
+              comment: |
+                PI KP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_10_pi_ti
+        width: 32
+        access: rw
+        description: PI TI parameter
+        address: 0x000001FC
+        comment: |
+          PI TI parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI TI
+              comment: |
+                PI TI
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_10_pi_sp
+        width: 32
+        access: rw
+        description: PI Setpoint parameter
+        address: 0x00000200
+        comment: |
+          PI SP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI SP
+              comment: |
+                PI SP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
         name: ch_10_dac
         width: 32
         access: rw
         description: DAC channel 10 control register
-        address: 0x00000180
+        address: 0x00000204
         comment: |
           DAC channel 10 control register
         children:
@@ -1946,7 +2577,7 @@ memory-map:
         width: 32
         access: ro
         description: Channel 11 status register
-        address: 0x00000184
+        address: 0x00000208
         comment: |
           Channel 11 status register
         children:
@@ -2009,7 +2640,7 @@ memory-map:
         width: 32
         access: rw
         description: Channel 11 control register
-        address: 0x00000188
+        address: 0x0000020C
         comment: |
           Channel 11 control register
         children:
@@ -2069,11 +2700,68 @@ memory-map:
                 access_dev: READ_ONLY
                 type: BIT
     - reg:
+        name: ch_11_pi_kp
+        width: 32
+        access: rw
+        description: PI KP parameter
+        address: 0x00000210
+        comment: |
+          PI KP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI KP
+              comment: |
+                PI KP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_11_pi_ti
+        width: 32
+        access: rw
+        description: PI TI parameter
+        address: 0x00000214
+        comment: |
+          PI TI parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI TI
+              comment: |
+                PI TI
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_11_pi_sp
+        width: 32
+        access: rw
+        description: PI Setpoint parameter
+        address: 0x00000218
+        comment: |
+          PI SP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI SP
+              comment: |
+                PI SP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
         name: ch_11_dac
         width: 32
         access: rw
         description: DAC channel 11 control register
-        address: 0x0000018C
+        address: 0x0000021C
         comment: |
           DAC channel 11 control register
         children:
@@ -2112,70 +2800,13 @@ memory-map:
                 type: SLV
                 clock: dac_master_clk_i
     - reg:
-        name: pi_kp
-        width: 32
-        access: rw
-        description: PI KP parameter
-        address: 0x00000190
-        comment: |
-          PI KP parameter
-        children:
-          - field:
-              name: data
-              range: 31-0
-              description: PI KP
-              comment: |
-                PI KP
-              x-wbgen:
-                access_bus: READ_WRITE
-                access_dev: READ_ONLY
-                type: SLV
-    - reg:
-        name: pi_ti
-        width: 32
-        access: rw
-        description: PI TI parameter
-        address: 0x00000194
-        comment: |
-          PI TI parameter
-        children:
-          - field:
-              name: data
-              range: 31-0
-              description: PI TI
-              comment: |
-                PI TI
-              x-wbgen:
-                access_bus: READ_WRITE
-                access_dev: READ_ONLY
-                type: SLV
-    - reg:
-        name: pi_sp
-        width: 32
-        access: rw
-        description: PI Setpoint parameter
-        address: 0x00000198
-        comment: |
-          PI SP parameter
-        children:
-          - field:
-              name: data
-              range: 31-0
-              description: PI SP
-              comment: |
-                PI SP
-              x-wbgen:
-                access_bus: READ_WRITE
-                access_dev: READ_ONLY
-                type: SLV
-    - reg:
         name: pi_ol_dac_cnt_max
         width: 32
         access: rw
         description: |
           PI open-loop DAC test mode period, in clock ticks.
           This defines the period of open-loop test waveforms
-        address: 0x0000019C
+        address: 0x00000220
         comment: |
           PI open-loop DAC test mode period, in clock ticks.
           This defines the period of open-loop test waveforms
@@ -2206,7 +2837,7 @@ memory-map:
         access: rw
         description: |
           PI open-loop DAC test mode inferior limit. The upper limit is the setpoint itself.
-        address: 0x000001A0
+        address: 0x00000224
         comment: |
           PI open-loop DAC test mode inferior limit
         children:

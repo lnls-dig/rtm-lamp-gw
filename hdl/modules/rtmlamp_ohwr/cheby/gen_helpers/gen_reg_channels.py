@@ -131,11 +131,68 @@ reg = Template(
                 access_dev: READ_ONLY
                 type: BIT
     - reg:
+        name: ch_${CHAN_NUM}_pi_kp
+        width: 32
+        access: rw
+        description: PI KP parameter
+        address: ${ADDR_2}
+        comment: |
+          PI KP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI KP
+              comment: |
+                PI KP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_${CHAN_NUM}_pi_ti
+        width: 32
+        access: rw
+        description: PI TI parameter
+        address: ${ADDR_3}
+        comment: |
+          PI TI parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI TI
+              comment: |
+                PI TI
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
+        name: ch_${CHAN_NUM}_pi_sp
+        width: 32
+        access: rw
+        description: PI Setpoint parameter
+        address: ${ADDR_4}
+        comment: |
+          PI SP parameter
+        children:
+          - field:
+              name: data
+              range: 31-0
+              description: PI SP
+              comment: |
+                PI SP
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: SLV
+    - reg:
         name: ch_${CHAN_NUM}_dac
         width: 32
         access: rw
         description: DAC channel ${CHAN_NUM} control register
-        address: ${ADDR_2}
+        address: ${ADDR_5}
         comment: |
           DAC channel ${CHAN_NUM} control register
         children:
@@ -185,9 +242,18 @@ for channel in range(0,12):
     addr += 4
     addr_2_hex = "0x{:08X}".format(addr)
     addr += 4
+    addr_3_hex = "0x{:08X}".format(addr)
+    addr += 4
+    addr_4_hex = "0x{:08X}".format(addr)
+    addr += 4
+    addr_5_hex = "0x{:08X}".format(addr)
+    addr += 4
     cheby_regs += reg.safe_substitute(CHAN_NUM=channel,
                                      ADDR_0=addr_0_hex,
                                      ADDR_1=addr_1_hex,
-                                     ADDR_2=addr_2_hex)
+                                     ADDR_2=addr_2_hex,
+                                     ADDR_3=addr_3_hex,
+                                     ADDR_4=addr_4_hex,
+                                     ADDR_5=addr_5_hex)
 
 print("{}".format(cheby_regs))
