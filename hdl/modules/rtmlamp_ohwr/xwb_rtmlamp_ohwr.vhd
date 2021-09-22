@@ -511,6 +511,7 @@ begin
       rtmlamp_ohwr_regs_ch_9_ctl_pi_ol_triang_enable_o  => wb_regs_channel_out(9).ctl_pi_ol_triang_enable,
       rtmlamp_ohwr_regs_ch_9_ctl_pi_ol_square_enable_o  => wb_regs_channel_out(9).ctl_pi_ol_square_enable,
       rtmlamp_ohwr_regs_ch_9_ctl_pi_sp_square_enable_o  => wb_regs_channel_out(9).ctl_pi_sp_square_enable,
+      rtmlamp_ohwr_regs_ch_9_ctl_pi_enable_o            => wb_regs_channel_out(9).ctl_pi_enable,
       rtmlamp_ohwr_regs_ch_9_dac_data_o                 => wb_regs_channel_out(9).dac_data,
       rtmlamp_ohwr_regs_ch_9_dac_wr_o                   => wb_regs_channel_out(9).dac_wr,
       rtmlamp_ohwr_regs_ch_10_sta_amp_iflag_l_i         => wb_regs_channel_in(10).sta_amp_iflag_l,
@@ -522,6 +523,7 @@ begin
       rtmlamp_ohwr_regs_ch_10_ctl_pi_ol_triang_enable_o => wb_regs_channel_out(10).ctl_pi_ol_triang_enable,
       rtmlamp_ohwr_regs_ch_10_ctl_pi_ol_square_enable_o => wb_regs_channel_out(10).ctl_pi_ol_square_enable,
       rtmlamp_ohwr_regs_ch_10_ctl_pi_sp_square_enable_o => wb_regs_channel_out(10).ctl_pi_sp_square_enable,
+      rtmlamp_ohwr_regs_ch_10_ctl_pi_enable_o           => wb_regs_channel_out(10).ctl_pi_enable,
       rtmlamp_ohwr_regs_ch_10_dac_data_o                => wb_regs_channel_out(10).dac_data,
       rtmlamp_ohwr_regs_ch_10_dac_wr_o                  => wb_regs_channel_out(10).dac_wr,
       rtmlamp_ohwr_regs_ch_11_sta_amp_iflag_l_i         => wb_regs_channel_in(11).sta_amp_iflag_l,
@@ -533,6 +535,7 @@ begin
       rtmlamp_ohwr_regs_ch_11_ctl_pi_ol_triang_enable_o => wb_regs_channel_out(11).ctl_pi_ol_triang_enable,
       rtmlamp_ohwr_regs_ch_11_ctl_pi_ol_square_enable_o => wb_regs_channel_out(11).ctl_pi_ol_square_enable,
       rtmlamp_ohwr_regs_ch_11_ctl_pi_sp_square_enable_o => wb_regs_channel_out(11).ctl_pi_sp_square_enable,
+      rtmlamp_ohwr_regs_ch_11_ctl_pi_enable_o           => wb_regs_channel_out(11).ctl_pi_enable,
       rtmlamp_ohwr_regs_ch_11_dac_data_o                => wb_regs_channel_out(11).dac_data,
       rtmlamp_ohwr_regs_ch_11_dac_wr_o                  => wb_regs_channel_out(11).dac_wr,
 
