@@ -262,7 +262,7 @@ architecture top of afcv4_rtm_lamp_ctrl is
   signal rtmlamp_dac_data                    : t_16b_word_array(c_DAC_CHANNELS-1 downto 0);
   signal rtmlamp_dbg_dac_start               : std_logic;
   signal rtmlamp_dbg_dac_data                : t_16b_word_array(c_DAC_CHANNELS-1 downto 0);
-  signal rtmlamp_dbg_pi_ctrl_sp              : t_16b_word_array(c_DAC_CHANNELS-1 downto 0);
+  signal rtmlamp_dbg_pi_ctrl_sp              : t_pi_sp_word_array(c_DAC_CHANNELS-1 downto 0);
   signal rtmlamp_dac_ready                   : std_logic;
   signal rtmlamp_dac_done_pp                 : std_logic;
 
