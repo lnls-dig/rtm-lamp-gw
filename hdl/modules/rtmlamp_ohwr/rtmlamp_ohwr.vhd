@@ -57,8 +57,6 @@ generic (
   g_SERIAL_REG_SCLK_FREQ                     : natural := 100000;
   -- Number of AMP channels
   g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12;
-  -- Number of for PI coeficients
-  g_PI_COEFF_BITS                            : natural := 26;
   -- Number od ADC bits
   g_ADC_BITS                                 : natural := 16;
   -- Use Chipscope or not
@@ -152,11 +150,11 @@ port (
   -- PI parameters
   ---------------------------------------------------------------------------
   -- Kp parameter
-  pi_kp_i                                    : in   std_logic_vector(g_PI_COEFF_BITS-1 downto 0);
+  pi_kp_i                                    : in   t_pi_coeff_word_array(g_DAC_CHANNELS-1 downto 0);
   -- Ti parameter
-  pi_ti_i                                    : in   std_logic_vector(g_PI_COEFF_BITS-1 downto 0);
+  pi_ti_i                                    : in   t_pi_coeff_word_array(g_DAC_CHANNELS-1 downto 0);
   -- Setpoint parameter
-  pi_sp_i                                    : in   std_logic_vector(g_ADC_BITS-1 downto 0);
+  pi_sp_i                                    : in   t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
 
   -- select if we want a triangular wave directly at the DAC inputs. Limits defined by
   -- pi_sp_i and pi_sp_lim_inf_i
@@ -179,7 +177,7 @@ port (
   pi_enable_i                                : in   std_logic_vector(g_DAC_CHANNELS-1 downto 0);
 
   -- debug output to monitor PI Setpoint
-  dbg_pi_ctrl_sp_o                           : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+  dbg_pi_ctrl_sp_o                           : out  t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
 
   ---------------------------------------------------------------------------
   -- AMP parallel interface
@@ -279,7 +277,7 @@ architecture rtl of rtmlamp_ohwr is
   type t_sum_word_array is array(natural range <>) of t_sum_word;
 
   signal dbg_pi_err_ti                       : t_acc_word_array(g_DAC_CHANNELS-1 downto 0);
-  signal dbg_pi_ctrl_sp                      : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal dbg_pi_ctrl_sp                      : t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
   signal dbg_pi_err_kp                       : t_acc_word_array(g_DAC_CHANNELS-1 downto 0);
   signal dbg_pi_err_mult_valid               : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
 
@@ -304,9 +302,9 @@ architecture rtl of rtmlamp_ohwr is
   signal data                                : std_logic_vector(255 downto 0);
   signal trig0                               : std_logic_vector(7 downto 0);
 
-  signal pi_kp                               : std_logic_vector(g_PI_COEFF_BITS-1 downto 0);
-  signal pi_ti                               : std_logic_vector(g_PI_COEFF_BITS-1 downto 0);
-  signal pi_sp                               : std_logic_vector(g_ADC_BITS-1 downto 0);
+  signal pi_kp                               : t_pi_coeff_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal pi_ti                               : t_pi_coeff_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal pi_sp                               : t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
   signal pi_sp_lim_inf                       : std_logic_vector(g_ADC_BITS-1 downto 0);
   signal pi_enable                           : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
   signal pi_square_enable                    : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
@@ -316,12 +314,12 @@ architecture rtl of rtmlamp_ohwr is
   signal pi_kp_shift                         : integer range -(2*g_ADC_BITS) to (2*g_ADC_BITS)-1;
   signal amp_enable                          : std_logic_vector(11 downto 0);
 
-  signal pi_sp_to_pi                         : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
-  signal pi_sp_from_square                   : std_logic_vector(g_ADC_BITS-1 downto 0);
-  signal pi_sp_from_square_valid             : std_logic;
+  signal pi_sp_to_pi                         : t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal pi_sp_from_square                   : t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal pi_sp_from_square_valid             : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
   signal dac_ol_data_offset_from_square      : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
-  signal dac_ol_valid_offset_from_square : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
-  signal pi_sp_from_square_max_min           : std_logic;
+  signal dac_ol_valid_offset_from_square     : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+  signal pi_sp_from_square_max_min           : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
 
   signal dac_data_vio                        : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
   signal dac_ol_data_offset                  : t_16b_word_array(g_DAC_CHANNELS-1 downto 0) :=
@@ -379,6 +377,14 @@ architecture rtl of rtmlamp_ohwr is
   attribute DONT_TOUCH of amp_enable         : signal is "TRUE";
   attribute DONT_TOUCH of dbg_pi_err_ti      : signal is "TRUE";
   attribute DONT_TOUCH of dac_mode_counter_max : signal is "TRUE";
+
+  function f_replicate(x : std_logic; len : natural)
+    return std_logic_vector
+  is
+    variable v_ret : std_logic_vector(len-1 downto 0) := (others => x);
+  begin
+    return v_ret;
+  end f_replicate;
 
 begin
 
@@ -830,7 +836,7 @@ begin
   ---------------------------------------------------------------------------
   --                              PI Controller
   ---------------------------------------------------------------------------
-  gen_pi_controller : for i in 0 to g_ADC_CHANNELS-1 generate
+  gen_pi_controller : for i in 0 to g_DAC_CHANNELS-1 generate
 
     p_err_calc : process(clk_i)
     begin
@@ -854,7 +860,7 @@ begin
         g_output_bias                      => 32768,
         g_integrator_fracbits              => 16,
         g_integrator_overbits              => 6,
-        g_coef_bits                        => g_PI_COEFF_BITS
+        g_coef_bits                        => c_PI_COEFF_BITS
       )
       port map (
         clk_sys_i                          => clk_i,
@@ -892,8 +898,8 @@ begin
         pll_pcr_force_f_i                  => '1',
 
     -- Frequency Kp/Ki
-        pll_fbgr_f_kp_i                    => pi_kp,
-        pll_fbgr_f_ki_i                    => pi_ti,
+        pll_fbgr_f_kp_i                    => pi_kp(i),
+        pll_fbgr_f_ki_i                    => pi_ti(i),
 
     -- Phase Kp/Ki
         pll_pbgr_p_kp_i                    => (others => '0'),
@@ -909,11 +915,13 @@ begin
     dac_cl_data_offset_from_pi(i) <= dac_data_from_pi(i);
     dac_cl_valid_offset_from_pi(i) <= dac_valid_from_pi(i);
 
-    dac_ol_data_offset_from_triang(i) <= std_logic_vector(dac_data_from_triang(i) xor x"8000");
+    dac_ol_data_offset_from_triang(i) <= std_logic_vector(dac_data_from_triang(i) xor
+                                                            ('1' & f_replicate('0', dac_data_from_triang(i)'length-1)));
     dac_ol_valid_offset_from_triang(i) <= dac_valid_from_triang(i);
 
-    dac_ol_data_offset_from_square(i) <= std_logic_vector(pi_sp_from_square xor x"8000");
-    dac_ol_valid_offset_from_square(i) <= pi_sp_from_square_valid;
+    dac_ol_data_offset_from_square(i) <= std_logic_vector(pi_sp_from_square(i) xor
+                                                            ('1' & f_replicate('0', pi_sp_from_square(i)'length-1)));
+    dac_ol_valid_offset_from_square(i) <= pi_sp_from_square_valid(i);
 
     dac_data(i) <= dac_cl_data_offset_from_pi(i) when pi_enable(i) = '1' else
                    dac_ol_data_offset_from_triang(i) when triang_enable(i) = '1' else
@@ -924,8 +932,8 @@ begin
                     dac_ol_valid_offset_from_square(i) when square_enable(i) = '1' else
                     dac_ol_valid_offset;
 
-    pi_sp_to_pi(i) <= pi_sp_from_square when pi_square_enable(i) = '1' else
-                      pi_sp;
+    pi_sp_to_pi(i) <= pi_sp_from_square(i) when pi_square_enable(i) = '1' else
+                      pi_sp(i);
 
   end generate;
 
@@ -951,9 +959,9 @@ begin
           dac_data_from_triang(i) <= (others => '0');
           dac_valid_from_triang(i) <= '0';
           dac_period_counter <= (others => '0');
-          pi_sp_from_square <= (others => '0');
-          pi_sp_from_square_valid <= '0';
-          pi_sp_from_square_max_min <= '0';
+          pi_sp_from_square(i) <= (others => '0');
+          pi_sp_from_square_valid(i) <= '0';
+          pi_sp_from_square_max_min(i) <= '0';
           dac_data_counter <= (others => '0');
           dac_data_counter_up <= '1';
         else
@@ -962,17 +970,17 @@ begin
             dac_valid_from_triang(i) <= '1';
             dac_data_from_triang(i) <= std_logic_vector(dac_data_counter);
 
-            pi_sp_from_square_max_min <= not pi_sp_from_square_max_min;
-            pi_sp_from_square_valid <= '1';
-            if pi_sp_from_square_max_min = '0' then
-              pi_sp_from_square <= pi_sp;
+            pi_sp_from_square_max_min(i) <= not pi_sp_from_square_max_min(i);
+            pi_sp_from_square_valid(i) <= '1';
+            if pi_sp_from_square_max_min(i) = '0' then
+              pi_sp_from_square(i) <= pi_sp(i);
             else
-              pi_sp_from_square <= pi_sp_lim_inf;
+              pi_sp_from_square(i) <= pi_sp_lim_inf;
             end if;
 
             if dac_data_counter_up = '1' then
               dac_data_counter <= dac_data_counter + 1;
-              if dac_data_counter = to_integer(signed(pi_sp)) then
+              if dac_data_counter = to_integer(signed(pi_sp(i))) then
                 dac_data_counter_up <= '0';
                 dac_data_counter <= dac_data_counter - 1;
               end if;
@@ -985,7 +993,7 @@ begin
             end if;
 
           else
-            pi_sp_from_square_valid <= '0';
+            pi_sp_from_square_valid(i) <= '0';
             dac_period_counter <= dac_period_counter + 1;
             dac_valid_from_triang(i) <= '0';
           end if;
@@ -1095,9 +1103,11 @@ begin
     probe_in0 <= (others => '0');
     probe_in1 <= (others => '0');
 
-    pi_kp                  <= probe_out0(25 downto 0);
-    pi_ti                  <= probe_out0(51 downto 26);
-    pi_sp                  <= probe_out0(67 downto 52);
+    gen_pi_params_ch : for i in 0 to g_DAC_CHANNELS-1 generate
+      pi_kp(i)             <= probe_out0(25 downto 0);
+      pi_ti(i)             <= probe_out0(51 downto 26);
+      pi_sp(i)             <= probe_out0(67 downto 52);
+    end generate;
 
     dac_mode_counter_max   <= unsigned(probe_out0(89 downto 68));
     amp_enable             <= probe_out0(101 downto 90);
