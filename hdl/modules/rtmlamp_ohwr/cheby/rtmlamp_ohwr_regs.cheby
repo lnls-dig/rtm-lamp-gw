@@ -60,10 +60,6 @@ memory-map:
                 access_dev: WRITE_ONLY
                 type: SLV
                 clock: dac_master_clk_i
-
-
-
-
     - reg:
         name: ch_0_sta
         width: 32
@@ -202,13 +198,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI KP
               comment: |
                 PI KP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_0_pi_ti
@@ -221,13 +227,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI TI
               comment: |
                 PI TI
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_0_pi_sp
@@ -240,13 +256,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 15-0
               description: PI SP
               comment: |
                 PI SP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-16
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_0_dac
@@ -287,8 +313,8 @@ memory-map:
               comment: |
                 reserved
               x-wbgen:
-                access_bus: READ_WRITE
-                access_dev: READ_ONLY
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
                 clock: dac_master_clk_i
 
@@ -430,13 +456,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI KP
               comment: |
                 PI KP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_1_pi_ti
@@ -449,13 +485,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI TI
               comment: |
                 PI TI
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_1_pi_sp
@@ -468,13 +514,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 15-0
               description: PI SP
               comment: |
                 PI SP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-16
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_1_dac
@@ -515,8 +571,8 @@ memory-map:
               comment: |
                 reserved
               x-wbgen:
-                access_bus: READ_WRITE
-                access_dev: READ_ONLY
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
                 clock: dac_master_clk_i
 
@@ -658,13 +714,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI KP
               comment: |
                 PI KP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_2_pi_ti
@@ -677,13 +743,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI TI
               comment: |
                 PI TI
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_2_pi_sp
@@ -696,13 +772,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 15-0
               description: PI SP
               comment: |
                 PI SP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-16
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_2_dac
@@ -743,8 +829,8 @@ memory-map:
               comment: |
                 reserved
               x-wbgen:
-                access_bus: READ_WRITE
-                access_dev: READ_ONLY
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
                 clock: dac_master_clk_i
 
@@ -886,13 +972,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI KP
               comment: |
                 PI KP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_3_pi_ti
@@ -905,13 +1001,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI TI
               comment: |
                 PI TI
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_3_pi_sp
@@ -924,13 +1030,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 15-0
               description: PI SP
               comment: |
                 PI SP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-16
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_3_dac
@@ -971,8 +1087,8 @@ memory-map:
               comment: |
                 reserved
               x-wbgen:
-                access_bus: READ_WRITE
-                access_dev: READ_ONLY
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
                 clock: dac_master_clk_i
 
@@ -1114,13 +1230,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI KP
               comment: |
                 PI KP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_4_pi_ti
@@ -1133,13 +1259,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI TI
               comment: |
                 PI TI
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_4_pi_sp
@@ -1152,13 +1288,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 15-0
               description: PI SP
               comment: |
                 PI SP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-16
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_4_dac
@@ -1199,8 +1345,8 @@ memory-map:
               comment: |
                 reserved
               x-wbgen:
-                access_bus: READ_WRITE
-                access_dev: READ_ONLY
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
                 clock: dac_master_clk_i
 
@@ -1342,13 +1488,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI KP
               comment: |
                 PI KP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_5_pi_ti
@@ -1361,13 +1517,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI TI
               comment: |
                 PI TI
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_5_pi_sp
@@ -1380,13 +1546,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 15-0
               description: PI SP
               comment: |
                 PI SP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-16
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_5_dac
@@ -1427,8 +1603,8 @@ memory-map:
               comment: |
                 reserved
               x-wbgen:
-                access_bus: READ_WRITE
-                access_dev: READ_ONLY
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
                 clock: dac_master_clk_i
 
@@ -1570,13 +1746,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI KP
               comment: |
                 PI KP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_6_pi_ti
@@ -1589,13 +1775,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI TI
               comment: |
                 PI TI
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_6_pi_sp
@@ -1608,13 +1804,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 15-0
               description: PI SP
               comment: |
                 PI SP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-16
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_6_dac
@@ -1655,8 +1861,8 @@ memory-map:
               comment: |
                 reserved
               x-wbgen:
-                access_bus: READ_WRITE
-                access_dev: READ_ONLY
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
                 clock: dac_master_clk_i
 
@@ -1798,13 +2004,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI KP
               comment: |
                 PI KP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_7_pi_ti
@@ -1817,13 +2033,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI TI
               comment: |
                 PI TI
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_7_pi_sp
@@ -1836,13 +2062,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 15-0
               description: PI SP
               comment: |
                 PI SP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-16
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_7_dac
@@ -1883,8 +2119,8 @@ memory-map:
               comment: |
                 reserved
               x-wbgen:
-                access_bus: READ_WRITE
-                access_dev: READ_ONLY
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
                 clock: dac_master_clk_i
 
@@ -2026,13 +2262,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI KP
               comment: |
                 PI KP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_8_pi_ti
@@ -2045,13 +2291,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI TI
               comment: |
                 PI TI
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_8_pi_sp
@@ -2064,13 +2320,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 15-0
               description: PI SP
               comment: |
                 PI SP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-16
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_8_dac
@@ -2111,8 +2377,8 @@ memory-map:
               comment: |
                 reserved
               x-wbgen:
-                access_bus: READ_WRITE
-                access_dev: READ_ONLY
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
                 clock: dac_master_clk_i
 
@@ -2254,13 +2520,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI KP
               comment: |
                 PI KP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_9_pi_ti
@@ -2273,13 +2549,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI TI
               comment: |
                 PI TI
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_9_pi_sp
@@ -2292,13 +2578,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 15-0
               description: PI SP
               comment: |
                 PI SP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-16
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_9_dac
@@ -2339,8 +2635,8 @@ memory-map:
               comment: |
                 reserved
               x-wbgen:
-                access_bus: READ_WRITE
-                access_dev: READ_ONLY
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
                 clock: dac_master_clk_i
 
@@ -2482,13 +2778,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI KP
               comment: |
                 PI KP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_10_pi_ti
@@ -2501,13 +2807,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI TI
               comment: |
                 PI TI
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_10_pi_sp
@@ -2520,13 +2836,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 15-0
               description: PI SP
               comment: |
                 PI SP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-16
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_10_dac
@@ -2567,8 +2893,8 @@ memory-map:
               comment: |
                 reserved
               x-wbgen:
-                access_bus: READ_WRITE
-                access_dev: READ_ONLY
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
                 clock: dac_master_clk_i
 
@@ -2710,13 +3036,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI KP
               comment: |
                 PI KP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_11_pi_ti
@@ -2729,13 +3065,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI TI
               comment: |
                 PI TI
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_11_pi_sp
@@ -2748,13 +3094,23 @@ memory-map:
         children:
           - field:
               name: data
-              range: 31-0
+              range: 15-0
               description: PI SP
               comment: |
                 PI SP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-16
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_11_dac
@@ -2795,8 +3151,8 @@ memory-map:
               comment: |
                 reserved
               x-wbgen:
-                access_bus: READ_WRITE
-                access_dev: READ_ONLY
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
                 clock: dac_master_clk_i
     - reg:

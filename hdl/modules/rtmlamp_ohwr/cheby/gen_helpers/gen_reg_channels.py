@@ -141,13 +141,23 @@ reg = Template(
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI KP
               comment: |
                 PI KP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_${CHAN_NUM}_pi_ti
@@ -160,13 +170,23 @@ reg = Template(
         children:
           - field:
               name: data
-              range: 31-0
+              range: 25-0
               description: PI TI
               comment: |
                 PI TI
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-26
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_${CHAN_NUM}_pi_sp
@@ -179,13 +199,23 @@ reg = Template(
         children:
           - field:
               name: data
-              range: 31-0
+              range: 15-0
               description: PI SP
               comment: |
                 PI SP
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
+                type: SLV
+          - field:
+              name: reserved
+              range: 31-16
+              description: reserved
+              comment: |
+                reserved
+              x-wbgen:
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
     - reg:
         name: ch_${CHAN_NUM}_dac
@@ -226,8 +256,8 @@ reg = Template(
               comment: |
                 reserved
               x-wbgen:
-                access_bus: READ_WRITE
-                access_dev: READ_ONLY
+                access_bus: READ_ONLY
+                access_dev: WRITE_ONLY
                 type: SLV
                 clock: dac_master_clk_i
 """
