@@ -56,8 +56,6 @@ generic (
   g_SERIAL_REG_SCLK_FREQ                     : natural := 100000;
   -- Number of AMP channels
   g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12;
-  -- Number of for PI coeficients
-  g_PI_COEFF_BITS                            : natural := 26;
   -- Number od ADC bits
   g_ADC_BITS                                 : natural := 16;
   -- Use Chipscope or not
@@ -155,18 +153,18 @@ port (
   -- DAC parallel interface
   ---------------------------------------------------------------------------
   dac_start_i                                : in   std_logic;
-  dac_data_i                                 : in   std_logic_vector(16*g_ADC_CHANNELS-1 downto 0);
+  dac_data_i                                 : in   std_logic_vector(16*g_DAC_CHANNELS-1 downto 0);
   dac_ready_o                                : out  std_logic;
   dac_done_pp_o                              : out  std_logic;
 
   dbg_dac_start_o                            : out  std_logic;
-  dbg_dac_data_o                             : out  std_logic_vector(16*g_ADC_CHANNELS-1 downto 0);
+  dbg_dac_data_o                             : out  std_logic_vector(16*g_DAC_CHANNELS-1 downto 0);
 
   ---------------------------------------------------------------------------
   -- PI parameters
   ---------------------------------------------------------------------------
   -- debug output to monitor PI Setpoint
-  dbg_pi_ctrl_sp_o                           : out  std_logic_vector(16*g_ADC_CHANNELS-1 downto 0)
+  dbg_pi_ctrl_sp_o                           : out  std_logic_vector(16*g_DAC_CHANNELS-1 downto 0)
 );
 end wb_rtmlamp_ohwr;
 
@@ -179,7 +177,7 @@ architecture rtl of wb_rtmlamp_ohwr is
   signal dac_data                            : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
 
   signal dbg_dac_data                        : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
-  signal dbg_pi_ctrl_sp                      : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal dbg_pi_ctrl_sp                      : t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
 
 begin
 
@@ -211,7 +209,10 @@ begin
     g_DAC_SCLK_FREQ                            => g_DAC_SCLK_FREQ,
     g_DAC_CHANNELS                             => g_DAC_CHANNELS,
     g_SERIAL_REG_SCLK_FREQ                     => g_SERIAL_REG_SCLK_FREQ,
-    g_SERIAL_REGS_AMP_CHANNELS                 => g_SERIAL_REGS_AMP_CHANNELS
+    g_SERIAL_REGS_AMP_CHANNELS                 => g_SERIAL_REGS_AMP_CHANNELS,
+    g_ADC_BITS                                 => g_ADC_BITS,
+    g_WITH_CHIPSCOPE                           => g_WITH_CHIPSCOPE,
+    g_WITH_VIO                                 => g_WITH_VIO
   )
   port map (
     ---------------------------------------------------------------------------
@@ -309,13 +310,16 @@ begin
   );
 
   gen_adc_plain_data : for i in 0 to g_ADC_CHANNELS-1 generate
-    adc_data_o(16*(i+1)-1 downto 16*i)       <= adc_data(i);
-    dbg_dac_data_o(16*(i+1)-1 downto 16*i)   <= dbg_dac_data(i);
-    dbg_pi_ctrl_sp_o(16*(i+1)-1 downto 16*i) <= dbg_pi_ctrl_sp(i);
+    adc_data_o(adc_data(i)'length*(i+1)-1 downto adc_data(i)'length*i)
+      <= adc_data(i);
+    dbg_dac_data_o(dbg_dac_data(i)'length*(i+1)-1 downto dbg_dac_data(i)'length*i)
+      <= dbg_dac_data(i);
+    dbg_pi_ctrl_sp_o(dbg_pi_ctrl_sp(i)'length*(i+1)-1 downto dbg_pi_ctrl_sp(i)'length*i)
+      <= dbg_pi_ctrl_sp(i);
   end generate;
 
   gen_dac_plain_data : for i in 0 to g_DAC_CHANNELS-1 generate
-    dac_data(i) <= dac_data_i(16*(i+1)-1 downto 16*i);
+    dac_data(i) <= dac_data_i(dac_data(i)'length*(i+1)-1 downto dac_data(i)'length*i);
   end generate;
 
 end rtl;

@@ -58,8 +58,6 @@ generic (
   g_SERIAL_REG_SCLK_FREQ                     : natural := 100000;
   -- Number of AMP channels
   g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12;
-  -- Number of for PI coeficients
-  g_PI_COEFF_BITS                            : natural := 26;
   -- Number od ADC bits
   g_ADC_BITS                                 : natural := 16;
   -- Use Chipscope or not
@@ -160,7 +158,7 @@ port (
   ---------------------------------------------------------------------------
 
   -- debug output to monitor PI Setpoint
-  dbg_pi_ctrl_sp_o                           : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0)
+  dbg_pi_ctrl_sp_o                           : out  t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0)
 );
 end xwb_rtmlamp_ohwr;
 
@@ -189,6 +187,10 @@ architecture rtl of xwb_rtmlamp_ohwr is
   signal amp_tflag_r                         : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
   signal amp_en_ch                           : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
 
+  signal pi_sp_ch                            : t_pi_sp_word_array(c_MAX_CHANNELS-1 downto 0) := (others => (others => '0'));
+  signal pi_kp_ch                            : t_pi_coeff_word_array(c_MAX_CHANNELS-1 downto 0) := (others => (others => '0'));
+  signal pi_ti_ch                            : t_pi_coeff_word_array(c_MAX_CHANNELS-1 downto 0) := (others => (others => '0'));
+
   signal pi_ol_mode_triang_enable            : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
   signal pi_ol_mode_square_enable            : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
   signal pi_sp_lim_inf                       : std_logic_vector(g_ADC_BITS-1 downto 0) := (others => '0');
@@ -213,9 +215,9 @@ architecture rtl of xwb_rtmlamp_ohwr is
     ctl_pi_enable             : std_logic;
     dac_data                  : t_16b_word;
     dac_wr                    : std_logic;
-    pi_kp                     : std_logic_vector(31 downto 0);
-    pi_ti                     : std_logic_vector(31 downto 0);
-    pi_sp                     : std_logic_vector(31 downto 0);
+    pi_kp                     : std_logic_vector(c_PI_COEFF_BITS-1 downto 0);
+    pi_ti                     : std_logic_vector(c_PI_COEFF_BITS-1 downto 0);
+    pi_sp                     : std_logic_vector(c_PI_SP_BITS-1 downto 0);
   end record;
 
   type wb_channel_out_regs_array is array(natural range <>) of wb_channel_out_regs;
@@ -374,7 +376,7 @@ begin
     port map (
       rst_n_i                                           => rst_n_i,
       clk_sys_i                                         => clk_i,
-      wb_adr_i                                          => wb_slv_adp_out.adr(6 downto 0),
+      wb_adr_i                                          => wb_slv_adp_out.adr(7 downto 0),
       wb_dat_i                                          => wb_slv_adp_out.dat,
       wb_dat_o                                          => wb_slv_adp_in.dat,
       wb_cyc_i                                          => wb_slv_adp_out.cyc,
@@ -388,9 +390,6 @@ begin
       rtmlamp_ohwr_regs_sta_reserved_i                  => (others => '0'),
 
       rtmlamp_ohwr_regs_ctl_dac_data_from_wb_o          => wb_regs_out.dac_data_from_wb,
-      rtmlamp_ohwr_regs_pi_kp_data_o                    => wb_regs_out.pi_kp,
-      rtmlamp_ohwr_regs_pi_ti_data_o                    => wb_regs_out.pi_ti,
-      rtmlamp_ohwr_regs_pi_sp_data_o                    => wb_regs_out.pi_sp,
       rtmlamp_ohwr_regs_pi_sp_lim_inf_data_o            => wb_regs_out.pi_sp_lim_inf,
       rtmlamp_ohwr_regs_ctl_reserved_i                  => (others => '0'),
 
@@ -407,7 +406,11 @@ begin
       rtmlamp_ohwr_regs_ch_0_pi_kp_data_o               => wb_regs_channel_out(0).pi_kp,
       rtmlamp_ohwr_regs_ch_0_pi_ti_data_o               => wb_regs_channel_out(0).pi_ti,
       rtmlamp_ohwr_regs_ch_0_pi_sp_data_o               => wb_regs_channel_out(0).pi_sp,
+      rtmlamp_ohwr_regs_ch_0_pi_kp_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_0_pi_ti_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_0_pi_sp_reserved_i           => (others => '0'),
       rtmlamp_ohwr_regs_ch_0_dac_data_o                 => wb_regs_channel_out(0).dac_data,
+      rtmlamp_ohwr_regs_ch_0_dac_reserved_i             => (others => '0'),
       rtmlamp_ohwr_regs_ch_0_dac_wr_o                   => wb_regs_channel_out(0).dac_wr,
       rtmlamp_ohwr_regs_ch_1_sta_amp_iflag_l_i          => wb_regs_channel_in(1).sta_amp_iflag_l,
       rtmlamp_ohwr_regs_ch_1_sta_amp_tflag_l_i          => wb_regs_channel_in(1).sta_amp_tflag_l,
@@ -422,7 +425,11 @@ begin
       rtmlamp_ohwr_regs_ch_1_pi_kp_data_o               => wb_regs_channel_out(1).pi_kp,
       rtmlamp_ohwr_regs_ch_1_pi_ti_data_o               => wb_regs_channel_out(1).pi_ti,
       rtmlamp_ohwr_regs_ch_1_pi_sp_data_o               => wb_regs_channel_out(1).pi_sp,
+      rtmlamp_ohwr_regs_ch_1_pi_kp_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_1_pi_ti_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_1_pi_sp_reserved_i           => (others => '0'),
       rtmlamp_ohwr_regs_ch_1_dac_data_o                 => wb_regs_channel_out(1).dac_data,
+      rtmlamp_ohwr_regs_ch_1_dac_reserved_i             => (others => '0'),
       rtmlamp_ohwr_regs_ch_1_dac_wr_o                   => wb_regs_channel_out(1).dac_wr,
       rtmlamp_ohwr_regs_ch_2_sta_amp_iflag_l_i          => wb_regs_channel_in(2).sta_amp_iflag_l,
       rtmlamp_ohwr_regs_ch_2_sta_amp_tflag_l_i          => wb_regs_channel_in(2).sta_amp_tflag_l,
@@ -437,7 +444,11 @@ begin
       rtmlamp_ohwr_regs_ch_2_pi_kp_data_o               => wb_regs_channel_out(2).pi_kp,
       rtmlamp_ohwr_regs_ch_2_pi_ti_data_o               => wb_regs_channel_out(2).pi_ti,
       rtmlamp_ohwr_regs_ch_2_pi_sp_data_o               => wb_regs_channel_out(2).pi_sp,
+      rtmlamp_ohwr_regs_ch_2_pi_kp_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_2_pi_ti_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_2_pi_sp_reserved_i           => (others => '0'),
       rtmlamp_ohwr_regs_ch_2_dac_data_o                 => wb_regs_channel_out(2).dac_data,
+      rtmlamp_ohwr_regs_ch_2_dac_reserved_i             => (others => '0'),
       rtmlamp_ohwr_regs_ch_2_dac_wr_o                   => wb_regs_channel_out(2).dac_wr,
       rtmlamp_ohwr_regs_ch_3_sta_amp_iflag_l_i          => wb_regs_channel_in(3).sta_amp_iflag_l,
       rtmlamp_ohwr_regs_ch_3_sta_amp_tflag_l_i          => wb_regs_channel_in(3).sta_amp_tflag_l,
@@ -452,7 +463,11 @@ begin
       rtmlamp_ohwr_regs_ch_3_pi_kp_data_o               => wb_regs_channel_out(3).pi_kp,
       rtmlamp_ohwr_regs_ch_3_pi_ti_data_o               => wb_regs_channel_out(3).pi_ti,
       rtmlamp_ohwr_regs_ch_3_pi_sp_data_o               => wb_regs_channel_out(3).pi_sp,
+      rtmlamp_ohwr_regs_ch_3_pi_kp_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_3_pi_ti_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_3_pi_sp_reserved_i           => (others => '0'),
       rtmlamp_ohwr_regs_ch_3_dac_data_o                 => wb_regs_channel_out(3).dac_data,
+      rtmlamp_ohwr_regs_ch_3_dac_reserved_i             => (others => '0'),
       rtmlamp_ohwr_regs_ch_3_dac_wr_o                   => wb_regs_channel_out(3).dac_wr,
       rtmlamp_ohwr_regs_ch_4_sta_amp_iflag_l_i          => wb_regs_channel_in(4).sta_amp_iflag_l,
       rtmlamp_ohwr_regs_ch_4_sta_amp_tflag_l_i          => wb_regs_channel_in(4).sta_amp_tflag_l,
@@ -467,7 +482,11 @@ begin
       rtmlamp_ohwr_regs_ch_4_pi_kp_data_o               => wb_regs_channel_out(4).pi_kp,
       rtmlamp_ohwr_regs_ch_4_pi_ti_data_o               => wb_regs_channel_out(4).pi_ti,
       rtmlamp_ohwr_regs_ch_4_pi_sp_data_o               => wb_regs_channel_out(4).pi_sp,
+      rtmlamp_ohwr_regs_ch_4_pi_kp_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_4_pi_ti_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_4_pi_sp_reserved_i           => (others => '0'),
       rtmlamp_ohwr_regs_ch_4_dac_data_o                 => wb_regs_channel_out(4).dac_data,
+      rtmlamp_ohwr_regs_ch_4_dac_reserved_i             => (others => '0'),
       rtmlamp_ohwr_regs_ch_4_dac_wr_o                   => wb_regs_channel_out(4).dac_wr,
       rtmlamp_ohwr_regs_ch_5_sta_amp_iflag_l_i          => wb_regs_channel_in(5).sta_amp_iflag_l,
       rtmlamp_ohwr_regs_ch_5_sta_amp_tflag_l_i          => wb_regs_channel_in(5).sta_amp_tflag_l,
@@ -482,7 +501,11 @@ begin
       rtmlamp_ohwr_regs_ch_5_pi_kp_data_o               => wb_regs_channel_out(5).pi_kp,
       rtmlamp_ohwr_regs_ch_5_pi_ti_data_o               => wb_regs_channel_out(5).pi_ti,
       rtmlamp_ohwr_regs_ch_5_pi_sp_data_o               => wb_regs_channel_out(5).pi_sp,
+      rtmlamp_ohwr_regs_ch_5_pi_kp_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_5_pi_ti_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_5_pi_sp_reserved_i           => (others => '0'),
       rtmlamp_ohwr_regs_ch_5_dac_data_o                 => wb_regs_channel_out(5).dac_data,
+      rtmlamp_ohwr_regs_ch_5_dac_reserved_i             => (others => '0'),
       rtmlamp_ohwr_regs_ch_5_dac_wr_o                   => wb_regs_channel_out(5).dac_wr,
       rtmlamp_ohwr_regs_ch_6_sta_amp_iflag_l_i          => wb_regs_channel_in(6).sta_amp_iflag_l,
       rtmlamp_ohwr_regs_ch_6_sta_amp_tflag_l_i          => wb_regs_channel_in(6).sta_amp_tflag_l,
@@ -497,7 +520,11 @@ begin
       rtmlamp_ohwr_regs_ch_6_pi_kp_data_o               => wb_regs_channel_out(6).pi_kp,
       rtmlamp_ohwr_regs_ch_6_pi_ti_data_o               => wb_regs_channel_out(6).pi_ti,
       rtmlamp_ohwr_regs_ch_6_pi_sp_data_o               => wb_regs_channel_out(6).pi_sp,
+      rtmlamp_ohwr_regs_ch_6_pi_kp_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_6_pi_ti_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_6_pi_sp_reserved_i           => (others => '0'),
       rtmlamp_ohwr_regs_ch_6_dac_data_o                 => wb_regs_channel_out(6).dac_data,
+      rtmlamp_ohwr_regs_ch_6_dac_reserved_i             => (others => '0'),
       rtmlamp_ohwr_regs_ch_6_dac_wr_o                   => wb_regs_channel_out(6).dac_wr,
       rtmlamp_ohwr_regs_ch_7_sta_amp_iflag_l_i          => wb_regs_channel_in(7).sta_amp_iflag_l,
       rtmlamp_ohwr_regs_ch_7_sta_amp_tflag_l_i          => wb_regs_channel_in(7).sta_amp_tflag_l,
@@ -512,7 +539,11 @@ begin
       rtmlamp_ohwr_regs_ch_7_pi_kp_data_o               => wb_regs_channel_out(7).pi_kp,
       rtmlamp_ohwr_regs_ch_7_pi_ti_data_o               => wb_regs_channel_out(7).pi_ti,
       rtmlamp_ohwr_regs_ch_7_pi_sp_data_o               => wb_regs_channel_out(7).pi_sp,
+      rtmlamp_ohwr_regs_ch_7_pi_kp_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_7_pi_ti_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_7_pi_sp_reserved_i           => (others => '0'),
       rtmlamp_ohwr_regs_ch_7_dac_data_o                 => wb_regs_channel_out(7).dac_data,
+      rtmlamp_ohwr_regs_ch_7_dac_reserved_i             => (others => '0'),
       rtmlamp_ohwr_regs_ch_7_dac_wr_o                   => wb_regs_channel_out(7).dac_wr,
       rtmlamp_ohwr_regs_ch_8_sta_amp_iflag_l_i          => wb_regs_channel_in(8).sta_amp_iflag_l,
       rtmlamp_ohwr_regs_ch_8_sta_amp_tflag_l_i          => wb_regs_channel_in(8).sta_amp_tflag_l,
@@ -527,7 +558,11 @@ begin
       rtmlamp_ohwr_regs_ch_8_pi_kp_data_o               => wb_regs_channel_out(8).pi_kp,
       rtmlamp_ohwr_regs_ch_8_pi_ti_data_o               => wb_regs_channel_out(8).pi_ti,
       rtmlamp_ohwr_regs_ch_8_pi_sp_data_o               => wb_regs_channel_out(8).pi_sp,
+      rtmlamp_ohwr_regs_ch_8_pi_kp_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_8_pi_ti_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_8_pi_sp_reserved_i           => (others => '0'),
       rtmlamp_ohwr_regs_ch_8_dac_data_o                 => wb_regs_channel_out(8).dac_data,
+      rtmlamp_ohwr_regs_ch_8_dac_reserved_i             => (others => '0'),
       rtmlamp_ohwr_regs_ch_8_dac_wr_o                   => wb_regs_channel_out(8).dac_wr,
       rtmlamp_ohwr_regs_ch_9_sta_amp_iflag_l_i          => wb_regs_channel_in(9).sta_amp_iflag_l,
       rtmlamp_ohwr_regs_ch_9_sta_amp_tflag_l_i          => wb_regs_channel_in(9).sta_amp_tflag_l,
@@ -542,7 +577,11 @@ begin
       rtmlamp_ohwr_regs_ch_9_pi_kp_data_o               => wb_regs_channel_out(9).pi_kp,
       rtmlamp_ohwr_regs_ch_9_pi_ti_data_o               => wb_regs_channel_out(9).pi_ti,
       rtmlamp_ohwr_regs_ch_9_pi_sp_data_o               => wb_regs_channel_out(9).pi_sp,
+      rtmlamp_ohwr_regs_ch_9_pi_kp_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_9_pi_ti_reserved_i           => (others => '0'),
+      rtmlamp_ohwr_regs_ch_9_pi_sp_reserved_i           => (others => '0'),
       rtmlamp_ohwr_regs_ch_9_dac_data_o                 => wb_regs_channel_out(9).dac_data,
+      rtmlamp_ohwr_regs_ch_9_dac_reserved_i             => (others => '0'),
       rtmlamp_ohwr_regs_ch_9_dac_wr_o                   => wb_regs_channel_out(9).dac_wr,
       rtmlamp_ohwr_regs_ch_10_sta_amp_iflag_l_i         => wb_regs_channel_in(10).sta_amp_iflag_l,
       rtmlamp_ohwr_regs_ch_10_sta_amp_tflag_l_i         => wb_regs_channel_in(10).sta_amp_tflag_l,
@@ -557,7 +596,11 @@ begin
       rtmlamp_ohwr_regs_ch_10_pi_kp_data_o              => wb_regs_channel_out(10).pi_kp,
       rtmlamp_ohwr_regs_ch_10_pi_ti_data_o              => wb_regs_channel_out(10).pi_ti,
       rtmlamp_ohwr_regs_ch_10_pi_sp_data_o              => wb_regs_channel_out(10).pi_sp,
+      rtmlamp_ohwr_regs_ch_10_pi_kp_reserved_i          => (others => '0'),
+      rtmlamp_ohwr_regs_ch_10_pi_ti_reserved_i          => (others => '0'),
+      rtmlamp_ohwr_regs_ch_10_pi_sp_reserved_i          => (others => '0'),
       rtmlamp_ohwr_regs_ch_10_dac_data_o                => wb_regs_channel_out(10).dac_data,
+      rtmlamp_ohwr_regs_ch_10_dac_reserved_i            => (others => '0'),
       rtmlamp_ohwr_regs_ch_10_dac_wr_o                  => wb_regs_channel_out(10).dac_wr,
       rtmlamp_ohwr_regs_ch_11_sta_amp_iflag_l_i         => wb_regs_channel_in(11).sta_amp_iflag_l,
       rtmlamp_ohwr_regs_ch_11_sta_amp_tflag_l_i         => wb_regs_channel_in(11).sta_amp_tflag_l,
@@ -572,7 +615,11 @@ begin
       rtmlamp_ohwr_regs_ch_11_pi_kp_data_o              => wb_regs_channel_out(11).pi_kp,
       rtmlamp_ohwr_regs_ch_11_pi_ti_data_o              => wb_regs_channel_out(11).pi_ti,
       rtmlamp_ohwr_regs_ch_11_pi_sp_data_o              => wb_regs_channel_out(11).pi_sp,
+      rtmlamp_ohwr_regs_ch_11_pi_kp_reserved_i          => (others => '0'),
+      rtmlamp_ohwr_regs_ch_11_pi_ti_reserved_i          => (others => '0'),
+      rtmlamp_ohwr_regs_ch_11_pi_sp_reserved_i          => (others => '0'),
       rtmlamp_ohwr_regs_ch_11_dac_data_o                => wb_regs_channel_out(11).dac_data,
+      rtmlamp_ohwr_regs_ch_11_dac_reserved_i            => (others => '0'),
       rtmlamp_ohwr_regs_ch_11_dac_wr_o                  => wb_regs_channel_out(11).dac_wr,
 
       rtmlamp_ohwr_regs_pi_ol_dac_cnt_max_data_o        => wb_regs_out.pi_ol_dac_cnt_max,
@@ -590,7 +637,7 @@ begin
 
   -- Why can't this be nicer? All I want is a record with a record of arrays...
   -- I want to be able to do: rtmlamp_ohwr_regs_in.ch_sta[0].amp_iflag_l
-  gen_amp_flags : for i in 0 to c_MAX_CHANNELS-1 generate
+  gen_per_channel : for i in 0 to c_MAX_CHANNELS-1 generate
 
     wb_regs_channel_in(i).sta_amp_iflag_l  <= amp_iflag_l(i);
     wb_regs_channel_in(i).sta_amp_tflag_l  <= amp_tflag_l(i);
@@ -600,6 +647,10 @@ begin
     amp_en_ch(i)   <= wb_regs_channel_out(i).ctl_amp_en;
     dac_data_wb(i) <= wb_regs_channel_out(i).dac_data;
     dac_wr_wb(i)   <= wb_regs_channel_out(i).dac_wr;
+
+    pi_sp_ch(i)    <= wb_regs_channel_out(i).pi_sp;
+    pi_kp_ch(i)    <= wb_regs_channel_out(i).pi_kp;
+    pi_ti_ch(i)    <= wb_regs_channel_out(i).pi_ti;
 
   end generate;
 
@@ -630,7 +681,7 @@ begin
     g_DAC_CHANNELS                             => g_DAC_CHANNELS,
     g_SERIAL_REG_SCLK_FREQ                     => g_SERIAL_REG_SCLK_FREQ ,
     g_SERIAL_REGS_AMP_CHANNELS                 => g_SERIAL_REGS_AMP_CHANNELS,
-    g_PI_COEFF_BITS                            => g_PI_COEFF_BITS,
+    g_PI_COEFF_BITS                            => c_PI_COEFF_BITS,
     g_ADC_BITS                                 => g_ADC_BITS,
     g_WITH_CHIPSCOPE                           => g_WITH_CHIPSCOPE,
     g_WITH_VIO                                 => g_WITH_VIO
@@ -721,11 +772,11 @@ begin
     -- PI parameters
     ---------------------------------------------------------------------------
     -- Kp parameter
-    pi_kp_i                                    => wb_regs_out.pi_kp(g_PI_COEFF_BITS-1 downto 0),
+    pi_kp_i                                    => pi_kp_ch(g_DAC_CHANNELS-1 downto 0),
     -- Ti parameter
-    pi_ti_i                                    => wb_regs_out.pi_ti(g_PI_COEFF_BITS-1 downto 0),
+    pi_ti_i                                    => pi_ti_ch(g_DAC_CHANNELS-1 downto 0),
     -- Setpoint parameter
-    pi_sp_i                                    => wb_regs_out.pi_sp(g_ADC_BITS-1 downto 0),
+    pi_sp_i                                    => pi_sp_ch(g_DAC_CHANNELS-1 downto 0),
 
     -- select if we want a triangular wave directly at the DAC inputs. Limits defined by
     -- pi_sp_i and pi_sp_lim_inf_i
