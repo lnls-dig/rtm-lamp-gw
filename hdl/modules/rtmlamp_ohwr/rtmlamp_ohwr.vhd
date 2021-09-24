@@ -339,8 +339,12 @@ architecture rtl of rtmlamp_ohwr is
   signal dac_ol_valid_offset_from_triang     : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
   signal dac_mode_counter_max                : unsigned(21 downto 0);
   signal dac_period_counter                  : unsigned(21 downto 0);
-  signal dac_data_counter                    : signed(pi_sp'length-1 downto 0);
-  signal dac_data_counter_up                 : std_logic;
+
+  subtype t_dac_counter is  signed(pi_sp'length-1 downto 0);
+  type t_dac_counter_array is array(natural range <>) of t_dac_counter;
+
+  signal dac_data_counter                    : t_dac_counter_array(g_DAC_CHANNELS-1 downto 0);
+  signal dac_data_counter_up                 : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
 
   attribute MARK_DEBUG                       : string;
   attribute MARK_DEBUG of pi_kp              : signal is "TRUE";
@@ -962,13 +966,13 @@ begin
           pi_sp_from_square(i) <= (others => '0');
           pi_sp_from_square_valid(i) <= '0';
           pi_sp_from_square_max_min(i) <= '0';
-          dac_data_counter <= (others => '0');
-          dac_data_counter_up <= '1';
+          dac_data_counter(i) <= (others => '0');
+          dac_data_counter_up(i) <= '1';
         else
           if dac_period_counter = dac_mode_counter_max then
             dac_period_counter <= (others => '0');
             dac_valid_from_triang(i) <= '1';
-            dac_data_from_triang(i) <= std_logic_vector(dac_data_counter);
+            dac_data_from_triang(i) <= std_logic_vector(dac_data_counter(i));
 
             pi_sp_from_square_max_min(i) <= not pi_sp_from_square_max_min(i);
             pi_sp_from_square_valid(i) <= '1';
@@ -978,17 +982,17 @@ begin
               pi_sp_from_square(i) <= pi_sp_lim_inf;
             end if;
 
-            if dac_data_counter_up = '1' then
-              dac_data_counter <= dac_data_counter + 1;
-              if dac_data_counter = to_integer(signed(pi_sp(i))) then
-                dac_data_counter_up <= '0';
-                dac_data_counter <= dac_data_counter - 1;
+            if dac_data_counter_up(i) = '1' then
+              dac_data_counter(i) <= dac_data_counter(i) + 1;
+              if dac_data_counter(i) = to_integer(signed(pi_sp(i))) then
+                dac_data_counter_up(i) <= '0';
+                dac_data_counter(i) <= dac_data_counter(i) - 1;
               end if;
             else
-              dac_data_counter <= dac_data_counter - 1;
-              if dac_data_counter = to_integer(signed(pi_sp_lim_inf)) then
-                dac_data_counter_up <= '1';
-                dac_data_counter <= dac_data_counter + 1;
+              dac_data_counter(i) <= dac_data_counter(i) - 1;
+              if dac_data_counter(i) = to_integer(signed(pi_sp_lim_inf)) then
+                dac_data_counter_up(i) <= '1';
+                dac_data_counter(i) <= dac_data_counter(i) + 1;
               end if;
             end if;
 
