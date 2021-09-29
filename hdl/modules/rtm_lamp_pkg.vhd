@@ -17,6 +17,7 @@
 -------------------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 use work.wishbone_pkg.all;
 
@@ -27,12 +28,22 @@ package rtm_lamp_pkg is
   constant c_MAX_ADC_CHANNELS                : natural := 12;
   constant c_MAX_DAC_CHANNELS                : natural := 12;
 
+  -- Number of bits for PI coeficients. Must match register map!
+  constant c_PI_COEFF_BITS                   : natural := 26;
+  -- Number of bits for PI setpoint. Must match register map!
+  constant c_PI_SP_BITS                      : natural := 16;
+
   --------------------------------------------------------------------
   -- Types
   --------------------------------------------------------------------
   subtype t_16b_word is std_logic_vector(15 downto 0);
-
   type t_16b_word_array is array(natural range <>) of t_16b_word;
+
+  subtype t_pi_coeff_word is std_logic_vector(c_PI_COEFF_BITS-1 downto 0);
+  type t_pi_coeff_word_array is array(natural range <>) of t_pi_coeff_word;
+
+  subtype t_pi_sp_word is std_logic_vector(c_PI_SP_BITS-1 downto 0);
+  type t_pi_sp_word_array is array(natural range <>) of t_pi_sp_word;
 
   --------------------------------------------------------------------
   -- Components
@@ -112,6 +123,7 @@ package rtm_lamp_pkg is
     sck_ret_i                                : in  std_logic;
     ready_o                                  : out std_logic  := '0';
     done_pp_o                                : out std_logic;
+    done_cnv_pp_ref_sys_o                    : out std_logic;
     sdo1a_i                                  : in  std_logic;
     sdo2_i                                   : in  std_logic  := '0';
     sdo3b_i                                  : in  std_logic  := '0';
@@ -237,7 +249,15 @@ package rtm_lamp_pkg is
     -- Serial registers clock frequency [Hz]
     g_SERIAL_REG_SCLK_FREQ                     : natural := 100000;
     -- Number of AMP channels
-    g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12
+    g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12;
+    -- Number of for PI coeficients
+    g_PI_COEFF_BITS                            : natural := 26;
+    -- Number od ADC bits
+    g_ADC_BITS                                 : natural := 16;
+    -- Use Chipscope or not
+    g_WITH_CHIPSCOPE                           : boolean := false;
+    -- Use VIO or not
+    g_WITH_VIO                                 : boolean := false
   );
   port (
     ---------------------------------------------------------------------------
@@ -318,6 +338,42 @@ package rtm_lamp_pkg is
     dac_ready_o                                : out  std_logic;
     dac_done_pp_o                              : out  std_logic;
 
+    dbg_dac_start_o                            : out  std_logic;
+    dbg_dac_data_o                             : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+
+    ---------------------------------------------------------------------------
+    -- PI parameters
+    ---------------------------------------------------------------------------
+    -- Kp parameter
+    pi_kp_i                                    : in   t_pi_coeff_word_array(g_DAC_CHANNELS-1 downto 0);
+    -- Ti parameter
+    pi_ti_i                                    : in   t_pi_coeff_word_array(g_DAC_CHANNELS-1 downto 0);
+    -- Setpoint parameter
+    pi_sp_i                                    : in   t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
+
+    -- select if we want a triangular wave directly at the DAC inputs. Limits defined by
+    -- pi_sp_i and pi_sp_lim_inf_i
+    pi_ol_mode_triang_enable_i                 : in   std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+    -- select if we want a square wave directly at the DAC inputs. Limits defined by
+    -- pi_sp_i and pi_sp_lim_inf_i
+    pi_ol_mode_square_enable_i                 : in   std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+    -- defines the period of both triang/square modes in ADC clock ticks
+    pi_ol_dac_mode_counter_max_i               : in   unsigned(21 downto 0);
+    -- defines the other limit for triang/square modes. pi_sp_i being one and
+    -- pi_sp_lim_inf_i the other
+    pi_sp_lim_inf_i                            : in   std_logic_vector(g_ADC_BITS-1 downto 0);
+
+    -- select if we want a square wave at the PI inputs
+    pi_sp_mode_square_enable_i                 : in   std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+
+    -- enagble or disable PI controller. if pi_enable_i = 0, then dac_data_i/dac_start_i
+    -- takes effect and the RTM board can be controller in open_loop. Otherwise, pi_ol modes
+     -- take effect and lastly, if everything = 0, pi_sp_i takes effect to set PI setpoint
+    pi_enable_i                                : in   std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+
+    -- debug output to monitor PI Setpoint
+    dbg_pi_ctrl_sp_o                           : out  t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
+
     ---------------------------------------------------------------------------
     -- AMP parallel interface
     ---------------------------------------------------------------------------
@@ -363,7 +419,15 @@ package rtm_lamp_pkg is
     -- Serial registers clock frequency [Hz]
     g_SERIAL_REG_SCLK_FREQ                     : natural := 100000;
     -- Number of AMP channels
-    g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12
+    g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12;
+    -- Number of for PI coeficients
+    g_PI_COEFF_BITS                            : natural := 26;
+    -- Number od ADC bits
+    g_ADC_BITS                                 : natural := 16;
+    -- Use Chipscope or not
+    g_WITH_CHIPSCOPE                           : boolean := false;
+    -- Use VIO or not
+    g_WITH_VIO                                 : boolean := false
   );
   port (
     ---------------------------------------------------------------------------
@@ -457,7 +521,16 @@ package rtm_lamp_pkg is
     dac_start_i                                : in   std_logic;
     dac_data_i                                 : in   std_logic_vector(16*g_DAC_CHANNELS-1 downto 0);
     dac_ready_o                                : out  std_logic;
-    dac_done_pp_o                              : out  std_logic
+    dac_done_pp_o                              : out  std_logic;
+
+    dbg_dac_start_o                            : out  std_logic;
+    dbg_dac_data_o                             : out  std_logic_vector(16*g_DAC_CHANNELS-1 downto 0);
+
+    ---------------------------------------------------------------------------
+    -- PI parameters
+    ---------------------------------------------------------------------------
+    -- debug output to monitor PI Setpoint
+    dbg_pi_ctrl_sp_o                           : out  std_logic_vector(16*g_DAC_CHANNELS-1 downto 0)
   );
   end component;
 
@@ -491,7 +564,15 @@ package rtm_lamp_pkg is
     -- Serial registers clock frequency [Hz]
     g_SERIAL_REG_SCLK_FREQ                     : natural := 100000;
     -- Number of AMP channels
-    g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12
+    g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12;
+    -- Number of for PI coeficients
+    g_PI_COEFF_BITS                            : natural := 26;
+    -- Number od ADC bits
+    g_ADC_BITS                                 : natural := 16;
+    -- Use Chipscope or not
+    g_WITH_CHIPSCOPE                           : boolean := false;
+    -- Use VIO or not
+    g_WITH_VIO                                 : boolean := false
   );
   port (
     ---------------------------------------------------------------------------
@@ -576,7 +657,17 @@ package rtm_lamp_pkg is
     dac_start_i                                : in   std_logic;
     dac_data_i                                 : in   t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
     dac_ready_o                                : out  std_logic;
-    dac_done_pp_o                              : out  std_logic
+    dac_done_pp_o                              : out  std_logic;
+
+    dbg_dac_start_o                            : out  std_logic;
+    dbg_dac_data_o                             : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+
+    ---------------------------------------------------------------------------
+    -- PI parameters
+    ---------------------------------------------------------------------------
+
+    -- debug output to monitor PI Setpoint
+    dbg_pi_ctrl_sp_o                           : out  t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0)
   );
   end component;
 

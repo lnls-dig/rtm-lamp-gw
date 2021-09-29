@@ -23,7 +23,7 @@
 # <xdcgen_start>
 
 # This section has been generated automatically by xdcgen.py. Do not hand-modify if not really necessary.
-# Command used: ./xdcgen.py -c afc-v3 -m 0:rtm-lamp-ohwr-v1 afc_rtm_lamp_ohwr.xdc
+# Command used: ./xdcgen.py -c afc-v3 -m 0:rtm-lamp-ohwr-v1 afcv3_1_rtm_lamp_ohwr.xdc
 # xdcgen pin assignments for mezzanine rtm-lamp-ohwr-v1 slot 0
 set_property PACKAGE_PIN AA8 [get_ports rtmlamp_adc_cnv_o]
 set_property IOSTANDARD LVCMOS25 [get_ports rtmlamp_adc_cnv_o]

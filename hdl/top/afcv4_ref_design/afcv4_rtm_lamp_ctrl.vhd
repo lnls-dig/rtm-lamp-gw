@@ -50,10 +50,12 @@ use work.pcie_cntr_axi_pkg.all;
 -- RTM LAMP definitions
 use work.rtm_lamp_pkg.all;
 
-entity afc_rtm_lamp_ctrl is
+entity afcv4_rtm_lamp_ctrl is
 generic (
+  -- Number of ADC channels
+  g_ADC_CHANNELS                             : natural := 12;
   -- Number of DAC channels
-  g_DAC_CHANNELS                             : natural := 8
+  g_DAC_CHANNELS                             : natural := 12
 );
 port (
   ---------------------------------------------------------------------------
@@ -84,7 +86,8 @@ port (
   -- Trigger pins
   ---------------------------------------------------------------------------
   trig_dir_o                                 : out   std_logic_vector(c_NUM_TRIG-1 downto 0);
-  trig_b                                     : inout std_logic_vector(c_NUM_TRIG-1 downto 0);
+  trig_i                                     : in    std_logic_vector(c_NUM_TRIG-1 downto 0);
+  trig_o                                     : out   std_logic_vector(c_NUM_TRIG-1 downto 0);
 
   ---------------------------------------------------------------------------
   -- AFC Diagnostics
@@ -94,11 +97,6 @@ port (
   diag_spi_si_i                              : in std_logic := '0';
   diag_spi_so_o                              : out std_logic;
   diag_spi_clk_i                             : in std_logic := '0';
-
-  ---------------------------------------------------------------------------
-  -- ADN4604ASVZ
-  ---------------------------------------------------------------------------
-  adn4604_vadj2_clk_updt_n_o                 : out std_logic;
 
   ---------------------------------------------------------------------------
   -- AFC I2C.
@@ -185,14 +183,14 @@ port (
   rtmlamp_adc_octo_sdod_n_i                  : in    std_logic;
 
   -- Only used when g_ADC_CHANNELS > 8
-  -- rtmlamp_adc_quad_sck_p_o                   : out   std_logic;
-  -- rtmlamp_adc_quad_sck_n_o                   : out   std_logic;
-  -- rtmlamp_adc_quad_sck_ret_p_i               : in    std_logic := '0';
-  -- rtmlamp_adc_quad_sck_ret_n_i               : in    std_logic := '0';
-  -- rtmlamp_adc_quad_sdoa_p_i                  : in    std_logic := '0';
-  -- rtmlamp_adc_quad_sdoa_n_i                  : in    std_logic := '0';
-  -- rtmlamp_adc_quad_sdoc_p_i                  : in    std_logic := '0';
-  -- rtmlamp_adc_quad_sdoc_n_i                  : in    std_logic := '0';
+  rtmlamp_adc_quad_sck_p_o                   : out   std_logic;
+  rtmlamp_adc_quad_sck_n_o                   : out   std_logic;
+  rtmlamp_adc_quad_sck_ret_p_i               : in    std_logic := '0';
+  rtmlamp_adc_quad_sck_ret_n_i               : in    std_logic := '0';
+  rtmlamp_adc_quad_sdoa_p_i                  : in    std_logic := '0';
+  rtmlamp_adc_quad_sdoa_n_i                  : in    std_logic := '0';
+  rtmlamp_adc_quad_sdoc_p_i                  : in    std_logic := '0';
+  rtmlamp_adc_quad_sdoc_n_i                  : in    std_logic := '0';
 
   ---------------------------------------------------------------------------
   -- RTM DAC interface
@@ -205,19 +203,17 @@ port (
   ---------------------------------------------------------------------------
   -- RTM Serial registers interface
   ---------------------------------------------------------------------------
-  -- Unconnected in AFC v3.1
-  --
   rtmlamp_amp_shift_clk_o                    : out   std_logic;
-  -- rtmlamp_amp_shift_dout_i                   : in    std_logic;
-  -- rtmlamp_amp_shift_pl_o                     : out   std_logic;
+  rtmlamp_amp_shift_dout_i                   : in    std_logic;
+  rtmlamp_amp_shift_pl_o                     : out   std_logic;
 
-  -- rtmlamp_amp_shift_oe_n_o                   : out   std_logic;
+  rtmlamp_amp_shift_oe_n_o                   : out   std_logic;
   rtmlamp_amp_shift_din_o                    : out   std_logic;
   rtmlamp_amp_shift_str_o                    : out   std_logic
 );
-end entity afc_rtm_lamp_ctrl;
+end entity afcv4_rtm_lamp_ctrl;
 
-architecture top of afc_rtm_lamp_ctrl is
+architecture top of afcv4_rtm_lamp_ctrl is
 
   -----------------------------------------------------------------------------
   -- General constants
@@ -228,7 +224,7 @@ architecture top of afc_rtm_lamp_ctrl is
   constant c_ADC_SCLK_FREQ                   : natural := 100000000;
   constant c_DAC_SCLK_FREQ                   : natural := 25000000;
   constant c_USE_REF_CLOCK                   : boolean := true;
-  constant c_ADC_CHANNELS                    : natural := 8;
+  constant c_ADC_CHANNELS                    : natural := g_ADC_CHANNELS;
   constant c_DAC_CHANNELS                    : natural := g_DAC_CHANNELS;
 
   constant c_NUM_USER_IRQ                    : natural := 1;
@@ -264,6 +260,9 @@ architecture top of afc_rtm_lamp_ctrl is
 
   signal rtmlamp_dac_start                   : std_logic := '1';
   signal rtmlamp_dac_data                    : t_16b_word_array(c_DAC_CHANNELS-1 downto 0);
+  signal rtmlamp_dbg_dac_start               : std_logic;
+  signal rtmlamp_dbg_dac_data                : t_16b_word_array(c_DAC_CHANNELS-1 downto 0);
+  signal rtmlamp_dbg_pi_ctrl_sp              : t_pi_sp_word_array(c_DAC_CHANNELS-1 downto 0);
   signal rtmlamp_dac_ready                   : std_logic;
   signal rtmlamp_dac_done_pp                 : std_logic;
 
@@ -307,8 +306,8 @@ architecture top of afc_rtm_lamp_ctrl is
   constant c_ACQ_NUM_CHANNELS                : natural := 1; -- RTM_LAMP Acquisition
 
   constant c_FACQ_PARAMS_RTM_LAMP                 : t_facq_chan_param := (
-    width                                    => to_unsigned(256, c_ACQ_CHAN_CMPLT_WIDTH_LOG2),
-    num_atoms                                => to_unsigned(16, c_ACQ_NUM_ATOMS_WIDTH_LOG2),
+    width                                    => to_unsigned(512, c_ACQ_CHAN_CMPLT_WIDTH_LOG2),
+    num_atoms                                => to_unsigned(32, c_ACQ_NUM_ATOMS_WIDTH_LOG2),
     atom_width                               => to_unsigned(16, c_ACQ_ATOM_WIDTH_LOG2)
   );
 
@@ -460,6 +459,9 @@ begin
       g_WITH_SPI                               => false,
       g_WITH_AFC_SI57x                         => true,
       g_WITH_BOARD_I2C                         => true,
+      -- Select between tristate and bidirection triggers. AFCv3 and lower
+      -- has a tristate port and AFCv4 has bidirectional ones
+      g_TRIGGER_TRISTATE                       => false,
       g_ACQ_NUM_CORES                          => c_ACQ_NUM_CORES,
       g_TRIG_MUX_NUM_CORES                     => c_TRIG_MUX_NUM_CORES,
       g_USER_NUM_CORES                         => c_USER_NUM_CORES,
@@ -513,7 +515,8 @@ begin
       -- Trigger pins
       ---------------------------------------------------------------------------
       trig_dir_o                               => trig_dir_o,
-      trig_b                                   => trig_b,
+      trig_i                                   => trig_i,
+      trig_o                                   => trig_o,
 
       ---------------------------------------------------------------------------
       -- AFC Diagnostics
@@ -523,11 +526,6 @@ begin
       diag_spi_si_i                            => diag_spi_si_i,
       diag_spi_so_o                            => diag_spi_so_o,
       diag_spi_clk_i                           => diag_spi_clk_i,
-
-      ---------------------------------------------------------------------------
-      -- ADN4604ASVZ
-      ---------------------------------------------------------------------------
-      adn4604_vadj2_clk_updt_n_o               => adn4604_vadj2_clk_updt_n_o,
 
       ---------------------------------------------------------------------------
       -- AFC I2C.
@@ -788,14 +786,14 @@ begin
     adc_octo_sdod_n_i                          => rtmlamp_adc_octo_sdod_n_i,
 
     -- Only used when g_ADC_CHANNELS > 8
-    -- adc_quad_sck_p_o                           => rtmlamp_adc_quad_sck_p_o,
-    -- adc_quad_sck_p_o                           => rtmlamp_adc_quad_sck_n_o,
-    -- adc_quad_sck_ret_p_i                       => rtmlamp_adc_quad_sck_ret_p_i,
-    -- adc_quad_sck_ret_n_i                       => rtmlamp_adc_quad_sck_ret_n_i,
-    -- adc_quad_sdoa_p_i                          => rtmlamp_adc_quad_sdoa_p_i,
-    -- adc_quad_sdoa_n_i                          => rtmlamp_adc_quad_sdoa_n_i,
-    -- adc_quad_sdoc_p_i                          => rtmlamp_adc_quad_sdoc_p_i,
-    -- adc_quad_sdoc_n_i                          => rtmlamp_adc_quad_sdoc_n_i,
+    adc_quad_sck_p_o                           => rtmlamp_adc_quad_sck_p_o,
+    adc_quad_sck_n_o                           => rtmlamp_adc_quad_sck_n_o,
+    adc_quad_sck_ret_p_i                       => rtmlamp_adc_quad_sck_ret_p_i,
+    adc_quad_sck_ret_n_i                       => rtmlamp_adc_quad_sck_ret_n_i,
+    adc_quad_sdoa_p_i                          => rtmlamp_adc_quad_sdoa_p_i,
+    adc_quad_sdoa_n_i                          => rtmlamp_adc_quad_sdoa_n_i,
+    adc_quad_sdoc_p_i                          => rtmlamp_adc_quad_sdoc_p_i,
+    adc_quad_sdoc_n_i                          => rtmlamp_adc_quad_sdoc_n_i,
 
     ---------------------------------------------------------------------------
     -- RTM DAC interface
@@ -808,13 +806,11 @@ begin
     ---------------------------------------------------------------------------
     -- RTM Serial registers interface
     ---------------------------------------------------------------------------
-    -- Unconnected in AFC v3.1
-    --
     amp_shift_clk_o                            => rtmlamp_amp_shift_clk_o,
-    -- amp_shift_dout_i                           => rtmlamp_amp_shift_dout_i,
-    -- amp_shift_pl_o                             => rtmlamp_amp_shift_pl_o,
+    amp_shift_dout_i                           => rtmlamp_amp_shift_dout_i,
+    amp_shift_pl_o                             => rtmlamp_amp_shift_pl_o,
 
-    -- amp_shift_oe_n_o                           => rtmlamp_amp_shift_oe_n_o,
+    amp_shift_oe_n_o                           => rtmlamp_amp_shift_oe_n_o,
     amp_shift_din_o                            => rtmlamp_amp_shift_din_o,
     amp_shift_str_o                            => rtmlamp_amp_shift_str_o,
 
@@ -835,7 +831,11 @@ begin
     dac_start_i                                => rtmlamp_dac_start,
     dac_data_i                                 => rtmlamp_dac_data,
     dac_ready_o                                => rtmlamp_dac_ready,
-    dac_done_pp_o                              => rtmlamp_dac_done_pp
+    dac_done_pp_o                              => rtmlamp_dac_done_pp,
+
+    dbg_dac_start_o                            => rtmlamp_dbg_dac_start,
+    dbg_dac_data_o                             => rtmlamp_dbg_dac_data,
+    dbg_pi_ctrl_sp_o                           => rtmlamp_dbg_pi_ctrl_sp
   );
 
   ----------------------------------------------------------------------
@@ -854,7 +854,7 @@ begin
 
   -- RTM_LAMP data
 
-  gen_rtm_acq_data : for i in 0 to c_ADC_CHANNELS-1 generate
+  gen_rtm_acq_adc_data : for i in 0 to c_ADC_CHANNELS-1 generate
 
     acq_data(c_ACQ_CORE_0_ID)(
       (i+1)*to_integer(c_FACQ_CHANNELS(c_ACQ_RTM_LAMP_ID).atom_width)-1
@@ -864,16 +864,21 @@ begin
 
   end generate;
 
-  gen_rtm_acq_data_unused : for i in c_ADC_CHANNELS to
-      to_integer(c_FACQ_CHANNELS(c_ACQ_RTM_LAMP_ID).num_atoms)-1 generate
+  gen_rtm_acq_dac_data : for i in c_ADC_CHANNELS to c_ADC_CHANNELS+c_DAC_CHANNELS-1 generate
 
     acq_data(c_ACQ_CORE_0_ID)(
       (i+1)*to_integer(c_FACQ_CHANNELS(c_ACQ_RTM_LAMP_ID).atom_width)-1
       downto
       i*to_integer(c_FACQ_CHANNELS(c_ACQ_RTM_LAMP_ID).atom_width))
-    <= (others => '0');
+    <= rtmlamp_dbg_dac_data(i-c_ADC_CHANNELS);
 
   end generate;
+
+  acq_data(c_ACQ_CORE_0_ID)(
+      (c_ADC_CHANNELS+c_DAC_CHANNELS+1)*to_integer(c_FACQ_CHANNELS(c_ACQ_RTM_LAMP_ID).atom_width)-1
+      downto
+      (c_ADC_CHANNELS+c_DAC_CHANNELS)*to_integer(c_FACQ_CHANNELS(c_ACQ_RTM_LAMP_ID).atom_width))
+    <= rtmlamp_dbg_pi_ctrl_sp(0);
 
   acq_data_valid(c_ACQ_CORE_0_ID) <= rtmlamp_adc_valid(0);
 

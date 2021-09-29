@@ -28,7 +28,7 @@ end multi_dac_spi_ldac_tb;
 
 architecture multi_dac_spi_ldac_tb_arch of multi_dac_spi_ldac_tb is
   -- Frequency in Hz, Period in s
-  constant c_CLK_PERIOD : real := 5.0e-9;
+  constant c_CLK_PERIOD : real := 10.0e-9;
   constant c_CLK_PERIOD_HALF : real := c_CLK_PERIOD/2.0;
   constant c_CLK_FREQ : natural := integer(floor(1.0/c_CLK_PERIOD));
   constant c_SCLK_PERIOD : real := 40.0e-9;
@@ -110,13 +110,10 @@ begin
 
     dac_start <= '1';
     f_wait_until(clk, 2);
-    dac_start <= '0';
     f_wait_until(clk, 200);
     dac_data <= (x"5555", x"AAAA", x"8000", x"0001", others => x"BEEF");
     f_wait_until(clk, 2);
-    dac_start <= '1';
     f_wait_until(clk, 2);
-    dac_start <= '0';
     f_wait_until(clk, 200);
     std.env.finish;
   end process;

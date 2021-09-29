@@ -201,11 +201,13 @@ architecture ltc232x_readout_arch of ltc232x_readout is
   signal ch7_o_s: std_logic_vector(g_BITS-1 downto 0) := (others =>'0');
   signal ch8_o_s: std_logic_vector(g_BITS-1 downto 0) := (others =>'0');
 
-  signal sck_ret_pp       : std_logic;
-  signal sck_ret_reg_pp   : std_logic;
-  signal sdo_sync_in      : std_logic_vector(g_DATA_LINES-1 downto 0) := (others => '0');
-  signal sdo_sync_out     : std_logic_vector(g_DATA_LINES-1 downto 0) := (others => '0');
-  signal sdo_sync_reg_out : std_logic_vector(g_DATA_LINES-1 downto 0) := (others => '0');
+  signal sck_ret_pp            : std_logic;
+  signal sck_ret_reg_pp_pre    : std_logic;
+  signal sck_ret_reg_pp        : std_logic;
+  signal sdo_sync_in           : std_logic_vector(g_DATA_LINES-1 downto 0) := (others => '0');
+  signal sdo_sync_out          : std_logic_vector(g_DATA_LINES-1 downto 0) := (others => '0');
+  signal sdo_sync_reg_out_pre  : std_logic_vector(g_DATA_LINES-1 downto 0) := (others => '0');
+  signal sdo_sync_reg_out      : std_logic_vector(g_DATA_LINES-1 downto 0) := (others => '0');
 
   signal bit_cnt: integer range 0 to c_BITS_PER_LINE := 0;
   signal bit_read_cnt: integer range 0 to c_BITS_PER_LINE := 0;
@@ -231,20 +233,31 @@ begin
   cmp_sync_sck_ret : gc_sync_ffs
   port map (
     clk_i         => clk_fast_spi_i,
-    rst_n_i       => rst_fast_spi_n_i,
+    rst_n_i       => '1',
     data_i        => sck_ret_i,
     ppulse_o      => sck_ret_pp
   );
 
   -- additional regs to ease timing
+  cmp_sck_ret_reg_pre : gc_sync_register
+  generic map (
+    g_width         => 1
+  )
+  port map (
+    clk_i           => clk_fast_spi_i,
+    rst_n_a_i       => '1',
+    d_i(0)          => sck_ret_pp,
+    q_o(0)          => sck_ret_reg_pp_pre
+  );
+
   cmp_sck_ret_reg : gc_sync_register
   generic map (
     g_width         => 1
   )
   port map (
     clk_i           => clk_fast_spi_i,
-    rst_n_a_i       => rst_fast_spi_n_i,
-    d_i(0)          => sck_ret_pp,
+    rst_n_a_i       => '1',
+    d_i(0)          => sck_ret_reg_pp_pre,
     q_o(0)          => sck_ret_reg_pp
   );
 
@@ -273,21 +286,32 @@ begin
     cmp_sync_sdo : gc_sync_ffs
     port map (
       clk_i         => clk_fast_spi_i,
-      rst_n_i       => rst_fast_spi_n_i,
+      rst_n_i       => '1',
       data_i        => sdo_sync_in(i),
       synced_o      => sdo_sync_out(i)
     );
   end generate;
 
   -- additional regs to ease timing
+  cmp_sdo_reg_pre : gc_sync_register
+  generic map (
+    g_width         => g_DATA_LINES
+  )
+  port map (
+    clk_i           => clk_fast_spi_i,
+    rst_n_a_i       => '1',
+    d_i             => sdo_sync_out,
+    q_o             => sdo_sync_reg_out_pre
+  );
+
   cmp_sdo_reg : gc_sync_register
   generic map (
     g_width         => g_DATA_LINES
   )
   port map (
     clk_i           => clk_fast_spi_i,
-    rst_n_a_i       => rst_fast_spi_n_i,
-    d_i             => sdo_sync_out,
+    rst_n_a_i       => '1',
+    d_i             => sdo_sync_reg_out_pre,
     q_o             => sdo_sync_reg_out
   );
 
