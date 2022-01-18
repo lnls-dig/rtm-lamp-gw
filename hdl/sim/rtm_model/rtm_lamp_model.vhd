@@ -86,7 +86,7 @@ architecture rtm_lamp_model_arch of rtm_lamp_model is
   signal amp_en_ds : std_logic_vector(2 downto 0);
 
 begin
-  cmp_dac_ff: entity work.ffd             -- DAC LDAC synchronization flip-flop
+  cmp_adc_ff: entity work.ffd             -- ADC CNV synchronization flip-flop
     port map(
       clk_i => rtm_lamp_sync_clk_i,
       d_i => '1',
@@ -95,7 +95,7 @@ begin
       q_o => open
       );
 
-  cmp_adc_ff: entity work.ffd             -- ADC CNV synchronization flip-flop
+  cmp_dac_ff: entity work.ffd             -- DAC LDAC synchronization flip-flop
     port map(
       clk_i => rtm_lamp_sync_clk_i,
       d_i => '1',
