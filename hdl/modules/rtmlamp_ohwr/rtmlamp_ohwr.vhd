@@ -57,7 +57,7 @@ generic (
   g_SERIAL_REG_SCLK_FREQ                     : natural := 100000;
   -- Number of AMP channels
   g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12;
-  -- Number od ADC bits
+  -- Number of ADC bits
   g_ADC_BITS                                 : natural := 16;
   -- Use Chipscope or not
   g_WITH_CHIPSCOPE                           : boolean := false;

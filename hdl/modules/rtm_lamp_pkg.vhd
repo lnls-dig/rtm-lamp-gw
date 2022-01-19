@@ -250,9 +250,7 @@ package rtm_lamp_pkg is
     g_SERIAL_REG_SCLK_FREQ                     : natural := 100000;
     -- Number of AMP channels
     g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12;
-    -- Number of for PI coeficients
-    g_PI_COEFF_BITS                            : natural := 26;
-    -- Number od ADC bits
+    -- Number of ADC bits
     g_ADC_BITS                                 : natural := 16;
     -- Use Chipscope or not
     g_WITH_CHIPSCOPE                           : boolean := false;
@@ -420,8 +418,6 @@ package rtm_lamp_pkg is
     g_SERIAL_REG_SCLK_FREQ                     : natural := 100000;
     -- Number of AMP channels
     g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12;
-    -- Number of for PI coeficients
-    g_PI_COEFF_BITS                            : natural := 26;
     -- Number od ADC bits
     g_ADC_BITS                                 : natural := 16;
     -- Use Chipscope or not
@@ -565,8 +561,6 @@ package rtm_lamp_pkg is
     g_SERIAL_REG_SCLK_FREQ                     : natural := 100000;
     -- Number of AMP channels
     g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12;
-    -- Number of for PI coeficients
-    g_PI_COEFF_BITS                            : natural := 26;
     -- Number od ADC bits
     g_ADC_BITS                                 : natural := 16;
     -- Use Chipscope or not
