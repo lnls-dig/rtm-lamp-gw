@@ -305,7 +305,7 @@ begin
 
   gen_ref_clk_ready_cnv : if (g_USE_REF_CLK_CNV) generate
 
-    cmp_gc_sync_ffs : gc_sync
+    cmp_gc_sync_ffs_cnv : gc_sync
     port map (
       clk_i                                    => clk_i,
       rst_n_a_i                                => rst_n,
@@ -396,7 +396,7 @@ done_cnv_pp_ref_sys_o <= done_cnv_pp_ref_sys;
   sck_o <= sck;
   sck_ret <= sck_ret_i;
 
-  cmp_gc_sync_ffs : gc_sync
+  cmp_gc_sync_ffs_ready_redout : gc_sync
   port map (
     clk_i                                    => clk_fast_spi_i,
     rst_n_a_i                                => rst_fast_spi_n,

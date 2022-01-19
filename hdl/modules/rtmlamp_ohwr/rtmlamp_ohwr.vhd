@@ -562,7 +562,7 @@ begin
 
     -- RTM LTC2324 operates in LVDS mode, so we always acquire 4 channels
     -- with half the number of data lines (2 channels per data line)
-    cmp_ltc2320_acq: ltc232x_acq
+    cmp_ltc2324_acq: ltc232x_acq
       generic map(
         g_SYS_CLOCK_FREQ                     => g_SYS_CLOCK_FREQ,
         g_CLK_FAST_SPI_FREQ                  => g_CLK_FAST_SPI_FREQ,
