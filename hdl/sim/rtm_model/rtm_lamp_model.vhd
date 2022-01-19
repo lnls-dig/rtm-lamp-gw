@@ -104,10 +104,10 @@ begin
       q_o => open
       );
 
-  dac_to_voltage:                       -- Map dac output voltage from 0.0 <-> 4.0V to
-                                        -- -4.0 <-> 4.0V
+  dac_to_voltage:                       -- Map dac output voltage from 0.0 <-> g_DAC_REF
+                                        -- to -g_DAC_REF <-> g_DAC_REF
   for i in 0 to 11 generate
-    voltages(i) <= (voltages_dac(i) - 2.0) * 2.0;
+    voltages(i) <= (voltages_dac(i) - (g_DAC_REF / 2.0)) * 2.0;
   end generate;
 
   current_to_adc:                       -- Map input current from -1.0 <-> 1.0A to
