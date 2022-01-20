@@ -476,6 +476,7 @@ begin
   port map
   (
     clk_i                                     => clk_i,
+    rst_n_i                                   => rst_n_i,
     d_i                                       => adc_octo_raw_flat_data,
     we_i                                      => adc_octo_raw_flat_we,
 
@@ -623,6 +624,7 @@ begin
     port map
     (
       clk_i                                   => clk_i,
+      rst_n_i                                 => rst_n_i,
       d_i                                     => adc_quad_raw_flat_data,
       we_i                                    => adc_quad_raw_flat_we,
 
