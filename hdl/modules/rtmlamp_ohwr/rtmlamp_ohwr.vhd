@@ -958,7 +958,7 @@ begin
   ---------------------------------------------------------------------------
   gen_test_patterns : for i in 0 to g_DAC_CHANNELS-1 generate
 
-    p_patterns : process (clk_i)
+    p_patterns : process (clk_i, dac_period_counter, dac_mode_counter_max)
     begin
       if rising_edge(clk_i) then
         if rst_n_i = '0' then
