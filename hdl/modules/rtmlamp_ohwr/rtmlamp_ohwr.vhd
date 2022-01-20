@@ -340,7 +340,7 @@ architecture rtl of rtmlamp_ohwr is
   signal dac_mode_counter_max                : unsigned(21 downto 0);
   signal dac_period_counter                  : unsigned(21 downto 0);
 
-  subtype t_dac_counter is  signed(pi_sp'length-1 downto 0);
+  subtype t_dac_counter is  signed(pi_sp(0)'length-1 downto 0);
   type t_dac_counter_array is array(natural range <>) of t_dac_counter;
 
   signal dac_data_counter                    : t_dac_counter_array(g_DAC_CHANNELS-1 downto 0);
