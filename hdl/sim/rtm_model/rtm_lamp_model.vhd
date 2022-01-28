@@ -51,7 +51,7 @@ entity rtm_lamp_model is
     dac_ldac_i: in std_logic;          -- DAC load
     dac_cs_i: in std_logic;            -- DAC chip select
     dac_sck_i: in std_logic;           -- DAC data clock
-    dac_sdi_i: in std_logic_vector (0 to 11); -- DAC data input (12 channels)
+    dac_sdi_i: in std_logic_vector (11 downto 0); -- DAC data input (12 channels)
 
     shift_pl_i : in std_logic;         -- Amplifier shift registers parallel load
     shift_clk_i : in std_logic;        -- Amplifier shift registers clock
