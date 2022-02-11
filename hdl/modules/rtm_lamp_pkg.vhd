@@ -659,7 +659,9 @@ package rtm_lamp_pkg is
     ---------------------------------------------------------------------------
     -- PI parameters
     ---------------------------------------------------------------------------
-
+    -- External PI setpoint data. It is used when ch_x_ctl.pi_sp_source is set to
+    -- '1'
+    pi_sp_ext_i                                : in   t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
     -- debug output to monitor PI Setpoint
     dbg_pi_ctrl_sp_o                           : out  t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0)
   );
@@ -673,7 +675,7 @@ package rtm_lamp_pkg is
   constant c_xwb_rtm_lamp_regs_sdb : t_sdb_device := (
     abi_class     => x"0000",                   -- undocumented device
     abi_ver_major => x"01",
-    abi_ver_minor => x"00",
+    abi_ver_minor => x"01",
     wbd_endian    => c_sdb_endian_big,
     wbd_width     => x"4",                      -- 32-bit port granularity (0100)
     sdb_component => (

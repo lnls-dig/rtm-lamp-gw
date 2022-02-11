@@ -47,24 +47,34 @@ architecture xwb_rtmlamp_ohwr_tb_arch of xwb_rtmlamp_ohwr_tb is
     end loop;
   end procedure f_gen_clk;
 
-  constant c_SYS_CLOCK_FREQ                  : natural := 100000000;
-  constant c_REF_CLOCK_FREQ                  : natural := 100000000;
-  constant c_FAST_SPI_FREQ                   : natural := 400000000;
-  constant c_ADC_SCLK_FREQ                   : natural := 100000000;
-  constant c_DAC_SCLK_FREQ                   : natural := 25000000;
-  constant c_USE_REF_CLOCK                   : boolean := true;
-  constant c_ADC_CHANNELS                    : natural := 12;
-  constant c_DAC_CHANNELS                    : natural := 12;
+  procedure f_wait_cycles(signal   clk    : in std_logic;
+                          constant cycles : natural) is
+  begin
+    for i in 0 to cycles loop
+      wait until rising_edge(clk);
+    end loop;
+  end procedure f_wait_cycles;
 
-  signal clk_sys                             : std_logic := '0';
-  signal clk_sys_rstn                        : std_logic := '0';
-  signal clk_rtm_ref                         : std_logic := '0';
-  signal clk_rtm_ref_rstn                    : std_logic := '0';
-  signal clk_fast_spi                        : std_logic := '0';
-  signal clk_fast_spi_rstn                   : std_logic := '0';
+  constant c_SYS_CLOCK_FREQ      : natural := 100000000;
+  constant c_REF_CLOCK_FREQ      : natural := 100000000;
+  constant c_FAST_SPI_FREQ       : natural := 400000000;
+  constant c_ADC_SCLK_FREQ       : natural := 100000000;
+  constant c_DAC_SCLK_FREQ       : natural := 25000000;
+  constant c_USE_REF_CLOCK       : boolean := true;
+  constant c_ADC_CHANNELS        : natural := 12;
+  constant c_DAC_CHANNELS        : natural := 12;
 
-  signal wb_slave_i                          : t_wishbone_slave_in;
-  signal wb_slave_o                          : t_wishbone_slave_out;
+  signal clk_sys                 : std_logic := '0';
+  signal clk_sys_rstn            : std_logic := '0';
+  signal clk_rtm_ref             : std_logic := '0';
+  signal clk_rtm_ref_rstn        : std_logic := '0';
+  signal clk_fast_spi            : std_logic := '0';
+  signal clk_fast_spi_rstn       : std_logic := '0';
+
+  signal wb_slave_i              : t_wishbone_slave_in;
+  signal wb_slave_o              : t_wishbone_slave_out;
+
+  signal pi_sp_ext               : t_pi_sp_word_array(c_DAC_CHANNELS-1 downto 0) := (others => x"0000");
 begin
   f_gen_clk(c_SYS_CLOCK_FREQ, clk_sys);
   f_gen_clk(c_REF_CLOCK_FREQ, clk_rtm_ref);
@@ -74,11 +84,15 @@ begin
     variable data : std_logic_vector(31 downto 0);
   begin
     init(wb_slave_i);
-    wait for 100 ns;
+
+    -- Reset all cores
+    f_wait_cycles(clk_sys, 10);
+
     clk_sys_rstn <= '1';
     clk_rtm_ref_rstn <= '1';
     clk_fast_spi_rstn <= '1';
-    wait for 100 ns;
+
+    f_wait_cycles(clk_sys, 10);
 
     -- Enable CH0 amplifier (for now it has no effect, the amplifier is always
     -- enabled in the rtm_lamp_model)
@@ -121,7 +135,22 @@ begin
                (c_RTMLAMP_OHWR_REGS_CTL_DAC_DATA_FROM_WB_OFFSET => '0',
                 others => '0'));
 
-    wait for 20 us;
+    -- Wait for 10 us
+    f_wait_cycles(clk_sys, 1000);
+
+    -- Set CH0 setpoint source to external
+    write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_RTMLAMP_OHWR_REGS_CH_0_CTL_ADDR,
+               (c_RTMLAMP_OHWR_REGS_CH_0_CTL_AMP_EN_OFFSET => '1',
+                c_RTMLAMP_OHWR_REGS_CH_0_CTL_PI_ENABLE_OFFSET => '1',
+                c_RTMLAMP_OHWR_REGS_CH_0_CTL_PI_SP_SOURCE_OFFSET => '1',
+                others => '0'));
+
+    -- Set the external setpoint to 1000 for CH0
+    pi_sp_ext(0) <= std_logic_vector(to_signed(1000, 16));
+
+    -- Wait for 100 us
+    f_wait_cycles(clk_sys, 10000);
+
     std.env.finish;
   end process;
 
@@ -135,7 +164,9 @@ begin
       clk_fast_spi_rstn_i     => clk_fast_spi_rstn,
 
       wb_slave_i              => wb_slave_i,
-      wb_slave_o              => wb_slave_o
+      wb_slave_o              => wb_slave_o,
+
+      pi_sp_ext_i             => pi_sp_ext
       );
 
 end architecture xwb_rtmlamp_ohwr_tb_arch;

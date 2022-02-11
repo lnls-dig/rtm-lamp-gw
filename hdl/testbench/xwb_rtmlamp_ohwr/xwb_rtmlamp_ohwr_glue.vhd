@@ -33,84 +33,86 @@ use work.sim_wishbone.all;
 
 entity xwb_rtmlamp_ohwr_glue is
   generic(
-    g_SYS_CLOCK_FREQ                  : natural := 100000000;
-    g_REF_CLOCK_FREQ                  : natural := 100000000;
-    g_FAST_SPI_FREQ                   : natural := 400000000;
-    g_ADC_SCLK_FREQ                   : natural := 100000000;
-    g_DAC_SCLK_FREQ                   : natural := 25000000;
-    g_USE_REF_CLOCK                   : boolean := true;
-    g_ADC_CHANNELS                    : natural := 12;
-    g_DAC_CHANNELS                    : natural := 12
+    g_SYS_CLOCK_FREQ         : natural := 100000000;
+    g_REF_CLOCK_FREQ         : natural := 100000000;
+    g_FAST_SPI_FREQ          : natural := 400000000;
+    g_ADC_SCLK_FREQ          : natural := 100000000;
+    g_DAC_SCLK_FREQ          : natural := 25000000;
+    g_USE_REF_CLOCK          : boolean := true;
+    g_ADC_CHANNELS           : natural := 12;
+    g_DAC_CHANNELS           : natural := 12
     );
   port(
-    clk_sys_i                         : in  std_logic := '0';
-    clk_sys_rstn_i                    : in  std_logic := '0';
-    clk_rtm_ref_i                     : in  std_logic := '0';
-    clk_rtm_ref_rstn_i                : in  std_logic := '0';
-    clk_fast_spi_i                    : in  std_logic := '0';
-    clk_fast_spi_rstn_i               : in  std_logic := '0';
+    clk_sys_i                : in  std_logic := '0';
+    clk_sys_rstn_i           : in  std_logic := '0';
+    clk_rtm_ref_i            : in  std_logic := '0';
+    clk_rtm_ref_rstn_i       : in  std_logic := '0';
+    clk_fast_spi_i           : in  std_logic := '0';
+    clk_fast_spi_rstn_i      : in  std_logic := '0';
 
-    wb_slave_i                        : in  t_wishbone_slave_in;
-    wb_slave_o                        : out t_wishbone_slave_out
+    wb_slave_i               : in  t_wishbone_slave_in;
+    wb_slave_o               : out t_wishbone_slave_out;
+
+    pi_sp_ext_i              : in t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0) := (others => x"0000")
     );
 end entity xwb_rtmlamp_ohwr_glue;
 
 architecture xwb_rtmlamp_ohwr_glue_arch of xwb_rtmlamp_ohwr_glue is
-  signal adc_cnv                      : std_logic;
-  signal adc_octo_sck                 : std_logic;
-  signal adc_octo_sck_p               : std_logic;
-  signal adc_octo_sck_n               : std_logic;
-  signal adc_octo_sck_ret             : std_logic;
-  signal adc_octo_sck_ret_p           : std_logic;
-  signal adc_octo_sck_ret_n           : std_logic;
-  signal adc_octo_sdoa                : std_logic;
-  signal adc_octo_sdoa_p              : std_logic;
-  signal adc_octo_sdoa_n              : std_logic;
-  signal adc_octo_sdob                : std_logic;
-  signal adc_octo_sdob_p              : std_logic;
-  signal adc_octo_sdob_n              : std_logic;
-  signal adc_octo_sdoc                : std_logic;
-  signal adc_octo_sdoc_p              : std_logic;
-  signal adc_octo_sdoc_n              : std_logic;
-  signal adc_octo_sdod                : std_logic;
-  signal adc_octo_sdod_p              : std_logic;
-  signal adc_octo_sdod_n              : std_logic;
-  signal adc_quad_sck                 : std_logic;
-  signal adc_quad_sck_p               : std_logic;
-  signal adc_quad_sck_n               : std_logic;
-  signal adc_quad_sck_ret             : std_logic;
-  signal adc_quad_sck_ret_p           : std_logic;
-  signal adc_quad_sck_ret_n           : std_logic;
-  signal adc_quad_sdoa                : std_logic;
-  signal adc_quad_sdoa_p              : std_logic;
-  signal adc_quad_sdoa_n              : std_logic;
-  signal adc_quad_sdoc                : std_logic;
-  signal adc_quad_sdoc_p              : std_logic;
-  signal adc_quad_sdoc_n              : std_logic;
+  signal adc_cnv             : std_logic;
+  signal adc_octo_sck        : std_logic;
+  signal adc_octo_sck_p      : std_logic;
+  signal adc_octo_sck_n      : std_logic;
+  signal adc_octo_sck_ret    : std_logic;
+  signal adc_octo_sck_ret_p  : std_logic;
+  signal adc_octo_sck_ret_n  : std_logic;
+  signal adc_octo_sdoa       : std_logic;
+  signal adc_octo_sdoa_p     : std_logic;
+  signal adc_octo_sdoa_n     : std_logic;
+  signal adc_octo_sdob       : std_logic;
+  signal adc_octo_sdob_p     : std_logic;
+  signal adc_octo_sdob_n     : std_logic;
+  signal adc_octo_sdoc       : std_logic;
+  signal adc_octo_sdoc_p     : std_logic;
+  signal adc_octo_sdoc_n     : std_logic;
+  signal adc_octo_sdod       : std_logic;
+  signal adc_octo_sdod_p     : std_logic;
+  signal adc_octo_sdod_n     : std_logic;
+  signal adc_quad_sck        : std_logic;
+  signal adc_quad_sck_p      : std_logic;
+  signal adc_quad_sck_n      : std_logic;
+  signal adc_quad_sck_ret    : std_logic;
+  signal adc_quad_sck_ret_p  : std_logic;
+  signal adc_quad_sck_ret_n  : std_logic;
+  signal adc_quad_sdoa       : std_logic;
+  signal adc_quad_sdoa_p     : std_logic;
+  signal adc_quad_sdoa_n     : std_logic;
+  signal adc_quad_sdoc       : std_logic;
+  signal adc_quad_sdoc_p     : std_logic;
+  signal adc_quad_sdoc_n     : std_logic;
 
-  signal dac_ldac                     : std_logic;
-  signal dac_cs_n                     : std_logic;
-  signal dac_sck                      : std_logic;
-  signal dac_sdi                      : std_logic_vector(11 downto 0);
+  signal dac_ldac            : std_logic;
+  signal dac_cs_n            : std_logic;
+  signal dac_sck             : std_logic;
+  signal dac_sdi             : std_logic_vector(11 downto 0);
 
-  signal amp_shift_clk                : std_logic;
-  signal amp_shift_dout               : std_logic;
-  signal amp_shift_pl                 : std_logic;
-  signal amp_shift_oe_n               : std_logic;
-  signal amp_shift_din                : std_logic;
-  signal amp_shift_str                : std_logic;
+  signal amp_shift_clk       : std_logic;
+  signal amp_shift_dout      : std_logic;
+  signal amp_shift_pl        : std_logic;
+  signal amp_shift_oe_n      : std_logic;
+  signal amp_shift_din       : std_logic;
+  signal amp_shift_str       : std_logic;
 
-  signal adc_start                    : std_logic := '1';
-  signal adc_data                     : t_16b_word_array(g_ADC_CHANNELS-1 downto 0);
-  signal adc_valid                    : std_logic_vector(g_ADC_CHANNELS-1 downto 0);
+  signal adc_start           : std_logic := '1';
+  signal adc_data            : t_16b_word_array(g_ADC_CHANNELS-1 downto 0);
+  signal adc_valid           : std_logic_vector(g_ADC_CHANNELS-1 downto 0);
 
-  signal dac_start                    : std_logic := '1';
-  signal dac_data                     : t_16b_word_array(g_DAC_CHANNELS-1 downto 0) := (others => (others => '0'));
-  signal dac_ready                    : std_logic;
-  signal dac_done_pp                  : std_logic;
-  signal dbg_dac_data                 : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
-  signal dbg_dac_start                : std_logic;
-  signal dbg_pi_ctrl_sp               : t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal dac_start           : std_logic := '1';
+  signal dac_data            : t_16b_word_array(g_DAC_CHANNELS-1 downto 0) := (others => (others => '0'));
+  signal dac_ready           : std_logic;
+  signal dac_done_pp         : std_logic;
+  signal dbg_dac_data        : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal dbg_dac_start       : std_logic;
+  signal dbg_pi_ctrl_sp      : t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
 begin
 
   cmp_xwb_rtmlamp_ohwr : xwb_rtmlamp_ohwr
@@ -227,9 +229,16 @@ begin
       dac_ready_o                                => dac_ready,
       dac_done_pp_o                              => dac_done_pp,
 
+      ---------------------------------------------------------------------------
+      -- Debug signals
+      ---------------------------------------------------------------------------
       dbg_dac_start_o                            => dbg_dac_start,
       dbg_dac_data_o                             => dbg_dac_data,
-      dbg_pi_ctrl_sp_o                           => dbg_pi_ctrl_sp
+      dbg_pi_ctrl_sp_o                           => dbg_pi_ctrl_sp,
+
+      -- External PI setpoint data. It is used when ch_x_ctl.pi_sp_source is set
+      -- to '1'
+      pi_sp_ext_i                                => pi_sp_ext_i
       );
 
   -----------------------------------------------------------

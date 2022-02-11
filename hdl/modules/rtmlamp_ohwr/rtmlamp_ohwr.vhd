@@ -171,9 +171,9 @@ port (
   -- select if we want a square wave at the PI inputs
   pi_sp_mode_square_enable_i                 : in   std_logic_vector(g_DAC_CHANNELS-1 downto 0);
 
-  -- enagble or disable PI controller. if pi_enable_i = 0, then dac_data_i/dac_start_i
+  -- enable or disable PI controller. if pi_enable_i = 0, then dac_data_i/dac_start_i
   -- takes effect and the RTM board can be controller in open_loop. Otherwise, pi_ol modes
-   -- take effect and lastly, if everything = 0, pi_sp_i takes effect to set PI setpoint
+  -- take effect and lastly, if everything = 0, pi_sp_i takes effect to set PI setpoint
   pi_enable_i                                : in   std_logic_vector(g_DAC_CHANNELS-1 downto 0);
 
   -- debug output to monitor PI Setpoint

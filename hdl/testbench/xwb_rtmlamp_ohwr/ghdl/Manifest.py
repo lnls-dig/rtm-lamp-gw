@@ -6,6 +6,6 @@ top_module = "xwb_rtmlamp_ohwr_tb"
 
 modules = {"local" : ["../"]}
 
-ghdl_opt = "--std=08 -frelaxed"
+ghdl_opt = "--std=08 -g -frelaxed"
 
 sim_post_cmd = "ghdl -r --std=08 xwb_rtmlamp_ohwr_tb --wave=xwb_rtmlamp_ohwr_tb.ghw"

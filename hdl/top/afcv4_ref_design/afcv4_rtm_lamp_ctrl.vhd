@@ -817,7 +817,6 @@ begin
     ---------------------------------------------------------------------------
     -- FPGA interface
     ---------------------------------------------------------------------------
-
     ---------------------------------------------------------------------------
     -- ADC parallel interface
     ---------------------------------------------------------------------------
@@ -833,9 +832,16 @@ begin
     dac_ready_o                                => rtmlamp_dac_ready,
     dac_done_pp_o                              => rtmlamp_dac_done_pp,
 
+    ---------------------------------------------------------------------------
+    -- Debug signals
+    ---------------------------------------------------------------------------
     dbg_dac_start_o                            => rtmlamp_dbg_dac_start,
     dbg_dac_data_o                             => rtmlamp_dbg_dac_data,
-    dbg_pi_ctrl_sp_o                           => rtmlamp_dbg_pi_ctrl_sp
+    dbg_pi_ctrl_sp_o                           => rtmlamp_dbg_pi_ctrl_sp,
+
+    -- External PI setpoint data. It is used when ch_x_ctl.pi_sp_source is set
+    -- to '1'
+    pi_sp_ext_i                                => (others => (others => '0'))
   );
 
   ----------------------------------------------------------------------

@@ -17,6 +17,7 @@ package rtmlamp_ohwr_regs_consts_pkg is
   constant c_RTMLAMP_OHWR_REGS_CH_0_CTL_PI_OL_SQUARE_ENABLE_OFFSET : Natural := 2;
   constant c_RTMLAMP_OHWR_REGS_CH_0_CTL_PI_SP_SQUARE_ENABLE_OFFSET : Natural := 3;
   constant c_RTMLAMP_OHWR_REGS_CH_0_CTL_PI_ENABLE_OFFSET : Natural := 4;
+  constant c_RTMLAMP_OHWR_REGS_CH_0_CTL_PI_SP_SOURCE_OFFSET : Natural := 5;
   constant c_RTMLAMP_OHWR_REGS_CH_0_PI_KP_ADDR : Natural := 16#108#;
   constant c_RTMLAMP_OHWR_REGS_CH_0_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_RTMLAMP_OHWR_REGS_CH_0_PI_KP_RESERVED_OFFSET : Natural := 26;
@@ -42,6 +43,7 @@ package rtmlamp_ohwr_regs_consts_pkg is
   constant c_RTMLAMP_OHWR_REGS_CH_1_CTL_PI_OL_SQUARE_ENABLE_OFFSET : Natural := 2;
   constant c_RTMLAMP_OHWR_REGS_CH_1_CTL_PI_SP_SQUARE_ENABLE_OFFSET : Natural := 3;
   constant c_RTMLAMP_OHWR_REGS_CH_1_CTL_PI_ENABLE_OFFSET : Natural := 4;
+  constant c_RTMLAMP_OHWR_REGS_CH_1_CTL_PI_SP_SOURCE_OFFSET : Natural := 5;
   constant c_RTMLAMP_OHWR_REGS_CH_1_PI_KP_ADDR : Natural := 16#120#;
   constant c_RTMLAMP_OHWR_REGS_CH_1_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_RTMLAMP_OHWR_REGS_CH_1_PI_KP_RESERVED_OFFSET : Natural := 26;
@@ -67,6 +69,7 @@ package rtmlamp_ohwr_regs_consts_pkg is
   constant c_RTMLAMP_OHWR_REGS_CH_2_CTL_PI_OL_SQUARE_ENABLE_OFFSET : Natural := 2;
   constant c_RTMLAMP_OHWR_REGS_CH_2_CTL_PI_SP_SQUARE_ENABLE_OFFSET : Natural := 3;
   constant c_RTMLAMP_OHWR_REGS_CH_2_CTL_PI_ENABLE_OFFSET : Natural := 4;
+  constant c_RTMLAMP_OHWR_REGS_CH_2_CTL_PI_SP_SOURCE_OFFSET : Natural := 5;
   constant c_RTMLAMP_OHWR_REGS_CH_2_PI_KP_ADDR : Natural := 16#138#;
   constant c_RTMLAMP_OHWR_REGS_CH_2_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_RTMLAMP_OHWR_REGS_CH_2_PI_KP_RESERVED_OFFSET : Natural := 26;
@@ -92,6 +95,7 @@ package rtmlamp_ohwr_regs_consts_pkg is
   constant c_RTMLAMP_OHWR_REGS_CH_3_CTL_PI_OL_SQUARE_ENABLE_OFFSET : Natural := 2;
   constant c_RTMLAMP_OHWR_REGS_CH_3_CTL_PI_SP_SQUARE_ENABLE_OFFSET : Natural := 3;
   constant c_RTMLAMP_OHWR_REGS_CH_3_CTL_PI_ENABLE_OFFSET : Natural := 4;
+  constant c_RTMLAMP_OHWR_REGS_CH_3_CTL_PI_SP_SOURCE_OFFSET : Natural := 5;
   constant c_RTMLAMP_OHWR_REGS_CH_3_PI_KP_ADDR : Natural := 16#150#;
   constant c_RTMLAMP_OHWR_REGS_CH_3_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_RTMLAMP_OHWR_REGS_CH_3_PI_KP_RESERVED_OFFSET : Natural := 26;
@@ -117,6 +121,7 @@ package rtmlamp_ohwr_regs_consts_pkg is
   constant c_RTMLAMP_OHWR_REGS_CH_4_CTL_PI_OL_SQUARE_ENABLE_OFFSET : Natural := 2;
   constant c_RTMLAMP_OHWR_REGS_CH_4_CTL_PI_SP_SQUARE_ENABLE_OFFSET : Natural := 3;
   constant c_RTMLAMP_OHWR_REGS_CH_4_CTL_PI_ENABLE_OFFSET : Natural := 4;
+  constant c_RTMLAMP_OHWR_REGS_CH_4_CTL_PI_SP_SOURCE_OFFSET : Natural := 5;
   constant c_RTMLAMP_OHWR_REGS_CH_4_PI_KP_ADDR : Natural := 16#168#;
   constant c_RTMLAMP_OHWR_REGS_CH_4_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_RTMLAMP_OHWR_REGS_CH_4_PI_KP_RESERVED_OFFSET : Natural := 26;
@@ -142,6 +147,7 @@ package rtmlamp_ohwr_regs_consts_pkg is
   constant c_RTMLAMP_OHWR_REGS_CH_5_CTL_PI_OL_SQUARE_ENABLE_OFFSET : Natural := 2;
   constant c_RTMLAMP_OHWR_REGS_CH_5_CTL_PI_SP_SQUARE_ENABLE_OFFSET : Natural := 3;
   constant c_RTMLAMP_OHWR_REGS_CH_5_CTL_PI_ENABLE_OFFSET : Natural := 4;
+  constant c_RTMLAMP_OHWR_REGS_CH_5_CTL_PI_SP_SOURCE_OFFSET : Natural := 5;
   constant c_RTMLAMP_OHWR_REGS_CH_5_PI_KP_ADDR : Natural := 16#180#;
   constant c_RTMLAMP_OHWR_REGS_CH_5_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_RTMLAMP_OHWR_REGS_CH_5_PI_KP_RESERVED_OFFSET : Natural := 26;
@@ -167,6 +173,7 @@ package rtmlamp_ohwr_regs_consts_pkg is
   constant c_RTMLAMP_OHWR_REGS_CH_6_CTL_PI_OL_SQUARE_ENABLE_OFFSET : Natural := 2;
   constant c_RTMLAMP_OHWR_REGS_CH_6_CTL_PI_SP_SQUARE_ENABLE_OFFSET : Natural := 3;
   constant c_RTMLAMP_OHWR_REGS_CH_6_CTL_PI_ENABLE_OFFSET : Natural := 4;
+  constant c_RTMLAMP_OHWR_REGS_CH_6_CTL_PI_SP_SOURCE_OFFSET : Natural := 5;
   constant c_RTMLAMP_OHWR_REGS_CH_6_PI_KP_ADDR : Natural := 16#198#;
   constant c_RTMLAMP_OHWR_REGS_CH_6_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_RTMLAMP_OHWR_REGS_CH_6_PI_KP_RESERVED_OFFSET : Natural := 26;
@@ -192,6 +199,7 @@ package rtmlamp_ohwr_regs_consts_pkg is
   constant c_RTMLAMP_OHWR_REGS_CH_7_CTL_PI_OL_SQUARE_ENABLE_OFFSET : Natural := 2;
   constant c_RTMLAMP_OHWR_REGS_CH_7_CTL_PI_SP_SQUARE_ENABLE_OFFSET : Natural := 3;
   constant c_RTMLAMP_OHWR_REGS_CH_7_CTL_PI_ENABLE_OFFSET : Natural := 4;
+  constant c_RTMLAMP_OHWR_REGS_CH_7_CTL_PI_SP_SOURCE_OFFSET : Natural := 5;
   constant c_RTMLAMP_OHWR_REGS_CH_7_PI_KP_ADDR : Natural := 16#1b0#;
   constant c_RTMLAMP_OHWR_REGS_CH_7_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_RTMLAMP_OHWR_REGS_CH_7_PI_KP_RESERVED_OFFSET : Natural := 26;
@@ -217,6 +225,7 @@ package rtmlamp_ohwr_regs_consts_pkg is
   constant c_RTMLAMP_OHWR_REGS_CH_8_CTL_PI_OL_SQUARE_ENABLE_OFFSET : Natural := 2;
   constant c_RTMLAMP_OHWR_REGS_CH_8_CTL_PI_SP_SQUARE_ENABLE_OFFSET : Natural := 3;
   constant c_RTMLAMP_OHWR_REGS_CH_8_CTL_PI_ENABLE_OFFSET : Natural := 4;
+  constant c_RTMLAMP_OHWR_REGS_CH_8_CTL_PI_SP_SOURCE_OFFSET : Natural := 5;
   constant c_RTMLAMP_OHWR_REGS_CH_8_PI_KP_ADDR : Natural := 16#1c8#;
   constant c_RTMLAMP_OHWR_REGS_CH_8_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_RTMLAMP_OHWR_REGS_CH_8_PI_KP_RESERVED_OFFSET : Natural := 26;
@@ -242,6 +251,7 @@ package rtmlamp_ohwr_regs_consts_pkg is
   constant c_RTMLAMP_OHWR_REGS_CH_9_CTL_PI_OL_SQUARE_ENABLE_OFFSET : Natural := 2;
   constant c_RTMLAMP_OHWR_REGS_CH_9_CTL_PI_SP_SQUARE_ENABLE_OFFSET : Natural := 3;
   constant c_RTMLAMP_OHWR_REGS_CH_9_CTL_PI_ENABLE_OFFSET : Natural := 4;
+  constant c_RTMLAMP_OHWR_REGS_CH_9_CTL_PI_SP_SOURCE_OFFSET : Natural := 5;
   constant c_RTMLAMP_OHWR_REGS_CH_9_PI_KP_ADDR : Natural := 16#1e0#;
   constant c_RTMLAMP_OHWR_REGS_CH_9_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_RTMLAMP_OHWR_REGS_CH_9_PI_KP_RESERVED_OFFSET : Natural := 26;
@@ -267,6 +277,7 @@ package rtmlamp_ohwr_regs_consts_pkg is
   constant c_RTMLAMP_OHWR_REGS_CH_10_CTL_PI_OL_SQUARE_ENABLE_OFFSET : Natural := 2;
   constant c_RTMLAMP_OHWR_REGS_CH_10_CTL_PI_SP_SQUARE_ENABLE_OFFSET : Natural := 3;
   constant c_RTMLAMP_OHWR_REGS_CH_10_CTL_PI_ENABLE_OFFSET : Natural := 4;
+  constant c_RTMLAMP_OHWR_REGS_CH_10_CTL_PI_SP_SOURCE_OFFSET : Natural := 5;
   constant c_RTMLAMP_OHWR_REGS_CH_10_PI_KP_ADDR : Natural := 16#1f8#;
   constant c_RTMLAMP_OHWR_REGS_CH_10_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_RTMLAMP_OHWR_REGS_CH_10_PI_KP_RESERVED_OFFSET : Natural := 26;
@@ -292,6 +303,7 @@ package rtmlamp_ohwr_regs_consts_pkg is
   constant c_RTMLAMP_OHWR_REGS_CH_11_CTL_PI_OL_SQUARE_ENABLE_OFFSET : Natural := 2;
   constant c_RTMLAMP_OHWR_REGS_CH_11_CTL_PI_SP_SQUARE_ENABLE_OFFSET : Natural := 3;
   constant c_RTMLAMP_OHWR_REGS_CH_11_CTL_PI_ENABLE_OFFSET : Natural := 4;
+  constant c_RTMLAMP_OHWR_REGS_CH_11_CTL_PI_SP_SOURCE_OFFSET : Natural := 5;
   constant c_RTMLAMP_OHWR_REGS_CH_11_PI_KP_ADDR : Natural := 16#210#;
   constant c_RTMLAMP_OHWR_REGS_CH_11_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_RTMLAMP_OHWR_REGS_CH_11_PI_KP_RESERVED_OFFSET : Natural := 26;

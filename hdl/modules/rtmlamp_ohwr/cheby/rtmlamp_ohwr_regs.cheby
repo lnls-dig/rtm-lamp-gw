@@ -187,6 +187,17 @@ memory-map:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
                 type: BIT
+          - field:
+              name: pi_sp_source
+              range: 5
+              description: Select the PI controller setpoint source
+              comment: |
+                write 0: setpoint data from Wishbone (ch_0_pi_sp)
+                write 1: setpoint data from RTM module input ports
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
     - reg:
         name: ch_0_pi_kp
         width: 32
@@ -441,6 +452,17 @@ memory-map:
               comment: |
                 write 0: disable PI control
                 write 1: enable PI control
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_sp_source
+              range: 5
+              description: Select the PI controller setpoint source
+              comment: |
+                write 0: setpoint data from Wishbone (ch_1_pi_sp)
+                write 1: setpoint data from RTM module input ports
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
@@ -703,6 +725,17 @@ memory-map:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
                 type: BIT
+          - field:
+              name: pi_sp_source
+              range: 5
+              description: Select the PI controller setpoint source
+              comment: |
+                write 0: setpoint data from Wishbone (ch_2_pi_sp)
+                write 1: setpoint data from RTM module input ports
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
     - reg:
         name: ch_2_pi_kp
         width: 32
@@ -957,6 +990,17 @@ memory-map:
               comment: |
                 write 0: disable PI control
                 write 1: enable PI control
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_sp_source
+              range: 5
+              description: Select the PI controller setpoint source
+              comment: |
+                write 0: setpoint data from Wishbone (ch_3_pi_sp)
+                write 1: setpoint data from RTM module input ports
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
@@ -1219,6 +1263,17 @@ memory-map:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
                 type: BIT
+          - field:
+              name: pi_sp_source
+              range: 5
+              description: Select the PI controller setpoint source
+              comment: |
+                write 0: setpoint data from Wishbone (ch_4_pi_sp)
+                write 1: setpoint data from RTM module input ports
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
     - reg:
         name: ch_4_pi_kp
         width: 32
@@ -1473,6 +1528,17 @@ memory-map:
               comment: |
                 write 0: disable PI control
                 write 1: enable PI control
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_sp_source
+              range: 5
+              description: Select the PI controller setpoint source
+              comment: |
+                write 0: setpoint data from Wishbone (ch_5_pi_sp)
+                write 1: setpoint data from RTM module input ports
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
@@ -1735,6 +1801,17 @@ memory-map:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
                 type: BIT
+          - field:
+              name: pi_sp_source
+              range: 5
+              description: Select the PI controller setpoint source
+              comment: |
+                write 0: setpoint data from Wishbone (ch_6_pi_sp)
+                write 1: setpoint data from RTM module input ports
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
     - reg:
         name: ch_6_pi_kp
         width: 32
@@ -1989,6 +2066,17 @@ memory-map:
               comment: |
                 write 0: disable PI control
                 write 1: enable PI control
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_sp_source
+              range: 5
+              description: Select the PI controller setpoint source
+              comment: |
+                write 0: setpoint data from Wishbone (ch_7_pi_sp)
+                write 1: setpoint data from RTM module input ports
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
@@ -2251,6 +2339,17 @@ memory-map:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
                 type: BIT
+          - field:
+              name: pi_sp_source
+              range: 5
+              description: Select the PI controller setpoint source
+              comment: |
+                write 0: setpoint data from Wishbone (ch_8_pi_sp)
+                write 1: setpoint data from RTM module input ports
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
     - reg:
         name: ch_8_pi_kp
         width: 32
@@ -2505,6 +2604,17 @@ memory-map:
               comment: |
                 write 0: disable PI control
                 write 1: enable PI control
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_sp_source
+              range: 5
+              description: Select the PI controller setpoint source
+              comment: |
+                write 0: setpoint data from Wishbone (ch_9_pi_sp)
+                write 1: setpoint data from RTM module input ports
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
@@ -2767,6 +2877,17 @@ memory-map:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY
                 type: BIT
+          - field:
+              name: pi_sp_source
+              range: 5
+              description: Select the PI controller setpoint source
+              comment: |
+                write 0: setpoint data from Wishbone (ch_10_pi_sp)
+                write 1: setpoint data from RTM module input ports
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
     - reg:
         name: ch_10_pi_kp
         width: 32
@@ -3021,6 +3142,17 @@ memory-map:
               comment: |
                 write 0: disable PI control
                 write 1: enable PI control
+              x-wbgen:
+                access_bus: READ_WRITE
+                access_dev: READ_ONLY
+                type: BIT
+          - field:
+              name: pi_sp_source
+              range: 5
+              description: Select the PI controller setpoint source
+              comment: |
+                write 0: setpoint data from Wishbone (ch_11_pi_sp)
+                write 1: setpoint data from RTM module input ports
               x-wbgen:
                 access_bus: READ_WRITE
                 access_dev: READ_ONLY

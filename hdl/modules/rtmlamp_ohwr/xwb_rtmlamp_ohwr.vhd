@@ -156,7 +156,9 @@ port (
   ---------------------------------------------------------------------------
   -- PI parameters
   ---------------------------------------------------------------------------
-
+  -- External PI setpoint data. It is used when ch_x_ctl.pi_sp_source is set to
+  -- '1'
+  pi_sp_ext_i                                : in   t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
   -- debug output to monitor PI Setpoint
   dbg_pi_ctrl_sp_o                           : out  t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0)
 );
@@ -196,6 +198,7 @@ architecture rtl of xwb_rtmlamp_ohwr is
   signal pi_sp_lim_inf                       : std_logic_vector(g_ADC_BITS-1 downto 0) := (others => '0');
 
   signal pi_sp_mode_square_enable            : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
+  signal pi_sp_source                        : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
   signal pi_enable                           : std_logic_vector(c_MAX_CHANNELS-1 downto 0) := (others => '0');
 
   type wb_channel_in_regs is record
@@ -213,6 +216,7 @@ architecture rtl of xwb_rtmlamp_ohwr is
     ctl_pi_ol_square_enable   : std_logic;
     ctl_pi_sp_square_enable   : std_logic;
     ctl_pi_enable             : std_logic;
+    ctl_pi_sp_source          : std_logic;
     dac_data                  : t_16b_word;
     dac_wr                    : std_logic;
     pi_kp                     : std_logic_vector(c_PI_COEFF_BITS-1 downto 0);
@@ -403,6 +407,7 @@ begin
       rtmlamp_ohwr_regs_ch_0_ctl_pi_ol_square_enable_o  => wb_regs_channel_out(0).ctl_pi_ol_square_enable,
       rtmlamp_ohwr_regs_ch_0_ctl_pi_sp_square_enable_o  => wb_regs_channel_out(0).ctl_pi_sp_square_enable,
       rtmlamp_ohwr_regs_ch_0_ctl_pi_enable_o            => wb_regs_channel_out(0).ctl_pi_enable,
+      rtmlamp_ohwr_regs_ch_0_ctl_pi_sp_source_o         => wb_regs_channel_out(0).ctl_pi_sp_source,
       rtmlamp_ohwr_regs_ch_0_pi_kp_data_o               => wb_regs_channel_out(0).pi_kp,
       rtmlamp_ohwr_regs_ch_0_pi_ti_data_o               => wb_regs_channel_out(0).pi_ti,
       rtmlamp_ohwr_regs_ch_0_pi_sp_data_o               => wb_regs_channel_out(0).pi_sp,
@@ -422,6 +427,7 @@ begin
       rtmlamp_ohwr_regs_ch_1_ctl_pi_ol_square_enable_o  => wb_regs_channel_out(1).ctl_pi_ol_square_enable,
       rtmlamp_ohwr_regs_ch_1_ctl_pi_sp_square_enable_o  => wb_regs_channel_out(1).ctl_pi_sp_square_enable,
       rtmlamp_ohwr_regs_ch_1_ctl_pi_enable_o            => wb_regs_channel_out(1).ctl_pi_enable,
+      rtmlamp_ohwr_regs_ch_1_ctl_pi_sp_source_o         => wb_regs_channel_out(1).ctl_pi_sp_source,
       rtmlamp_ohwr_regs_ch_1_pi_kp_data_o               => wb_regs_channel_out(1).pi_kp,
       rtmlamp_ohwr_regs_ch_1_pi_ti_data_o               => wb_regs_channel_out(1).pi_ti,
       rtmlamp_ohwr_regs_ch_1_pi_sp_data_o               => wb_regs_channel_out(1).pi_sp,
@@ -441,6 +447,7 @@ begin
       rtmlamp_ohwr_regs_ch_2_ctl_pi_ol_square_enable_o  => wb_regs_channel_out(2).ctl_pi_ol_square_enable,
       rtmlamp_ohwr_regs_ch_2_ctl_pi_sp_square_enable_o  => wb_regs_channel_out(2).ctl_pi_sp_square_enable,
       rtmlamp_ohwr_regs_ch_2_ctl_pi_enable_o            => wb_regs_channel_out(2).ctl_pi_enable,
+      rtmlamp_ohwr_regs_ch_2_ctl_pi_sp_source_o         => wb_regs_channel_out(2).ctl_pi_sp_source,
       rtmlamp_ohwr_regs_ch_2_pi_kp_data_o               => wb_regs_channel_out(2).pi_kp,
       rtmlamp_ohwr_regs_ch_2_pi_ti_data_o               => wb_regs_channel_out(2).pi_ti,
       rtmlamp_ohwr_regs_ch_2_pi_sp_data_o               => wb_regs_channel_out(2).pi_sp,
@@ -460,6 +467,7 @@ begin
       rtmlamp_ohwr_regs_ch_3_ctl_pi_ol_square_enable_o  => wb_regs_channel_out(3).ctl_pi_ol_square_enable,
       rtmlamp_ohwr_regs_ch_3_ctl_pi_sp_square_enable_o  => wb_regs_channel_out(3).ctl_pi_sp_square_enable,
       rtmlamp_ohwr_regs_ch_3_ctl_pi_enable_o            => wb_regs_channel_out(3).ctl_pi_enable,
+      rtmlamp_ohwr_regs_ch_3_ctl_pi_sp_source_o         => wb_regs_channel_out(3).ctl_pi_sp_source,
       rtmlamp_ohwr_regs_ch_3_pi_kp_data_o               => wb_regs_channel_out(3).pi_kp,
       rtmlamp_ohwr_regs_ch_3_pi_ti_data_o               => wb_regs_channel_out(3).pi_ti,
       rtmlamp_ohwr_regs_ch_3_pi_sp_data_o               => wb_regs_channel_out(3).pi_sp,
@@ -479,6 +487,7 @@ begin
       rtmlamp_ohwr_regs_ch_4_ctl_pi_ol_square_enable_o  => wb_regs_channel_out(4).ctl_pi_ol_square_enable,
       rtmlamp_ohwr_regs_ch_4_ctl_pi_sp_square_enable_o  => wb_regs_channel_out(4).ctl_pi_sp_square_enable,
       rtmlamp_ohwr_regs_ch_4_ctl_pi_enable_o            => wb_regs_channel_out(4).ctl_pi_enable,
+      rtmlamp_ohwr_regs_ch_4_ctl_pi_sp_source_o         => wb_regs_channel_out(4).ctl_pi_sp_source,
       rtmlamp_ohwr_regs_ch_4_pi_kp_data_o               => wb_regs_channel_out(4).pi_kp,
       rtmlamp_ohwr_regs_ch_4_pi_ti_data_o               => wb_regs_channel_out(4).pi_ti,
       rtmlamp_ohwr_regs_ch_4_pi_sp_data_o               => wb_regs_channel_out(4).pi_sp,
@@ -498,6 +507,7 @@ begin
       rtmlamp_ohwr_regs_ch_5_ctl_pi_ol_square_enable_o  => wb_regs_channel_out(5).ctl_pi_ol_square_enable,
       rtmlamp_ohwr_regs_ch_5_ctl_pi_sp_square_enable_o  => wb_regs_channel_out(5).ctl_pi_sp_square_enable,
       rtmlamp_ohwr_regs_ch_5_ctl_pi_enable_o            => wb_regs_channel_out(5).ctl_pi_enable,
+      rtmlamp_ohwr_regs_ch_5_ctl_pi_sp_source_o         => wb_regs_channel_out(5).ctl_pi_sp_source,
       rtmlamp_ohwr_regs_ch_5_pi_kp_data_o               => wb_regs_channel_out(5).pi_kp,
       rtmlamp_ohwr_regs_ch_5_pi_ti_data_o               => wb_regs_channel_out(5).pi_ti,
       rtmlamp_ohwr_regs_ch_5_pi_sp_data_o               => wb_regs_channel_out(5).pi_sp,
@@ -517,6 +527,7 @@ begin
       rtmlamp_ohwr_regs_ch_6_ctl_pi_ol_square_enable_o  => wb_regs_channel_out(6).ctl_pi_ol_square_enable,
       rtmlamp_ohwr_regs_ch_6_ctl_pi_sp_square_enable_o  => wb_regs_channel_out(6).ctl_pi_sp_square_enable,
       rtmlamp_ohwr_regs_ch_6_ctl_pi_enable_o            => wb_regs_channel_out(6).ctl_pi_enable,
+      rtmlamp_ohwr_regs_ch_6_ctl_pi_sp_source_o         => wb_regs_channel_out(6).ctl_pi_sp_source,
       rtmlamp_ohwr_regs_ch_6_pi_kp_data_o               => wb_regs_channel_out(6).pi_kp,
       rtmlamp_ohwr_regs_ch_6_pi_ti_data_o               => wb_regs_channel_out(6).pi_ti,
       rtmlamp_ohwr_regs_ch_6_pi_sp_data_o               => wb_regs_channel_out(6).pi_sp,
@@ -536,6 +547,7 @@ begin
       rtmlamp_ohwr_regs_ch_7_ctl_pi_ol_square_enable_o  => wb_regs_channel_out(7).ctl_pi_ol_square_enable,
       rtmlamp_ohwr_regs_ch_7_ctl_pi_sp_square_enable_o  => wb_regs_channel_out(7).ctl_pi_sp_square_enable,
       rtmlamp_ohwr_regs_ch_7_ctl_pi_enable_o            => wb_regs_channel_out(7).ctl_pi_enable,
+      rtmlamp_ohwr_regs_ch_7_ctl_pi_sp_source_o         => wb_regs_channel_out(7).ctl_pi_sp_source,
       rtmlamp_ohwr_regs_ch_7_pi_kp_data_o               => wb_regs_channel_out(7).pi_kp,
       rtmlamp_ohwr_regs_ch_7_pi_ti_data_o               => wb_regs_channel_out(7).pi_ti,
       rtmlamp_ohwr_regs_ch_7_pi_sp_data_o               => wb_regs_channel_out(7).pi_sp,
@@ -555,6 +567,7 @@ begin
       rtmlamp_ohwr_regs_ch_8_ctl_pi_ol_square_enable_o  => wb_regs_channel_out(8).ctl_pi_ol_square_enable,
       rtmlamp_ohwr_regs_ch_8_ctl_pi_sp_square_enable_o  => wb_regs_channel_out(8).ctl_pi_sp_square_enable,
       rtmlamp_ohwr_regs_ch_8_ctl_pi_enable_o            => wb_regs_channel_out(8).ctl_pi_enable,
+      rtmlamp_ohwr_regs_ch_8_ctl_pi_sp_source_o         => wb_regs_channel_out(8).ctl_pi_sp_source,
       rtmlamp_ohwr_regs_ch_8_pi_kp_data_o               => wb_regs_channel_out(8).pi_kp,
       rtmlamp_ohwr_regs_ch_8_pi_ti_data_o               => wb_regs_channel_out(8).pi_ti,
       rtmlamp_ohwr_regs_ch_8_pi_sp_data_o               => wb_regs_channel_out(8).pi_sp,
@@ -574,6 +587,7 @@ begin
       rtmlamp_ohwr_regs_ch_9_ctl_pi_ol_square_enable_o  => wb_regs_channel_out(9).ctl_pi_ol_square_enable,
       rtmlamp_ohwr_regs_ch_9_ctl_pi_sp_square_enable_o  => wb_regs_channel_out(9).ctl_pi_sp_square_enable,
       rtmlamp_ohwr_regs_ch_9_ctl_pi_enable_o            => wb_regs_channel_out(9).ctl_pi_enable,
+      rtmlamp_ohwr_regs_ch_9_ctl_pi_sp_source_o         => wb_regs_channel_out(9).ctl_pi_sp_source,
       rtmlamp_ohwr_regs_ch_9_pi_kp_data_o               => wb_regs_channel_out(9).pi_kp,
       rtmlamp_ohwr_regs_ch_9_pi_ti_data_o               => wb_regs_channel_out(9).pi_ti,
       rtmlamp_ohwr_regs_ch_9_pi_sp_data_o               => wb_regs_channel_out(9).pi_sp,
@@ -593,6 +607,7 @@ begin
       rtmlamp_ohwr_regs_ch_10_ctl_pi_ol_square_enable_o => wb_regs_channel_out(10).ctl_pi_ol_square_enable,
       rtmlamp_ohwr_regs_ch_10_ctl_pi_sp_square_enable_o => wb_regs_channel_out(10).ctl_pi_sp_square_enable,
       rtmlamp_ohwr_regs_ch_10_ctl_pi_enable_o           => wb_regs_channel_out(10).ctl_pi_enable,
+      rtmlamp_ohwr_regs_ch_10_ctl_pi_sp_source_o         => wb_regs_channel_out(10).ctl_pi_sp_source,
       rtmlamp_ohwr_regs_ch_10_pi_kp_data_o              => wb_regs_channel_out(10).pi_kp,
       rtmlamp_ohwr_regs_ch_10_pi_ti_data_o              => wb_regs_channel_out(10).pi_ti,
       rtmlamp_ohwr_regs_ch_10_pi_sp_data_o              => wb_regs_channel_out(10).pi_sp,
@@ -612,6 +627,7 @@ begin
       rtmlamp_ohwr_regs_ch_11_ctl_pi_ol_square_enable_o => wb_regs_channel_out(11).ctl_pi_ol_square_enable,
       rtmlamp_ohwr_regs_ch_11_ctl_pi_sp_square_enable_o => wb_regs_channel_out(11).ctl_pi_sp_square_enable,
       rtmlamp_ohwr_regs_ch_11_ctl_pi_enable_o           => wb_regs_channel_out(11).ctl_pi_enable,
+      rtmlamp_ohwr_regs_ch_11_ctl_pi_sp_source_o         => wb_regs_channel_out(11).ctl_pi_sp_source,
       rtmlamp_ohwr_regs_ch_11_pi_kp_data_o              => wb_regs_channel_out(11).pi_kp,
       rtmlamp_ohwr_regs_ch_11_pi_ti_data_o              => wb_regs_channel_out(11).pi_ti,
       rtmlamp_ohwr_regs_ch_11_pi_sp_data_o              => wb_regs_channel_out(11).pi_sp,
@@ -626,7 +642,7 @@ begin
       rtmlamp_ohwr_regs_pi_ol_dac_cnt_max_reserved_i    => (others => '0')
     );
 
-  gen_pi_enable : for i in 0 to c_MAX_CHANNELS-1 generate
+  gen_pi_signals : for i in 0 to c_MAX_CHANNELS-1 generate
 
     pi_ol_mode_triang_enable(i) <= wb_regs_channel_out(i).ctl_pi_ol_triang_enable;
     pi_ol_mode_square_enable(i) <= wb_regs_channel_out(i).ctl_pi_ol_square_enable;
@@ -648,7 +664,9 @@ begin
     dac_data_wb(i) <= wb_regs_channel_out(i).dac_data;
     dac_wr_wb(i)   <= wb_regs_channel_out(i).dac_wr;
 
-    pi_sp_ch(i)    <= wb_regs_channel_out(i).pi_sp;
+    -- Setpoint from Wishbone register or external
+    pi_sp_ch(i)    <= wb_regs_channel_out(i).pi_sp when wb_regs_channel_out(i).ctl_pi_sp_source = '0' else
+                      pi_sp_ext_i(i);
     pi_kp_ch(i)    <= wb_regs_channel_out(i).pi_kp;
     pi_ti_ch(i)    <= wb_regs_channel_out(i).pi_ti;
 
