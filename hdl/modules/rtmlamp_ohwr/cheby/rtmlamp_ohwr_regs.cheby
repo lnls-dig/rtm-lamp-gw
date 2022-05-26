@@ -80,12 +80,6 @@ memory-map:
                     comment: |
                       read 0: temperature above limit
                       read 1: temperature under limit
-                - field:
-                    name: reserved
-                    range: 31-4
-                    description: reserved
-                    comment: |
-                      reserved
           - reg:
               name: ctl
               width: 32
@@ -128,12 +122,6 @@ memory-map:
                     description: PI KP
                     comment: |
                       PI KP
-                - field:
-                    name: reserved
-                    range: 31-26
-                    description: reserved
-                    comment: |
-                      reserved
           - reg:
               name: pi_ti
               width: 32
@@ -148,12 +136,6 @@ memory-map:
                     description: PI TI
                     comment: |
                       PI TI
-                - field:
-                    name: reserved
-                    range: 31-26
-                    description: reserved
-                    comment: |
-                      reserved
           - reg:
               name: pi_sp
               width: 32
@@ -168,12 +150,6 @@ memory-map:
                     description: PI SP
                     comment: |
                       PI SP
-                - field:
-                    name: reserved
-                    range: 31-16
-                    description: reserved
-                    comment: |
-                      reserved
           - reg:
               name: dac
               width: 32
@@ -188,12 +164,6 @@ memory-map:
                     description: DAC data
                     comment: |
                       Write DAC data for channel
-                - field:
-                    name: reserved
-                    range: 31-16
-                    description: reserved
-                    comment: |
-                      reserved
           - reg:
               name: lim
               width: 32
@@ -230,12 +200,6 @@ memory-map:
                     name: data
                     range: 21-0
                     description: Test mode period, in clock ticks
-                - field:
-                    name: reserved
-                    range: 31-22
-                    description: reserved
-                    comment: |
-                      reserved
           - reg:
               name: adc_dac_eff
               width: 32
