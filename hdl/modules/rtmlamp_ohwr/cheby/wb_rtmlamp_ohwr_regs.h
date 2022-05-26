@@ -74,6 +74,20 @@
 #define WB_RTMLAMP_OHWR_REGS_CH_CNT_RESERVED_MASK 0xffc00000UL
 #define WB_RTMLAMP_OHWR_REGS_CH_CNT_RESERVED_SHIFT 22
 
+/* ADC and DAC instantaneous value (2's complement)
+ */
+#define WB_RTMLAMP_OHWR_REGS_CH_ADC_DAC_EFF 0x20UL
+#define WB_RTMLAMP_OHWR_REGS_CH_ADC_DAC_EFF_ADC_MASK 0xffffUL
+#define WB_RTMLAMP_OHWR_REGS_CH_ADC_DAC_EFF_ADC_SHIFT 0
+#define WB_RTMLAMP_OHWR_REGS_CH_ADC_DAC_EFF_DAC_MASK 0xffff0000UL
+#define WB_RTMLAMP_OHWR_REGS_CH_ADC_DAC_EFF_DAC_SHIFT 16
+
+/* Set point instantaneous value (2's complement)
+ */
+#define WB_RTMLAMP_OHWR_REGS_CH_SP_EFF 0x24UL
+#define WB_RTMLAMP_OHWR_REGS_CH_SP_EFF_SP_MASK 0xffffUL
+#define WB_RTMLAMP_OHWR_REGS_CH_SP_EFF_SP_SHIFT 0
+
 struct wb_rtmlamp_ohwr_regs {
   /* [0x0]: REG (ro) General RTM status register */
   uint32_t sta;
@@ -111,8 +125,16 @@ struct wb_rtmlamp_ohwr_regs {
  */
     uint32_t cnt;
 
-    /* padding to: 7 words */
-    uint32_t __padding_0[8];
+    /* [0x20]: REG (ro) ADC and DAC instantaneous value (2's complement)
+ */
+    uint32_t adc_dac_eff;
+
+    /* [0x24]: REG (ro) Set point instantaneous value (2's complement)
+ */
+    uint32_t sp_eff;
+
+    /* padding to: 9 words */
+    uint32_t __padding_0[6];
   } ch[12];
 
   /* padding to: 256 words */

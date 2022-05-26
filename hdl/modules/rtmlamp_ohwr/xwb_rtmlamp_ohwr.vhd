@@ -327,7 +327,9 @@ begin
     wb_regs_slv_out(i).sta_amp_iflag_r <= ch_ctrl_out(i).amp_iflag_r;
     wb_regs_slv_out(i).sta_amp_tflag_l <= ch_ctrl_out(i).amp_tflag_l;
     wb_regs_slv_out(i).sta_amp_tflag_r <= ch_ctrl_out(i).amp_tflag_r;
-
+    wb_regs_slv_out(i).adc_dac_eff_adc <= ch_ctrl_out(i).adc_data;
+    wb_regs_slv_out(i).adc_dac_eff_dac <= ch_ctrl_out(i).dac_data_eff;
+    wb_regs_slv_out(i).sp_eff_sp <= ch_ctrl_out(i).pi_sp_eff;
 
     with wb_regs_slv_in(i).ctl_mode select ch_ctrl_in(i).mode <=
       OL_MODE          when c_WB_CH_CTL_MODE_OL,

@@ -236,3 +236,37 @@ memory-map:
                     description: reserved
                     comment: |
                       reserved
+          - reg:
+              name: adc_dac_eff
+              width: 32
+              access: ro
+              description: |
+                ADC and DAC instantaneous value (2's complement)
+              comment: |
+                ADC and DAC instantaneous value (2's complement)
+              children:
+                - field:
+                    name: adc
+                    range: 15-0
+                    description: ADC instantaneous measurement
+                - field:
+                    name: dac
+                    range: 31-16
+                    description: DAC instantaneous effective data
+                    comment: |
+                      It is the actual value sent to the DAC irrespectively of operation mode
+          - reg:
+              name: sp_eff
+              width: 32
+              access: ro
+              description: |
+                Set point instantaneous value (2's complement)
+              comment: |
+                Set point instantaneous value (2's complement)
+              children:
+                - field:
+                    name: sp
+                    range: 15-0
+                    description: Set point instantaneous effective data
+                    comment: |
+                      It is the actual value sent to the PI controller irrespectively of operation mode
