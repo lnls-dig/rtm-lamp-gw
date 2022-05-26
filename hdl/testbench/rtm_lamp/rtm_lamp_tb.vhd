@@ -20,6 +20,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 use ieee.math_real.all;
 
 use work.rtm_lamp_pkg.all;
@@ -57,15 +58,8 @@ architecture rtm_lamp_model_tb_arch of rtm_lamp_model_tb is
   signal rst_n             : std_logic := '0';
   signal rst_fast_spi_n    : std_logic := '0';
   signal clk_fast_spi      : std_logic := '0';
-  signal clk_sclk          : std_logic := '0';
-  signal rst_sclk_n        : std_logic := '0';
   signal clk_sync          : std_logic := '0';
   signal rst_sync_n        : std_logic := '0';
-  signal dac_samples       : t_16b_word_array(11 downto 0) := (others => x"8000");
-  signal dac_ready         : std_logic;
-  signal dac_done_pp       : std_logic;
-  signal adc_data          : t_16b_word_array(11 downto 0);
-  signal adc_valid         : std_logic_vector(11 downto 0);
   signal adc_cnv           : std_logic := '0';
   signal adc_octo_clk      : std_logic := '0';
   signal adc_octo_clk_out  : std_logic;
@@ -95,12 +89,8 @@ architecture rtm_lamp_model_tb_arch of rtm_lamp_model_tb is
   signal shift_str         : std_logic;
   signal shift_oe_n        : std_logic;
   signal shift_din         : std_logic;
-  signal amp_iflag_l       : std_logic_vector(11 downto 0);
-  signal amp_tflag_l       : std_logic_vector(11 downto 0);
-  signal amp_iflag_r       : std_logic_vector(11 downto 0);
-  signal amp_tflag_r       : std_logic_vector(11 downto 0);
-  signal amp_en_ch         : std_logic_vector(11 downto 0);
-
+  signal ch_ctrl_in        : t_rtmlamp_ch_ctrl_in_array(11 downto 0);
+  signal ch_ctrl_out       : t_rtmlamp_ch_ctrl_out_array(11 downto 0);
   procedure f_wait_until( signal net    : in std_logic;
                           repeat        : positive := 1;
                           condition     : std_logic := '1') is
@@ -163,7 +153,8 @@ begin
 
   cmp_rtm_lamp_model: entity work.rtm_lamp_model
     generic map(
-      g_ADC_DDR_MODE => false
+      g_ADC_DDR_MODE => false,
+      g_MAG_IND => 500.0e-6
     )
     port map(
       rtm_lamp_sync_clk_i => clk_sync, -- ADC and DAC synchronization clock
@@ -215,7 +206,7 @@ begin
     g_CLK_FAST_SPI_FREQ                        => c_CLK_FAST_SPI_FREQ,
     g_ADC_SCLK_FREQ                            => c_CLK_SCLK_FREQ,
     g_ADC_CHANNELS                             => 12,
-    g_ADC_FIX_INV_INPUTS                       => true,
+    g_ADC_FIX_INV_INPUTS                       => false,
     g_DAC_SCLK_FREQ                            => c_CLK_DAC_SCLK_FREQ,
     g_DAC_CHANNELS                             => 12,
     g_SERIAL_REG_SCLK_FREQ                     => c_CLK_SERIAL_REGS_FREQ,
@@ -280,61 +271,40 @@ begin
     ---------------------------------------------------------------------------
     -- FPGA interface
     ---------------------------------------------------------------------------
-
-    ---------------------------------------------------------------------------
-    -- ADC parallel interface
-    ---------------------------------------------------------------------------
-    adc_start_i                                => '1',
-    adc_data_o                                 => adc_data,
-    adc_valid_o                                => adc_valid,
-
-    ---------------------------------------------------------------------------
-    -- DAC parallel interface
-    ---------------------------------------------------------------------------
-    dac_start_i                                => '1',
-    dac_data_i                                 => dac_samples,
-    dac_ready_o                                => dac_ready,
-    dac_done_pp_o                              => dac_done_pp,
-
-    ---------------------------------------------------------------------------
-    -- AMP parallel interface
-    ---------------------------------------------------------------------------
-
-    amp_iflag_l_o                              => amp_iflag_l,
-    amp_tflag_l_o                              => amp_tflag_l,
-    amp_iflag_r_o                              => amp_iflag_r,
-    amp_tflag_r_o                              => amp_tflag_r,
-    amp_en_ch_i                                => amp_en_ch
+    ch_ctrl_i                                  => ch_ctrl_in,
+    ch_ctrl_o                                  => ch_ctrl_out
   );
 
-  p_set_amp_en: process
+  tb_main: process
   begin
+    for i in 0 to 11 loop
+      ch_ctrl_in(i).mode <= OL_MODE;
+      ch_ctrl_in(i).amp_en <= '0';
+      ch_ctrl_in(i).pi_kp <= std_logic_vector(to_unsigned(5000000, 26));
+      ch_ctrl_in(i).pi_ti <= std_logic_vector(to_unsigned(3000, 26));
+      ch_ctrl_in(i).pi_sp <= (others => '0');
+      ch_ctrl_in(i).lim_a <= (others => '0');
+      ch_ctrl_in(i).lim_b <= (others => '0');
+      ch_ctrl_in(i).cnt <= (others => '0');
+      ch_ctrl_in(i).dac_data <= x"0000";
+    end loop;
     f_wait_until(rst_n, 1, '1');
-    amp_en_ch <= "010101010101";
-    f_wait_until(clk_sys, 10000*100);
-    amp_en_ch <= "101010101010";
-    f_wait_until(clk_sys, 10000*100);
-    amp_en_ch <= "000011110000";
-    f_wait_until(clk_sys, 10000*100);
-    amp_en_ch <= "111100001111";
-    f_wait_until(clk_sys, 10000*100);
-    wait;
-  end process;
-
-  p_set_vout: process
-  begin
-    f_wait_until(rst_n, 1, '1');
-    f_wait_until(clk_sys, 300000);
-    dac_samples <= (x"0000", x"1000", x"3000", x"4000",
-                    x"5000", x"6000", x"7000", x"8000",
-                    x"9000", x"A000", x"B000", x"C000");
-    f_wait_until(clk_sys, 10000*100);
-    dac_samples <= (others => x"FFFF");
-    f_wait_until(clk_sys, 300000);
-    dac_samples <= (x"EEEE", x"DDDD", x"CCCC", x"BBBB",
-                    x"AAAA", x"9999", x"8888", x"7777",
-                    x"6666", x"5555", x"4444", x"3333");
-    f_wait_until(clk_sys, 300000);
+    f_wait_until(clk_sys, 1000);
+    for i in 0 to 11 loop
+      ch_ctrl_in(i).dac_data <= x"7FFF";
+    end loop;
+    f_wait_until(clk_sys, 1000);
+    for i in 0 to 11 loop
+      ch_ctrl_in(i).mode <= OL_TEST_SQR_MODE;
+      ch_ctrl_in(i).lim_a <= x"7FFF";
+      ch_ctrl_in(i).lim_b <= x"8000";
+      ch_ctrl_in(i).cnt <= to_unsigned(200, 22);
+    end loop;
+    f_wait_until(clk_sys, 1000);
+    for i in 0 to 11 loop
+      ch_ctrl_in(i).mode <= CL_MODE;
+    end loop;
+    f_wait_until(clk_sys, 100000);
     std.env.finish;
   end process;
 

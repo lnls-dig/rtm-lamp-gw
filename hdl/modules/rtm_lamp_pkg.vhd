@@ -44,6 +44,43 @@ package rtm_lamp_pkg is
 
   subtype t_pi_sp_word is std_logic_vector(c_PI_SP_BITS-1 downto 0);
   type t_pi_sp_word_array is array(natural range <>) of t_pi_sp_word;
+  type t_rtmlamp_ch_mode is (OL_MODE, OL_TEST_SQR_MODE, CL_MODE, CL_TEST_SQR_MODE);
+
+  type t_rtmlamp_ch_ctrl_in is record
+    -- Power amplifier enable
+    amp_en      : std_logic;
+    -- Operation mode, open loop, closed loop, test square wave
+    mode        : t_rtmlamp_ch_mode;
+    -- PI controller proportional constant
+    pi_kp       : t_pi_coeff_word;
+    -- PI controller integral constant
+    pi_ti       : t_pi_coeff_word;
+    -- PI controller set point, only used in CL_MODE
+    pi_sp       : t_pi_sp_word;
+    -- Limit 'a' value, used to set the square-wave range for CL_TEST_SQR_MODE
+    -- and OL_TEST_SQR_MODE
+    lim_a       : t_pi_sp_word;
+    -- Limit 'b' value, used to set the square-wave range for CL_TEST_SQR_MODE
+    -- and OL_TEST_SQR_MODE
+    lim_b       : t_pi_sp_word;
+    -- Counter to generate the time base for the square-wave. Units are half
+    -- the period of clk_i
+    cnt         : unsigned(21 downto 0);
+    -- DAC voltage output, only used in OL_MODE
+    dac_data    : t_16b_word;
+  end record t_rtmlamp_ch_ctrl_in;
+  type t_rtmlamp_ch_ctrl_in_array is array(natural range <>) of t_rtmlamp_ch_ctrl_in;
+
+  type t_rtmlamp_ch_ctrl_out is record
+    amp_iflag_l       : std_logic;
+    amp_tflag_l       : std_logic;
+    amp_iflag_r       : std_logic;
+    amp_tflag_r       : std_logic;
+    dac_data_eff      : t_16b_word;   -- Effective DAC value
+    pi_sp_eff         : t_pi_sp_word; -- Effective SP value
+    adc_data          : t_16b_word;
+  end record t_rtmlamp_ch_ctrl_out;
+  type t_rtmlamp_ch_ctrl_out_array is array(natural range <>) of t_rtmlamp_ch_ctrl_out;
 
   --------------------------------------------------------------------
   -- Components
@@ -251,11 +288,7 @@ package rtm_lamp_pkg is
     -- Number of AMP channels
     g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12;
     -- Number of ADC bits
-    g_ADC_BITS                                 : natural := 16;
-    -- Use Chipscope or not
-    g_WITH_CHIPSCOPE                           : boolean := false;
-    -- Use VIO or not
-    g_WITH_VIO                                 : boolean := false
+    g_ADC_BITS                                 : natural := 16
   );
   port (
     ---------------------------------------------------------------------------
@@ -318,72 +351,11 @@ package rtm_lamp_pkg is
     amp_shift_str_o                            : out   std_logic;
 
     ---------------------------------------------------------------------------
-    -- FPGA interface
+    -- Channel control
     ---------------------------------------------------------------------------
-
-    ---------------------------------------------------------------------------
-    -- ADC parallel interface
-    ---------------------------------------------------------------------------
-    adc_start_i                                : in   std_logic;
-    adc_data_o                                 : out  t_16b_word_array(g_ADC_CHANNELS-1 downto 0);
-    adc_valid_o                                : out  std_logic_vector(g_ADC_CHANNELS-1 downto 0);
-
-    ---------------------------------------------------------------------------
-    -- DAC parallel interface
-    ---------------------------------------------------------------------------
-    dac_start_i                                : in   std_logic;
-    dac_data_i                                 : in   t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
-    dac_ready_o                                : out  std_logic;
-    dac_done_pp_o                              : out  std_logic;
-
-    dbg_dac_start_o                            : out  std_logic;
-    dbg_dac_data_o                             : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
-
-    ---------------------------------------------------------------------------
-    -- PI parameters
-    ---------------------------------------------------------------------------
-    -- Kp parameter
-    pi_kp_i                                    : in   t_pi_coeff_word_array(g_DAC_CHANNELS-1 downto 0);
-    -- Ti parameter
-    pi_ti_i                                    : in   t_pi_coeff_word_array(g_DAC_CHANNELS-1 downto 0);
-    -- Setpoint parameter
-    pi_sp_i                                    : in   t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
-
-    -- select if we want a triangular wave directly at the DAC inputs. Limits defined by
-    -- pi_sp_i and pi_sp_lim_inf_i
-    pi_ol_mode_triang_enable_i                 : in   std_logic_vector(g_DAC_CHANNELS-1 downto 0);
-    -- select if we want a square wave directly at the DAC inputs. Limits defined by
-    -- pi_sp_i and pi_sp_lim_inf_i
-    pi_ol_mode_square_enable_i                 : in   std_logic_vector(g_DAC_CHANNELS-1 downto 0);
-    -- defines the period of both triang/square modes in ADC clock ticks
-    pi_ol_dac_mode_counter_max_i               : in   unsigned(21 downto 0);
-    -- defines the other limit for triang/square modes. pi_sp_i being one and
-    -- pi_sp_lim_inf_i the other
-    pi_sp_lim_inf_i                            : in   std_logic_vector(g_ADC_BITS-1 downto 0);
-
-    -- select if we want a square wave at the PI inputs
-    pi_sp_mode_square_enable_i                 : in   std_logic_vector(g_DAC_CHANNELS-1 downto 0);
-
-    -- enagble or disable PI controller. if pi_enable_i = 0, then dac_data_i/dac_start_i
-    -- takes effect and the RTM board can be controller in open_loop. Otherwise, pi_ol modes
-     -- take effect and lastly, if everything = 0, pi_sp_i takes effect to set PI setpoint
-    pi_enable_i                                : in   std_logic_vector(g_DAC_CHANNELS-1 downto 0);
-
-    -- debug output to monitor PI Setpoint
-    dbg_pi_ctrl_sp_o                           : out  t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
-
-    ---------------------------------------------------------------------------
-    -- AMP parallel interface
-    ---------------------------------------------------------------------------
-    -- Set to 1 to read and write all AMP parameters listed at the AMP
-    -- parallel interface
-    amp_sta_ctl_rw_i                           : in    std_logic := '1';
-
-    amp_iflag_l_o                              : out   std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
-    amp_tflag_l_o                              : out   std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
-    amp_iflag_r_o                              : out   std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
-    amp_tflag_r_o                              : out   std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
-    amp_en_ch_i                                : in    std_logic_vector(g_SERIAL_REGS_AMP_CHANNELS-1 downto 0)
+    ch_ctrl_i                                  : in  t_rtmlamp_ch_ctrl_in_array(g_DAC_CHANNELS-1 downto 0);
+    ch_ctrl_o                                  : out t_rtmlamp_ch_ctrl_out_array(g_DAC_CHANNELS-1 downto 0);
+    data_valid_o                               : out std_logic
   );
   end component;
 
@@ -561,22 +533,18 @@ package rtm_lamp_pkg is
     g_SERIAL_REG_SCLK_FREQ                     : natural := 100000;
     -- Number of AMP channels
     g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12;
-    -- Number od ADC bits
-    g_ADC_BITS                                 : natural := 16;
-    -- Use Chipscope or not
-    g_WITH_CHIPSCOPE                           : boolean := false;
-    -- Use VIO or not
-    g_WITH_VIO                                 : boolean := false
+    -- Number of ADC bits
+    g_ADC_BITS                                 : natural := 16
   );
   port (
     ---------------------------------------------------------------------------
     -- clock and reset interface
     ---------------------------------------------------------------------------
-    clk_i                                      : in   std_logic;
-    rst_n_i                                    : in   std_logic;
+    clk_i                                      : in  std_logic;
+    rst_n_i                                    : in  std_logic;
 
-    clk_ref_i                                  : in   std_logic := '0';
-    rst_ref_n_i                                : in   std_logic := '1';
+    clk_ref_i                                  : in  std_logic := '0';
+    rst_ref_n_i                                : in  std_logic := '1';
 
     rst_fast_spi_n_i                           : in  std_logic;
     clk_fast_spi_i                             : in  std_logic;
@@ -584,86 +552,70 @@ package rtm_lamp_pkg is
     ---------------------------------------------------------------------------
     -- Wishbone Control Interface signals
     ---------------------------------------------------------------------------
-    wb_slv_i                                   : in   t_wishbone_slave_in;
-    wb_slv_o                                   : out  t_wishbone_slave_out;
+    wb_slv_i                                   : in  t_wishbone_slave_in;
+    wb_slv_o                                   : out t_wishbone_slave_out;
 
     ---------------------------------------------------------------------------
     -- RTM ADC interface
     ---------------------------------------------------------------------------
-    adc_octo_cnv_o                             : out   std_logic;
-    adc_octo_sck_p_o                           : out   std_logic;
-    adc_octo_sck_n_o                           : out   std_logic;
-    adc_octo_sck_ret_p_i                       : in    std_logic;
-    adc_octo_sck_ret_n_i                       : in    std_logic;
-    adc_octo_sdoa_p_i                          : in    std_logic;
-    adc_octo_sdoa_n_i                          : in    std_logic;
-    adc_octo_sdob_p_i                          : in    std_logic;
-    adc_octo_sdob_n_i                          : in    std_logic;
-    adc_octo_sdoc_p_i                          : in    std_logic;
-    adc_octo_sdoc_n_i                          : in    std_logic;
-    adc_octo_sdod_p_i                          : in    std_logic;
-    adc_octo_sdod_n_i                          : in    std_logic;
+    adc_octo_cnv_o                             : out std_logic;
+    adc_octo_sck_p_o                           : out std_logic;
+    adc_octo_sck_n_o                           : out std_logic;
+    adc_octo_sck_ret_p_i                       : in  std_logic;
+    adc_octo_sck_ret_n_i                       : in  std_logic;
+    adc_octo_sdoa_p_i                          : in  std_logic;
+    adc_octo_sdoa_n_i                          : in  std_logic;
+    adc_octo_sdob_p_i                          : in  std_logic;
+    adc_octo_sdob_n_i                          : in  std_logic;
+    adc_octo_sdoc_p_i                          : in  std_logic;
+    adc_octo_sdoc_n_i                          : in  std_logic;
+    adc_octo_sdod_p_i                          : in  std_logic;
+    adc_octo_sdod_n_i                          : in  std_logic;
 
     -- Only used when g_ADC_CHANNELS > 8
-    adc_quad_cnv_o                             : out   std_logic;
-    adc_quad_sck_p_o                           : out   std_logic;
-    adc_quad_sck_n_o                           : out   std_logic;
-    adc_quad_sck_ret_p_i                       : in    std_logic := '0';
-    adc_quad_sck_ret_n_i                       : in    std_logic := '1';
-    adc_quad_sdoa_p_i                          : in    std_logic := '0';
-    adc_quad_sdoa_n_i                          : in    std_logic := '1';
-    adc_quad_sdoc_p_i                          : in    std_logic := '0';
-    adc_quad_sdoc_n_i                          : in    std_logic := '1';
+    adc_quad_cnv_o                             : out std_logic;
+    adc_quad_sck_p_o                           : out std_logic;
+    adc_quad_sck_n_o                           : out std_logic;
+    adc_quad_sck_ret_p_i                       : in  std_logic := '0';
+    adc_quad_sck_ret_n_i                       : in  std_logic := '1';
+    adc_quad_sdoa_p_i                          : in  std_logic := '0';
+    adc_quad_sdoa_n_i                          : in  std_logic := '1';
+    adc_quad_sdoc_p_i                          : in  std_logic := '0';
+    adc_quad_sdoc_n_i                          : in  std_logic := '1';
 
     ---------------------------------------------------------------------------
     -- RTM DAC interface
     ---------------------------------------------------------------------------
-    dac_cs_n_o                                 : out  std_logic;
-    dac_ldac_n_o                               : out  std_logic;
-    dac_sck_o                                  : out  std_logic;
-    dac_sdi_o                                  : out  std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+    dac_cs_n_o                                 : out std_logic;
+    dac_ldac_n_o                               : out std_logic;
+    dac_sck_o                                  : out std_logic;
+    dac_sdi_o                                  : out std_logic_vector(g_DAC_CHANNELS-1 downto 0);
 
     ---------------------------------------------------------------------------
     -- RTM Serial registers interface
     ---------------------------------------------------------------------------
-    amp_shift_clk_o                            : out   std_logic;
-    amp_shift_dout_i                           : in    std_logic := '0';
-    amp_shift_pl_o                             : out   std_logic;
+    amp_shift_clk_o                            : out std_logic;
+    amp_shift_dout_i                           : in  std_logic := '0';
+    amp_shift_pl_o                             : out std_logic;
 
-    amp_shift_oe_n_o                           : out   std_logic;
-    amp_shift_din_o                            : out   std_logic;
-    amp_shift_str_o                            : out   std_logic;
-
-    ---------------------------------------------------------------------------
-    -- FPGA interface
-    ---------------------------------------------------------------------------
-
-    ---------------------------------------------------------------------------
-    -- ADC parallel interface
-    ---------------------------------------------------------------------------
-    adc_start_i                                : in   std_logic;
-    adc_data_o                                 : out  t_16b_word_array(g_ADC_CHANNELS-1 downto 0);
-    adc_valid_o                                : out  std_logic_vector(g_ADC_CHANNELS-1 downto 0);
-
-    ---------------------------------------------------------------------------
-    -- DAC parallel interface
-    ---------------------------------------------------------------------------
-    dac_start_i                                : in   std_logic;
-    dac_data_i                                 : in   t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
-    dac_ready_o                                : out  std_logic;
-    dac_done_pp_o                              : out  std_logic;
-
-    dbg_dac_start_o                            : out  std_logic;
-    dbg_dac_data_o                             : out  t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+    amp_shift_oe_n_o                           : out std_logic;
+    amp_shift_din_o                            : out std_logic;
+    amp_shift_str_o                            : out std_logic;
 
     ---------------------------------------------------------------------------
     -- PI parameters
     ---------------------------------------------------------------------------
-    -- External PI setpoint data. It is used when ch_x_ctl.pi_sp_source is set to
-    -- '1'
-    pi_sp_ext_i                                : in   t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
-    -- debug output to monitor PI Setpoint
-    dbg_pi_ctrl_sp_o                           : out  t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0)
+    -- External PI setpoint data. It is used when ch.x.ctl.mode (wishbone
+    -- register) is set to 0b100
+    pi_sp_ext_i                                : in  t_pi_sp_word_array(g_ADC_CHANNELS-1 downto 0);
+
+    ---------------------------------------------------------------------------
+    -- Debug data
+    ---------------------------------------------------------------------------
+    adc_data_o                                 : out t_16b_word_array(g_ADC_CHANNELS-1 downto 0);
+    pi_sp_eff_o                                : out t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
+    dac_data_eff_o                             : out t_16b_word_array(g_ADC_CHANNELS-1 downto 0);
+    data_valid_o                               : out std_logic
   );
   end component;
 
@@ -674,8 +626,8 @@ package rtm_lamp_pkg is
   -- FOFB CC
   constant c_xwb_rtm_lamp_regs_sdb : t_sdb_device := (
     abi_class     => x"0000",                   -- undocumented device
-    abi_ver_major => x"01",
-    abi_ver_minor => x"01",
+    abi_ver_major => x"02",
+    abi_ver_minor => x"00",
     wbd_endian    => c_sdb_endian_big,
     wbd_width     => x"4",                      -- 32-bit port granularity (0100)
     sdb_component => (
@@ -684,7 +636,7 @@ package rtm_lamp_pkg is
     product => (
     vendor_id     => x"1000000000001215",       -- LNLS
     device_id     => x"a1248bec",
-    version       => x"00000001",
+    version       => x"00000002",
     date          => x"20211301",
     name          => "LNLS_RTM_LAMP_REGS ")));
 

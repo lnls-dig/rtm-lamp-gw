@@ -258,13 +258,11 @@ architecture top of afcv4_rtm_lamp_ctrl is
   signal rtmlamp_adc_data                    : t_16b_word_array(c_ADC_CHANNELS-1 downto 0);
   signal rtmlamp_adc_valid                   : std_logic_vector(c_ADC_CHANNELS-1 downto 0);
 
-  signal rtmlamp_dac_start                   : std_logic := '1';
+  signal rtmlamp_data_valid                  : std_logic;
   signal rtmlamp_dac_data                    : t_16b_word_array(c_DAC_CHANNELS-1 downto 0);
   signal rtmlamp_dbg_dac_start               : std_logic;
   signal rtmlamp_dbg_dac_data                : t_16b_word_array(c_DAC_CHANNELS-1 downto 0);
   signal rtmlamp_dbg_pi_ctrl_sp              : t_pi_sp_word_array(c_DAC_CHANNELS-1 downto 0);
-  signal rtmlamp_dac_ready                   : std_logic;
-  signal rtmlamp_dac_done_pp                 : std_logic;
 
   -----------------------------------------------------------------------------
   -- AFC Si57x signals
@@ -742,7 +740,7 @@ begin
     -- Number of ADC channels
     g_ADC_CHANNELS                             => c_ADC_CHANNELS,
     -- If the ADC inputs are inverted on RTM-LAMP or not
-    g_ADC_FIX_INV_INPUTS                       => true,
+    g_ADC_FIX_INV_INPUTS                       => false,
     -- DAC clock frequency [Hz]
     g_DAC_SCLK_FREQ                            => c_DAC_SCLK_FREQ,
     -- Number of DAC channels
@@ -817,27 +815,18 @@ begin
     ---------------------------------------------------------------------------
     -- FPGA interface
     ---------------------------------------------------------------------------
+    data_valid_o                               => rtmlamp_data_valid,
+
     ---------------------------------------------------------------------------
     -- ADC parallel interface
     ---------------------------------------------------------------------------
-    adc_start_i                                => rtmlamp_adc_start,
     adc_data_o                                 => rtmlamp_adc_data,
-    adc_valid_o                                => rtmlamp_adc_valid,
-
-    ---------------------------------------------------------------------------
-    -- DAC parallel interface
-    ---------------------------------------------------------------------------
-    dac_start_i                                => rtmlamp_dac_start,
-    dac_data_i                                 => rtmlamp_dac_data,
-    dac_ready_o                                => rtmlamp_dac_ready,
-    dac_done_pp_o                              => rtmlamp_dac_done_pp,
 
     ---------------------------------------------------------------------------
     -- Debug signals
     ---------------------------------------------------------------------------
-    dbg_dac_start_o                            => rtmlamp_dbg_dac_start,
-    dbg_dac_data_o                             => rtmlamp_dbg_dac_data,
-    dbg_pi_ctrl_sp_o                           => rtmlamp_dbg_pi_ctrl_sp,
+    dac_data_eff_o                             => rtmlamp_dbg_dac_data,
+    pi_sp_eff_o                                => rtmlamp_dbg_pi_ctrl_sp,
 
     -- External PI setpoint data. It is used when ch_x_ctl.pi_sp_source is set
     -- to '1'
@@ -886,7 +875,7 @@ begin
       (c_ADC_CHANNELS+c_DAC_CHANNELS)*to_integer(c_FACQ_CHANNELS(c_ACQ_RTM_LAMP_ID).atom_width))
     <= rtmlamp_dbg_pi_ctrl_sp(0);
 
-  acq_data_valid(c_ACQ_CORE_0_ID) <= rtmlamp_adc_valid(0);
+  acq_data_valid(c_ACQ_CORE_0_ID) <= rtmlamp_data_valid;
 
   --------------------
   -- ACQ Channel 1
@@ -902,8 +891,9 @@ begin
   ----------------------------------------------------------------------
 
   -- Assign trigger pulses to trigger channel interfaces
-  trig_acq1_channel_1.pulse <= rtmlamp_adc_start;
-  trig_acq1_channel_2.pulse <= rtmlamp_dac_start;
+  -- FIXME: remove this
+  -- trig_acq1_channel_1.pulse <= rtmlamp_adc_start;
+  -- trig_acq1_channel_2.pulse <= rtmlamp_dac_start;
 
   -- Assign intern triggers to trigger module
   trig_rcv_intern(c_TRIG_MUX_0_ID, c_TRIG_RCV_INTERN_CHAN_1_ID) <= trig_acq1_channel_1;

@@ -32,7 +32,7 @@ use work.platform_generic_pkg.all;
 -- wishbone read / write procedures
 use work.sim_wishbone.all;
 -- rtmlamp_ohwr register constants
-use work.rtmlamp_ohwr_regs_consts_pkg.all;
+use work.wb_rtmlamp_ohwr_regs_consts_pkg.all;
 
 entity xwb_rtmlamp_ohwr_tb is
 end entity xwb_rtmlamp_ohwr_tb;
@@ -81,7 +81,6 @@ begin
   f_gen_clk(c_FAST_SPI_FREQ, clk_fast_spi);
 
   process
-    variable data : std_logic_vector(31 downto 0);
   begin
     init(wb_slave_i);
 
@@ -95,54 +94,46 @@ begin
     f_wait_cycles(clk_sys, 10);
 
     -- Enable CH0 amplifier (for now it has no effect, the amplifier is always
-    -- enabled in the rtm_lamp_model)
-    write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_RTMLAMP_OHWR_REGS_CH_0_CTL_ADDR,
-               (c_RTMLAMP_OHWR_REGS_CH_0_CTL_AMP_EN_OFFSET => '1',
-                others => '0'));
-
-    -- DAC data from wishbone
-    write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_RTMLAMP_OHWR_REGS_CTL_ADDR,
-               (c_RTMLAMP_OHWR_REGS_CTL_DAC_DATA_FROM_WB_OFFSET => '1',
+    -- enabled in the rtm_lamp_model), set mode to open loop manual control
+    write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_ADDR,
+               (c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_AMP_EN_OFFSET => '1',
+                (c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_MODE_OFFSET + 2) downto
+                c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_MODE_OFFSET => "000",
                 others => '0'));
 
     -- Write to the CH0 DAC via wishbone (2's complement)
-    write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_RTMLAMP_OHWR_REGS_CH_0_DAC_ADDR,
-               (c_RTMLAMP_OHWR_REGS_CH_0_DAC_WR_OFFSET => '1',
-                (c_RTMLAMP_OHWR_REGS_CH_0_DAC_DATA_OFFSET + 15) downto
-                c_RTMLAMP_OHWR_REGS_CH_0_DAC_DATA_OFFSET => std_logic_vector(to_signed(0, 16)),
+    write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_WB_RTMLAMP_OHWR_REGS_CH_0_DAC_ADDR,
+               ((c_WB_RTMLAMP_OHWR_REGS_CH_0_DAC_DATA_OFFSET + 15) downto
+                c_WB_RTMLAMP_OHWR_REGS_CH_0_DAC_DATA_OFFSET => std_logic_vector(to_signed(0, 16)),
                 others => '0'));
 
     -- Set CH0 PI Kp to 5 000 000
-    write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_RTMLAMP_OHWR_REGS_CH_0_PI_KP_ADDR,
+    write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_WB_RTMLAMP_OHWR_REGS_CH_0_PI_KP_ADDR,
                std_logic_vector(to_unsigned(5000000, 32)));
 
     -- Set CH0 PI Ti to 2048
-    write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_RTMLAMP_OHWR_REGS_CH_0_PI_TI_ADDR,
+    write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_WB_RTMLAMP_OHWR_REGS_CH_0_PI_TI_ADDR,
                std_logic_vector(to_unsigned(2048, 32)));
 
     -- Set CH0 PI setpoint to 100
-    write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_RTMLAMP_OHWR_REGS_CH_0_PI_SP_ADDR,
+    write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_WB_RTMLAMP_OHWR_REGS_CH_0_PI_SP_ADDR,
                std_logic_vector(to_signed(100, 32)));
 
-    -- Enable CH0 PI controller
-    write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_RTMLAMP_OHWR_REGS_CH_0_CTL_ADDR,
-               (c_RTMLAMP_OHWR_REGS_CH_0_CTL_AMP_EN_OFFSET => '1',
-                c_RTMLAMP_OHWR_REGS_CH_0_CTL_PI_ENABLE_OFFSET => '1',
-                others => '0'));
-
-    -- DAC data from PI controller
-    write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_RTMLAMP_OHWR_REGS_CTL_ADDR,
-               (c_RTMLAMP_OHWR_REGS_CTL_DAC_DATA_FROM_WB_OFFSET => '0',
+    -- Set CH0 mode to closed-loop manual control
+    write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_ADDR,
+               (c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_AMP_EN_OFFSET => '1',
+                (c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_MODE_OFFSET + 2) downto
+                c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_MODE_OFFSET => "010",
                 others => '0'));
 
     -- Wait for 10 us
     f_wait_cycles(clk_sys, 1000);
 
-    -- Set CH0 setpoint source to external
-    write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_RTMLAMP_OHWR_REGS_CH_0_CTL_ADDR,
-               (c_RTMLAMP_OHWR_REGS_CH_0_CTL_AMP_EN_OFFSET => '1',
-                c_RTMLAMP_OHWR_REGS_CH_0_CTL_PI_ENABLE_OFFSET => '1',
-                c_RTMLAMP_OHWR_REGS_CH_0_CTL_PI_SP_SOURCE_OFFSET => '1',
+    -- Set CH0 mode to closed-loop external control
+    write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_ADDR,
+               (c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_AMP_EN_OFFSET => '1',
+                (c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_MODE_OFFSET + 2) downto
+                c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_MODE_OFFSET => "100",
                 others => '0'));
 
     -- Set the external setpoint to 1000 for CH0

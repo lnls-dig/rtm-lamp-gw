@@ -93,7 +93,7 @@ architecture xwb_rtmlamp_ohwr_glue_arch of xwb_rtmlamp_ohwr_glue is
   signal dac_ldac            : std_logic;
   signal dac_cs_n            : std_logic;
   signal dac_sck             : std_logic;
-  signal dac_sdi             : std_logic_vector(11 downto 0);
+  signal dac_sdi             : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
 
   signal amp_shift_clk       : std_logic;
   signal amp_shift_dout      : std_logic;
@@ -102,22 +102,16 @@ architecture xwb_rtmlamp_ohwr_glue_arch of xwb_rtmlamp_ohwr_glue is
   signal amp_shift_din       : std_logic;
   signal amp_shift_str       : std_logic;
 
-  signal adc_start           : std_logic := '1';
+  signal pi_sp_eff           : t_pi_sp_word_array(g_ADC_CHANNELS-1 downto 0);
+  signal dac_data_eff        : t_16b_word_array(g_ADC_CHANNELS-1 downto 0);
   signal adc_data            : t_16b_word_array(g_ADC_CHANNELS-1 downto 0);
-  signal adc_valid           : std_logic_vector(g_ADC_CHANNELS-1 downto 0);
+  signal data_valid          : std_logic;
 
-  signal dac_start           : std_logic := '1';
-  signal dac_data            : t_16b_word_array(g_DAC_CHANNELS-1 downto 0) := (others => (others => '0'));
-  signal dac_ready           : std_logic;
-  signal dac_done_pp         : std_logic;
-  signal dbg_dac_data        : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
-  signal dbg_dac_start       : std_logic;
-  signal dbg_pi_ctrl_sp      : t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
 begin
 
   cmp_xwb_rtmlamp_ohwr : xwb_rtmlamp_ohwr
     generic map (
-      g_INTERFACE_MODE                           => PIPELINED,
+      g_INTERFACE_MODE                           => CLASSIC,
       g_ADDRESS_GRANULARITY                      => BYTE,
       g_WITH_EXTRA_WB_REG                        => false,
       -- System clock frequency [Hz]
@@ -140,9 +134,7 @@ begin
       -- DAC clock frequency [Hz]
       g_DAC_SCLK_FREQ                            => g_DAC_SCLK_FREQ,
       -- Number of DAC channels
-      g_DAC_CHANNELS                             => g_DAC_CHANNELS,
-      g_WITH_VIO                                 => false,
-      g_WITH_CHIPSCOPE                           => false
+      g_DAC_CHANNELS                             => g_DAC_CHANNELS
       )
     port map (
       ---------------------------------------------------------------------------
@@ -215,30 +207,19 @@ begin
       ---------------------------------------------------------------------------
 
       ---------------------------------------------------------------------------
-      -- ADC parallel interface
+      -- PI parameters
       ---------------------------------------------------------------------------
-      adc_start_i                                => adc_start,
+      -- External PI setpoint data. It is used when ch.x.ctl.mode (wishbone
+      -- register) is set to 0b100
+      pi_sp_ext_i                                => pi_sp_ext_i,
+
+      ---------------------------------------------------------------------------
+      -- Debug data
+      ---------------------------------------------------------------------------
       adc_data_o                                 => adc_data,
-      adc_valid_o                                => adc_valid,
-
-      ---------------------------------------------------------------------------
-      -- DAC parallel interface
-      ---------------------------------------------------------------------------
-      dac_start_i                                => dac_start,
-      dac_data_i                                 => dac_data,
-      dac_ready_o                                => dac_ready,
-      dac_done_pp_o                              => dac_done_pp,
-
-      ---------------------------------------------------------------------------
-      -- Debug signals
-      ---------------------------------------------------------------------------
-      dbg_dac_start_o                            => dbg_dac_start,
-      dbg_dac_data_o                             => dbg_dac_data,
-      dbg_pi_ctrl_sp_o                           => dbg_pi_ctrl_sp,
-
-      -- External PI setpoint data. It is used when ch_x_ctl.pi_sp_source is set
-      -- to '1'
-      pi_sp_ext_i                                => pi_sp_ext_i
+      pi_sp_eff_o                                => pi_sp_eff,
+      dac_data_eff_o                             => dac_data_eff,
+      data_valid_o                               => data_valid
       );
 
   -----------------------------------------------------------
