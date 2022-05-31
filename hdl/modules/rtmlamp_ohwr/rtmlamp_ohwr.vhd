@@ -745,6 +745,7 @@ begin
   data_valid_o <= adc_ready;
 
   gen_conn_channels : for i in 0 to g_DAC_CHANNELS-1 generate
+    -- Raw DAC data to be written
     dac_data(i) <= ch_ctrl_i(i).dac_data xor x"8000" when ch_ctrl_i(i).mode = OL_MODE else
                    test_waveform(i) xor x"8000" when ch_ctrl_i(i).mode = OL_TEST_SQR_MODE else
                    dac_data_from_pi(i); -- Closed loop modes, dac_data comes
@@ -759,7 +760,8 @@ begin
     pi_ti(i) <= ch_ctrl_i(i).pi_ti;
 
     ch_ctrl_o(i).adc_data <= adc_data(i);
-    ch_ctrl_o(i).dac_data_eff <= dac_data(i);
+    ch_ctrl_o(i).dac_data_eff <= dac_data(i) xor x"8000"; -- Convert dac_data
+                                                          -- to signed
     ch_ctrl_o(i).pi_sp_eff <= pi_sp(i);
     ch_ctrl_o(i).amp_iflag_l <= amp_iflag_l(i);
     ch_ctrl_o(i).amp_iflag_r <= amp_iflag_r(i);
