@@ -828,8 +828,8 @@ begin
     dac_data_eff_o                             => rtmlamp_dbg_dac_data,
     pi_sp_eff_o                                => rtmlamp_dbg_pi_ctrl_sp,
 
-    -- External PI setpoint data. It is used when ch_x_ctl.pi_sp_source is set
-    -- to '1'
+    -- External PI setpoint data. Used when ch_x_ctl.mode is set to 0b100
+    -- (closed loop external control)
     pi_sp_ext_i                                => (others => (others => '0'))
   );
 
