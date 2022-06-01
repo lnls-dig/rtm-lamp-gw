@@ -45,18 +45,14 @@ generic (
   g_CLK_FAST_SPI_FREQ                        : natural := 400000000;
   -- ADC clock frequency [Hz]
   g_ADC_SCLK_FREQ                            : natural := 100000000;
-  -- Number of ADC channels
-  g_ADC_CHANNELS                             : natural := 12;
+  -- Number of channels (8 or 12)
+  g_CHANNELS                                 : natural := 12;
   -- If the ADC inputs are inverted on RTM-LAMP or not
   g_ADC_FIX_INV_INPUTS                       : boolean := false;
   -- DAC clock frequency [Hz]
   g_DAC_SCLK_FREQ                            : natural := 25000000;
-  -- Number of DAC channels
-  g_DAC_CHANNELS                             : natural := 12;
   -- Serial registers clock frequency [Hz]
   g_SERIAL_REG_SCLK_FREQ                     : natural := 100000;
-  -- Number of AMP channels
-  g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12;
   -- Number of ADC bits
   g_ADC_BITS                                 : natural := 16
 );
@@ -90,7 +86,7 @@ port (
   adc_octo_sdod_p_i                          : in    std_logic;
   adc_octo_sdod_n_i                          : in    std_logic;
 
-  -- Only used when g_ADC_CHANNELS > 8
+  -- Only used when g_CHANNELS > 8
   adc_quad_cnv_o                             : out   std_logic;
   adc_quad_sck_p_o                           : out   std_logic;
   adc_quad_sck_n_o                           : out   std_logic;
@@ -107,7 +103,7 @@ port (
   dac_cs_n_o                                 : out  std_logic;
   dac_ldac_n_o                               : out  std_logic;
   dac_sck_o                                  : out  std_logic;
-  dac_sdi_o                                  : out  std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+  dac_sdi_o                                  : out  std_logic_vector(g_CHANNELS-1 downto 0);
 
   ---------------------------------------------------------------------------
   -- RTM Serial registers interface
@@ -123,8 +119,8 @@ port (
   ---------------------------------------------------------------------------
   -- Channel control
   ---------------------------------------------------------------------------
-  ch_ctrl_i                                  : in  t_rtmlamp_ch_ctrl_in_array(g_DAC_CHANNELS-1 downto 0);
-  ch_ctrl_o                                  : out t_rtmlamp_ch_ctrl_out_array(g_DAC_CHANNELS-1 downto 0);
+  ch_ctrl_i                                  : in  t_rtmlamp_ch_ctrl_in_array(g_CHANNELS-1 downto 0);
+  ch_ctrl_o                                  : out t_rtmlamp_ch_ctrl_out_array(g_CHANNELS-1 downto 0);
   data_valid_o                               : out std_logic
 );
 end rtmlamp_ohwr;
@@ -137,16 +133,17 @@ architecture rtl of rtmlamp_ohwr is
 
   constant c_DAC_LDAC_WIDTH                  : real := 30.0e-9; -- minimum of 30.0e-9
   constant c_DAC_LDAC_WAIT_AFTER_CS          : real := 30.0e-9; -- minimum of 30.0e-9
+  constant c_SERIAL_REGS_AMP_CHANNELS        : natural := 12;
 
   signal dac_ldac_n                          : std_logic;
 
   signal adc_start                           : std_logic;
   signal adc_ready                           : std_logic;
-  signal adc_data                            : t_16b_word_array(c_MAX_ADC_CHANNELS-1 downto 0);
-  signal adc_valid                           : std_logic_vector(c_MAX_ADC_CHANNELS-1 downto 0);
+  signal adc_data                            : t_16b_word_array(g_CHANNELS-1 downto 0);
+  signal adc_valid                           : std_logic_vector(g_CHANNELS-1 downto 0);
 
-  signal pi_err                              : t_16b_word_array(c_MAX_ADC_CHANNELS-1 downto 0);
-  signal pi_err_valid                        : std_logic_vector(c_MAX_ADC_CHANNELS-1 downto 0);
+  signal pi_err                              : t_16b_word_array(g_CHANNELS-1 downto 0);
+  signal pi_err_valid                        : std_logic_vector(g_CHANNELS-1 downto 0);
 
   signal adc_octo_ready                      : std_logic;
   signal adc_octo_sck                        : std_logic;
@@ -202,34 +199,29 @@ architecture rtl of rtmlamp_ohwr is
   signal adc_synched_flat_valid              : std_logic;
 
   signal dac_start                           : std_logic;
-  signal dac_data                            : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
-  signal pi_kp                               : t_pi_coeff_word_array(g_DAC_CHANNELS-1 downto 0);
-  signal pi_ti                               : t_pi_coeff_word_array(g_DAC_CHANNELS-1 downto 0);
-  signal pi_sp                               : t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal dac_data                            : t_16b_word_array(g_CHANNELS-1 downto 0);
+  signal pi_kp                               : t_pi_coeff_word_array(g_CHANNELS-1 downto 0);
+  signal pi_ti                               : t_pi_coeff_word_array(g_CHANNELS-1 downto 0);
+  signal pi_sp                               : t_pi_sp_word_array(g_CHANNELS-1 downto 0);
   signal amp_enable                          : std_logic_vector(11 downto 0);
 
 
-  signal dac_data_from_pi                    : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
-  signal dac_valid_from_pi                   : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+  signal dac_data_from_pi                    : t_16b_word_array(g_CHANNELS-1 downto 0);
+  signal dac_valid_from_pi                   : std_logic_vector(g_CHANNELS-1 downto 0);
 
-  signal amp_iflag_l                         : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
-  signal amp_tflag_l                         : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
-  signal amp_iflag_r                         : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
-  signal amp_tflag_r                         : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+  signal amp_iflag_l                         : std_logic_vector(g_CHANNELS-1 downto 0);
+  signal amp_tflag_l                         : std_logic_vector(g_CHANNELS-1 downto 0);
+  signal amp_iflag_r                         : std_logic_vector(g_CHANNELS-1 downto 0);
+  signal amp_tflag_r                         : std_logic_vector(g_CHANNELS-1 downto 0);
 
-  signal test_waveform                       : t_16b_word_array(g_DAC_CHANNELS-1 downto 0);
+  signal test_waveform                       : t_16b_word_array(g_CHANNELS-1 downto 0);
   signal test_waveform_valid                 : std_logic;
 
 begin
 
-  assert (g_ADC_CHANNELS <= c_MAX_ADC_CHANNELS)
-    report "[rtmlamp_ohwr] g_ADC_CHANNELS(" & Integer'image(g_ADC_CHANNELS) &
-    ") unsuppoted. Maximum number of g_ADC_CHANNELS = " & Integer'image(c_MAX_ADC_CHANNELS)
-    severity failure;
-
-  assert (g_DAC_CHANNELS <= c_MAX_DAC_CHANNELS)
-    report "[rtmlamp_ohwr] g_DAC_CHANNELS(" & Integer'image(g_DAC_CHANNELS) &
-    ") unsuppoted. Maximum number of g_DAC_CHANNELS = " & Integer'image(c_MAX_DAC_CHANNELS)
+  assert (g_CHANNELS = 8 or g_CHANNELS = 12)
+    report "[rtmlamp_ohwr] g_CHANNELS(" & Integer'image(g_CHANNELS) &
+    ") unsuppoted. Only 8 or 12 channels are supported."
     severity failure;
 
   ---------------------------------------------------------------------------
@@ -372,7 +364,7 @@ begin
   --                              ADC quad
   ---------------------------------------------------------------------------
 
-  gen_adc_up_to_8_channels : if g_ADC_CHANNELS <= 8 generate
+  gen_adc_up_to_8_channels : if g_CHANNELS <= 8 generate
 
       adc_quad_raw.data(0)   <= (others => '0');
       adc_quad_raw.data(1)   <= (others => '0');
@@ -389,7 +381,7 @@ begin
 
   end generate;
 
-  gen_adc_more_than_8_channels : if g_ADC_CHANNELS > 8 generate
+  gen_adc_more_than_8_channels : if g_CHANNELS > 8 generate
 
     -- RTM LTC2324 operates in LVDS mode, so we always acquire 4 channels
     -- with half the number of data lines (2 channels per data line)
@@ -616,7 +608,7 @@ begin
   ----------------------------------------
   -- Aggregate all data from ADC octo + quad
   ----------------------------------------
-  gen_adc_valid : for i in 0 to g_ADC_CHANNELS-1 generate
+  gen_adc_valid : for i in 0 to g_CHANNELS-1 generate
 
     gen_adc_valid_up_to_8_channels: if i < 8 generate
       adc_valid(i) <= adc_octo_scaled.valid;
@@ -640,7 +632,7 @@ begin
       g_SCLK_FREQ                            => g_DAC_SCLK_FREQ,
       g_REF_CLK_LDAC_FREQ                    => g_REF_CLK_FREQ,
       g_USE_REF_CLK_LDAC                     => g_USE_REF_CLK,
-      g_NUM_DACS                             => g_DAC_CHANNELS,
+      g_NUM_DACS                             => g_CHANNELS,
       g_CPOL                                 => false,
       g_LDAC_WIDTH                           => c_DAC_LDAC_WIDTH,
       g_LDAC_WAIT_AFTER_CS                   => c_DAC_LDAC_WAIT_AFTER_CS
@@ -670,7 +662,7 @@ begin
   ---------------------------------------------------------------------------
   --                              PI Controller
   ---------------------------------------------------------------------------
-  gen_pi_controller : for i in 0 to g_DAC_CHANNELS-1 generate
+  gen_pi_controller : for i in 0 to g_CHANNELS-1 generate
 
     p_err_calc : process(clk_i)
     begin
@@ -744,7 +736,7 @@ begin
   dac_start <= adc_ready; -- FIXME: dac_valid(0);
   data_valid_o <= adc_ready;
 
-  gen_conn_channels : for i in 0 to g_DAC_CHANNELS-1 generate
+  gen_conn_channels : for i in 0 to g_CHANNELS-1 generate
     -- Raw DAC data to be written
     dac_data(i) <= ch_ctrl_i(i).dac_data xor x"8000" when ch_ctrl_i(i).mode = OL_MODE else
                    test_waveform(i) xor x"8000" when ch_ctrl_i(i).mode = OL_TEST_SQR_MODE else
@@ -772,7 +764,7 @@ begin
   ---------------------------------------------------------------------------
   --                              Square wave
   ---------------------------------------------------------------------------
-  gen_test_patterns : for i in 0 to g_DAC_CHANNELS-1 generate
+  gen_test_patterns : for i in 0 to g_CHANNELS-1 generate
 
     p_patterns : process (clk_i)
       variable sample_period_cnt: unsigned(21 downto 0);
@@ -810,7 +802,7 @@ begin
 
   cmp_rtmlamp_ohwr_serial_regs : rtmlamp_ohwr_serial_regs
   generic map (
-    g_CHANNELS                               => g_SERIAL_REGS_AMP_CHANNELS,
+    g_CHANNELS                               => c_SERIAL_REGS_AMP_CHANNELS,
     g_CLOCK_FREQ                             => g_SYS_CLOCK_FREQ,
     g_SCLK_FREQ                              => g_SERIAL_REG_SCLK_FREQ
   )

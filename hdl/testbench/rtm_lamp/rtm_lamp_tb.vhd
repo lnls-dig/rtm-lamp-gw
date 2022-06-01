@@ -205,12 +205,10 @@ begin
     g_USE_REF_CLK                              => true,
     g_CLK_FAST_SPI_FREQ                        => c_CLK_FAST_SPI_FREQ,
     g_ADC_SCLK_FREQ                            => c_CLK_SCLK_FREQ,
-    g_ADC_CHANNELS                             => 12,
+    g_CHANNELS                                 => 12,
     g_ADC_FIX_INV_INPUTS                       => false,
     g_DAC_SCLK_FREQ                            => c_CLK_DAC_SCLK_FREQ,
-    g_DAC_CHANNELS                             => 12,
-    g_SERIAL_REG_SCLK_FREQ                     => c_CLK_SERIAL_REGS_FREQ,
-    g_SERIAL_REGS_AMP_CHANNELS                 => 12
+    g_SERIAL_REG_SCLK_FREQ                     => c_CLK_SERIAL_REGS_FREQ
   )
   port map (
     clk_i                                      => clk_sys,

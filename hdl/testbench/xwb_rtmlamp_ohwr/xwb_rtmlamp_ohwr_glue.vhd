@@ -39,8 +39,7 @@ entity xwb_rtmlamp_ohwr_glue is
     g_ADC_SCLK_FREQ          : natural := 100000000;
     g_DAC_SCLK_FREQ          : natural := 25000000;
     g_USE_REF_CLOCK          : boolean := true;
-    g_ADC_CHANNELS           : natural := 12;
-    g_DAC_CHANNELS           : natural := 12
+    g_CHANNELS               : natural := 12
     );
   port(
     clk_sys_i                : in  std_logic := '0';
@@ -53,7 +52,7 @@ entity xwb_rtmlamp_ohwr_glue is
     wb_slave_i               : in  t_wishbone_slave_in;
     wb_slave_o               : out t_wishbone_slave_out;
 
-    pi_sp_ext_i              : in t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0) := (others => x"0000")
+    pi_sp_ext_i              : in t_pi_sp_word_array(g_CHANNELS-1 downto 0) := (others => x"0000")
     );
 end entity xwb_rtmlamp_ohwr_glue;
 
@@ -93,7 +92,7 @@ architecture xwb_rtmlamp_ohwr_glue_arch of xwb_rtmlamp_ohwr_glue is
   signal dac_ldac            : std_logic;
   signal dac_cs_n            : std_logic;
   signal dac_sck             : std_logic;
-  signal dac_sdi             : std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+  signal dac_sdi             : std_logic_vector(g_CHANNELS-1 downto 0);
 
   signal amp_shift_clk       : std_logic;
   signal amp_shift_dout      : std_logic;
@@ -102,9 +101,9 @@ architecture xwb_rtmlamp_ohwr_glue_arch of xwb_rtmlamp_ohwr_glue is
   signal amp_shift_din       : std_logic;
   signal amp_shift_str       : std_logic;
 
-  signal pi_sp_eff           : t_pi_sp_word_array(g_ADC_CHANNELS-1 downto 0);
-  signal dac_data_eff        : t_16b_word_array(g_ADC_CHANNELS-1 downto 0);
-  signal adc_data            : t_16b_word_array(g_ADC_CHANNELS-1 downto 0);
+  signal pi_sp_eff           : t_pi_sp_word_array(g_CHANNELS-1 downto 0);
+  signal dac_data_eff        : t_16b_word_array(g_CHANNELS-1 downto 0);
+  signal adc_data            : t_16b_word_array(g_CHANNELS-1 downto 0);
   signal data_valid          : std_logic;
 
 begin
@@ -127,14 +126,13 @@ begin
       g_CLK_FAST_SPI_FREQ                        => g_FAST_SPI_FREQ,
       -- ADC clock frequency [Hz]
       g_ADC_SCLK_FREQ                            => g_ADC_SCLK_FREQ,
-      -- Number of ADC channels
-      g_ADC_CHANNELS                             => g_ADC_CHANNELS,
+      -- Number channels (8 or 12)
+      g_CHANNELS                                 => g_CHANNELS,
       -- If the ADC inputs are inverted on RTM-LAMP or not
       g_ADC_FIX_INV_INPUTS                       => false,
       -- DAC clock frequency [Hz]
-      g_DAC_SCLK_FREQ                            => g_DAC_SCLK_FREQ,
+      g_DAC_SCLK_FREQ                            => g_DAC_SCLK_FREQ
       -- Number of DAC channels
-      g_DAC_CHANNELS                             => g_DAC_CHANNELS
       )
     port map (
       ---------------------------------------------------------------------------
@@ -173,7 +171,7 @@ begin
       adc_octo_sdod_p_i                          => adc_octo_sdod_p,
       adc_octo_sdod_n_i                          => adc_octo_sdod_n,
 
-      -- Only used when g_ADC_CHANNELS > 8
+      -- Only used when g_CHANNELS > 8
       adc_quad_sck_p_o                           => adc_quad_sck_p,
       adc_quad_sck_n_o                           => adc_quad_sck_n,
       adc_quad_sck_ret_p_i                       => adc_quad_sck_ret_p,

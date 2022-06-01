@@ -48,18 +48,14 @@ generic (
   g_CLK_FAST_SPI_FREQ                        : natural := 400000000;
   -- ADC clock frequency [Hz]
   g_ADC_SCLK_FREQ                            : natural := 100000000;
-  -- Number of ADC channels
-  g_ADC_CHANNELS                             : natural := 12;
+  -- Number channels (8 or 12)
+  g_CHANNELS                                 : natural := 12;
   -- If the ADC inputs are inverted on RTM-LAMP or not
   g_ADC_FIX_INV_INPUTS                       : boolean := false;
   -- DAC clock frequency [Hz]
   g_DAC_SCLK_FREQ                            : natural := 25000000;
-  -- Number of DAC channels
-  g_DAC_CHANNELS                             : natural := 12;
   -- Serial registers clock frequency [Hz]
   g_SERIAL_REG_SCLK_FREQ                     : natural := 100000;
-  -- Number of AMP channels
-  g_SERIAL_REGS_AMP_CHANNELS                 : natural := 12;
   -- Number of ADC bits
   g_ADC_BITS                                 : natural := 16
 );
@@ -99,7 +95,7 @@ port (
   adc_octo_sdod_p_i                          : in  std_logic;
   adc_octo_sdod_n_i                          : in  std_logic;
 
-  -- Only used when g_ADC_CHANNELS > 8
+  -- Only used when g_CHANNELS > 8
   adc_quad_cnv_o                             : out std_logic;
   adc_quad_sck_p_o                           : out std_logic;
   adc_quad_sck_n_o                           : out std_logic;
@@ -116,7 +112,7 @@ port (
   dac_cs_n_o                                 : out std_logic;
   dac_ldac_n_o                               : out std_logic;
   dac_sck_o                                  : out std_logic;
-  dac_sdi_o                                  : out std_logic_vector(g_DAC_CHANNELS-1 downto 0);
+  dac_sdi_o                                  : out std_logic_vector(g_CHANNELS-1 downto 0);
 
   ---------------------------------------------------------------------------
   -- RTM Serial registers interface
@@ -134,14 +130,14 @@ port (
   ---------------------------------------------------------------------------
   -- External PI setpoint data. It is used when ch.x.ctl.mode (wishbone
   -- register) is set to 0b100
-  pi_sp_ext_i                                : in  t_pi_sp_word_array(g_ADC_CHANNELS-1 downto 0);
+  pi_sp_ext_i                                : in  t_pi_sp_word_array(g_CHANNELS-1 downto 0);
 
   ---------------------------------------------------------------------------
   -- Debug data
   ---------------------------------------------------------------------------
-  adc_data_o                                 : out t_16b_word_array(g_ADC_CHANNELS-1 downto 0);
-  pi_sp_eff_o                                : out t_pi_sp_word_array(g_DAC_CHANNELS-1 downto 0);
-  dac_data_eff_o                             : out t_16b_word_array(g_ADC_CHANNELS-1 downto 0);
+  adc_data_o                                 : out t_16b_word_array(g_CHANNELS-1 downto 0);
+  pi_sp_eff_o                                : out t_pi_sp_word_array(g_CHANNELS-1 downto 0);
+  dac_data_eff_o                             : out t_16b_word_array(g_CHANNELS-1 downto 0);
   data_valid_o                               : out std_logic
 );
 end xwb_rtmlamp_ohwr;
@@ -165,8 +161,8 @@ architecture rtl of xwb_rtmlamp_ohwr is
   -----------------------------
   -- RTM signals
   -----------------------------
-  signal ch_ctrl_in                          : t_rtmlamp_ch_ctrl_in_array(g_DAC_CHANNELS-1 downto 0);
-  signal ch_ctrl_out                         : t_rtmlamp_ch_ctrl_out_array(g_DAC_CHANNELS-1 downto 0);
+  signal ch_ctrl_in                          : t_rtmlamp_ch_ctrl_in_array(g_CHANNELS-1 downto 0);
+  signal ch_ctrl_out                         : t_rtmlamp_ch_ctrl_out_array(g_CHANNELS-1 downto 0);
   signal wb_regs_slv_in                      : t_rtmlamp_ohwr_ch_regs_slave_in_array(0 to c_MAX_CHANNELS-1);
   signal wb_regs_slv_out                     : t_rtmlamp_ohwr_ch_regs_slave_out_array(0 to c_MAX_CHANNELS-1);
 
@@ -367,12 +363,10 @@ begin
     g_USE_REF_CLK                              => g_USE_REF_CLK ,
     g_CLK_FAST_SPI_FREQ                        => g_CLK_FAST_SPI_FREQ,
     g_ADC_SCLK_FREQ                            => g_ADC_SCLK_FREQ,
-    g_ADC_CHANNELS                             => g_ADC_CHANNELS,
+    g_CHANNELS                                 => g_CHANNELS,
     g_ADC_FIX_INV_INPUTS                       => g_ADC_FIX_INV_INPUTS,
     g_DAC_SCLK_FREQ                            => g_DAC_SCLK_FREQ,
-    g_DAC_CHANNELS                             => g_DAC_CHANNELS,
     g_SERIAL_REG_SCLK_FREQ                     => g_SERIAL_REG_SCLK_FREQ,
-    g_SERIAL_REGS_AMP_CHANNELS                 => g_SERIAL_REGS_AMP_CHANNELS,
     g_ADC_BITS                                 => g_ADC_BITS
   )
   port map (
@@ -405,7 +399,7 @@ begin
     adc_octo_sdod_p_i                          => adc_octo_sdod_p_i,
     adc_octo_sdod_n_i                          => adc_octo_sdod_n_i,
 
-    -- Only used when g_ADC_CHANNELS > 8
+    -- Only used when g_CHANNELS > 8
     adc_quad_cnv_o                             => adc_quad_cnv_o,
     adc_quad_sck_p_o                           => adc_quad_sck_p_o,
     adc_quad_sck_n_o                           => adc_quad_sck_n_o,
