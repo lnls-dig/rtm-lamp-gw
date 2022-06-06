@@ -6,7 +6,6 @@ files = [
     "multi_dac_spi_ldac.vhd",
     "rtmlamp_ohwr_serial_regs.vhd",
     "rtmlamp_ohwr.vhd",
-    "wb_rtmlamp_ohwr.vhd",
     "xwb_rtmlamp_ohwr.vhd",
     "cheby/wb_rtmlamp_ohwr_regs.vhd",
 ]
