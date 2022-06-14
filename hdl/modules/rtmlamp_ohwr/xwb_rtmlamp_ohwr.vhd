@@ -318,7 +318,7 @@ begin
 
   -- Connect wishbone registers to the status and control signals of the
   -- rtmlamp_ohwr core
-  gen_per_channel : for i in 0 to c_MAX_CHANNELS-1 generate
+  gen_per_channel : for i in 0 to g_CHANNELS-1 generate
     wb_regs_slv_out(i).sta_amp_iflag_l <= ch_ctrl_out(i).amp_iflag_l;
     wb_regs_slv_out(i).sta_amp_iflag_r <= ch_ctrl_out(i).amp_iflag_r;
     wb_regs_slv_out(i).sta_amp_tflag_l <= ch_ctrl_out(i).amp_tflag_l;

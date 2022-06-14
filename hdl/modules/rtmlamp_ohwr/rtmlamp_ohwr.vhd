@@ -203,16 +203,16 @@ architecture rtl of rtmlamp_ohwr is
   signal pi_kp                               : t_pi_coeff_word_array(g_CHANNELS-1 downto 0);
   signal pi_ti                               : t_pi_coeff_word_array(g_CHANNELS-1 downto 0);
   signal pi_sp                               : t_pi_sp_word_array(g_CHANNELS-1 downto 0);
-  signal amp_enable                          : std_logic_vector(11 downto 0);
+  signal amp_enable                          : std_logic_vector(c_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
 
 
   signal dac_data_from_pi                    : t_16b_word_array(g_CHANNELS-1 downto 0);
   signal dac_valid_from_pi                   : std_logic_vector(g_CHANNELS-1 downto 0);
 
-  signal amp_iflag_l                         : std_logic_vector(g_CHANNELS-1 downto 0);
-  signal amp_tflag_l                         : std_logic_vector(g_CHANNELS-1 downto 0);
-  signal amp_iflag_r                         : std_logic_vector(g_CHANNELS-1 downto 0);
-  signal amp_tflag_r                         : std_logic_vector(g_CHANNELS-1 downto 0);
+  signal amp_iflag_l                         : std_logic_vector(c_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
+  signal amp_tflag_l                         : std_logic_vector(c_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
+  signal amp_iflag_r                         : std_logic_vector(c_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
+  signal amp_tflag_r                         : std_logic_vector(c_SERIAL_REGS_AMP_CHANNELS-1 downto 0);
 
   signal test_waveform                       : t_16b_word_array(g_CHANNELS-1 downto 0);
   signal test_waveform_valid                 : std_logic;
