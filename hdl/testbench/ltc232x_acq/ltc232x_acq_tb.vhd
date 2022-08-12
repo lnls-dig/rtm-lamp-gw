@@ -197,6 +197,7 @@ begin
 
   cmp_ltc232x_acq: ltc232x_acq
     generic map(
+      g_SYS_CLOCK_FREQ => c_CLK_FREQ,
       g_CLK_FAST_SPI_FREQ => c_CLK_FAST_SPI_FREQ,
       g_SCLK_FREQ => c_SCLK_FREQ,
       g_CHANNELS => 8,
@@ -227,6 +228,7 @@ begin
 
   cmp_ltc232x_sync_acq: ltc232x_acq
     generic map(
+      g_SYS_CLOCK_FREQ => c_CLK_FREQ,
       g_CLK_FAST_SPI_FREQ => c_CLK_FAST_SPI_FREQ,
       g_SCLK_FREQ => c_SCLK_FREQ,
       g_REF_CLK_CNV_FREQ => c_CLK_SYNC_FREQ,
