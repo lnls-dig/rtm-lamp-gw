@@ -16,6 +16,7 @@ package wb_rtmlamp_ohwr_regs_consts_pkg is
   constant c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_ADDR : Natural := 16#404#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_AMP_EN_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_MODE_OFFSET : Natural := 1;
+  constant c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_TRIG_EN_OFFSET : Natural := 5;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_0_PI_KP_ADDR : Natural := 16#408#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_0_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_0_PI_TI_ADDR : Natural := 16#40c#;
@@ -44,6 +45,7 @@ package wb_rtmlamp_ohwr_regs_consts_pkg is
   constant c_WB_RTMLAMP_OHWR_REGS_CH_1_CTL_ADDR : Natural := 16#444#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_1_CTL_AMP_EN_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_1_CTL_MODE_OFFSET : Natural := 1;
+  constant c_WB_RTMLAMP_OHWR_REGS_CH_1_CTL_TRIG_EN_OFFSET : Natural := 5;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_1_PI_KP_ADDR : Natural := 16#448#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_1_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_1_PI_TI_ADDR : Natural := 16#44c#;
@@ -72,6 +74,7 @@ package wb_rtmlamp_ohwr_regs_consts_pkg is
   constant c_WB_RTMLAMP_OHWR_REGS_CH_2_CTL_ADDR : Natural := 16#484#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_2_CTL_AMP_EN_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_2_CTL_MODE_OFFSET : Natural := 1;
+  constant c_WB_RTMLAMP_OHWR_REGS_CH_2_CTL_TRIG_EN_OFFSET : Natural := 5;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_2_PI_KP_ADDR : Natural := 16#488#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_2_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_2_PI_TI_ADDR : Natural := 16#48c#;
@@ -100,6 +103,7 @@ package wb_rtmlamp_ohwr_regs_consts_pkg is
   constant c_WB_RTMLAMP_OHWR_REGS_CH_3_CTL_ADDR : Natural := 16#4c4#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_3_CTL_AMP_EN_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_3_CTL_MODE_OFFSET : Natural := 1;
+  constant c_WB_RTMLAMP_OHWR_REGS_CH_3_CTL_TRIG_EN_OFFSET : Natural := 5;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_3_PI_KP_ADDR : Natural := 16#4c8#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_3_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_3_PI_TI_ADDR : Natural := 16#4cc#;
@@ -128,6 +132,7 @@ package wb_rtmlamp_ohwr_regs_consts_pkg is
   constant c_WB_RTMLAMP_OHWR_REGS_CH_4_CTL_ADDR : Natural := 16#504#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_4_CTL_AMP_EN_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_4_CTL_MODE_OFFSET : Natural := 1;
+  constant c_WB_RTMLAMP_OHWR_REGS_CH_4_CTL_TRIG_EN_OFFSET : Natural := 5;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_4_PI_KP_ADDR : Natural := 16#508#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_4_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_4_PI_TI_ADDR : Natural := 16#50c#;
@@ -156,6 +161,7 @@ package wb_rtmlamp_ohwr_regs_consts_pkg is
   constant c_WB_RTMLAMP_OHWR_REGS_CH_5_CTL_ADDR : Natural := 16#544#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_5_CTL_AMP_EN_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_5_CTL_MODE_OFFSET : Natural := 1;
+  constant c_WB_RTMLAMP_OHWR_REGS_CH_5_CTL_TRIG_EN_OFFSET : Natural := 5;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_5_PI_KP_ADDR : Natural := 16#548#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_5_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_5_PI_TI_ADDR : Natural := 16#54c#;
@@ -184,6 +190,7 @@ package wb_rtmlamp_ohwr_regs_consts_pkg is
   constant c_WB_RTMLAMP_OHWR_REGS_CH_6_CTL_ADDR : Natural := 16#584#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_6_CTL_AMP_EN_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_6_CTL_MODE_OFFSET : Natural := 1;
+  constant c_WB_RTMLAMP_OHWR_REGS_CH_6_CTL_TRIG_EN_OFFSET : Natural := 5;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_6_PI_KP_ADDR : Natural := 16#588#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_6_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_6_PI_TI_ADDR : Natural := 16#58c#;
@@ -212,6 +219,7 @@ package wb_rtmlamp_ohwr_regs_consts_pkg is
   constant c_WB_RTMLAMP_OHWR_REGS_CH_7_CTL_ADDR : Natural := 16#5c4#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_7_CTL_AMP_EN_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_7_CTL_MODE_OFFSET : Natural := 1;
+  constant c_WB_RTMLAMP_OHWR_REGS_CH_7_CTL_TRIG_EN_OFFSET : Natural := 5;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_7_PI_KP_ADDR : Natural := 16#5c8#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_7_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_7_PI_TI_ADDR : Natural := 16#5cc#;
@@ -240,6 +248,7 @@ package wb_rtmlamp_ohwr_regs_consts_pkg is
   constant c_WB_RTMLAMP_OHWR_REGS_CH_8_CTL_ADDR : Natural := 16#604#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_8_CTL_AMP_EN_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_8_CTL_MODE_OFFSET : Natural := 1;
+  constant c_WB_RTMLAMP_OHWR_REGS_CH_8_CTL_TRIG_EN_OFFSET : Natural := 5;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_8_PI_KP_ADDR : Natural := 16#608#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_8_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_8_PI_TI_ADDR : Natural := 16#60c#;
@@ -268,6 +277,7 @@ package wb_rtmlamp_ohwr_regs_consts_pkg is
   constant c_WB_RTMLAMP_OHWR_REGS_CH_9_CTL_ADDR : Natural := 16#644#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_9_CTL_AMP_EN_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_9_CTL_MODE_OFFSET : Natural := 1;
+  constant c_WB_RTMLAMP_OHWR_REGS_CH_9_CTL_TRIG_EN_OFFSET : Natural := 5;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_9_PI_KP_ADDR : Natural := 16#648#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_9_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_9_PI_TI_ADDR : Natural := 16#64c#;
@@ -296,6 +306,7 @@ package wb_rtmlamp_ohwr_regs_consts_pkg is
   constant c_WB_RTMLAMP_OHWR_REGS_CH_10_CTL_ADDR : Natural := 16#684#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_10_CTL_AMP_EN_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_10_CTL_MODE_OFFSET : Natural := 1;
+  constant c_WB_RTMLAMP_OHWR_REGS_CH_10_CTL_TRIG_EN_OFFSET : Natural := 5;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_10_PI_KP_ADDR : Natural := 16#688#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_10_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_10_PI_TI_ADDR : Natural := 16#68c#;
@@ -324,6 +335,7 @@ package wb_rtmlamp_ohwr_regs_consts_pkg is
   constant c_WB_RTMLAMP_OHWR_REGS_CH_11_CTL_ADDR : Natural := 16#6c4#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_11_CTL_AMP_EN_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_11_CTL_MODE_OFFSET : Natural := 1;
+  constant c_WB_RTMLAMP_OHWR_REGS_CH_11_CTL_TRIG_EN_OFFSET : Natural := 5;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_11_PI_KP_ADDR : Natural := 16#6c8#;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_11_PI_KP_DATA_OFFSET : Natural := 0;
   constant c_WB_RTMLAMP_OHWR_REGS_CH_11_PI_TI_ADDR : Natural := 16#6cc#;

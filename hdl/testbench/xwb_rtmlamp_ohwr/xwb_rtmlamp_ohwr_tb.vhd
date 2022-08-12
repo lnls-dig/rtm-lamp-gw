@@ -61,8 +61,7 @@ architecture xwb_rtmlamp_ohwr_tb_arch of xwb_rtmlamp_ohwr_tb is
   constant c_ADC_SCLK_FREQ       : natural := 100000000;
   constant c_DAC_SCLK_FREQ       : natural := 25000000;
   constant c_USE_REF_CLOCK       : boolean := true;
-  constant c_ADC_CHANNELS        : natural := 12;
-  constant c_DAC_CHANNELS        : natural := 12;
+  constant c_RTMLAMP_CHANNELS    : natural := 12;
 
   signal clk_sys                 : std_logic := '0';
   signal clk_sys_rstn            : std_logic := '0';
@@ -74,13 +73,15 @@ architecture xwb_rtmlamp_ohwr_tb_arch of xwb_rtmlamp_ohwr_tb is
   signal wb_slave_i              : t_wishbone_slave_in;
   signal wb_slave_o              : t_wishbone_slave_out;
 
-  signal pi_sp_ext               : t_pi_sp_word_array(c_DAC_CHANNELS-1 downto 0) := (others => x"0000");
+  signal trig                    : std_logic_vector(c_RTMLAMP_CHANNELS-1 downto 0) := (others => '0');
+  signal pi_sp_ext               : t_pi_sp_word_array(c_RTMLAMP_CHANNELS-1 downto 0) := (others => x"0000");
 begin
   f_gen_clk(c_SYS_CLOCK_FREQ, clk_sys);
   f_gen_clk(c_REF_CLOCK_FREQ, clk_rtm_ref);
   f_gen_clk(c_FAST_SPI_FREQ, clk_fast_spi);
 
   process
+    variable v_sp_eff: std_logic_vector(31 downto 0);
   begin
     init(wb_slave_i);
 
@@ -111,13 +112,13 @@ begin
     write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_WB_RTMLAMP_OHWR_REGS_CH_0_PI_KP_ADDR,
                std_logic_vector(to_unsigned(5000000, 32)));
 
-    -- Set CH0 PI Ti to 2048
+    -- Set CH0 PI Ti to 500 000
     write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_WB_RTMLAMP_OHWR_REGS_CH_0_PI_TI_ADDR,
-               std_logic_vector(to_unsigned(2048, 32)));
+               std_logic_vector(to_unsigned(500000, 32)));
 
-    -- Set CH0 PI setpoint to 100
+    -- Set CH0 PI setpoint to -1000
     write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_WB_RTMLAMP_OHWR_REGS_CH_0_PI_SP_ADDR,
-               std_logic_vector(to_signed(100, 32)));
+               std_logic_vector(to_signed(-1000, 32)));
 
     -- Set CH0 mode to closed-loop manual control
     write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_ADDR,
@@ -125,9 +126,18 @@ begin
                 (c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_MODE_OFFSET + 2) downto
                 c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_MODE_OFFSET => "010",
                 others => '0'));
+    -- Wait 5 us
+    f_wait_cycles(clk_sys, 500);
 
-    -- Wait for 10 us
-    f_wait_cycles(clk_sys, 1000);
+    -- Read the effective set point value
+    read32_pl(clk_sys, wb_slave_i, wb_slave_o, c_WB_RTMLAMP_OHWR_REGS_CH_0_SP_EFF_ADDR,
+              v_sp_eff);
+
+    -- Check if the effective set point is -1000
+    assert v_sp_eff(15 downto 0) = std_logic_vector(to_signed(-1000, 16));
+
+    -- Wait for 50 us
+    f_wait_cycles(clk_sys, 5000);
 
     -- Set CH0 mode to closed-loop external control
     write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_ADDR,
@@ -139,13 +149,72 @@ begin
     -- Set the external setpoint to 1000 for CH0
     pi_sp_ext(0) <= std_logic_vector(to_signed(1000, 16));
 
-    -- Wait for 100 us
+    -- Wait 5 us
+    f_wait_cycles(clk_sys, 500);
+
+    -- Read the effective set point value
+    read32_pl(clk_sys, wb_slave_i, wb_slave_o, c_WB_RTMLAMP_OHWR_REGS_CH_0_SP_EFF_ADDR,
+              v_sp_eff);
+
+    -- Check if the effective set point is 1000
+    assert v_sp_eff(15 downto 0) = std_logic_vector(to_signed(1000, 16));
+
+    -- Wait for 50 us
+    f_wait_cycles(clk_sys, 5000);
+
+    -- Enable external trigger
+    write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_ADDR,
+               (c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_AMP_EN_OFFSET => '1',
+                (c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_MODE_OFFSET + 2) downto
+                c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_MODE_OFFSET => "100",
+                c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_TRIG_EN_OFFSET => '1',
+                others => '0'));
+
+    -- Set the external setpoint to -5000 for CH0
+    pi_sp_ext(0) <= std_logic_vector(to_signed(-5000, 16));
+
+    -- Wait 5 us
+    f_wait_cycles(clk_sys, 500);
+
+    -- Read the effective set point value
+    read32_pl(clk_sys, wb_slave_i, wb_slave_o, c_WB_RTMLAMP_OHWR_REGS_CH_0_SP_EFF_ADDR,
+              v_sp_eff);
+
+    -- Check if the effective set point still 1000
+    assert v_sp_eff(15 downto 0) = std_logic_vector(to_signed(1000, 16));
+
+    -- Wait for 20 us
+    f_wait_cycles(clk_sys, 2000);
+
+    -- Send trigger to CH0
+    trig(0) <= '1';
+    f_wait_cycles(clk_sys, 1);
+    trig(0) <= '0';
+
+    -- Wait 5 us
+    f_wait_cycles(clk_sys, 500);
+
+    -- Read the effective set point value
+    read32_pl(clk_sys, wb_slave_i, wb_slave_o, c_WB_RTMLAMP_OHWR_REGS_CH_0_SP_EFF_ADDR,
+              v_sp_eff);
+
+    -- Check if the effective set point has changed to -5000 after the trigger
+    assert v_sp_eff(15 downto 0) = std_logic_vector(to_signed(-5000, 16));
+
+    -- Wait 100 us
     f_wait_cycles(clk_sys, 10000);
 
     std.env.finish;
   end process;
 
   cmp_xwb_rtmlamp_ohwr_glue: entity work.xwb_rtmlamp_ohwr_glue
+    generic map(
+      -- Set the magnet inductance and resistance to smaller values,
+      -- so we can minimize the simulation time required for the current
+      -- setpoint to be reached.
+      g_MAG_IND               => 500.0e-6,
+      g_MAG_RES               => 0.25
+      )
     port map(
       clk_sys_i               => clk_sys,
       clk_sys_rstn_i          => clk_sys_rstn,
@@ -157,6 +226,7 @@ begin
       wb_slave_i              => wb_slave_i,
       wb_slave_o              => wb_slave_o,
 
+      trig_i                  => trig,
       pi_sp_ext_i             => pi_sp_ext
       );
 

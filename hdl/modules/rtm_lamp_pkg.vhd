@@ -449,6 +449,11 @@ package rtm_lamp_pkg is
     amp_shift_str_o                            : out std_logic;
 
     ---------------------------------------------------------------------------
+    -- External triggers for SP and DAC. Clock domain: clk_i
+    ---------------------------------------------------------------------------
+    trig_i                                     : in  std_logic_vector(g_CHANNELS-1 downto 0);
+
+    ---------------------------------------------------------------------------
     -- PI parameters
     ---------------------------------------------------------------------------
     -- External PI setpoint data. It is used when ch.x.ctl.mode (wishbone
@@ -473,7 +478,7 @@ package rtm_lamp_pkg is
   constant c_xwb_rtm_lamp_regs_sdb : t_sdb_device := (
     abi_class     => x"0000",                   -- undocumented device
     abi_ver_major => x"02",
-    abi_ver_minor => x"00",
+    abi_ver_minor => x"01",
     wbd_endian    => c_sdb_endian_big,
     wbd_width     => x"4",                      -- 32-bit port granularity (0100)
     sdb_component => (
@@ -482,7 +487,7 @@ package rtm_lamp_pkg is
     product => (
     vendor_id     => x"1000000000001215",       -- LNLS
     device_id     => x"a1248bec",
-    version       => x"00000002",
+    version       => x"00000003",
     date          => x"20211301",
     name          => "LNLS_RTM_LAMP_REGS ")));
 

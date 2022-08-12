@@ -259,6 +259,7 @@ architecture top of afcv4_rtm_lamp_ctrl is
   signal rtmlamp_dbg_dac_start               : std_logic;
   signal rtmlamp_dbg_dac_data                : t_16b_word_array(g_RTMLAMP_CHANNELS-1 downto 0);
   signal rtmlamp_dbg_pi_ctrl_sp              : t_pi_sp_word_array(g_RTMLAMP_CHANNELS-1 downto 0);
+  signal rtmlamp_triggers                    : std_logic_vector(g_RTMLAMP_CHANNELS-1 downto 0) := (others => '0');
 
   -----------------------------------------------------------------------------
   -- AFC Si57x signals
@@ -805,6 +806,11 @@ begin
     amp_shift_oe_n_o                           => rtmlamp_amp_shift_oe_n_o,
     amp_shift_din_o                            => rtmlamp_amp_shift_din_o,
     amp_shift_str_o                            => rtmlamp_amp_shift_str_o,
+
+    ---------------------------------------------------------------------------
+    -- FPGA interface
+    ---------------------------------------------------------------------------
+    trig_i                                     => rtmlamp_triggers,
 
     ---------------------------------------------------------------------------
     -- FPGA interface

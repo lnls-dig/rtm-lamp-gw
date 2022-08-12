@@ -124,7 +124,10 @@ port (
   amp_shift_oe_n_o                           : out std_logic;
   amp_shift_din_o                            : out std_logic;
   amp_shift_str_o                            : out std_logic;
-
+  ---------------------------------------------------------------------------
+  -- External triggers for SP and DAC. Clock domain: clk_i
+  ---------------------------------------------------------------------------
+  trig_i                                     : in  std_logic_vector(g_CHANNELS-1 downto 0);
   ---------------------------------------------------------------------------
   -- PI parameters
   ---------------------------------------------------------------------------
@@ -316,42 +319,53 @@ begin
       rtmlamp_ohwr_ch_regs_o                 => wb_regs_slv_in
     );
 
-  -- Connect wishbone registers to the status and control signals of the
-  -- rtmlamp_ohwr core
-  gen_per_channel : for i in 0 to g_CHANNELS-1 generate
-    wb_regs_slv_out(i).sta_amp_iflag_l <= ch_ctrl_out(i).amp_iflag_l;
-    wb_regs_slv_out(i).sta_amp_iflag_r <= ch_ctrl_out(i).amp_iflag_r;
-    wb_regs_slv_out(i).sta_amp_tflag_l <= ch_ctrl_out(i).amp_tflag_l;
-    wb_regs_slv_out(i).sta_amp_tflag_r <= ch_ctrl_out(i).amp_tflag_r;
-    wb_regs_slv_out(i).adc_dac_eff_adc <= ch_ctrl_out(i).adc_data;
-    wb_regs_slv_out(i).adc_dac_eff_dac <= ch_ctrl_out(i).dac_data_eff;
-    wb_regs_slv_out(i).sp_eff_sp <= ch_ctrl_out(i).pi_sp_eff;
+  process(clk_i)
+  begin
+    if rising_edge(clk_i) then
+      -- Connect wishbone registers to the status and control signals of the
+      -- rtmlamp_ohwr core
+      gen_per_channel : for i in 0 to g_CHANNELS-1 loop
+        wb_regs_slv_out(i).sta_amp_iflag_l <= ch_ctrl_out(i).amp_iflag_l;
+        wb_regs_slv_out(i).sta_amp_iflag_r <= ch_ctrl_out(i).amp_iflag_r;
+        wb_regs_slv_out(i).sta_amp_tflag_l <= ch_ctrl_out(i).amp_tflag_l;
+        wb_regs_slv_out(i).sta_amp_tflag_r <= ch_ctrl_out(i).amp_tflag_r;
+        wb_regs_slv_out(i).adc_dac_eff_adc <= ch_ctrl_out(i).adc_data;
+        wb_regs_slv_out(i).adc_dac_eff_dac <= ch_ctrl_out(i).dac_data_eff;
+        wb_regs_slv_out(i).sp_eff_sp <= ch_ctrl_out(i).pi_sp_eff;
 
-    with wb_regs_slv_in(i).ctl_mode select ch_ctrl_in(i).mode <=
-      OL_MODE          when c_WB_CH_CTL_MODE_OL,
-      OL_TEST_SQR_MODE when c_WB_CH_CTL_MODE_OL_TEST_SQR,
-      CL_MODE          when c_WB_CH_CTL_MODE_CL,
-      CL_TEST_SQR_MODE when c_WB_CH_CTL_MODE_CL_TEST_SQR,
-      CL_MODE          when c_WB_CH_CTL_MODE_CL_EXT,
-      OL_MODE          when others;
+        case wb_regs_slv_in(i).ctl_mode is
+          when c_WB_CH_CTL_MODE_OL          => ch_ctrl_in(i).mode <= OL_MODE;
+          when c_WB_CH_CTL_MODE_OL_TEST_SQR => ch_ctrl_in(i).mode <= OL_TEST_SQR_MODE;
+          when c_WB_CH_CTL_MODE_CL          => ch_ctrl_in(i).mode <= CL_MODE;
+          when c_WB_CH_CTL_MODE_CL_TEST_SQR => ch_ctrl_in(i).mode <= CL_TEST_SQR_MODE;
+          when c_WB_CH_CTL_MODE_CL_EXT      => ch_ctrl_in(i).mode <= CL_MODE;
+          when others                       => ch_ctrl_in(i).mode <= OL_MODE;
+        end case;
 
-    with wb_regs_slv_in(i).ctl_mode select ch_ctrl_in(i).pi_sp <=
-      pi_sp_ext_i(i)               when c_WB_CH_CTL_MODE_CL_EXT,
-      wb_regs_slv_in(i).pi_sp_data when others;
+        -- If the triggered mode is enabled, write to dac_data and pi_sp only
+        -- when receiving an external trigger. Otherwise, always write.
+        if wb_regs_slv_in(i).ctl_trig_en = '0' or
+           (wb_regs_slv_in(i).ctl_trig_en = '1' and trig_i(i) = '1') then
+          ch_ctrl_in(i).dac_data <= wb_regs_slv_in(i).dac_data;
+          case wb_regs_slv_in(i).ctl_mode is
+            when c_WB_CH_CTL_MODE_CL_EXT => ch_ctrl_in(i).pi_sp <= pi_sp_ext_i(i);
+            when others                  => ch_ctrl_in(i).pi_sp <= wb_regs_slv_in(i).pi_sp_data;
+          end case;
+        end if;
 
-    ch_ctrl_in(i).amp_en <= wb_regs_slv_in(i).ctl_amp_en;
-    ch_ctrl_in(i).pi_kp <= wb_regs_slv_in(i).pi_kp_data;
-    ch_ctrl_in(i).pi_ti <= wb_regs_slv_in(i).pi_ti_data;
-    ch_ctrl_in(i).lim_a <= wb_regs_slv_in(i).lim_a;
-    ch_ctrl_in(i).lim_b <= wb_regs_slv_in(i).lim_b;
-    ch_ctrl_in(i).cnt <= unsigned(wb_regs_slv_in(i).cnt_data);
-    ch_ctrl_in(i).dac_data <= wb_regs_slv_in(i).dac_data;
+        ch_ctrl_in(i).amp_en <= wb_regs_slv_in(i).ctl_amp_en;
+        ch_ctrl_in(i).pi_kp <= wb_regs_slv_in(i).pi_kp_data;
+        ch_ctrl_in(i).pi_ti <= wb_regs_slv_in(i).pi_ti_data;
+        ch_ctrl_in(i).lim_a <= wb_regs_slv_in(i).lim_a;
+        ch_ctrl_in(i).lim_b <= wb_regs_slv_in(i).lim_b;
+        ch_ctrl_in(i).cnt <= unsigned(wb_regs_slv_in(i).cnt_data);
 
-    adc_data_o(i) <= ch_ctrl_out(i).adc_data;
-    pi_sp_eff_o(i) <= ch_ctrl_out(i).pi_sp_eff;
-    dac_data_eff_o(i) <= ch_ctrl_out(i).dac_data_eff;
-
-  end generate;
+        adc_data_o(i) <= ch_ctrl_out(i).adc_data;
+        pi_sp_eff_o(i) <= ch_ctrl_out(i).pi_sp_eff;
+        dac_data_eff_o(i) <= ch_ctrl_out(i).dac_data_eff;
+      end loop;
+    end if;
+  end process;
 
   -----------------------------
   -- RTM LAMP

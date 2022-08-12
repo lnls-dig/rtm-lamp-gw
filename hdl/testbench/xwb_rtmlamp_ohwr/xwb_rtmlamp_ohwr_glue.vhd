@@ -39,7 +39,9 @@ entity xwb_rtmlamp_ohwr_glue is
     g_ADC_SCLK_FREQ          : natural := 100000000;
     g_DAC_SCLK_FREQ          : natural := 25000000;
     g_USE_REF_CLOCK          : boolean := true;
-    g_CHANNELS               : natural := 12
+    g_CHANNELS               : natural := 12;
+    g_MAG_IND                : real    := 3.5e-3;
+    g_MAG_RES                : real    := 1.0
     );
   port(
     clk_sys_i                : in  std_logic := '0';
@@ -52,7 +54,8 @@ entity xwb_rtmlamp_ohwr_glue is
     wb_slave_i               : in  t_wishbone_slave_in;
     wb_slave_o               : out t_wishbone_slave_out;
 
-    pi_sp_ext_i              : in t_pi_sp_word_array(g_CHANNELS-1 downto 0) := (others => x"0000")
+    trig_i                   : in  std_logic_vector(g_CHANNELS-1 downto 0);
+    pi_sp_ext_i              : in  t_pi_sp_word_array(g_CHANNELS-1 downto 0) := (others => x"0000")
     );
 end entity xwb_rtmlamp_ohwr_glue;
 
@@ -201,8 +204,9 @@ begin
       amp_shift_str_o                            => amp_shift_str,
 
       ---------------------------------------------------------------------------
-      -- FPGA interface
+      -- External triggers for SP and DAC. Clock domain: clk_i
       ---------------------------------------------------------------------------
+      trig_i                                     => trig_i,
 
       ---------------------------------------------------------------------------
       -- PI parameters
@@ -298,7 +302,9 @@ begin
   -----------------------------------------------------------------
   cmp_rtm_lamp_model: entity work.rtm_lamp_model
     generic map(
-      g_ADC_DDR_MODE => false
+      g_ADC_DDR_MODE => false,
+      g_MAG_IND => g_MAG_IND,
+      g_MAG_RES => g_MAG_RES
       )
     port map(
       rtm_lamp_sync_clk_i => clk_rtm_ref_i, -- ADC and DAC synchronization clock

@@ -108,6 +108,16 @@ memory-map:
                       101: reserved
                       110: reserved
                       111: reserved
+                - field:
+                    name: trig_en
+                    range: 5
+                    description: Triggered mode enable
+                    comment: |
+                      write 0: Triggered mode disabled
+                      write 1: Triggered mode enabled, all set-points sent when in manual
+                               mode (open loop and closed loop) will only become effective
+                               after an external trigger is received. It is ignored when in
+                               the test square wave modes.
           - reg:
               name: pi_kp
               width: 32

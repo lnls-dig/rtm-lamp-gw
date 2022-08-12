@@ -1339,7 +1339,7 @@ Channel control register
 <tr>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
@@ -1354,6 +1354,10 @@ amp_en
 mode
 </b>[<i>rw</i>]: Power supply operation mode
 <br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<li><b>
+trig_en
+</b>[<i>rw</i>]: Triggered mode enable
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
 </ul>
 <a name="ch.0.pi_kp"></a>
 <h3><a name="sect_3_5">2.5. ch.0.pi_kp</a></h3>
@@ -2188,7 +2192,7 @@ Channel control register
 <tr>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
@@ -2203,6 +2207,10 @@ amp_en
 mode
 </b>[<i>rw</i>]: Power supply operation mode
 <br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<li><b>
+trig_en
+</b>[<i>rw</i>]: Triggered mode enable
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
 </ul>
 <a name="ch.1.pi_kp"></a>
 <h3><a name="sect_3_15">2.15. ch.1.pi_kp</a></h3>
@@ -3037,7 +3045,7 @@ Channel control register
 <tr>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
@@ -3052,6 +3060,10 @@ amp_en
 mode
 </b>[<i>rw</i>]: Power supply operation mode
 <br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<li><b>
+trig_en
+</b>[<i>rw</i>]: Triggered mode enable
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
 </ul>
 <a name="ch.2.pi_kp"></a>
 <h3><a name="sect_3_25">2.25. ch.2.pi_kp</a></h3>
@@ -3886,7 +3898,7 @@ Channel control register
 <tr>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
@@ -3901,6 +3913,10 @@ amp_en
 mode
 </b>[<i>rw</i>]: Power supply operation mode
 <br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<li><b>
+trig_en
+</b>[<i>rw</i>]: Triggered mode enable
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
 </ul>
 <a name="ch.3.pi_kp"></a>
 <h3><a name="sect_3_35">2.35. ch.3.pi_kp</a></h3>
@@ -4735,7 +4751,7 @@ Channel control register
 <tr>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
@@ -4750,6 +4766,10 @@ amp_en
 mode
 </b>[<i>rw</i>]: Power supply operation mode
 <br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<li><b>
+trig_en
+</b>[<i>rw</i>]: Triggered mode enable
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
 </ul>
 <a name="ch.4.pi_kp"></a>
 <h3><a name="sect_3_45">2.45. ch.4.pi_kp</a></h3>
@@ -5584,7 +5604,7 @@ Channel control register
 <tr>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
@@ -5599,6 +5619,10 @@ amp_en
 mode
 </b>[<i>rw</i>]: Power supply operation mode
 <br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<li><b>
+trig_en
+</b>[<i>rw</i>]: Triggered mode enable
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
 </ul>
 <a name="ch.5.pi_kp"></a>
 <h3><a name="sect_3_55">2.55. ch.5.pi_kp</a></h3>
@@ -6433,7 +6457,7 @@ Channel control register
 <tr>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
@@ -6448,6 +6472,10 @@ amp_en
 mode
 </b>[<i>rw</i>]: Power supply operation mode
 <br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<li><b>
+trig_en
+</b>[<i>rw</i>]: Triggered mode enable
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
 </ul>
 <a name="ch.6.pi_kp"></a>
 <h3><a name="sect_3_65">2.65. ch.6.pi_kp</a></h3>
@@ -7282,7 +7310,7 @@ Channel control register
 <tr>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
@@ -7297,6 +7325,10 @@ amp_en
 mode
 </b>[<i>rw</i>]: Power supply operation mode
 <br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<li><b>
+trig_en
+</b>[<i>rw</i>]: Triggered mode enable
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
 </ul>
 <a name="ch.7.pi_kp"></a>
 <h3><a name="sect_3_75">2.75. ch.7.pi_kp</a></h3>
@@ -8131,7 +8163,7 @@ Channel control register
 <tr>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
@@ -8146,6 +8178,10 @@ amp_en
 mode
 </b>[<i>rw</i>]: Power supply operation mode
 <br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<li><b>
+trig_en
+</b>[<i>rw</i>]: Triggered mode enable
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
 </ul>
 <a name="ch.8.pi_kp"></a>
 <h3><a name="sect_3_85">2.85. ch.8.pi_kp</a></h3>
@@ -8980,7 +9016,7 @@ Channel control register
 <tr>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
@@ -8995,6 +9031,10 @@ amp_en
 mode
 </b>[<i>rw</i>]: Power supply operation mode
 <br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<li><b>
+trig_en
+</b>[<i>rw</i>]: Triggered mode enable
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
 </ul>
 <a name="ch.9.pi_kp"></a>
 <h3><a name="sect_3_95">2.95. ch.9.pi_kp</a></h3>
@@ -9829,7 +9869,7 @@ Channel control register
 <tr>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
@@ -9844,6 +9884,10 @@ amp_en
 mode
 </b>[<i>rw</i>]: Power supply operation mode
 <br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<li><b>
+trig_en
+</b>[<i>rw</i>]: Triggered mode enable
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
 </ul>
 <a name="ch.10.pi_kp"></a>
 <h3><a name="sect_3_105">2.105. ch.10.pi_kp</a></h3>
@@ -10678,7 +10722,7 @@ Channel control register
 <tr>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
@@ -10693,6 +10737,10 @@ amp_en
 mode
 </b>[<i>rw</i>]: Power supply operation mode
 <br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<li><b>
+trig_en
+</b>[<i>rw</i>]: Triggered mode enable
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
 </ul>
 <a name="ch.11.pi_kp"></a>
 <h3><a name="sect_3_115">2.115. ch.11.pi_kp</a></h3>
