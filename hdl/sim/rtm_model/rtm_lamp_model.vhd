@@ -67,7 +67,7 @@ architecture rtm_lamp_model_arch of rtm_lamp_model is
   signal voltages: real_vector(0 to 11) := (others => 0.0);
   signal voltages_dac: real_vector(0 to 11) := (others => 0.0);
   signal currents: real_vector(0 to 11) := (others => 0.0);
-  signal currents_adc: real_vector(0 to 11) := (others => 0.0);
+  signal voltages_adc: real_vector(0 to 11) := (others => 0.0);
   signal adc_cnv_sync: std_logic; -- ADC conversion start (synchronized)
   signal dac_ldac_sync: std_logic; -- DAC load (synchronized)
 
@@ -111,9 +111,9 @@ begin
   end generate;
 
   current_to_adc:                       -- Map input current from -1.0 <-> 1.0A to
-                                        -- 0.0 <-> 4.0V (adc input)
+                                        -- 0.048 <-> 4.048V (adc input)
   for i in 0 to 11 generate
-    currents_adc(i) <= maximum((currents(i) + 1.0) * 2.0, 0.0);
+    voltages_adc(i) <= maximum((currents(i) * 2.0) + (g_ADC_REF / 2.0), 0.0);
   end generate;
 
   dac_and_magnets:
@@ -156,7 +156,7 @@ begin
       sdob_o => adc_octo_sdob_o,
       sdoc_o => adc_octo_sdoc_o,
       sdod_o => adc_octo_sdod_o,
-      analog_i => currents_adc(0 to 7)
+      analog_i => voltages_adc(0 to 7)
       );
 
   cmp_ltc2324: entity work.ltc232x_model
@@ -173,7 +173,7 @@ begin
       sdob_o => open,
       sdoc_o => adc_quad_sdoc_o,
       sdod_o => open,
-      analog_i => currents_adc(8 to 11)
+      analog_i => voltages_adc(8 to 11)
       );
 
   -- generate some flags pattern
