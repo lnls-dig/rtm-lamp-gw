@@ -229,6 +229,7 @@ architecture top of afcv4_rtm_lamp_ctrl is
   constant c_RTM_LAMP_NUM_CORES              : natural := 1;
 
   constant c_RTM_LAMP_ID                     : natural := 0;
+  constant c_RTM_LAMP_TRIG_ID                : natural := 10;
 
   constant c_SLV_RTM_LAMP_CORE_IDS           : t_num_array(c_RTM_LAMP_NUM_CORES-1 downto 0) :=
     f_gen_ramp(0, c_RTM_LAMP_NUM_CORES);
@@ -259,7 +260,7 @@ architecture top of afcv4_rtm_lamp_ctrl is
   signal rtmlamp_dbg_dac_start               : std_logic;
   signal rtmlamp_dbg_dac_data                : t_16b_word_array(g_RTMLAMP_CHANNELS-1 downto 0);
   signal rtmlamp_dbg_pi_ctrl_sp              : t_pi_sp_word_array(g_RTMLAMP_CHANNELS-1 downto 0);
-  signal rtmlamp_triggers                    : std_logic_vector(g_RTMLAMP_CHANNELS-1 downto 0) := (others => '0');
+  signal rtmlamp_triggers                    : std_logic_vector(g_RTMLAMP_CHANNELS-1 downto 0);
 
   -----------------------------------------------------------------------------
   -- AFC Si57x signals
@@ -353,16 +354,9 @@ architecture top of afcv4_rtm_lamp_ctrl is
   constant c_TRIG_MUX_WITH_INPUT_SYNC        : boolean  := true;
   constant c_TRIG_MUX_WITH_OUTPUT_SYNC       : boolean  := true;
 
-  -- Trigger RCV intern IDs
-  constant c_TRIG_RCV_INTERN_CHAN_1_ID       : natural := 0; -- Internal Channel 1
-  constant c_TRIG_RCV_INTERN_CHAN_2_ID       : natural := 1; -- Internal Channel 2
-
   signal trig_rcv_intern                     : t_trig_channel_array2d(c_TRIG_MUX_NUM_CORES-1 downto 0, c_TRIG_MUX_RCV_INTERN_NUM-1 downto 0);
   signal trig_pulse_transm                   : t_trig_channel_array2d(c_TRIG_MUX_NUM_CORES-1 downto 0, c_TRIG_MUX_INTERN_NUM-1 downto 0);
   signal trig_pulse_rcv                      : t_trig_channel_array2d(c_TRIG_MUX_NUM_CORES-1 downto 0, c_TRIG_MUX_INTERN_NUM-1 downto 0);
-
-  signal trig_acq1_channel_1                 : t_trig_channel;
-  signal trig_acq1_channel_2                 : t_trig_channel;
 
   -----------------------------------------------------------------------------
   -- User Signals
@@ -661,10 +655,6 @@ begin
   clk_aux_rst <= not clk_aux_rstn;
   clk_aux_raw_rst <= not clk_aux_raw_rstn;
 
-  gen_wishbone_rtm_lamp_idx : for i in 0 to c_RTM_LAMP_NUM_CORES-1 generate
-
-  end generate;
-
   ----------------------------------------------------------------------
   --                          AFC Si57x                               --
   ----------------------------------------------------------------------
@@ -890,14 +880,8 @@ begin
   --                          Trigger                                 --
   ----------------------------------------------------------------------
 
-  -- Assign trigger pulses to trigger channel interfaces
-  -- FIXME: remove this
-  -- trig_acq1_channel_1.pulse <= rtmlamp_adc_start;
-  -- trig_acq1_channel_2.pulse <= rtmlamp_dac_start;
-
-  -- Assign intern triggers to trigger module
-  trig_rcv_intern(c_TRIG_MUX_0_ID, c_TRIG_RCV_INTERN_CHAN_1_ID) <= trig_acq1_channel_1;
-  trig_rcv_intern(c_TRIG_MUX_0_ID, c_TRIG_RCV_INTERN_CHAN_2_ID) <= trig_acq1_channel_2;
+  -- RTM-LAMP external trigger for triggered mode
+  rtmlamp_triggers <= (others => trig_pulse_rcv(c_TRIG_MUX_0_ID, c_RTM_LAMP_TRIG_ID).pulse);
 
   ----------------------------------------------------------------------
   --                          VIO                                     --
