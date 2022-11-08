@@ -6,4 +6,4 @@ modules = {"local" : ["../"]}
 
 ghdl_opt = "--std=08"
 
-sim_post_cmd = "ghdl -r --std=08 ltc232x_acq_tb --wave=ltc232x_acq_tb.ghw"
+sim_post_cmd = "ghdl -r --std=08 ltc232x_acq_tb --wave=ltc232x_acq_tb.ghw --assert-level=error"

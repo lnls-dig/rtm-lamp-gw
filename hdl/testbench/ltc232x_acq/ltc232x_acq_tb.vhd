@@ -18,6 +18,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 use ieee.math_real.all;
 
 library work;
@@ -53,7 +54,7 @@ architecture ltc232x_acq_tb_arch of ltc232x_acq_tb is
   constant c_CLK_PERIOD : real := 5.0e-9;
   constant c_CLK_PERIOD_HALF : real := c_CLK_PERIOD/2.0;
   constant c_CLK_FREQ : natural := integer(floor(1.0/c_CLK_PERIOD));
-  constant c_CLK_FAST_SPI_PERIOD : real := 2.5e-9;
+  constant c_CLK_FAST_SPI_PERIOD : real := 5.0e-9;
   constant c_CLK_FAST_SPI_PERIOD_HALF : real := c_CLK_FAST_SPI_PERIOD/2.0;
   constant c_CLK_FAST_SPI_FREQ : natural := integer(floor(1.0/c_CLK_FAST_SPI_PERIOD));
   constant c_SCLK_PERIOD : real := 10.0e-9;
@@ -62,6 +63,7 @@ architecture ltc232x_acq_tb_arch of ltc232x_acq_tb is
   constant c_CLK_SYNC_PERIOD : real := 14.42e-9;
   constant c_CLK_SYNC_PERIOD_HALF : real := c_CLK_SYNC_PERIOD/2.0;
   constant c_CLK_SYNC_FREQ : natural := integer(floor(1.0/c_CLK_SYNC_PERIOD));
+  constant c_ADC_VOLT_REG : real := 4.096;
 
   signal rst_n: std_logic := '0';
   signal clk: std_logic := '0';
@@ -86,7 +88,7 @@ architecture ltc232x_acq_tb_arch of ltc232x_acq_tb is
   signal sdoc_sync: std_logic;
   signal sdod_sync: std_logic;
 
-  signal analog_i: real_vector (1 to 8) :=
+  signal analog: real_vector (1 to 8) :=
     (2.735, 2.048, 4.096, -1.024, -2.048, -4.096, 3.000, 2.0);
 
   procedure f_wait_until( signal net    : in std_logic;
@@ -99,10 +101,25 @@ architecture ltc232x_acq_tb_arch of ltc232x_acq_tb is
     end loop;
 
   end f_wait_until;
+
+  function ana_to_dig(ain: real; ref: real) return std_logic_vector is
+    variable ratio: real;
+  begin
+    ratio := ain / ref;
+
+    if ratio > 1.0 then
+      ratio := 1.0;
+    elsif ratio < -1.0 then
+      ratio := -1.0;
+    end if;
+    return std_logic_vector(to_signed(integer(ratio * 32767.0), 16));
+  end function;
+
 begin
 
   cmp_ltc2320: entity work.ltc232x_model
     generic map(
+      g_REF      => c_ADC_VOLT_REG,
       g_DDR_MODE => false
       )
     port map(
@@ -113,11 +130,12 @@ begin
       sdob_o => sdob,
       sdoc_o => sdoc,
       sdod_o => sdod,
-      analog_i => analog_i
+      analog_i => analog
       );
 
   cmp_clk_sync_ltc2320: entity work.ltc232x_model
     generic map(
+      g_REF      => c_ADC_VOLT_REG,
       g_DDR_MODE => false
       )
     port map(
@@ -128,7 +146,7 @@ begin
       sdob_o => sdob_sync,
       sdoc_o => sdoc_sync,
       sdod_o => sdod_sync,
-      analog_i => analog_i
+      analog_i => analog
       );
 
   p_gen_200mhz_clk: process
@@ -192,6 +210,14 @@ begin
     f_wait_until(clk, 2);
     start <= '0';
     f_wait_until(clk, 200);
+    assert ch1_o = ana_to_dig(analog(1), c_ADC_VOLT_REG) report "ch1_o value unexpected!" severity error;
+    assert ch2_o = ana_to_dig(analog(2), c_ADC_VOLT_REG) report "ch2_o value unexpected!" severity error;
+    assert ch3_o = ana_to_dig(analog(3), c_ADC_VOLT_REG) report "ch3_o value unexpected!" severity error;
+    assert ch4_o = ana_to_dig(analog(4), c_ADC_VOLT_REG) report "ch4_o value unexpected!" severity error;
+    assert ch5_o = ana_to_dig(analog(5), c_ADC_VOLT_REG) report "ch5_o value unexpected!" severity error;
+    assert ch6_o = ana_to_dig(analog(6), c_ADC_VOLT_REG) report "ch6_o value unexpected!" severity error;
+    assert ch7_o = ana_to_dig(analog(7), c_ADC_VOLT_REG) report "ch7_o value unexpected!" severity error;
+    assert ch8_o = ana_to_dig(analog(8), c_ADC_VOLT_REG) report "ch8_o value unexpected!" severity error;
     std.env.finish;
   end process;
 

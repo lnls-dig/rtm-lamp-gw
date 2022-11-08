@@ -37,7 +37,7 @@ afc_base_xdc = ['acq']
 import os
 import sys
 if os.path.isfile("synthesis_descriptor_pkg.vhd"):
-    files = ["synthesis_descriptor_pkg.vhd"]
+    files = ["synthesis_descriptor_pkg.vhd", "commands.tcl"]
 else:
     sys.exit("Generate the SDB descriptor before using HDLMake (./build_synthesis_sdb.sh)")
 
@@ -58,3 +58,4 @@ modules = {
         "../../top/afcv4_ref_design",
     ]
 }
+
