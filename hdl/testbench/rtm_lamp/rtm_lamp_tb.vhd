@@ -185,7 +185,12 @@ begin
 
       shift_str_i  => shift_str,     -- Amplifier enable shift register strobe
       shift_oe_n_i => shift_oe_n,    -- Amplifier enable output enable
-      shift_din_i  => shift_din      -- Amplifier enable data input
+      shift_din_i  => shift_din,     -- Amplifier enable data input
+
+      amp_iflag_l_i => x"FFF",
+      amp_iflag_r_i => x"FFF",
+      amp_tflag_l_i => x"FFF",
+      amp_tflag_r_i => x"FFF"
       );
 
   adc_octo_clk_out_n <= not adc_octo_clk_out;

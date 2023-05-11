@@ -1190,10 +1190,10 @@ Channel status register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">amp_tflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_tflag_l_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_l_latch</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -1253,6 +1253,22 @@ amp_iflag_r
 amp_tflag_r
 </b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
 <br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_iflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.0.ctl"></a>
 <h3><a name="sect_3_4">2.4. ch.0.ctl</a></h3>
@@ -1338,7 +1354,7 @@ Channel control register
 </tr>
 <tr>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
@@ -1358,6 +1374,10 @@ mode
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
 <br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<li><b>
+rst_latch_sts
+</b>[<i>rw</i>]: Reset latched status bits
+<br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
 </ul>
 <a name="ch.0.pi_kp"></a>
 <h3><a name="sect_3_5">2.5. ch.0.pi_kp</a></h3>
@@ -2043,10 +2063,10 @@ Channel status register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">amp_tflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_tflag_l_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_l_latch</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -2106,6 +2126,22 @@ amp_iflag_r
 amp_tflag_r
 </b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
 <br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_iflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.1.ctl"></a>
 <h3><a name="sect_3_14">2.14. ch.1.ctl</a></h3>
@@ -2191,7 +2227,7 @@ Channel control register
 </tr>
 <tr>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
@@ -2211,6 +2247,10 @@ mode
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
 <br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<li><b>
+rst_latch_sts
+</b>[<i>rw</i>]: Reset latched status bits
+<br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
 </ul>
 <a name="ch.1.pi_kp"></a>
 <h3><a name="sect_3_15">2.15. ch.1.pi_kp</a></h3>
@@ -2896,10 +2936,10 @@ Channel status register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">amp_tflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_tflag_l_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_l_latch</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -2959,6 +2999,22 @@ amp_iflag_r
 amp_tflag_r
 </b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
 <br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_iflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.2.ctl"></a>
 <h3><a name="sect_3_24">2.24. ch.2.ctl</a></h3>
@@ -3044,7 +3100,7 @@ Channel control register
 </tr>
 <tr>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
@@ -3064,6 +3120,10 @@ mode
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
 <br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<li><b>
+rst_latch_sts
+</b>[<i>rw</i>]: Reset latched status bits
+<br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
 </ul>
 <a name="ch.2.pi_kp"></a>
 <h3><a name="sect_3_25">2.25. ch.2.pi_kp</a></h3>
@@ -3749,10 +3809,10 @@ Channel status register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">amp_tflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_tflag_l_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_l_latch</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -3812,6 +3872,22 @@ amp_iflag_r
 amp_tflag_r
 </b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
 <br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_iflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.3.ctl"></a>
 <h3><a name="sect_3_34">2.34. ch.3.ctl</a></h3>
@@ -3897,7 +3973,7 @@ Channel control register
 </tr>
 <tr>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
@@ -3917,6 +3993,10 @@ mode
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
 <br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<li><b>
+rst_latch_sts
+</b>[<i>rw</i>]: Reset latched status bits
+<br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
 </ul>
 <a name="ch.3.pi_kp"></a>
 <h3><a name="sect_3_35">2.35. ch.3.pi_kp</a></h3>
@@ -4602,10 +4682,10 @@ Channel status register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">amp_tflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_tflag_l_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_l_latch</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -4665,6 +4745,22 @@ amp_iflag_r
 amp_tflag_r
 </b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
 <br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_iflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.4.ctl"></a>
 <h3><a name="sect_3_44">2.44. ch.4.ctl</a></h3>
@@ -4750,7 +4846,7 @@ Channel control register
 </tr>
 <tr>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
@@ -4770,6 +4866,10 @@ mode
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
 <br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<li><b>
+rst_latch_sts
+</b>[<i>rw</i>]: Reset latched status bits
+<br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
 </ul>
 <a name="ch.4.pi_kp"></a>
 <h3><a name="sect_3_45">2.45. ch.4.pi_kp</a></h3>
@@ -5455,10 +5555,10 @@ Channel status register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">amp_tflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_tflag_l_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_l_latch</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -5518,6 +5618,22 @@ amp_iflag_r
 amp_tflag_r
 </b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
 <br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_iflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.5.ctl"></a>
 <h3><a name="sect_3_54">2.54. ch.5.ctl</a></h3>
@@ -5603,7 +5719,7 @@ Channel control register
 </tr>
 <tr>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
@@ -5623,6 +5739,10 @@ mode
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
 <br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<li><b>
+rst_latch_sts
+</b>[<i>rw</i>]: Reset latched status bits
+<br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
 </ul>
 <a name="ch.5.pi_kp"></a>
 <h3><a name="sect_3_55">2.55. ch.5.pi_kp</a></h3>
@@ -6308,10 +6428,10 @@ Channel status register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">amp_tflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_tflag_l_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_l_latch</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -6371,6 +6491,22 @@ amp_iflag_r
 amp_tflag_r
 </b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
 <br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_iflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.6.ctl"></a>
 <h3><a name="sect_3_64">2.64. ch.6.ctl</a></h3>
@@ -6456,7 +6592,7 @@ Channel control register
 </tr>
 <tr>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
@@ -6476,6 +6612,10 @@ mode
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
 <br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<li><b>
+rst_latch_sts
+</b>[<i>rw</i>]: Reset latched status bits
+<br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
 </ul>
 <a name="ch.6.pi_kp"></a>
 <h3><a name="sect_3_65">2.65. ch.6.pi_kp</a></h3>
@@ -7161,10 +7301,10 @@ Channel status register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">amp_tflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_tflag_l_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_l_latch</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -7224,6 +7364,22 @@ amp_iflag_r
 amp_tflag_r
 </b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
 <br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_iflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.7.ctl"></a>
 <h3><a name="sect_3_74">2.74. ch.7.ctl</a></h3>
@@ -7309,7 +7465,7 @@ Channel control register
 </tr>
 <tr>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
@@ -7329,6 +7485,10 @@ mode
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
 <br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<li><b>
+rst_latch_sts
+</b>[<i>rw</i>]: Reset latched status bits
+<br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
 </ul>
 <a name="ch.7.pi_kp"></a>
 <h3><a name="sect_3_75">2.75. ch.7.pi_kp</a></h3>
@@ -8014,10 +8174,10 @@ Channel status register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">amp_tflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_tflag_l_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_l_latch</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -8077,6 +8237,22 @@ amp_iflag_r
 amp_tflag_r
 </b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
 <br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_iflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.8.ctl"></a>
 <h3><a name="sect_3_84">2.84. ch.8.ctl</a></h3>
@@ -8162,7 +8338,7 @@ Channel control register
 </tr>
 <tr>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
@@ -8182,6 +8358,10 @@ mode
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
 <br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<li><b>
+rst_latch_sts
+</b>[<i>rw</i>]: Reset latched status bits
+<br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
 </ul>
 <a name="ch.8.pi_kp"></a>
 <h3><a name="sect_3_85">2.85. ch.8.pi_kp</a></h3>
@@ -8867,10 +9047,10 @@ Channel status register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">amp_tflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_tflag_l_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_l_latch</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -8930,6 +9110,22 @@ amp_iflag_r
 amp_tflag_r
 </b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
 <br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_iflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.9.ctl"></a>
 <h3><a name="sect_3_94">2.94. ch.9.ctl</a></h3>
@@ -9015,7 +9211,7 @@ Channel control register
 </tr>
 <tr>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
@@ -9035,6 +9231,10 @@ mode
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
 <br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<li><b>
+rst_latch_sts
+</b>[<i>rw</i>]: Reset latched status bits
+<br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
 </ul>
 <a name="ch.9.pi_kp"></a>
 <h3><a name="sect_3_95">2.95. ch.9.pi_kp</a></h3>
@@ -9720,10 +9920,10 @@ Channel status register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">amp_tflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_tflag_l_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_l_latch</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -9783,6 +9983,22 @@ amp_iflag_r
 amp_tflag_r
 </b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
 <br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_iflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.10.ctl"></a>
 <h3><a name="sect_3_104">2.104. ch.10.ctl</a></h3>
@@ -9868,7 +10084,7 @@ Channel control register
 </tr>
 <tr>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
@@ -9888,6 +10104,10 @@ mode
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
 <br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<li><b>
+rst_latch_sts
+</b>[<i>rw</i>]: Reset latched status bits
+<br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
 </ul>
 <a name="ch.10.pi_kp"></a>
 <h3><a name="sect_3_105">2.105. ch.10.pi_kp</a></h3>
@@ -10573,10 +10793,10 @@ Channel status register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">amp_tflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_r_latch</td>
+ <td class="td_field" colspan="1">amp_tflag_l_latch</td>
+ <td class="td_field" colspan="1">amp_iflag_l_latch</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -10636,6 +10856,22 @@ amp_iflag_r
 amp_tflag_r
 </b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
 <br>read 0: temperature above limit<br>read 1: temperature under limit
+<li><b>
+amp_iflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Current Limit Flag (IFLAG_L)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_l_latch
+</b>[<i>ro</i>]: Amplifier Left Thermal Limit Flag (TFLAG_L)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_iflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Current Limit Flag (IFLAG_R)
+<br>read 0: current above limit<br>read 1: current under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
+<li><b>
+amp_tflag_r_latch
+</b>[<i>ro</i>]: Amplifier Right Thermal Limit Flag (TFLAG_R)
+<br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.11.ctl"></a>
 <h3><a name="sect_3_114">2.114. ch.11.ctl</a></h3>
@@ -10721,7 +10957,7 @@ Channel control register
 </tr>
 <tr>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_field" colspan="3">mode[2:0]</td>
@@ -10741,6 +10977,10 @@ mode
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
 <br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<li><b>
+rst_latch_sts
+</b>[<i>rw</i>]: Reset latched status bits
+<br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
 </ul>
 <a name="ch.11.pi_kp"></a>
 <h3><a name="sect_3_115">2.115. ch.11.pi_kp</a></h3>

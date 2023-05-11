@@ -80,6 +80,42 @@ memory-map:
                     comment: |
                       read 0: temperature above limit
                       read 1: temperature under limit
+                - field:
+                    name: amp_iflag_l_latch
+                    range: 16
+                    description: Amplifier Left Current Limit Flag (IFLAG_L)
+                    comment: |
+                      read 0: current above limit
+                      read 1: current under limit
+                      This flag is a latch, and should be cleared manually by
+                      writing '1' to ctl.rst_latch_sts.
+                - field:
+                    name: amp_tflag_l_latch
+                    range: 17
+                    description: Amplifier Left Thermal Limit Flag (TFLAG_L)
+                    comment: |
+                      read 0: temperature above limit
+                      read 1: temperature under limit
+                      This flag is a latch, and should be cleared manually by
+                      writing '1' to ctl.rst_latch_sts.
+                - field:
+                    name: amp_iflag_r_latch
+                    range: 18
+                    description: Amplifier Right Current Limit Flag (IFLAG_R)
+                    comment: |
+                      read 0: current above limit
+                      read 1: current under limit
+                      This flag is a latch, and should be cleared manually by
+                      writing '1' to ctl.rst_latch_sts.
+                - field:
+                    name: amp_tflag_r_latch
+                    range: 19
+                    description: Amplifier Right Thermal Limit Flag (TFLAG_R)
+                    comment: |
+                      read 0: temperature above limit
+                      read 1: temperature under limit
+                      This flag is a latch, and should be cleared manually by
+                      writing '1' to ctl.rst_latch_sts.
           - reg:
               name: ctl
               width: 32
@@ -118,6 +154,15 @@ memory-map:
                                mode (open loop and closed loop) will only become effective
                                after an external trigger is received. It is ignored when in
                                the test square wave modes.
+                - field:
+                    name: rst_latch_sts
+                    range: 6
+                    x-hdl:
+                      type: autoclear
+                    description: Reset latched status bits
+                    comment: |
+                      write 0: do nothing
+                      write 1: Reset latched status bits (autoclear)
           - reg:
               name: pi_kp
               width: 32
