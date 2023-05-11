@@ -459,6 +459,12 @@ package rtm_lamp_pkg is
     -- External PI setpoint data. It is used when ch.x.ctl.mode (wishbone
     -- register) is set to 0b100
     pi_sp_ext_i                                : in  t_pi_sp_word_array(g_CHANNELS-1 downto 0);
+    ---------------------------------------------------------------------------
+    -- Interrupts
+    ---------------------------------------------------------------------------
+    -- This flag will generate a valid signal for one clock cycle after every
+    -- update to the amplifier overcurrent and overtemperature flags
+    intr_amp_flags_update_o                    : out std_logic := '0';
 
     ---------------------------------------------------------------------------
     -- Debug data
@@ -478,7 +484,7 @@ package rtm_lamp_pkg is
   constant c_xwb_rtm_lamp_regs_sdb : t_sdb_device := (
     abi_class     => x"0000",                   -- undocumented device
     abi_ver_major => x"02",
-    abi_ver_minor => x"01",
+    abi_ver_minor => x"02",
     wbd_endian    => c_sdb_endian_big,
     wbd_width     => x"4",                      -- 32-bit port granularity (0100)
     sdb_component => (

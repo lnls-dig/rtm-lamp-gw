@@ -8,12 +8,13 @@
 -------------------------------------------------------------------------------
 -- Description: Wishbone RTM LAMP Serial register interface.
 -------------------------------------------------------------------------------
--- Copyright (c) 2021 CNPEM
+-- Copyright (c) 2021-2023 CNPEM
 -- Licensed under GNU Lesser General Public License (LGPL) v3.0
 -------------------------------------------------------------------------------
 -- Revisions  :
 -- Date        Version  Author          Description
 -- 2021-02-26  1.0      lucas.russo        Created
+-- 2023-05-11  1.1      augusto.fraga      Add latched status amplifier flags
 -------------------------------------------------------------------------------
 
 library ieee;
@@ -136,6 +137,13 @@ port (
   pi_sp_ext_i                                : in  t_pi_sp_word_array(g_CHANNELS-1 downto 0);
 
   ---------------------------------------------------------------------------
+  -- Interrupts
+  ---------------------------------------------------------------------------
+  -- This flag will generate a valid signal for one clock cycle after every
+  -- update to the amplifier overcurrent and overtemperature flags
+  intr_amp_flags_update_o                    : out std_logic := '0';
+
+  ---------------------------------------------------------------------------
   -- Debug data
   ---------------------------------------------------------------------------
   adc_data_o                                 : out t_16b_word_array(g_CHANNELS-1 downto 0);
@@ -166,8 +174,8 @@ architecture rtl of xwb_rtmlamp_ohwr is
   -----------------------------
   signal ch_ctrl_in                          : t_rtmlamp_ch_ctrl_in_array(g_CHANNELS-1 downto 0);
   signal ch_ctrl_out                         : t_rtmlamp_ch_ctrl_out_array(g_CHANNELS-1 downto 0);
-  signal wb_regs_slv_in                      : t_rtmlamp_ohwr_ch_regs_slave_in_array(0 to c_MAX_CHANNELS-1);
-  signal wb_regs_slv_out                     : t_rtmlamp_ohwr_ch_regs_slave_out_array(0 to c_MAX_CHANNELS-1);
+  signal wb_regs_slv_in                      : t_rtmlamp_ohwr_ch_regs_slave_in_array(c_MAX_CHANNELS-1 downto 0);
+  signal wb_regs_slv_out                     : t_rtmlamp_ohwr_ch_regs_slave_out_array(c_MAX_CHANNELS-1 downto 0);
 
   -----------------------------
   -- Wishbone slave adapter signals/structures
@@ -319,51 +327,101 @@ begin
       rtmlamp_ohwr_ch_regs_o                 => wb_regs_slv_in
     );
 
+  -- Detect strobe edge to indicate that the amplifier flags were
+  -- updated
+  amp_flag_srb_sync: gc_edge_detect
+    generic map (
+      g_ASYNC_RST => false,
+      g_PULSE_EDGE => "positive",
+      g_CLOCK_EDGE => "positive"
+    )
+    port map (
+      clk_i => clk_i,
+      rst_n_i => rst_n_i,
+      data_i => amp_shift_str_o,
+      pulse_o => intr_amp_flags_update_o
+    );
+
   process(clk_i)
   begin
     if rising_edge(clk_i) then
-      -- Connect wishbone registers to the status and control signals of the
-      -- rtmlamp_ohwr core
-      gen_per_channel : for i in 0 to g_CHANNELS-1 loop
-        wb_regs_slv_out(i).sta_amp_iflag_l <= ch_ctrl_out(i).amp_iflag_l;
-        wb_regs_slv_out(i).sta_amp_iflag_r <= ch_ctrl_out(i).amp_iflag_r;
-        wb_regs_slv_out(i).sta_amp_tflag_l <= ch_ctrl_out(i).amp_tflag_l;
-        wb_regs_slv_out(i).sta_amp_tflag_r <= ch_ctrl_out(i).amp_tflag_r;
-        wb_regs_slv_out(i).adc_dac_eff_adc <= ch_ctrl_out(i).adc_data;
-        wb_regs_slv_out(i).adc_dac_eff_dac <= ch_ctrl_out(i).dac_data_eff;
-        wb_regs_slv_out(i).sp_eff_sp <= ch_ctrl_out(i).pi_sp_eff;
+      if rst_n_i = '0' then
+        for i in 0 to g_CHANNELS-1 loop
+          -- Reset latch flags
+          wb_regs_slv_out(i).sta_amp_iflag_l_latch <= '1';
+          wb_regs_slv_out(i).sta_amp_iflag_r_latch <= '1';
+          wb_regs_slv_out(i).sta_amp_tflag_l_latch <= '1';
+          wb_regs_slv_out(i).sta_amp_tflag_r_latch <= '1';
+          -- Reset rtm-lamp control signals
+          ch_ctrl_in(i).mode <= OL_MODE;
+          ch_ctrl_in(i).amp_en <= '0';
+          ch_ctrl_in(i).pi_kp <= (others => '0');
+          ch_ctrl_in(i).pi_ti <= (others => '0');
+          ch_ctrl_in(i).lim_a <= (others => '0');
+          ch_ctrl_in(i).lim_b <= (others => '0');
+          ch_ctrl_in(i).cnt <= (others => '0');
+          ch_ctrl_in(i).dac_data <= (others => '0');
+        end loop;
+      else
+        -- Connect wishbone registers to the status and control signals of the
+        -- rtmlamp_ohwr core
+        gen_per_channel : for i in 0 to g_CHANNELS-1 loop
+          wb_regs_slv_out(i).sta_amp_iflag_l <= ch_ctrl_out(i).amp_iflag_l;
+          wb_regs_slv_out(i).sta_amp_iflag_r <= ch_ctrl_out(i).amp_iflag_r;
+          wb_regs_slv_out(i).sta_amp_tflag_l <= ch_ctrl_out(i).amp_tflag_l;
+          wb_regs_slv_out(i).sta_amp_tflag_r <= ch_ctrl_out(i).amp_tflag_r;
+          wb_regs_slv_out(i).adc_dac_eff_adc <= ch_ctrl_out(i).adc_data;
+          wb_regs_slv_out(i).adc_dac_eff_dac <= ch_ctrl_out(i).dac_data_eff;
+          wb_regs_slv_out(i).sp_eff_sp <= ch_ctrl_out(i).pi_sp_eff;
 
-        case wb_regs_slv_in(i).ctl_mode is
-          when c_WB_CH_CTL_MODE_OL          => ch_ctrl_in(i).mode <= OL_MODE;
-          when c_WB_CH_CTL_MODE_OL_TEST_SQR => ch_ctrl_in(i).mode <= OL_TEST_SQR_MODE;
-          when c_WB_CH_CTL_MODE_CL          => ch_ctrl_in(i).mode <= CL_MODE;
-          when c_WB_CH_CTL_MODE_CL_TEST_SQR => ch_ctrl_in(i).mode <= CL_TEST_SQR_MODE;
-          when c_WB_CH_CTL_MODE_CL_EXT      => ch_ctrl_in(i).mode <= CL_MODE;
-          when others                       => ch_ctrl_in(i).mode <= OL_MODE;
-        end case;
+          if wb_regs_slv_in(i).ctl_rst_latch_sts = '1' then
+            wb_regs_slv_out(i).sta_amp_iflag_l_latch <= '1';
+            wb_regs_slv_out(i).sta_amp_iflag_r_latch <= '1';
+            wb_regs_slv_out(i).sta_amp_tflag_l_latch <= '1';
+            wb_regs_slv_out(i).sta_amp_tflag_r_latch <= '1';
+          else
+            wb_regs_slv_out(i).sta_amp_iflag_l_latch <=
+              wb_regs_slv_out(i).sta_amp_iflag_l_latch and ch_ctrl_out(i).amp_iflag_l;
+            wb_regs_slv_out(i).sta_amp_iflag_r_latch <=
+              wb_regs_slv_out(i).sta_amp_iflag_r_latch and ch_ctrl_out(i).amp_iflag_r;
+            wb_regs_slv_out(i).sta_amp_tflag_l_latch <=
+              wb_regs_slv_out(i).sta_amp_tflag_l_latch and ch_ctrl_out(i).amp_tflag_l;
+            wb_regs_slv_out(i).sta_amp_tflag_r_latch <=
+              wb_regs_slv_out(i).sta_amp_tflag_r_latch and ch_ctrl_out(i).amp_tflag_r;
+          end if;
 
-        -- If the triggered mode is enabled, write to dac_data and pi_sp only
-        -- when receiving an external trigger. Otherwise, always write.
-        if wb_regs_slv_in(i).ctl_trig_en = '0' or
-           (wb_regs_slv_in(i).ctl_trig_en = '1' and trig_i(i) = '1') then
-          ch_ctrl_in(i).dac_data <= wb_regs_slv_in(i).dac_data;
           case wb_regs_slv_in(i).ctl_mode is
-            when c_WB_CH_CTL_MODE_CL_EXT => ch_ctrl_in(i).pi_sp <= pi_sp_ext_i(i);
-            when others                  => ch_ctrl_in(i).pi_sp <= wb_regs_slv_in(i).pi_sp_data;
+            when c_WB_CH_CTL_MODE_OL          => ch_ctrl_in(i).mode <= OL_MODE;
+            when c_WB_CH_CTL_MODE_OL_TEST_SQR => ch_ctrl_in(i).mode <= OL_TEST_SQR_MODE;
+            when c_WB_CH_CTL_MODE_CL          => ch_ctrl_in(i).mode <= CL_MODE;
+            when c_WB_CH_CTL_MODE_CL_TEST_SQR => ch_ctrl_in(i).mode <= CL_TEST_SQR_MODE;
+            when c_WB_CH_CTL_MODE_CL_EXT      => ch_ctrl_in(i).mode <= CL_MODE;
+            when others                       => ch_ctrl_in(i).mode <= OL_MODE;
           end case;
-        end if;
 
-        ch_ctrl_in(i).amp_en <= wb_regs_slv_in(i).ctl_amp_en;
-        ch_ctrl_in(i).pi_kp <= wb_regs_slv_in(i).pi_kp_data;
-        ch_ctrl_in(i).pi_ti <= wb_regs_slv_in(i).pi_ti_data;
-        ch_ctrl_in(i).lim_a <= wb_regs_slv_in(i).lim_a;
-        ch_ctrl_in(i).lim_b <= wb_regs_slv_in(i).lim_b;
-        ch_ctrl_in(i).cnt <= unsigned(wb_regs_slv_in(i).cnt_data);
+          -- If the triggered mode is enabled, write to dac_data and pi_sp only
+          -- when receiving an external trigger. Otherwise, always write.
+          if wb_regs_slv_in(i).ctl_trig_en = '0' or
+             (wb_regs_slv_in(i).ctl_trig_en = '1' and trig_i(i) = '1') then
+            ch_ctrl_in(i).dac_data <= wb_regs_slv_in(i).dac_data;
+            case wb_regs_slv_in(i).ctl_mode is
+              when c_WB_CH_CTL_MODE_CL_EXT => ch_ctrl_in(i).pi_sp <= pi_sp_ext_i(i);
+              when others                  => ch_ctrl_in(i).pi_sp <= wb_regs_slv_in(i).pi_sp_data;
+            end case;
+          end if;
 
-        adc_data_o(i) <= ch_ctrl_out(i).adc_data;
-        pi_sp_eff_o(i) <= ch_ctrl_out(i).pi_sp_eff;
-        dac_data_eff_o(i) <= ch_ctrl_out(i).dac_data_eff;
-      end loop;
+          ch_ctrl_in(i).amp_en <= wb_regs_slv_in(i).ctl_amp_en;
+          ch_ctrl_in(i).pi_kp <= wb_regs_slv_in(i).pi_kp_data;
+          ch_ctrl_in(i).pi_ti <= wb_regs_slv_in(i).pi_ti_data;
+          ch_ctrl_in(i).lim_a <= wb_regs_slv_in(i).lim_a;
+          ch_ctrl_in(i).lim_b <= wb_regs_slv_in(i).lim_b;
+          ch_ctrl_in(i).cnt <= unsigned(wb_regs_slv_in(i).cnt_data);
+
+          adc_data_o(i) <= ch_ctrl_out(i).adc_data;
+          pi_sp_eff_o(i) <= ch_ctrl_out(i).pi_sp_eff;
+          dac_data_eff_o(i) <= ch_ctrl_out(i).dac_data_eff;
+        end loop;
+      end if;
     end if;
   end process;
 

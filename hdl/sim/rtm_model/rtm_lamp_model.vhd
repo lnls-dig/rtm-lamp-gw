@@ -59,7 +59,13 @@ entity rtm_lamp_model is
 
     shift_str_i : in std_logic;        -- Amplifier enable shift register strobe
     shift_oe_n_i : in std_logic;       -- Amplifier enable output enable
-    shift_din_i : in std_logic         -- Amplifier enable data input
+    shift_din_i : in std_logic;         -- Amplifier enable data input
+
+    -- Amplifier overcurrent and overtemperature flags
+    amp_iflag_l_i : in std_logic_vector(11 downto 0);
+    amp_iflag_r_i : in std_logic_vector(11 downto 0);
+    amp_tflag_l_i : in std_logic_vector(11 downto 0);
+    amp_tflag_r_i : in std_logic_vector(11 downto 0)
     );
 end rtm_lamp_model;
 
@@ -72,10 +78,6 @@ architecture rtm_lamp_model_arch of rtm_lamp_model is
   signal dac_ldac_sync: std_logic; -- DAC load (synchronized)
 
   type t_array_8b_word is array(natural range <>) of std_logic_vector(7 downto 0);
-  signal amp_iflag_l : std_logic_vector(11 downto 0);
-  signal amp_tflag_l : std_logic_vector(11 downto 0);
-  signal amp_iflag_r : std_logic_vector(11 downto 0);
-  signal amp_tflag_r : std_logic_vector(11 downto 0);
   signal amp_flags_dp : t_array_8b_word(5 downto 0) := (others => (others => '0'));
   signal amp_flags_q7 : std_logic_vector(5 downto 0);
   signal amp_flags_q7_n : std_logic_vector(5 downto 0);
@@ -176,32 +178,26 @@ begin
       analog_i => voltages_adc(8 to 11)
       );
 
-  -- generate some flags pattern
-  amp_iflag_l <= "010101010101"; -- x"555"
-  amp_tflag_l <= "101010101010"; -- x"AAA"
-  amp_iflag_r <= "000011110000"; -- x"0F0"
-  amp_tflag_r <= "111100001111"; -- x"F0F"
-
-  amp_flags_dp(0) <= amp_tflag_r(1) &
-                     amp_iflag_r(1) &
-                     amp_tflag_l(1) &
-                     amp_iflag_l(1) &
-                     amp_tflag_r(0) &
-                     amp_iflag_r(0) &
-                     amp_tflag_l(0) &
-                     amp_iflag_l(0);
+  amp_flags_dp(0) <= amp_tflag_r_i(1) &
+                     amp_iflag_r_i(1) &
+                     amp_tflag_l_i(1) &
+                     amp_iflag_l_i(1) &
+                     amp_tflag_r_i(0) &
+                     amp_iflag_r_i(0) &
+                     amp_tflag_l_i(0) &
+                     amp_iflag_l_i(0);
   amp_flags_ds(0) <= '0';
 
   gen_amp_flags_regs: for i in 0 to 5 generate
 
-    amp_flags_dp(i) <= amp_tflag_r(2*i+1) &
-                       amp_iflag_r(2*i+1) &
-                       amp_tflag_l(2*i+1) &
-                       amp_iflag_l(2*i+1) &
-                       amp_tflag_r(2*i) &
-                       amp_iflag_r(2*i) &
-                       amp_tflag_l(2*i) &
-                       amp_iflag_l(2*i);
+    amp_flags_dp(i) <= amp_tflag_r_i(2*i+1) &
+                       amp_iflag_r_i(2*i+1) &
+                       amp_tflag_l_i(2*i+1) &
+                       amp_iflag_l_i(2*i+1) &
+                       amp_tflag_r_i(2*i) &
+                       amp_iflag_r_i(2*i) &
+                       amp_tflag_l_i(2*i) &
+                       amp_iflag_l_i(2*i);
 
     cmp_shift_reg_74hc165_model : entity work.shift_reg_74hc165_model
     port map (

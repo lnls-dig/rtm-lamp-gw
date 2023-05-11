@@ -51,8 +51,16 @@ entity xwb_rtmlamp_ohwr_glue is
     clk_fast_spi_i           : in  std_logic := '0';
     clk_fast_spi_rstn_i      : in  std_logic := '0';
 
+    intr_amp_flags_update_o  : out std_logic;
+
     wb_slave_i               : in  t_wishbone_slave_in;
     wb_slave_o               : out t_wishbone_slave_out;
+
+    -- Amplifier overcurrent and overtemperature flags
+    amp_iflag_l_i            : in std_logic_vector(11 downto 0);
+    amp_iflag_r_i            : in std_logic_vector(11 downto 0);
+    amp_tflag_l_i            : in std_logic_vector(11 downto 0);
+    amp_tflag_r_i            : in std_logic_vector(11 downto 0);
 
     trig_i                   : in  std_logic_vector(g_CHANNELS-1 downto 0);
     pi_sp_ext_i              : in  t_pi_sp_word_array(g_CHANNELS-1 downto 0) := (others => x"0000")
@@ -108,7 +116,6 @@ architecture xwb_rtmlamp_ohwr_glue_arch of xwb_rtmlamp_ohwr_glue is
   signal dac_data_eff        : t_16b_word_array(g_CHANNELS-1 downto 0);
   signal adc_data            : t_16b_word_array(g_CHANNELS-1 downto 0);
   signal data_valid          : std_logic;
-
 begin
 
   cmp_xwb_rtmlamp_ohwr : xwb_rtmlamp_ohwr
@@ -134,8 +141,10 @@ begin
       -- If the ADC inputs are inverted on RTM-LAMP or not
       g_ADC_FIX_INV_INPUTS                       => false,
       -- DAC clock frequency [Hz]
-      g_DAC_SCLK_FREQ                            => g_DAC_SCLK_FREQ
-      -- Number of DAC channels
+      g_DAC_SCLK_FREQ                            => g_DAC_SCLK_FREQ,
+      -- Shift registers clock frequency (here we are using a much higher
+      -- frequency than the actual hardware uses to speedup the simulation)
+      g_SERIAL_REG_SCLK_FREQ                     => 10000000
       )
     port map (
       ---------------------------------------------------------------------------
@@ -214,6 +223,8 @@ begin
       -- External PI setpoint data. It is used when ch.x.ctl.mode (wishbone
       -- register) is set to 0b100
       pi_sp_ext_i                                => pi_sp_ext_i,
+
+      intr_amp_flags_update_o                    => intr_amp_flags_update_o,
 
       ---------------------------------------------------------------------------
       -- Debug data
@@ -335,6 +346,12 @@ begin
 
       shift_str_i  => amp_shift_str,      -- Amplifier enable shift register strobe
       shift_oe_n_i => amp_shift_oe_n,     -- Amplifier enable output enable
-      shift_din_i  => amp_shift_din       -- Amplifier enable data input
+      shift_din_i  => amp_shift_din,      -- Amplifier enable data input
+
+      amp_iflag_l_i => amp_iflag_l_i,
+      amp_iflag_r_i => amp_iflag_r_i,
+      amp_tflag_l_i => amp_tflag_l_i,
+      amp_tflag_r_i => amp_tflag_r_i
+
       );
 end architecture xwb_rtmlamp_ohwr_glue_arch;

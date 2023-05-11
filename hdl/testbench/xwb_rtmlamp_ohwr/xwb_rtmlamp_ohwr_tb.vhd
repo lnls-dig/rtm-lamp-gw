@@ -70,8 +70,16 @@ architecture xwb_rtmlamp_ohwr_tb_arch of xwb_rtmlamp_ohwr_tb is
   signal clk_fast_spi            : std_logic := '0';
   signal clk_fast_spi_rstn       : std_logic := '0';
 
+  signal intr_amp_flags_update   : std_logic;
+
   signal wb_slave_i              : t_wishbone_slave_in;
   signal wb_slave_o              : t_wishbone_slave_out;
+
+  -- Start with all amplifier flags set to '1' (no faults)
+  signal amp_iflag_l             : std_logic_vector(11 downto 0) := (others => '1');
+  signal amp_iflag_r             : std_logic_vector(11 downto 0) := (others => '1');
+  signal amp_tflag_l             : std_logic_vector(11 downto 0) := (others => '1');
+  signal amp_tflag_r             : std_logic_vector(11 downto 0) := (others => '1');
 
   signal trig                    : std_logic_vector(c_RTMLAMP_CHANNELS-1 downto 0) := (others => '0');
   signal pi_sp_ext               : t_pi_sp_word_array(c_RTMLAMP_CHANNELS-1 downto 0) := (others => x"0000");
@@ -82,6 +90,7 @@ begin
 
   process
     variable v_sp_eff: std_logic_vector(31 downto 0);
+    variable v_amp_flags: std_logic_vector(31 downto 0);
   begin
     init(wb_slave_i);
 
@@ -201,8 +210,140 @@ begin
     -- Check if the effective set point has changed to -5000 after the trigger
     assert v_sp_eff(15 downto 0) = std_logic_vector(to_signed(-5000, 16));
 
-    -- Wait 100 us
-    f_wait_cycles(clk_sys, 10000);
+    ---------------------------------------------------------------------------
+    -- Test amplifier overcurrent and overtemperature flags
+    ---------------------------------------------------------------------------
+
+    -- Generate overcurrent and overtemperature condition
+    amp_iflag_l <= x"000";
+    amp_iflag_r <= x"000";
+    amp_tflag_l <= x"000";
+    amp_tflag_r <= x"000";
+
+    -- Wait for 2 scans before reading the channel status register
+    wait until rising_edge(intr_amp_flags_update);
+    wait until rising_edge(intr_amp_flags_update);
+
+    -- Check if all overtemperature and overcurrent flags are asserted
+    for ch in 0 to 11 loop
+      read32_pl(clk_sys, wb_slave_i, wb_slave_o,
+                c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_ADDR +
+                (c_WB_RTMLAMP_OHWR_REGS_CH_0_SIZE * ch),
+                v_amp_flags);
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_IFLAG_L_OFFSET) = '0';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_IFLAG_R_OFFSET) = '0';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_TFLAG_L_OFFSET) = '0';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_TFLAG_R_OFFSET) = '0';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_IFLAG_L_LATCH_OFFSET) = '0';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_IFLAG_R_LATCH_OFFSET) = '0';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_TFLAG_L_LATCH_OFFSET) = '0';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_TFLAG_R_LATCH_OFFSET) = '0';
+    end loop;
+
+    -- Deassert the overcurrent and overtemperature flags
+    amp_iflag_l <= x"FFF";
+    amp_iflag_r <= x"FFF";
+    amp_tflag_l <= x"FFF";
+    amp_tflag_r <= x"FFF";
+
+    -- Wait for 2 scans before reading the channel status register
+    wait until rising_edge(intr_amp_flags_update);
+    wait until rising_edge(intr_amp_flags_update);
+
+    -- Check if the latched flags are asserted and the non latched
+    -- flags are deasserted
+    for ch in 0 to 11 loop
+      read32_pl(clk_sys, wb_slave_i, wb_slave_o,
+                c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_ADDR +
+                (c_WB_RTMLAMP_OHWR_REGS_CH_0_SIZE * ch),
+                v_amp_flags);
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_IFLAG_L_OFFSET) = '1';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_IFLAG_R_OFFSET) = '1';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_TFLAG_L_OFFSET) = '1';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_TFLAG_R_OFFSET) = '1';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_IFLAG_L_LATCH_OFFSET) = '0';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_IFLAG_R_LATCH_OFFSET) = '0';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_TFLAG_L_LATCH_OFFSET) = '0';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_TFLAG_R_LATCH_OFFSET) = '0';
+    end loop;
+
+    -- Generate a pattern of overcurrent and overtemperature flags
+    amp_iflag_l <= x"A37";
+    amp_iflag_r <= x"529";
+    amp_tflag_l <= x"9E6";
+    amp_tflag_r <= x"1C4";
+
+    -- Clear latched status flags
+    for ch in 0 to 11 loop
+      write32_pl(clk_sys, wb_slave_i, wb_slave_o,
+                 c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_ADDR +
+                 (c_WB_RTMLAMP_OHWR_REGS_CH_0_SIZE * ch),
+                 (c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_AMP_EN_OFFSET => '1',
+                  (c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_MODE_OFFSET + 2) downto
+                  c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_MODE_OFFSET => "100",
+                  c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_TRIG_EN_OFFSET => '1',
+                  c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_RST_LATCH_STS_OFFSET => '1',
+                  others => '0'));
+    end loop;
+
+    -- Wait for 2 scans before reading the channel status register
+    wait until rising_edge(intr_amp_flags_update);
+    wait until rising_edge(intr_amp_flags_update);
+
+    -- Check if the flag pattern is correct
+    for ch in 0 to 11 loop
+      read32_pl(clk_sys, wb_slave_i, wb_slave_o,
+                c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_ADDR +
+                (c_WB_RTMLAMP_OHWR_REGS_CH_0_SIZE * ch),
+                v_amp_flags);
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_IFLAG_L_OFFSET) = amp_iflag_l(ch);
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_IFLAG_R_OFFSET) = amp_iflag_r(ch);
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_TFLAG_L_OFFSET) = amp_tflag_l(ch);
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_TFLAG_R_OFFSET) = amp_tflag_r(ch);
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_IFLAG_L_LATCH_OFFSET) = amp_iflag_l(ch);
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_IFLAG_R_LATCH_OFFSET) = amp_iflag_r(ch);
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_TFLAG_L_LATCH_OFFSET) = amp_tflag_l(ch);
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_TFLAG_R_LATCH_OFFSET) = amp_tflag_r(ch);
+    end loop;
+
+    -- Deassert the overcurrent and overtemperature flags
+    amp_iflag_l <= x"FFF";
+    amp_iflag_r <= x"FFF";
+    amp_tflag_l <= x"FFF";
+    amp_tflag_r <= x"FFF";
+
+    -- Wait for 2 scans before reading the channel status register
+    wait until rising_edge(intr_amp_flags_update);
+    wait until rising_edge(intr_amp_flags_update);
+
+    -- Clear latched status flags
+    for ch in 0 to 11 loop
+      write32_pl(clk_sys, wb_slave_i, wb_slave_o,
+                 c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_ADDR +
+                 (c_WB_RTMLAMP_OHWR_REGS_CH_0_SIZE * ch),
+                 (c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_AMP_EN_OFFSET => '1',
+                  (c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_MODE_OFFSET + 2) downto
+                  c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_MODE_OFFSET => "100",
+                  c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_TRIG_EN_OFFSET => '1',
+                  c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_RST_LATCH_STS_OFFSET => '1',
+                  others => '0'));
+    end loop;
+
+    -- Check if all flags are deasserted
+    for ch in 0 to 11 loop
+      read32_pl(clk_sys, wb_slave_i, wb_slave_o,
+                c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_ADDR +
+                (c_WB_RTMLAMP_OHWR_REGS_CH_0_SIZE * ch),
+                v_amp_flags);
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_IFLAG_L_OFFSET) = '1';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_IFLAG_R_OFFSET) = '1';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_TFLAG_L_OFFSET) = '1';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_TFLAG_R_OFFSET) = '1';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_IFLAG_L_LATCH_OFFSET) = '1';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_IFLAG_R_LATCH_OFFSET) = '1';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_TFLAG_L_LATCH_OFFSET) = '1';
+      assert v_amp_flags(c_WB_RTMLAMP_OHWR_REGS_CH_0_STA_AMP_TFLAG_R_LATCH_OFFSET) = '1';
+    end loop;
 
     std.env.finish;
   end process;
@@ -223,8 +364,15 @@ begin
       clk_fast_spi_i          => clk_fast_spi,
       clk_fast_spi_rstn_i     => clk_fast_spi_rstn,
 
+      intr_amp_flags_update_o => intr_amp_flags_update,
+
       wb_slave_i              => wb_slave_i,
       wb_slave_o              => wb_slave_o,
+
+      amp_iflag_l_i           => amp_iflag_l,
+      amp_iflag_r_i           => amp_iflag_r,
+      amp_tflag_l_i           => amp_tflag_l,
+      amp_tflag_r_i           => amp_tflag_r,
 
       trig_i                  => trig,
       pi_sp_ext_i             => pi_sp_ext
