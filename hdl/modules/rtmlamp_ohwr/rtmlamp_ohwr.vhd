@@ -60,17 +60,17 @@ port (
   ---------------------------------------------------------------------------
   -- clock and reset interface
   ---------------------------------------------------------------------------
-  clk_i                                      : in   std_logic;
-  rst_n_i                                    : in   std_logic;
+  clk_sys_i                                  : in  std_logic;
+  rst_sys_n_i                                : in  std_logic;
 
-  clk_ref_i                                  : in   std_logic := '0';
-  rst_ref_n_i                                : in   std_logic := '1';
+  clk_ref_i                                  : in  std_logic;
+  rst_ref_n_i                                : in  std_logic;
 
-  rst_fast_spi_n_i                           : in  std_logic;
   clk_fast_spi_i                             : in  std_logic;
+  rst_fast_spi_n_i                           : in  std_logic;
 
   ---------------------------------------------------------------------------
-  -- RTM ADC interface
+  -- RTM ADC interface (clock domain: clk_fast_spi_i)
   ---------------------------------------------------------------------------
   adc_octo_cnv_o                             : out   std_logic;
   adc_octo_sck_p_o                           : out   std_logic;
@@ -98,7 +98,7 @@ port (
   adc_quad_sdoc_n_i                          : in    std_logic := '1';
 
   ---------------------------------------------------------------------------
-  -- RTM DAC interface
+  -- RTM DAC interface (clock domain: clk_ref_i)
   ---------------------------------------------------------------------------
   dac_cs_n_o                                 : out  std_logic;
   dac_ldac_n_o                               : out  std_logic;
@@ -106,7 +106,7 @@ port (
   dac_sdi_o                                  : out  std_logic_vector(g_CHANNELS-1 downto 0);
 
   ---------------------------------------------------------------------------
-  -- RTM Serial registers interface
+  -- RTM Serial registers interface (clock domain: clk_sys_i)
   ---------------------------------------------------------------------------
   amp_shift_clk_o                            : out   std_logic;
   amp_shift_dout_i                           : in    std_logic := '0';
@@ -117,7 +117,7 @@ port (
   amp_shift_str_o                            : out   std_logic;
 
   ---------------------------------------------------------------------------
-  -- Channel control
+  -- Channel control (clock domain: clk_ref_i)
   ---------------------------------------------------------------------------
   ch_ctrl_i                                  : in  t_rtmlamp_ch_ctrl_in_array(g_CHANNELS-1 downto 0);
   ch_ctrl_o                                  : out t_rtmlamp_ch_ctrl_out_array(g_CHANNELS-1 downto 0);
