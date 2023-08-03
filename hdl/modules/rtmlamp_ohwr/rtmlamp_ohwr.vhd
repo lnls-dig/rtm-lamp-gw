@@ -683,7 +683,7 @@ begin
       generic map(
         g_error_bits                       => 16,
         g_dacval_bits                      => 16,
-        g_output_bias                      => 32768,
+        g_output_bias                      => 32767,
         g_integrator_fracbits              => 16,
         g_integrator_overbits              => 6,
         g_coef_bits                        => c_PI_COEFF_BITS
