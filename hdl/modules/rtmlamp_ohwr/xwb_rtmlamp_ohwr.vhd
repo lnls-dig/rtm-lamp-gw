@@ -155,6 +155,18 @@ end xwb_rtmlamp_ohwr;
 
 architecture rtl of xwb_rtmlamp_ohwr is
 
+  type t_wfm_ram_iface is record
+    addr:      std_logic_vector(8 downto 0);
+    rd:        std_logic;
+    samp_even: std_logic_vector(15 downto 0);
+    samp_odd:  std_logic_vector(15 downto 0);
+  end record;
+
+  type t_wfm_ram_iface_arr is array(natural range <>) of t_wfm_ram_iface;
+
+  type t_wfm_cnt_array is array(natural range <>) of unsigned(9 downto 0);
+  type t_wfm_rate_div_cnt_array is array(natural range <>) of unsigned(15 downto 0);
+
   -----------------------------
   -- General Constants
   -----------------------------
@@ -163,11 +175,16 @@ architecture rtl of xwb_rtmlamp_ohwr is
   -- Maximum number os channels
   constant c_MAX_CHANNELS                    : natural := 12;
 
-  constant c_WB_CH_CTL_MODE_OL               : std_logic_vector(2 downto 0) := "000";
-  constant c_WB_CH_CTL_MODE_OL_TEST_SQR      : std_logic_vector(2 downto 0) := "001";
-  constant c_WB_CH_CTL_MODE_CL               : std_logic_vector(2 downto 0) := "010";
-  constant c_WB_CH_CTL_MODE_CL_TEST_SQR      : std_logic_vector(2 downto 0) := "011";
-  constant c_WB_CH_CTL_MODE_CL_EXT           : std_logic_vector(2 downto 0) := "100";
+  constant c_WB_CH_CTL_MODE_OL               : std_logic_vector(3 downto 0) := "0000";
+  constant c_WB_CH_CTL_MODE_OL_TEST_SQR      : std_logic_vector(3 downto 0) := "0001";
+  constant c_WB_CH_CTL_MODE_CL               : std_logic_vector(3 downto 0) := "0010";
+  constant c_WB_CH_CTL_MODE_CL_TEST_SQR      : std_logic_vector(3 downto 0) := "0011";
+  constant c_WB_CH_CTL_MODE_CL_EXT           : std_logic_vector(3 downto 0) := "0100";
+  constant c_WB_CH_CTL_MODE_OL_EXT           : std_logic_vector(3 downto 0) := "0101";
+  constant c_WB_CH_CTL_MODE_OL_WFM           : std_logic_vector(3 downto 0) := "0110";
+  constant c_WB_CH_CTL_MODE_OL_WFM_EXT       : std_logic_vector(3 downto 0) := "0111";
+  constant c_WB_CH_CTL_MODE_CL_WFM           : std_logic_vector(3 downto 0) := "1000";
+  constant c_WB_CH_CTL_MODE_CL_WFM_EXT       : std_logic_vector(3 downto 0) := "1001";
 
   -----------------------------
   -- RTM signals
@@ -176,7 +193,17 @@ architecture rtl of xwb_rtmlamp_ohwr is
   signal ch_ctrl_out                         : t_rtmlamp_ch_ctrl_out_array(g_CHANNELS-1 downto 0);
   signal wb_regs_slv_in                      : t_rtmlamp_ohwr_ch_regs_slave_in_array(c_MAX_CHANNELS-1 downto 0);
   signal wb_regs_slv_out                     : t_rtmlamp_ohwr_ch_regs_slave_out_array(c_MAX_CHANNELS-1 downto 0);
+  signal wfm_ram_iface                       : t_wfm_ram_iface_arr(c_MAX_CHANNELS-1 downto 0) :=
+    (others =>
+     (rd => '0',
+      data => (others => '0'),
+      addr => (others =>'0')
+     ));
 
+  signal wfm_cnts                            : t_wfm_cnt_array(c_MAX_CHANNELS-1 downto 0);
+  signal wfm_cnts_rate_div_prev              : t_wfm_rate_div_cnt_array(c_MAX_CHANNELS-1 downto 0);
+  signal wfm_cnts_rate_div                   : t_wfm_rate_div_cnt_array(c_MAX_CHANNELS-1 downto 0);
+  signal data_valid                          : std_logic;
   -----------------------------
   -- Wishbone slave adapter signals/structures
   -----------------------------
@@ -317,14 +344,62 @@ begin
   -----------------------------
   cmp_rtmlamp_regs : entity work.wb_rtmlamp_ohwr_regs
     port map (
-      rst_n_i                                => rst_n_i,
-      clk_i                                  => clk_i,
-      wb_i                                   => wb_slv_adp_out,
-      wb_o                                   => wb_slv_adp_in,
-      sta_reserved_i                         => (others => '0'),
-      ctl_reserved_o                         => open,
-      rtmlamp_ohwr_ch_regs_i                 => wb_regs_slv_out,
-      rtmlamp_ohwr_ch_regs_o                 => wb_regs_slv_in
+      rst_n_i                                            => rst_n_i,
+      clk_i                                              => clk_i,
+      wb_i                                               => wb_slv_adp_out,
+      wb_o                                               => wb_slv_adp_in,
+      sta_reserved_i                                     => (others => '0'),
+      ctl_reserved_o                                     => open,
+      rtmlamp_ohwr_ch_regs_i                             => wb_regs_slv_out,
+      rtmlamp_ohwr_ch_regs_o                             => wb_regs_slv_in,
+      wfm_ram_0_wfm_ram_adr_i                            => wfm_ram_iface(0).addr,
+      wfm_ram_0_wfm_ram_sample_pair_rd_i                 => wfm_ram_iface(0).rd,
+      wfm_ram_0_wfm_ram_sample_pair_dat_o(15 downto 0)   => wfm_ram_iface(0).samp_even,
+      wfm_ram_0_wfm_ram_sample_pair_dat_o(31 downto 16)  => wfm_ram_iface(0).samp_odd,
+      wfm_ram_1_wfm_ram_adr_i                            => wfm_ram_iface(1).addr,
+      wfm_ram_1_wfm_ram_sample_pair_rd_i                 => wfm_ram_iface(1).rd,
+      wfm_ram_1_wfm_ram_sample_pair_dat_o(15 downto 0)   => wfm_ram_iface(1).samp_even,
+      wfm_ram_1_wfm_ram_sample_pair_dat_o(31 downto 16)  => wfm_ram_iface(1).samp_odd,
+      wfm_ram_2_wfm_ram_adr_i                            => wfm_ram_iface(2).addr,
+      wfm_ram_2_wfm_ram_sample_pair_rd_i                 => wfm_ram_iface(2).rd,
+      wfm_ram_2_wfm_ram_sample_pair_dat_o(15 downto 0)   => wfm_ram_iface(2).samp_even,
+      wfm_ram_2_wfm_ram_sample_pair_dat_o(31 downto 16)  => wfm_ram_iface(2).samp_odd,
+      wfm_ram_3_wfm_ram_adr_i                            => wfm_ram_iface(3).addr,
+      wfm_ram_3_wfm_ram_sample_pair_rd_i                 => wfm_ram_iface(3).rd,
+      wfm_ram_3_wfm_ram_sample_pair_dat_o(15 downto 0)   => wfm_ram_iface(3).samp_even,
+      wfm_ram_3_wfm_ram_sample_pair_dat_o(31 downto 16)  => wfm_ram_iface(3).samp_odd,
+      wfm_ram_4_wfm_ram_adr_i                            => wfm_ram_iface(4).addr,
+      wfm_ram_4_wfm_ram_sample_pair_rd_i                 => wfm_ram_iface(4).rd,
+      wfm_ram_4_wfm_ram_sample_pair_dat_o(15 downto 0)   => wfm_ram_iface(4).samp_even,
+      wfm_ram_4_wfm_ram_sample_pair_dat_o(31 downto 16)  => wfm_ram_iface(4).samp_odd,
+      wfm_ram_5_wfm_ram_adr_i                            => wfm_ram_iface(5).addr,
+      wfm_ram_5_wfm_ram_sample_pair_rd_i                 => wfm_ram_iface(5).rd,
+      wfm_ram_5_wfm_ram_sample_pair_dat_o(15 downto 0)   => wfm_ram_iface(5).samp_even,
+      wfm_ram_5_wfm_ram_sample_pair_dat_o(31 downto 16)  => wfm_ram_iface(5).samp_odd,
+      wfm_ram_6_wfm_ram_adr_i                            => wfm_ram_iface(6).addr,
+      wfm_ram_6_wfm_ram_sample_pair_rd_i                 => wfm_ram_iface(6).rd,
+      wfm_ram_6_wfm_ram_sample_pair_dat_o(15 downto 0)   => wfm_ram_iface(6).samp_even,
+      wfm_ram_6_wfm_ram_sample_pair_dat_o(31 downto 16)  => wfm_ram_iface(6).samp_odd,
+      wfm_ram_7_wfm_ram_adr_i                            => wfm_ram_iface(7).addr,
+      wfm_ram_7_wfm_ram_sample_pair_rd_i                 => wfm_ram_iface(7).rd,
+      wfm_ram_7_wfm_ram_sample_pair_dat_o(15 downto 0)   => wfm_ram_iface(7).samp_even,
+      wfm_ram_7_wfm_ram_sample_pair_dat_o(31 downto 16)  => wfm_ram_iface(7).samp_odd,
+      wfm_ram_8_wfm_ram_adr_i                            => wfm_ram_iface(8).addr,
+      wfm_ram_8_wfm_ram_sample_pair_rd_i                 => wfm_ram_iface(8).rd,
+      wfm_ram_8_wfm_ram_sample_pair_dat_o(15 downto 0)   => wfm_ram_iface(8).samp_even,
+      wfm_ram_8_wfm_ram_sample_pair_dat_o(31 downto 16)  => wfm_ram_iface(8).samp_odd,
+      wfm_ram_9_wfm_ram_adr_i                            => wfm_ram_iface(9).addr,
+      wfm_ram_9_wfm_ram_sample_pair_rd_i                 => wfm_ram_iface(9).rd,
+      wfm_ram_9_wfm_ram_sample_pair_dat_o(15 downto 0)   => wfm_ram_iface(9).samp_even,
+      wfm_ram_9_wfm_ram_sample_pair_dat_o(31 downto 16)  => wfm_ram_iface(9).samp_odd,
+      wfm_ram_10_wfm_ram_adr_i                           => wfm_ram_iface(10).addr,
+      wfm_ram_10_wfm_ram_sample_pair_rd_i                => wfm_ram_iface(10).rd,
+      wfm_ram_10_wfm_ram_sample_pair_dat_o(15 downto 0)  => wfm_ram_iface(10).samp_even,
+      wfm_ram_10_wfm_ram_sample_pair_dat_o(31 downto 16) => wfm_ram_iface(10).samp_odd,
+      wfm_ram_11_wfm_ram_adr_i                           => wfm_ram_iface(11).addr,
+      wfm_ram_11_wfm_ram_sample_pair_rd_i                => wfm_ram_iface(11).rd,
+      wfm_ram_11_wfm_ram_sample_pair_dat_o(15 downto 0)  => wfm_ram_iface(11).samp_even,
+      wfm_ram_11_wfm_ram_sample_pair_dat_o(31 downto 16) => wfm_ram_iface(11).samp_odd
     );
 
   -- Detect strobe edge to indicate that the amplifier flags were
@@ -341,6 +416,45 @@ begin
       data_i => amp_shift_str_o,
       pulse_o => intr_amp_flags_update_o
     );
+
+  -- Connect waveform counters
+  gen_conn_wfm_cnt: for i in 0 to c_MAX_CHANNELS-1 generate
+    wfm_ram_iface(i).addr <= std_logic_vector(wfm_cnts(i));
+    wfm_ram_iface(i).rd <= '1';
+  end generate;
+
+  process(clk_i)
+    variable ctl_wfm_rate_div_int: integer;
+  begin
+    if rising_edge(clk_i) then
+      if rst_n_i = '0' then
+        wfm_cnts <= (others => (others => '0'));
+        wfm_cnts_rate_div <= (others => (others => '0'));
+        wfm_cnts_rate_div_prev <= (others => (others => '0'));
+      else
+        if data_valid = '1' then
+          for i in 0 to g_CHANNELS-1 loop
+            wfm_cnts_rate_div(i) <= wfm_cnts_rate_div(i) + 1;
+          end loop;
+        end if;
+
+        for i in 0 to g_CHANNELS-1 loop
+          ctl_wfm_rate_div_int := to_integer(unsigned(wb_regs_slv_in(i).ctl_wfm_rate_div));
+          if (wfm_cnts_rate_div_prev(i)(ctl_wfm_rate_div_int) = '0' and
+              wfm_cnts_rate_div(i)(ctl_wfm_rate_div_int) = '1') then
+
+            if wfm_cnts(i) < unsigned(wb_regs_slv_in(i).ctl_wfm_points) then
+              wfm_cnts(i) <= wfm_cnts(i) + 1;
+            else
+              wfm_cnts(i) <= (others => '0');
+            end if;
+          end if;
+        end loop;
+
+        wfm_cnts_rate_div_prev <= wfm_cnts_rate_div;
+      end if;
+    end if;
+  end process;
 
   process(clk_i)
   begin
@@ -396,6 +510,11 @@ begin
             when c_WB_CH_CTL_MODE_CL          => ch_ctrl_in(i).mode <= CL_MODE;
             when c_WB_CH_CTL_MODE_CL_TEST_SQR => ch_ctrl_in(i).mode <= CL_TEST_SQR_MODE;
             when c_WB_CH_CTL_MODE_CL_EXT      => ch_ctrl_in(i).mode <= CL_MODE;
+            when c_WB_CH_CTL_MODE_OL_EXT      => ch_ctrl_in(i).mode <= OL_MODE;
+            when c_WB_CH_CTL_MODE_OL_WFM      => ch_ctrl_in(i).mode <= OL_MODE;
+            when c_WB_CH_CTL_MODE_OL_WFM_EXT  => ch_ctrl_in(i).mode <= OL_MODE;
+            when c_WB_CH_CTL_MODE_CL_WFM      => ch_ctrl_in(i).mode <= CL_MODE;
+            when c_WB_CH_CTL_MODE_CL_WFM_EXT  => ch_ctrl_in(i).mode <= CL_MODE;
             when others                       => ch_ctrl_in(i).mode <= OL_MODE;
           end case;
 
@@ -506,7 +625,8 @@ begin
     ---------------------------------------------------------------------------
     ch_ctrl_i                                  => ch_ctrl_in,
     ch_ctrl_o                                  => ch_ctrl_out,
-    data_valid_o                               => data_valid_o
+    data_valid_o                               => data_valid
   );
+  data_valid_o <= data_valid;
 
 end rtl;

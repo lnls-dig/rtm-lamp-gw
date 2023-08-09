@@ -107,8 +107,10 @@ begin
     -- enabled in the rtm_lamp_model), set mode to open loop manual control
     write32_pl(clk_sys, wb_slave_i, wb_slave_o, c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_ADDR,
                (c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_AMP_EN_OFFSET => '1',
-                (c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_MODE_OFFSET + 2) downto
-                c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_MODE_OFFSET => "000",
+                (c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_MODE_OFFSET + 3) downto
+                c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_MODE_OFFSET => "0000",
+                (c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_WFM_POINTS_OFFSET + 9) downto
+                c_WB_RTMLAMP_OHWR_REGS_CH_0_CTL_WFM_POINTS_OFFSET => "0000000001",
                 others => '0'));
 
     -- Write to the CH0 DAC via wishbone (2's complement)

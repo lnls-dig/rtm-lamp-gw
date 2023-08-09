@@ -44,7 +44,7 @@
 <h1 class="heading">wb_rtmlamp_ohwr_regs</h1>
 <h3>RTM LAMP registers</h3>
 <p>Wishbone slave for RTM LAMP core</p>
-<h3><a name="sect_1_0">1. Memory map summary</a></h3>
+<h3>1. Memory map summary</h3>
 <table cellpadding=2 cellspacing=0 border=0>
 <tr>
 <th>HW address</th>
@@ -54,955 +54,1214 @@
 <th>C prefix</th>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x000</td>
+<td class="td_code">0x00000</td>
 <td>REG</td>
 <td><A href="#sta">sta</a></td>
 <td class="td_code">sta</td>
 <td class="td_code">sta</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x004</td>
+<td class="td_code">0x00004</td>
 <td>REG</td>
 <td><A href="#ctl">ctl</a></td>
 <td class="td_code">ctl</td>
 <td class="td_code">ctl</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x400-0x7ff</td>
+<td class="td_code">0x00400-0x007ff</td>
 <td>BLOCK</td>
 <td><A href="#ch">ch</a></td>
 <td class="td_code">ch</td>
 <td class="td_code">ch</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x400-0x43f</td>
+<td class="td_code">0x00400-0x0043f</td>
 <td>BLOCK</td>
 <td><A href="#ch.0">ch.0</a></td>
 <td class="td_code">ch_0</td>
 <td class="td_code">ch.0</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x400</td>
+<td class="td_code">0x00400</td>
 <td>REG</td>
 <td><A href="#ch.0.sta">ch.0.sta</a></td>
 <td class="td_code">ch_0_sta</td>
 <td class="td_code">ch.0.sta</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x404</td>
+<td class="td_code">0x00404</td>
 <td>REG</td>
 <td><A href="#ch.0.ctl">ch.0.ctl</a></td>
 <td class="td_code">ch_0_ctl</td>
 <td class="td_code">ch.0.ctl</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x408</td>
+<td class="td_code">0x00408</td>
 <td>REG</td>
 <td><A href="#ch.0.pi_kp">ch.0.pi_kp</a></td>
 <td class="td_code">ch_0_pi_kp</td>
 <td class="td_code">ch.0.pi_kp</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x40c</td>
+<td class="td_code">0x0040c</td>
 <td>REG</td>
 <td><A href="#ch.0.pi_ti">ch.0.pi_ti</a></td>
 <td class="td_code">ch_0_pi_ti</td>
 <td class="td_code">ch.0.pi_ti</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x410</td>
+<td class="td_code">0x00410</td>
 <td>REG</td>
 <td><A href="#ch.0.pi_sp">ch.0.pi_sp</a></td>
 <td class="td_code">ch_0_pi_sp</td>
 <td class="td_code">ch.0.pi_sp</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x414</td>
+<td class="td_code">0x00414</td>
 <td>REG</td>
 <td><A href="#ch.0.dac">ch.0.dac</a></td>
 <td class="td_code">ch_0_dac</td>
 <td class="td_code">ch.0.dac</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x418</td>
+<td class="td_code">0x00418</td>
 <td>REG</td>
 <td><A href="#ch.0.lim">ch.0.lim</a></td>
 <td class="td_code">ch_0_lim</td>
 <td class="td_code">ch.0.lim</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x41c</td>
+<td class="td_code">0x0041c</td>
 <td>REG</td>
 <td><A href="#ch.0.cnt">ch.0.cnt</a></td>
 <td class="td_code">ch_0_cnt</td>
 <td class="td_code">ch.0.cnt</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x420</td>
+<td class="td_code">0x00420</td>
 <td>REG</td>
 <td><A href="#ch.0.adc_dac_eff">ch.0.adc_dac_eff</a></td>
 <td class="td_code">ch_0_adc_dac_eff</td>
 <td class="td_code">ch.0.adc_dac_eff</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x424</td>
+<td class="td_code">0x00424</td>
 <td>REG</td>
 <td><A href="#ch.0.sp_eff">ch.0.sp_eff</a></td>
 <td class="td_code">ch_0_sp_eff</td>
 <td class="td_code">ch.0.sp_eff</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x440-0x47f</td>
+<td class="td_code">0x00440-0x0047f</td>
 <td>BLOCK</td>
 <td><A href="#ch.1">ch.1</a></td>
 <td class="td_code">ch_1</td>
 <td class="td_code">ch.1</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x440</td>
+<td class="td_code">0x00440</td>
 <td>REG</td>
 <td><A href="#ch.1.sta">ch.1.sta</a></td>
 <td class="td_code">ch_1_sta</td>
 <td class="td_code">ch.1.sta</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x444</td>
+<td class="td_code">0x00444</td>
 <td>REG</td>
 <td><A href="#ch.1.ctl">ch.1.ctl</a></td>
 <td class="td_code">ch_1_ctl</td>
 <td class="td_code">ch.1.ctl</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x448</td>
+<td class="td_code">0x00448</td>
 <td>REG</td>
 <td><A href="#ch.1.pi_kp">ch.1.pi_kp</a></td>
 <td class="td_code">ch_1_pi_kp</td>
 <td class="td_code">ch.1.pi_kp</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x44c</td>
+<td class="td_code">0x0044c</td>
 <td>REG</td>
 <td><A href="#ch.1.pi_ti">ch.1.pi_ti</a></td>
 <td class="td_code">ch_1_pi_ti</td>
 <td class="td_code">ch.1.pi_ti</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x450</td>
+<td class="td_code">0x00450</td>
 <td>REG</td>
 <td><A href="#ch.1.pi_sp">ch.1.pi_sp</a></td>
 <td class="td_code">ch_1_pi_sp</td>
 <td class="td_code">ch.1.pi_sp</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x454</td>
+<td class="td_code">0x00454</td>
 <td>REG</td>
 <td><A href="#ch.1.dac">ch.1.dac</a></td>
 <td class="td_code">ch_1_dac</td>
 <td class="td_code">ch.1.dac</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x458</td>
+<td class="td_code">0x00458</td>
 <td>REG</td>
 <td><A href="#ch.1.lim">ch.1.lim</a></td>
 <td class="td_code">ch_1_lim</td>
 <td class="td_code">ch.1.lim</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x45c</td>
+<td class="td_code">0x0045c</td>
 <td>REG</td>
 <td><A href="#ch.1.cnt">ch.1.cnt</a></td>
 <td class="td_code">ch_1_cnt</td>
 <td class="td_code">ch.1.cnt</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x460</td>
+<td class="td_code">0x00460</td>
 <td>REG</td>
 <td><A href="#ch.1.adc_dac_eff">ch.1.adc_dac_eff</a></td>
 <td class="td_code">ch_1_adc_dac_eff</td>
 <td class="td_code">ch.1.adc_dac_eff</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x464</td>
+<td class="td_code">0x00464</td>
 <td>REG</td>
 <td><A href="#ch.1.sp_eff">ch.1.sp_eff</a></td>
 <td class="td_code">ch_1_sp_eff</td>
 <td class="td_code">ch.1.sp_eff</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x480-0x4bf</td>
+<td class="td_code">0x00480-0x004bf</td>
 <td>BLOCK</td>
 <td><A href="#ch.2">ch.2</a></td>
 <td class="td_code">ch_2</td>
 <td class="td_code">ch.2</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x480</td>
+<td class="td_code">0x00480</td>
 <td>REG</td>
 <td><A href="#ch.2.sta">ch.2.sta</a></td>
 <td class="td_code">ch_2_sta</td>
 <td class="td_code">ch.2.sta</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x484</td>
+<td class="td_code">0x00484</td>
 <td>REG</td>
 <td><A href="#ch.2.ctl">ch.2.ctl</a></td>
 <td class="td_code">ch_2_ctl</td>
 <td class="td_code">ch.2.ctl</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x488</td>
+<td class="td_code">0x00488</td>
 <td>REG</td>
 <td><A href="#ch.2.pi_kp">ch.2.pi_kp</a></td>
 <td class="td_code">ch_2_pi_kp</td>
 <td class="td_code">ch.2.pi_kp</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x48c</td>
+<td class="td_code">0x0048c</td>
 <td>REG</td>
 <td><A href="#ch.2.pi_ti">ch.2.pi_ti</a></td>
 <td class="td_code">ch_2_pi_ti</td>
 <td class="td_code">ch.2.pi_ti</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x490</td>
+<td class="td_code">0x00490</td>
 <td>REG</td>
 <td><A href="#ch.2.pi_sp">ch.2.pi_sp</a></td>
 <td class="td_code">ch_2_pi_sp</td>
 <td class="td_code">ch.2.pi_sp</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x494</td>
+<td class="td_code">0x00494</td>
 <td>REG</td>
 <td><A href="#ch.2.dac">ch.2.dac</a></td>
 <td class="td_code">ch_2_dac</td>
 <td class="td_code">ch.2.dac</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x498</td>
+<td class="td_code">0x00498</td>
 <td>REG</td>
 <td><A href="#ch.2.lim">ch.2.lim</a></td>
 <td class="td_code">ch_2_lim</td>
 <td class="td_code">ch.2.lim</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x49c</td>
+<td class="td_code">0x0049c</td>
 <td>REG</td>
 <td><A href="#ch.2.cnt">ch.2.cnt</a></td>
 <td class="td_code">ch_2_cnt</td>
 <td class="td_code">ch.2.cnt</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x4a0</td>
+<td class="td_code">0x004a0</td>
 <td>REG</td>
 <td><A href="#ch.2.adc_dac_eff">ch.2.adc_dac_eff</a></td>
 <td class="td_code">ch_2_adc_dac_eff</td>
 <td class="td_code">ch.2.adc_dac_eff</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x4a4</td>
+<td class="td_code">0x004a4</td>
 <td>REG</td>
 <td><A href="#ch.2.sp_eff">ch.2.sp_eff</a></td>
 <td class="td_code">ch_2_sp_eff</td>
 <td class="td_code">ch.2.sp_eff</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x4c0-0x4ff</td>
+<td class="td_code">0x004c0-0x004ff</td>
 <td>BLOCK</td>
 <td><A href="#ch.3">ch.3</a></td>
 <td class="td_code">ch_3</td>
 <td class="td_code">ch.3</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x4c0</td>
+<td class="td_code">0x004c0</td>
 <td>REG</td>
 <td><A href="#ch.3.sta">ch.3.sta</a></td>
 <td class="td_code">ch_3_sta</td>
 <td class="td_code">ch.3.sta</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x4c4</td>
+<td class="td_code">0x004c4</td>
 <td>REG</td>
 <td><A href="#ch.3.ctl">ch.3.ctl</a></td>
 <td class="td_code">ch_3_ctl</td>
 <td class="td_code">ch.3.ctl</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x4c8</td>
+<td class="td_code">0x004c8</td>
 <td>REG</td>
 <td><A href="#ch.3.pi_kp">ch.3.pi_kp</a></td>
 <td class="td_code">ch_3_pi_kp</td>
 <td class="td_code">ch.3.pi_kp</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x4cc</td>
+<td class="td_code">0x004cc</td>
 <td>REG</td>
 <td><A href="#ch.3.pi_ti">ch.3.pi_ti</a></td>
 <td class="td_code">ch_3_pi_ti</td>
 <td class="td_code">ch.3.pi_ti</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x4d0</td>
+<td class="td_code">0x004d0</td>
 <td>REG</td>
 <td><A href="#ch.3.pi_sp">ch.3.pi_sp</a></td>
 <td class="td_code">ch_3_pi_sp</td>
 <td class="td_code">ch.3.pi_sp</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x4d4</td>
+<td class="td_code">0x004d4</td>
 <td>REG</td>
 <td><A href="#ch.3.dac">ch.3.dac</a></td>
 <td class="td_code">ch_3_dac</td>
 <td class="td_code">ch.3.dac</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x4d8</td>
+<td class="td_code">0x004d8</td>
 <td>REG</td>
 <td><A href="#ch.3.lim">ch.3.lim</a></td>
 <td class="td_code">ch_3_lim</td>
 <td class="td_code">ch.3.lim</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x4dc</td>
+<td class="td_code">0x004dc</td>
 <td>REG</td>
 <td><A href="#ch.3.cnt">ch.3.cnt</a></td>
 <td class="td_code">ch_3_cnt</td>
 <td class="td_code">ch.3.cnt</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x4e0</td>
+<td class="td_code">0x004e0</td>
 <td>REG</td>
 <td><A href="#ch.3.adc_dac_eff">ch.3.adc_dac_eff</a></td>
 <td class="td_code">ch_3_adc_dac_eff</td>
 <td class="td_code">ch.3.adc_dac_eff</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x4e4</td>
+<td class="td_code">0x004e4</td>
 <td>REG</td>
 <td><A href="#ch.3.sp_eff">ch.3.sp_eff</a></td>
 <td class="td_code">ch_3_sp_eff</td>
 <td class="td_code">ch.3.sp_eff</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x500-0x53f</td>
+<td class="td_code">0x00500-0x0053f</td>
 <td>BLOCK</td>
 <td><A href="#ch.4">ch.4</a></td>
 <td class="td_code">ch_4</td>
 <td class="td_code">ch.4</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x500</td>
+<td class="td_code">0x00500</td>
 <td>REG</td>
 <td><A href="#ch.4.sta">ch.4.sta</a></td>
 <td class="td_code">ch_4_sta</td>
 <td class="td_code">ch.4.sta</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x504</td>
+<td class="td_code">0x00504</td>
 <td>REG</td>
 <td><A href="#ch.4.ctl">ch.4.ctl</a></td>
 <td class="td_code">ch_4_ctl</td>
 <td class="td_code">ch.4.ctl</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x508</td>
+<td class="td_code">0x00508</td>
 <td>REG</td>
 <td><A href="#ch.4.pi_kp">ch.4.pi_kp</a></td>
 <td class="td_code">ch_4_pi_kp</td>
 <td class="td_code">ch.4.pi_kp</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x50c</td>
+<td class="td_code">0x0050c</td>
 <td>REG</td>
 <td><A href="#ch.4.pi_ti">ch.4.pi_ti</a></td>
 <td class="td_code">ch_4_pi_ti</td>
 <td class="td_code">ch.4.pi_ti</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x510</td>
+<td class="td_code">0x00510</td>
 <td>REG</td>
 <td><A href="#ch.4.pi_sp">ch.4.pi_sp</a></td>
 <td class="td_code">ch_4_pi_sp</td>
 <td class="td_code">ch.4.pi_sp</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x514</td>
+<td class="td_code">0x00514</td>
 <td>REG</td>
 <td><A href="#ch.4.dac">ch.4.dac</a></td>
 <td class="td_code">ch_4_dac</td>
 <td class="td_code">ch.4.dac</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x518</td>
+<td class="td_code">0x00518</td>
 <td>REG</td>
 <td><A href="#ch.4.lim">ch.4.lim</a></td>
 <td class="td_code">ch_4_lim</td>
 <td class="td_code">ch.4.lim</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x51c</td>
+<td class="td_code">0x0051c</td>
 <td>REG</td>
 <td><A href="#ch.4.cnt">ch.4.cnt</a></td>
 <td class="td_code">ch_4_cnt</td>
 <td class="td_code">ch.4.cnt</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x520</td>
+<td class="td_code">0x00520</td>
 <td>REG</td>
 <td><A href="#ch.4.adc_dac_eff">ch.4.adc_dac_eff</a></td>
 <td class="td_code">ch_4_adc_dac_eff</td>
 <td class="td_code">ch.4.adc_dac_eff</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x524</td>
+<td class="td_code">0x00524</td>
 <td>REG</td>
 <td><A href="#ch.4.sp_eff">ch.4.sp_eff</a></td>
 <td class="td_code">ch_4_sp_eff</td>
 <td class="td_code">ch.4.sp_eff</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x540-0x57f</td>
+<td class="td_code">0x00540-0x0057f</td>
 <td>BLOCK</td>
 <td><A href="#ch.5">ch.5</a></td>
 <td class="td_code">ch_5</td>
 <td class="td_code">ch.5</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x540</td>
+<td class="td_code">0x00540</td>
 <td>REG</td>
 <td><A href="#ch.5.sta">ch.5.sta</a></td>
 <td class="td_code">ch_5_sta</td>
 <td class="td_code">ch.5.sta</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x544</td>
+<td class="td_code">0x00544</td>
 <td>REG</td>
 <td><A href="#ch.5.ctl">ch.5.ctl</a></td>
 <td class="td_code">ch_5_ctl</td>
 <td class="td_code">ch.5.ctl</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x548</td>
+<td class="td_code">0x00548</td>
 <td>REG</td>
 <td><A href="#ch.5.pi_kp">ch.5.pi_kp</a></td>
 <td class="td_code">ch_5_pi_kp</td>
 <td class="td_code">ch.5.pi_kp</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x54c</td>
+<td class="td_code">0x0054c</td>
 <td>REG</td>
 <td><A href="#ch.5.pi_ti">ch.5.pi_ti</a></td>
 <td class="td_code">ch_5_pi_ti</td>
 <td class="td_code">ch.5.pi_ti</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x550</td>
+<td class="td_code">0x00550</td>
 <td>REG</td>
 <td><A href="#ch.5.pi_sp">ch.5.pi_sp</a></td>
 <td class="td_code">ch_5_pi_sp</td>
 <td class="td_code">ch.5.pi_sp</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x554</td>
+<td class="td_code">0x00554</td>
 <td>REG</td>
 <td><A href="#ch.5.dac">ch.5.dac</a></td>
 <td class="td_code">ch_5_dac</td>
 <td class="td_code">ch.5.dac</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x558</td>
+<td class="td_code">0x00558</td>
 <td>REG</td>
 <td><A href="#ch.5.lim">ch.5.lim</a></td>
 <td class="td_code">ch_5_lim</td>
 <td class="td_code">ch.5.lim</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x55c</td>
+<td class="td_code">0x0055c</td>
 <td>REG</td>
 <td><A href="#ch.5.cnt">ch.5.cnt</a></td>
 <td class="td_code">ch_5_cnt</td>
 <td class="td_code">ch.5.cnt</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x560</td>
+<td class="td_code">0x00560</td>
 <td>REG</td>
 <td><A href="#ch.5.adc_dac_eff">ch.5.adc_dac_eff</a></td>
 <td class="td_code">ch_5_adc_dac_eff</td>
 <td class="td_code">ch.5.adc_dac_eff</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x564</td>
+<td class="td_code">0x00564</td>
 <td>REG</td>
 <td><A href="#ch.5.sp_eff">ch.5.sp_eff</a></td>
 <td class="td_code">ch_5_sp_eff</td>
 <td class="td_code">ch.5.sp_eff</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x580-0x5bf</td>
+<td class="td_code">0x00580-0x005bf</td>
 <td>BLOCK</td>
 <td><A href="#ch.6">ch.6</a></td>
 <td class="td_code">ch_6</td>
 <td class="td_code">ch.6</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x580</td>
+<td class="td_code">0x00580</td>
 <td>REG</td>
 <td><A href="#ch.6.sta">ch.6.sta</a></td>
 <td class="td_code">ch_6_sta</td>
 <td class="td_code">ch.6.sta</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x584</td>
+<td class="td_code">0x00584</td>
 <td>REG</td>
 <td><A href="#ch.6.ctl">ch.6.ctl</a></td>
 <td class="td_code">ch_6_ctl</td>
 <td class="td_code">ch.6.ctl</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x588</td>
+<td class="td_code">0x00588</td>
 <td>REG</td>
 <td><A href="#ch.6.pi_kp">ch.6.pi_kp</a></td>
 <td class="td_code">ch_6_pi_kp</td>
 <td class="td_code">ch.6.pi_kp</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x58c</td>
+<td class="td_code">0x0058c</td>
 <td>REG</td>
 <td><A href="#ch.6.pi_ti">ch.6.pi_ti</a></td>
 <td class="td_code">ch_6_pi_ti</td>
 <td class="td_code">ch.6.pi_ti</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x590</td>
+<td class="td_code">0x00590</td>
 <td>REG</td>
 <td><A href="#ch.6.pi_sp">ch.6.pi_sp</a></td>
 <td class="td_code">ch_6_pi_sp</td>
 <td class="td_code">ch.6.pi_sp</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x594</td>
+<td class="td_code">0x00594</td>
 <td>REG</td>
 <td><A href="#ch.6.dac">ch.6.dac</a></td>
 <td class="td_code">ch_6_dac</td>
 <td class="td_code">ch.6.dac</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x598</td>
+<td class="td_code">0x00598</td>
 <td>REG</td>
 <td><A href="#ch.6.lim">ch.6.lim</a></td>
 <td class="td_code">ch_6_lim</td>
 <td class="td_code">ch.6.lim</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x59c</td>
+<td class="td_code">0x0059c</td>
 <td>REG</td>
 <td><A href="#ch.6.cnt">ch.6.cnt</a></td>
 <td class="td_code">ch_6_cnt</td>
 <td class="td_code">ch.6.cnt</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x5a0</td>
+<td class="td_code">0x005a0</td>
 <td>REG</td>
 <td><A href="#ch.6.adc_dac_eff">ch.6.adc_dac_eff</a></td>
 <td class="td_code">ch_6_adc_dac_eff</td>
 <td class="td_code">ch.6.adc_dac_eff</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x5a4</td>
+<td class="td_code">0x005a4</td>
 <td>REG</td>
 <td><A href="#ch.6.sp_eff">ch.6.sp_eff</a></td>
 <td class="td_code">ch_6_sp_eff</td>
 <td class="td_code">ch.6.sp_eff</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x5c0-0x5ff</td>
+<td class="td_code">0x005c0-0x005ff</td>
 <td>BLOCK</td>
 <td><A href="#ch.7">ch.7</a></td>
 <td class="td_code">ch_7</td>
 <td class="td_code">ch.7</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x5c0</td>
+<td class="td_code">0x005c0</td>
 <td>REG</td>
 <td><A href="#ch.7.sta">ch.7.sta</a></td>
 <td class="td_code">ch_7_sta</td>
 <td class="td_code">ch.7.sta</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x5c4</td>
+<td class="td_code">0x005c4</td>
 <td>REG</td>
 <td><A href="#ch.7.ctl">ch.7.ctl</a></td>
 <td class="td_code">ch_7_ctl</td>
 <td class="td_code">ch.7.ctl</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x5c8</td>
+<td class="td_code">0x005c8</td>
 <td>REG</td>
 <td><A href="#ch.7.pi_kp">ch.7.pi_kp</a></td>
 <td class="td_code">ch_7_pi_kp</td>
 <td class="td_code">ch.7.pi_kp</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x5cc</td>
+<td class="td_code">0x005cc</td>
 <td>REG</td>
 <td><A href="#ch.7.pi_ti">ch.7.pi_ti</a></td>
 <td class="td_code">ch_7_pi_ti</td>
 <td class="td_code">ch.7.pi_ti</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x5d0</td>
+<td class="td_code">0x005d0</td>
 <td>REG</td>
 <td><A href="#ch.7.pi_sp">ch.7.pi_sp</a></td>
 <td class="td_code">ch_7_pi_sp</td>
 <td class="td_code">ch.7.pi_sp</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x5d4</td>
+<td class="td_code">0x005d4</td>
 <td>REG</td>
 <td><A href="#ch.7.dac">ch.7.dac</a></td>
 <td class="td_code">ch_7_dac</td>
 <td class="td_code">ch.7.dac</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x5d8</td>
+<td class="td_code">0x005d8</td>
 <td>REG</td>
 <td><A href="#ch.7.lim">ch.7.lim</a></td>
 <td class="td_code">ch_7_lim</td>
 <td class="td_code">ch.7.lim</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x5dc</td>
+<td class="td_code">0x005dc</td>
 <td>REG</td>
 <td><A href="#ch.7.cnt">ch.7.cnt</a></td>
 <td class="td_code">ch_7_cnt</td>
 <td class="td_code">ch.7.cnt</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x5e0</td>
+<td class="td_code">0x005e0</td>
 <td>REG</td>
 <td><A href="#ch.7.adc_dac_eff">ch.7.adc_dac_eff</a></td>
 <td class="td_code">ch_7_adc_dac_eff</td>
 <td class="td_code">ch.7.adc_dac_eff</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x5e4</td>
+<td class="td_code">0x005e4</td>
 <td>REG</td>
 <td><A href="#ch.7.sp_eff">ch.7.sp_eff</a></td>
 <td class="td_code">ch_7_sp_eff</td>
 <td class="td_code">ch.7.sp_eff</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x600-0x63f</td>
+<td class="td_code">0x00600-0x0063f</td>
 <td>BLOCK</td>
 <td><A href="#ch.8">ch.8</a></td>
 <td class="td_code">ch_8</td>
 <td class="td_code">ch.8</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x600</td>
+<td class="td_code">0x00600</td>
 <td>REG</td>
 <td><A href="#ch.8.sta">ch.8.sta</a></td>
 <td class="td_code">ch_8_sta</td>
 <td class="td_code">ch.8.sta</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x604</td>
+<td class="td_code">0x00604</td>
 <td>REG</td>
 <td><A href="#ch.8.ctl">ch.8.ctl</a></td>
 <td class="td_code">ch_8_ctl</td>
 <td class="td_code">ch.8.ctl</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x608</td>
+<td class="td_code">0x00608</td>
 <td>REG</td>
 <td><A href="#ch.8.pi_kp">ch.8.pi_kp</a></td>
 <td class="td_code">ch_8_pi_kp</td>
 <td class="td_code">ch.8.pi_kp</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x60c</td>
+<td class="td_code">0x0060c</td>
 <td>REG</td>
 <td><A href="#ch.8.pi_ti">ch.8.pi_ti</a></td>
 <td class="td_code">ch_8_pi_ti</td>
 <td class="td_code">ch.8.pi_ti</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x610</td>
+<td class="td_code">0x00610</td>
 <td>REG</td>
 <td><A href="#ch.8.pi_sp">ch.8.pi_sp</a></td>
 <td class="td_code">ch_8_pi_sp</td>
 <td class="td_code">ch.8.pi_sp</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x614</td>
+<td class="td_code">0x00614</td>
 <td>REG</td>
 <td><A href="#ch.8.dac">ch.8.dac</a></td>
 <td class="td_code">ch_8_dac</td>
 <td class="td_code">ch.8.dac</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x618</td>
+<td class="td_code">0x00618</td>
 <td>REG</td>
 <td><A href="#ch.8.lim">ch.8.lim</a></td>
 <td class="td_code">ch_8_lim</td>
 <td class="td_code">ch.8.lim</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x61c</td>
+<td class="td_code">0x0061c</td>
 <td>REG</td>
 <td><A href="#ch.8.cnt">ch.8.cnt</a></td>
 <td class="td_code">ch_8_cnt</td>
 <td class="td_code">ch.8.cnt</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x620</td>
+<td class="td_code">0x00620</td>
 <td>REG</td>
 <td><A href="#ch.8.adc_dac_eff">ch.8.adc_dac_eff</a></td>
 <td class="td_code">ch_8_adc_dac_eff</td>
 <td class="td_code">ch.8.adc_dac_eff</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x624</td>
+<td class="td_code">0x00624</td>
 <td>REG</td>
 <td><A href="#ch.8.sp_eff">ch.8.sp_eff</a></td>
 <td class="td_code">ch_8_sp_eff</td>
 <td class="td_code">ch.8.sp_eff</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x640-0x67f</td>
+<td class="td_code">0x00640-0x0067f</td>
 <td>BLOCK</td>
 <td><A href="#ch.9">ch.9</a></td>
 <td class="td_code">ch_9</td>
 <td class="td_code">ch.9</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x640</td>
+<td class="td_code">0x00640</td>
 <td>REG</td>
 <td><A href="#ch.9.sta">ch.9.sta</a></td>
 <td class="td_code">ch_9_sta</td>
 <td class="td_code">ch.9.sta</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x644</td>
+<td class="td_code">0x00644</td>
 <td>REG</td>
 <td><A href="#ch.9.ctl">ch.9.ctl</a></td>
 <td class="td_code">ch_9_ctl</td>
 <td class="td_code">ch.9.ctl</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x648</td>
+<td class="td_code">0x00648</td>
 <td>REG</td>
 <td><A href="#ch.9.pi_kp">ch.9.pi_kp</a></td>
 <td class="td_code">ch_9_pi_kp</td>
 <td class="td_code">ch.9.pi_kp</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x64c</td>
+<td class="td_code">0x0064c</td>
 <td>REG</td>
 <td><A href="#ch.9.pi_ti">ch.9.pi_ti</a></td>
 <td class="td_code">ch_9_pi_ti</td>
 <td class="td_code">ch.9.pi_ti</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x650</td>
+<td class="td_code">0x00650</td>
 <td>REG</td>
 <td><A href="#ch.9.pi_sp">ch.9.pi_sp</a></td>
 <td class="td_code">ch_9_pi_sp</td>
 <td class="td_code">ch.9.pi_sp</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x654</td>
+<td class="td_code">0x00654</td>
 <td>REG</td>
 <td><A href="#ch.9.dac">ch.9.dac</a></td>
 <td class="td_code">ch_9_dac</td>
 <td class="td_code">ch.9.dac</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x658</td>
+<td class="td_code">0x00658</td>
 <td>REG</td>
 <td><A href="#ch.9.lim">ch.9.lim</a></td>
 <td class="td_code">ch_9_lim</td>
 <td class="td_code">ch.9.lim</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x65c</td>
+<td class="td_code">0x0065c</td>
 <td>REG</td>
 <td><A href="#ch.9.cnt">ch.9.cnt</a></td>
 <td class="td_code">ch_9_cnt</td>
 <td class="td_code">ch.9.cnt</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x660</td>
+<td class="td_code">0x00660</td>
 <td>REG</td>
 <td><A href="#ch.9.adc_dac_eff">ch.9.adc_dac_eff</a></td>
 <td class="td_code">ch_9_adc_dac_eff</td>
 <td class="td_code">ch.9.adc_dac_eff</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x664</td>
+<td class="td_code">0x00664</td>
 <td>REG</td>
 <td><A href="#ch.9.sp_eff">ch.9.sp_eff</a></td>
 <td class="td_code">ch_9_sp_eff</td>
 <td class="td_code">ch.9.sp_eff</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x680-0x6bf</td>
+<td class="td_code">0x00680-0x006bf</td>
 <td>BLOCK</td>
 <td><A href="#ch.10">ch.10</a></td>
 <td class="td_code">ch_10</td>
 <td class="td_code">ch.10</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x680</td>
+<td class="td_code">0x00680</td>
 <td>REG</td>
 <td><A href="#ch.10.sta">ch.10.sta</a></td>
 <td class="td_code">ch_10_sta</td>
 <td class="td_code">ch.10.sta</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x684</td>
+<td class="td_code">0x00684</td>
 <td>REG</td>
 <td><A href="#ch.10.ctl">ch.10.ctl</a></td>
 <td class="td_code">ch_10_ctl</td>
 <td class="td_code">ch.10.ctl</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x688</td>
+<td class="td_code">0x00688</td>
 <td>REG</td>
 <td><A href="#ch.10.pi_kp">ch.10.pi_kp</a></td>
 <td class="td_code">ch_10_pi_kp</td>
 <td class="td_code">ch.10.pi_kp</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x68c</td>
+<td class="td_code">0x0068c</td>
 <td>REG</td>
 <td><A href="#ch.10.pi_ti">ch.10.pi_ti</a></td>
 <td class="td_code">ch_10_pi_ti</td>
 <td class="td_code">ch.10.pi_ti</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x690</td>
+<td class="td_code">0x00690</td>
 <td>REG</td>
 <td><A href="#ch.10.pi_sp">ch.10.pi_sp</a></td>
 <td class="td_code">ch_10_pi_sp</td>
 <td class="td_code">ch.10.pi_sp</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x694</td>
+<td class="td_code">0x00694</td>
 <td>REG</td>
 <td><A href="#ch.10.dac">ch.10.dac</a></td>
 <td class="td_code">ch_10_dac</td>
 <td class="td_code">ch.10.dac</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x698</td>
+<td class="td_code">0x00698</td>
 <td>REG</td>
 <td><A href="#ch.10.lim">ch.10.lim</a></td>
 <td class="td_code">ch_10_lim</td>
 <td class="td_code">ch.10.lim</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x69c</td>
+<td class="td_code">0x0069c</td>
 <td>REG</td>
 <td><A href="#ch.10.cnt">ch.10.cnt</a></td>
 <td class="td_code">ch_10_cnt</td>
 <td class="td_code">ch.10.cnt</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x6a0</td>
+<td class="td_code">0x006a0</td>
 <td>REG</td>
 <td><A href="#ch.10.adc_dac_eff">ch.10.adc_dac_eff</a></td>
 <td class="td_code">ch_10_adc_dac_eff</td>
 <td class="td_code">ch.10.adc_dac_eff</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x6a4</td>
+<td class="td_code">0x006a4</td>
 <td>REG</td>
 <td><A href="#ch.10.sp_eff">ch.10.sp_eff</a></td>
 <td class="td_code">ch_10_sp_eff</td>
 <td class="td_code">ch.10.sp_eff</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x6c0-0x6ff</td>
+<td class="td_code">0x006c0-0x006ff</td>
 <td>BLOCK</td>
 <td><A href="#ch.11">ch.11</a></td>
 <td class="td_code">ch_11</td>
 <td class="td_code">ch.11</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x6c0</td>
+<td class="td_code">0x006c0</td>
 <td>REG</td>
 <td><A href="#ch.11.sta">ch.11.sta</a></td>
 <td class="td_code">ch_11_sta</td>
 <td class="td_code">ch.11.sta</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x6c4</td>
+<td class="td_code">0x006c4</td>
 <td>REG</td>
 <td><A href="#ch.11.ctl">ch.11.ctl</a></td>
 <td class="td_code">ch_11_ctl</td>
 <td class="td_code">ch.11.ctl</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x6c8</td>
+<td class="td_code">0x006c8</td>
 <td>REG</td>
 <td><A href="#ch.11.pi_kp">ch.11.pi_kp</a></td>
 <td class="td_code">ch_11_pi_kp</td>
 <td class="td_code">ch.11.pi_kp</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x6cc</td>
+<td class="td_code">0x006cc</td>
 <td>REG</td>
 <td><A href="#ch.11.pi_ti">ch.11.pi_ti</a></td>
 <td class="td_code">ch_11_pi_ti</td>
 <td class="td_code">ch.11.pi_ti</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x6d0</td>
+<td class="td_code">0x006d0</td>
 <td>REG</td>
 <td><A href="#ch.11.pi_sp">ch.11.pi_sp</a></td>
 <td class="td_code">ch_11_pi_sp</td>
 <td class="td_code">ch.11.pi_sp</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x6d4</td>
+<td class="td_code">0x006d4</td>
 <td>REG</td>
 <td><A href="#ch.11.dac">ch.11.dac</a></td>
 <td class="td_code">ch_11_dac</td>
 <td class="td_code">ch.11.dac</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x6d8</td>
+<td class="td_code">0x006d8</td>
 <td>REG</td>
 <td><A href="#ch.11.lim">ch.11.lim</a></td>
 <td class="td_code">ch_11_lim</td>
 <td class="td_code">ch.11.lim</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x6dc</td>
+<td class="td_code">0x006dc</td>
 <td>REG</td>
 <td><A href="#ch.11.cnt">ch.11.cnt</a></td>
 <td class="td_code">ch_11_cnt</td>
 <td class="td_code">ch.11.cnt</td>
 </tr>
 <tr class="tr_even">
-<td class="td_code">0x6e0</td>
+<td class="td_code">0x006e0</td>
 <td>REG</td>
 <td><A href="#ch.11.adc_dac_eff">ch.11.adc_dac_eff</a></td>
 <td class="td_code">ch_11_adc_dac_eff</td>
 <td class="td_code">ch.11.adc_dac_eff</td>
 </tr>
 <tr class="tr_odd">
-<td class="td_code">0x6e4</td>
+<td class="td_code">0x006e4</td>
 <td>REG</td>
 <td><A href="#ch.11.sp_eff">ch.11.sp_eff</a></td>
 <td class="td_code">ch_11_sp_eff</td>
 <td class="td_code">ch.11.sp_eff</td>
 </tr>
+<tr class="tr_even">
+<td class="td_code">0x00800-0x187ff</td>
+<td>BLOCK</td>
+<td><A href="#wfm_ram">wfm_ram</a></td>
+<td class="td_code">wfm_ram</td>
+<td class="td_code">wfm_ram</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x00800-0x027ff</td>
+<td>BLOCK</td>
+<td><A href="#wfm_ram.0">wfm_ram.0</a></td>
+<td class="td_code">wfm_ram_0</td>
+<td class="td_code">wfm_ram.0</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x00800-0x00fff</td>
+<td>MEMORY</td>
+<td><A href="#wfm_ram.0.wfm_ram">wfm_ram.0.wfm_ram</a></td>
+<td class="td_code">wfm_ram_0_wfm_ram</td>
+<td class="td_code">wfm_ram.0.wfm_ram</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code"> +0x00800</td>
+<td>REG</td>
+<td><A href="#wfm_ram.0.wfm_ram.sample_pair">wfm_ram.0.wfm_ram.sample_pair</a></td>
+<td class="td_code">wfm_ram_0_wfm_ram_sample_pair</td>
+<td class="td_code">wfm_ram.0.wfm_ram.sample_pair</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x02800-0x047ff</td>
+<td>BLOCK</td>
+<td><A href="#wfm_ram.1">wfm_ram.1</a></td>
+<td class="td_code">wfm_ram_1</td>
+<td class="td_code">wfm_ram.1</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x02800-0x02fff</td>
+<td>MEMORY</td>
+<td><A href="#wfm_ram.1.wfm_ram">wfm_ram.1.wfm_ram</a></td>
+<td class="td_code">wfm_ram_1_wfm_ram</td>
+<td class="td_code">wfm_ram.1.wfm_ram</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code"> +0x02800</td>
+<td>REG</td>
+<td><A href="#wfm_ram.1.wfm_ram.sample_pair">wfm_ram.1.wfm_ram.sample_pair</a></td>
+<td class="td_code">wfm_ram_1_wfm_ram_sample_pair</td>
+<td class="td_code">wfm_ram.1.wfm_ram.sample_pair</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x04800-0x067ff</td>
+<td>BLOCK</td>
+<td><A href="#wfm_ram.2">wfm_ram.2</a></td>
+<td class="td_code">wfm_ram_2</td>
+<td class="td_code">wfm_ram.2</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x04800-0x04fff</td>
+<td>MEMORY</td>
+<td><A href="#wfm_ram.2.wfm_ram">wfm_ram.2.wfm_ram</a></td>
+<td class="td_code">wfm_ram_2_wfm_ram</td>
+<td class="td_code">wfm_ram.2.wfm_ram</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code"> +0x04800</td>
+<td>REG</td>
+<td><A href="#wfm_ram.2.wfm_ram.sample_pair">wfm_ram.2.wfm_ram.sample_pair</a></td>
+<td class="td_code">wfm_ram_2_wfm_ram_sample_pair</td>
+<td class="td_code">wfm_ram.2.wfm_ram.sample_pair</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x06800-0x087ff</td>
+<td>BLOCK</td>
+<td><A href="#wfm_ram.3">wfm_ram.3</a></td>
+<td class="td_code">wfm_ram_3</td>
+<td class="td_code">wfm_ram.3</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x06800-0x06fff</td>
+<td>MEMORY</td>
+<td><A href="#wfm_ram.3.wfm_ram">wfm_ram.3.wfm_ram</a></td>
+<td class="td_code">wfm_ram_3_wfm_ram</td>
+<td class="td_code">wfm_ram.3.wfm_ram</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code"> +0x06800</td>
+<td>REG</td>
+<td><A href="#wfm_ram.3.wfm_ram.sample_pair">wfm_ram.3.wfm_ram.sample_pair</a></td>
+<td class="td_code">wfm_ram_3_wfm_ram_sample_pair</td>
+<td class="td_code">wfm_ram.3.wfm_ram.sample_pair</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x08800-0x0a7ff</td>
+<td>BLOCK</td>
+<td><A href="#wfm_ram.4">wfm_ram.4</a></td>
+<td class="td_code">wfm_ram_4</td>
+<td class="td_code">wfm_ram.4</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x08800-0x08fff</td>
+<td>MEMORY</td>
+<td><A href="#wfm_ram.4.wfm_ram">wfm_ram.4.wfm_ram</a></td>
+<td class="td_code">wfm_ram_4_wfm_ram</td>
+<td class="td_code">wfm_ram.4.wfm_ram</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code"> +0x08800</td>
+<td>REG</td>
+<td><A href="#wfm_ram.4.wfm_ram.sample_pair">wfm_ram.4.wfm_ram.sample_pair</a></td>
+<td class="td_code">wfm_ram_4_wfm_ram_sample_pair</td>
+<td class="td_code">wfm_ram.4.wfm_ram.sample_pair</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x0a800-0x0c7ff</td>
+<td>BLOCK</td>
+<td><A href="#wfm_ram.5">wfm_ram.5</a></td>
+<td class="td_code">wfm_ram_5</td>
+<td class="td_code">wfm_ram.5</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x0a800-0x0afff</td>
+<td>MEMORY</td>
+<td><A href="#wfm_ram.5.wfm_ram">wfm_ram.5.wfm_ram</a></td>
+<td class="td_code">wfm_ram_5_wfm_ram</td>
+<td class="td_code">wfm_ram.5.wfm_ram</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code"> +0x0a800</td>
+<td>REG</td>
+<td><A href="#wfm_ram.5.wfm_ram.sample_pair">wfm_ram.5.wfm_ram.sample_pair</a></td>
+<td class="td_code">wfm_ram_5_wfm_ram_sample_pair</td>
+<td class="td_code">wfm_ram.5.wfm_ram.sample_pair</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x0c800-0x0e7ff</td>
+<td>BLOCK</td>
+<td><A href="#wfm_ram.6">wfm_ram.6</a></td>
+<td class="td_code">wfm_ram_6</td>
+<td class="td_code">wfm_ram.6</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x0c800-0x0cfff</td>
+<td>MEMORY</td>
+<td><A href="#wfm_ram.6.wfm_ram">wfm_ram.6.wfm_ram</a></td>
+<td class="td_code">wfm_ram_6_wfm_ram</td>
+<td class="td_code">wfm_ram.6.wfm_ram</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code"> +0x0c800</td>
+<td>REG</td>
+<td><A href="#wfm_ram.6.wfm_ram.sample_pair">wfm_ram.6.wfm_ram.sample_pair</a></td>
+<td class="td_code">wfm_ram_6_wfm_ram_sample_pair</td>
+<td class="td_code">wfm_ram.6.wfm_ram.sample_pair</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x0e800-0x107ff</td>
+<td>BLOCK</td>
+<td><A href="#wfm_ram.7">wfm_ram.7</a></td>
+<td class="td_code">wfm_ram_7</td>
+<td class="td_code">wfm_ram.7</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x0e800-0x0efff</td>
+<td>MEMORY</td>
+<td><A href="#wfm_ram.7.wfm_ram">wfm_ram.7.wfm_ram</a></td>
+<td class="td_code">wfm_ram_7_wfm_ram</td>
+<td class="td_code">wfm_ram.7.wfm_ram</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code"> +0x0e800</td>
+<td>REG</td>
+<td><A href="#wfm_ram.7.wfm_ram.sample_pair">wfm_ram.7.wfm_ram.sample_pair</a></td>
+<td class="td_code">wfm_ram_7_wfm_ram_sample_pair</td>
+<td class="td_code">wfm_ram.7.wfm_ram.sample_pair</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x10800-0x127ff</td>
+<td>BLOCK</td>
+<td><A href="#wfm_ram.8">wfm_ram.8</a></td>
+<td class="td_code">wfm_ram_8</td>
+<td class="td_code">wfm_ram.8</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x10800-0x10fff</td>
+<td>MEMORY</td>
+<td><A href="#wfm_ram.8.wfm_ram">wfm_ram.8.wfm_ram</a></td>
+<td class="td_code">wfm_ram_8_wfm_ram</td>
+<td class="td_code">wfm_ram.8.wfm_ram</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code"> +0x10800</td>
+<td>REG</td>
+<td><A href="#wfm_ram.8.wfm_ram.sample_pair">wfm_ram.8.wfm_ram.sample_pair</a></td>
+<td class="td_code">wfm_ram_8_wfm_ram_sample_pair</td>
+<td class="td_code">wfm_ram.8.wfm_ram.sample_pair</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x12800-0x147ff</td>
+<td>BLOCK</td>
+<td><A href="#wfm_ram.9">wfm_ram.9</a></td>
+<td class="td_code">wfm_ram_9</td>
+<td class="td_code">wfm_ram.9</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x12800-0x12fff</td>
+<td>MEMORY</td>
+<td><A href="#wfm_ram.9.wfm_ram">wfm_ram.9.wfm_ram</a></td>
+<td class="td_code">wfm_ram_9_wfm_ram</td>
+<td class="td_code">wfm_ram.9.wfm_ram</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code"> +0x12800</td>
+<td>REG</td>
+<td><A href="#wfm_ram.9.wfm_ram.sample_pair">wfm_ram.9.wfm_ram.sample_pair</a></td>
+<td class="td_code">wfm_ram_9_wfm_ram_sample_pair</td>
+<td class="td_code">wfm_ram.9.wfm_ram.sample_pair</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x14800-0x167ff</td>
+<td>BLOCK</td>
+<td><A href="#wfm_ram.10">wfm_ram.10</a></td>
+<td class="td_code">wfm_ram_10</td>
+<td class="td_code">wfm_ram.10</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x14800-0x14fff</td>
+<td>MEMORY</td>
+<td><A href="#wfm_ram.10.wfm_ram">wfm_ram.10.wfm_ram</a></td>
+<td class="td_code">wfm_ram_10_wfm_ram</td>
+<td class="td_code">wfm_ram.10.wfm_ram</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code"> +0x14800</td>
+<td>REG</td>
+<td><A href="#wfm_ram.10.wfm_ram.sample_pair">wfm_ram.10.wfm_ram.sample_pair</a></td>
+<td class="td_code">wfm_ram_10_wfm_ram_sample_pair</td>
+<td class="td_code">wfm_ram.10.wfm_ram.sample_pair</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x16800-0x187ff</td>
+<td>BLOCK</td>
+<td><A href="#wfm_ram.11">wfm_ram.11</a></td>
+<td class="td_code">wfm_ram_11</td>
+<td class="td_code">wfm_ram.11</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x16800-0x16fff</td>
+<td>MEMORY</td>
+<td><A href="#wfm_ram.11.wfm_ram">wfm_ram.11.wfm_ram</a></td>
+<td class="td_code">wfm_ram_11_wfm_ram</td>
+<td class="td_code">wfm_ram.11.wfm_ram</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code"> +0x16800</td>
+<td>REG</td>
+<td><A href="#wfm_ram.11.wfm_ram.sample_pair">wfm_ram.11.wfm_ram.sample_pair</a></td>
+<td class="td_code">wfm_ram_11_wfm_ram_sample_pair</td>
+<td class="td_code">wfm_ram.11.wfm_ram.sample_pair</td>
+</tr>
 </table>
 
 <h3><a name="sect_3_0">2. Register description</a></h3>
 <a name="sta"></a>
-<h3><a name="sect_3_1">2.1. sta</a></h3>
+<h3>2.1. sta</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">sta</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x0</td></tr>
@@ -1073,7 +1332,7 @@ reserved
 <br>reserved
 </ul>
 <a name="ctl"></a>
-<h3><a name="sect_3_2">2.2. ctl</a></h3>
+<h3>2.2. ctl</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ctl</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x4</td></tr>
@@ -1144,7 +1403,7 @@ reserved
 <br>reserved
 </ul>
 <a name="ch.0.sta"></a>
-<h3><a name="sect_3_3">2.3. ch.0.sta</a></h3>
+<h3>2.3. ch.0.sta</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_0_sta</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x400</td></tr>
@@ -1271,7 +1530,7 @@ amp_tflag_r_latch
 <br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.0.ctl"></a>
-<h3><a name="sect_3_4">2.4. ch.0.ctl</a></h3>
+<h3>2.4. ch.0.ctl</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_0_ctl</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x404</td></tr>
@@ -1300,7 +1559,7 @@ Channel control register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_start</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -1313,14 +1572,10 @@ Channel control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
+ <td class="td_field" colspan="4">wfm_rate_div[3:0]</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="2">wfm_points[9:8]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -1333,14 +1588,7 @@ Channel control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="8">wfm_points[7:0]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -1353,11 +1601,10 @@ Channel control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_rpt_mode</td>
  <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_field" colspan="3">mode[2:0]</td>
+ <td class="td_field" colspan="4">mode[3:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -1369,18 +1616,34 @@ amp_en
 <li><b>
 mode
 </b>[<i>rw</i>]: Power supply operation mode
-<br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<br>0000: Open loop (voltage) manual control via dac<br>0001: Open loop (voltage) test square wave<br>0010: Closed loop (current) manual control via pi_sp<br>0011: Closed loop (current) test square wave<br>0100: Closed loop (current) external control<br>0101: Open loop (voltage) external control<br>0110: Open loop (voltage) arbitrary waveform<br>0111: Open loop (voltage) arbitrary waveform + external control<br>1000: Closed loop (current) arbitrary waveform<br>1001: Closed loop (current) arbitrary waveform + external control<br>1010 - 1111: Reserved
 <li><b>
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
-<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. When operating in<br>         any arbitrary waveform mode, a trigger will start executing<br>         the waveform. It is ignored when in the test square wave<br>         modes.
 <li><b>
 rst_latch_sts
 </b>[<i>rw</i>]: Reset latched status bits
 <br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
+<li><b>
+wfm_rpt_mode
+</b>[<i>rw</i>]: Repeat the waveform samples
+<br>write 0: Execute the waveform only once<br>write 1: Repeat the waveform
+<li><b>
+wfm_points
+</b>[<i>rw</i>]: Size in samples of the waveform - 1
+<br>This field specifiy the number of samples from 1 to 1024, where<br>0 means 1 sample and 1023 means 1024.
+<li><b>
+wfm_rate_div
+</b>[<i>rw</i>]: Divider for the waveform sample rate
+<br>Waveform sample rate = curr_loop_sample_rate / (2 ^ wfm_rate_div)<br>0: 1<br>1: 2<br>2: 4<br>3: 8<br>...<br>15: 32768<br>Waveform samples will be interpoled if wfm_rate_div > 0
+<li><b>
+wfm_start
+</b>[<i>rw</i>]: Start waveform
+<br>write 0: do nothing<br>write 1: Start executing the waveform (autoclear). This is<br>ignored when the triggered mode is enabled.
 </ul>
 <a name="ch.0.pi_kp"></a>
-<h3><a name="sect_3_5">2.5. ch.0.pi_kp</a></h3>
+<h3>2.5. ch.0.pi_kp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_0_pi_kp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x408</td></tr>
@@ -1457,7 +1720,7 @@ data
 <br>PI KP
 </ul>
 <a name="ch.0.pi_ti"></a>
-<h3><a name="sect_3_6">2.6. ch.0.pi_ti</a></h3>
+<h3>2.6. ch.0.pi_ti</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_0_pi_ti</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x40c</td></tr>
@@ -1534,7 +1797,7 @@ data
 <br>PI TI
 </ul>
 <a name="ch.0.pi_sp"></a>
-<h3><a name="sect_3_7">2.7. ch.0.pi_sp</a></h3>
+<h3>2.7. ch.0.pi_sp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_0_pi_sp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x410</td></tr>
@@ -1619,7 +1882,7 @@ data
 <br>PI SP
 </ul>
 <a name="ch.0.dac"></a>
-<h3><a name="sect_3_8">2.8. ch.0.dac</a></h3>
+<h3>2.8. ch.0.dac</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_0_dac</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x414</td></tr>
@@ -1704,7 +1967,7 @@ data
 <br>Write DAC data for channel
 </ul>
 <a name="ch.0.lim"></a>
-<h3><a name="sect_3_9">2.9. ch.0.lim</a></h3>
+<h3>2.9. ch.0.lim</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_0_lim</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x418</td></tr>
@@ -1779,7 +2042,7 @@ b
 <br>This is used only in Open Loop / Closed Loop test square wave modes.<br>It can represent a current in ADC counts or a voltage in DAC counts.<br>type: SLV
 </ul>
 <a name="ch.0.cnt"></a>
-<h3><a name="sect_3_10">2.10. ch.0.cnt</a></h3>
+<h3>2.10. ch.0.cnt</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_0_cnt</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x41c</td></tr>
@@ -1858,7 +2121,7 @@ data
 </b>[<i>rw</i>]: Test mode period, in clock ticks
 </ul>
 <a name="ch.0.adc_dac_eff"></a>
-<h3><a name="sect_3_11">2.11. ch.0.adc_dac_eff</a></h3>
+<h3>2.11. ch.0.adc_dac_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_0_adc_dac_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x420</td></tr>
@@ -1932,7 +2195,7 @@ dac
 <br>It is the actual value sent to the DAC irrespectively of operation mode
 </ul>
 <a name="ch.0.sp_eff"></a>
-<h3><a name="sect_3_12">2.12. ch.0.sp_eff</a></h3>
+<h3>2.12. ch.0.sp_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_0_sp_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x424</td></tr>
@@ -2017,7 +2280,7 @@ sp
 <br>It is the actual value sent to the PI controller irrespectively of operation mode
 </ul>
 <a name="ch.1.sta"></a>
-<h3><a name="sect_3_13">2.13. ch.1.sta</a></h3>
+<h3>2.13. ch.1.sta</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_1_sta</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x440</td></tr>
@@ -2144,7 +2407,7 @@ amp_tflag_r_latch
 <br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.1.ctl"></a>
-<h3><a name="sect_3_14">2.14. ch.1.ctl</a></h3>
+<h3>2.14. ch.1.ctl</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_1_ctl</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x444</td></tr>
@@ -2173,7 +2436,7 @@ Channel control register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_start</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -2186,14 +2449,10 @@ Channel control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
+ <td class="td_field" colspan="4">wfm_rate_div[3:0]</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="2">wfm_points[9:8]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -2206,14 +2465,7 @@ Channel control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="8">wfm_points[7:0]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -2226,11 +2478,10 @@ Channel control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_rpt_mode</td>
  <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_field" colspan="3">mode[2:0]</td>
+ <td class="td_field" colspan="4">mode[3:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -2242,18 +2493,34 @@ amp_en
 <li><b>
 mode
 </b>[<i>rw</i>]: Power supply operation mode
-<br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<br>0000: Open loop (voltage) manual control via dac<br>0001: Open loop (voltage) test square wave<br>0010: Closed loop (current) manual control via pi_sp<br>0011: Closed loop (current) test square wave<br>0100: Closed loop (current) external control<br>0101: Open loop (voltage) external control<br>0110: Open loop (voltage) arbitrary waveform<br>0111: Open loop (voltage) arbitrary waveform + external control<br>1000: Closed loop (current) arbitrary waveform<br>1001: Closed loop (current) arbitrary waveform + external control<br>1010 - 1111: Reserved
 <li><b>
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
-<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. When operating in<br>         any arbitrary waveform mode, a trigger will start executing<br>         the waveform. It is ignored when in the test square wave<br>         modes.
 <li><b>
 rst_latch_sts
 </b>[<i>rw</i>]: Reset latched status bits
 <br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
+<li><b>
+wfm_rpt_mode
+</b>[<i>rw</i>]: Repeat the waveform samples
+<br>write 0: Execute the waveform only once<br>write 1: Repeat the waveform
+<li><b>
+wfm_points
+</b>[<i>rw</i>]: Size in samples of the waveform - 1
+<br>This field specifiy the number of samples from 1 to 1024, where<br>0 means 1 sample and 1023 means 1024.
+<li><b>
+wfm_rate_div
+</b>[<i>rw</i>]: Divider for the waveform sample rate
+<br>Waveform sample rate = curr_loop_sample_rate / (2 ^ wfm_rate_div)<br>0: 1<br>1: 2<br>2: 4<br>3: 8<br>...<br>15: 32768<br>Waveform samples will be interpoled if wfm_rate_div > 0
+<li><b>
+wfm_start
+</b>[<i>rw</i>]: Start waveform
+<br>write 0: do nothing<br>write 1: Start executing the waveform (autoclear). This is<br>ignored when the triggered mode is enabled.
 </ul>
 <a name="ch.1.pi_kp"></a>
-<h3><a name="sect_3_15">2.15. ch.1.pi_kp</a></h3>
+<h3>2.15. ch.1.pi_kp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_1_pi_kp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x448</td></tr>
@@ -2330,7 +2597,7 @@ data
 <br>PI KP
 </ul>
 <a name="ch.1.pi_ti"></a>
-<h3><a name="sect_3_16">2.16. ch.1.pi_ti</a></h3>
+<h3>2.16. ch.1.pi_ti</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_1_pi_ti</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x44c</td></tr>
@@ -2407,7 +2674,7 @@ data
 <br>PI TI
 </ul>
 <a name="ch.1.pi_sp"></a>
-<h3><a name="sect_3_17">2.17. ch.1.pi_sp</a></h3>
+<h3>2.17. ch.1.pi_sp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_1_pi_sp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x450</td></tr>
@@ -2492,7 +2759,7 @@ data
 <br>PI SP
 </ul>
 <a name="ch.1.dac"></a>
-<h3><a name="sect_3_18">2.18. ch.1.dac</a></h3>
+<h3>2.18. ch.1.dac</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_1_dac</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x454</td></tr>
@@ -2577,7 +2844,7 @@ data
 <br>Write DAC data for channel
 </ul>
 <a name="ch.1.lim"></a>
-<h3><a name="sect_3_19">2.19. ch.1.lim</a></h3>
+<h3>2.19. ch.1.lim</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_1_lim</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x458</td></tr>
@@ -2652,7 +2919,7 @@ b
 <br>This is used only in Open Loop / Closed Loop test square wave modes.<br>It can represent a current in ADC counts or a voltage in DAC counts.<br>type: SLV
 </ul>
 <a name="ch.1.cnt"></a>
-<h3><a name="sect_3_20">2.20. ch.1.cnt</a></h3>
+<h3>2.20. ch.1.cnt</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_1_cnt</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x45c</td></tr>
@@ -2731,7 +2998,7 @@ data
 </b>[<i>rw</i>]: Test mode period, in clock ticks
 </ul>
 <a name="ch.1.adc_dac_eff"></a>
-<h3><a name="sect_3_21">2.21. ch.1.adc_dac_eff</a></h3>
+<h3>2.21. ch.1.adc_dac_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_1_adc_dac_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x460</td></tr>
@@ -2805,7 +3072,7 @@ dac
 <br>It is the actual value sent to the DAC irrespectively of operation mode
 </ul>
 <a name="ch.1.sp_eff"></a>
-<h3><a name="sect_3_22">2.22. ch.1.sp_eff</a></h3>
+<h3>2.22. ch.1.sp_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_1_sp_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x464</td></tr>
@@ -2890,7 +3157,7 @@ sp
 <br>It is the actual value sent to the PI controller irrespectively of operation mode
 </ul>
 <a name="ch.2.sta"></a>
-<h3><a name="sect_3_23">2.23. ch.2.sta</a></h3>
+<h3>2.23. ch.2.sta</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_2_sta</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x480</td></tr>
@@ -3017,7 +3284,7 @@ amp_tflag_r_latch
 <br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.2.ctl"></a>
-<h3><a name="sect_3_24">2.24. ch.2.ctl</a></h3>
+<h3>2.24. ch.2.ctl</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_2_ctl</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x484</td></tr>
@@ -3046,7 +3313,7 @@ Channel control register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_start</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -3059,14 +3326,10 @@ Channel control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
+ <td class="td_field" colspan="4">wfm_rate_div[3:0]</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="2">wfm_points[9:8]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -3079,14 +3342,7 @@ Channel control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="8">wfm_points[7:0]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -3099,11 +3355,10 @@ Channel control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_rpt_mode</td>
  <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_field" colspan="3">mode[2:0]</td>
+ <td class="td_field" colspan="4">mode[3:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -3115,18 +3370,34 @@ amp_en
 <li><b>
 mode
 </b>[<i>rw</i>]: Power supply operation mode
-<br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<br>0000: Open loop (voltage) manual control via dac<br>0001: Open loop (voltage) test square wave<br>0010: Closed loop (current) manual control via pi_sp<br>0011: Closed loop (current) test square wave<br>0100: Closed loop (current) external control<br>0101: Open loop (voltage) external control<br>0110: Open loop (voltage) arbitrary waveform<br>0111: Open loop (voltage) arbitrary waveform + external control<br>1000: Closed loop (current) arbitrary waveform<br>1001: Closed loop (current) arbitrary waveform + external control<br>1010 - 1111: Reserved
 <li><b>
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
-<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. When operating in<br>         any arbitrary waveform mode, a trigger will start executing<br>         the waveform. It is ignored when in the test square wave<br>         modes.
 <li><b>
 rst_latch_sts
 </b>[<i>rw</i>]: Reset latched status bits
 <br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
+<li><b>
+wfm_rpt_mode
+</b>[<i>rw</i>]: Repeat the waveform samples
+<br>write 0: Execute the waveform only once<br>write 1: Repeat the waveform
+<li><b>
+wfm_points
+</b>[<i>rw</i>]: Size in samples of the waveform - 1
+<br>This field specifiy the number of samples from 1 to 1024, where<br>0 means 1 sample and 1023 means 1024.
+<li><b>
+wfm_rate_div
+</b>[<i>rw</i>]: Divider for the waveform sample rate
+<br>Waveform sample rate = curr_loop_sample_rate / (2 ^ wfm_rate_div)<br>0: 1<br>1: 2<br>2: 4<br>3: 8<br>...<br>15: 32768<br>Waveform samples will be interpoled if wfm_rate_div > 0
+<li><b>
+wfm_start
+</b>[<i>rw</i>]: Start waveform
+<br>write 0: do nothing<br>write 1: Start executing the waveform (autoclear). This is<br>ignored when the triggered mode is enabled.
 </ul>
 <a name="ch.2.pi_kp"></a>
-<h3><a name="sect_3_25">2.25. ch.2.pi_kp</a></h3>
+<h3>2.25. ch.2.pi_kp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_2_pi_kp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x488</td></tr>
@@ -3203,7 +3474,7 @@ data
 <br>PI KP
 </ul>
 <a name="ch.2.pi_ti"></a>
-<h3><a name="sect_3_26">2.26. ch.2.pi_ti</a></h3>
+<h3>2.26. ch.2.pi_ti</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_2_pi_ti</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x48c</td></tr>
@@ -3280,7 +3551,7 @@ data
 <br>PI TI
 </ul>
 <a name="ch.2.pi_sp"></a>
-<h3><a name="sect_3_27">2.27. ch.2.pi_sp</a></h3>
+<h3>2.27. ch.2.pi_sp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_2_pi_sp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x490</td></tr>
@@ -3365,7 +3636,7 @@ data
 <br>PI SP
 </ul>
 <a name="ch.2.dac"></a>
-<h3><a name="sect_3_28">2.28. ch.2.dac</a></h3>
+<h3>2.28. ch.2.dac</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_2_dac</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x494</td></tr>
@@ -3450,7 +3721,7 @@ data
 <br>Write DAC data for channel
 </ul>
 <a name="ch.2.lim"></a>
-<h3><a name="sect_3_29">2.29. ch.2.lim</a></h3>
+<h3>2.29. ch.2.lim</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_2_lim</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x498</td></tr>
@@ -3525,7 +3796,7 @@ b
 <br>This is used only in Open Loop / Closed Loop test square wave modes.<br>It can represent a current in ADC counts or a voltage in DAC counts.<br>type: SLV
 </ul>
 <a name="ch.2.cnt"></a>
-<h3><a name="sect_3_30">2.30. ch.2.cnt</a></h3>
+<h3>2.30. ch.2.cnt</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_2_cnt</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x49c</td></tr>
@@ -3604,7 +3875,7 @@ data
 </b>[<i>rw</i>]: Test mode period, in clock ticks
 </ul>
 <a name="ch.2.adc_dac_eff"></a>
-<h3><a name="sect_3_31">2.31. ch.2.adc_dac_eff</a></h3>
+<h3>2.31. ch.2.adc_dac_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_2_adc_dac_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x4a0</td></tr>
@@ -3678,7 +3949,7 @@ dac
 <br>It is the actual value sent to the DAC irrespectively of operation mode
 </ul>
 <a name="ch.2.sp_eff"></a>
-<h3><a name="sect_3_32">2.32. ch.2.sp_eff</a></h3>
+<h3>2.32. ch.2.sp_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_2_sp_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x4a4</td></tr>
@@ -3763,7 +4034,7 @@ sp
 <br>It is the actual value sent to the PI controller irrespectively of operation mode
 </ul>
 <a name="ch.3.sta"></a>
-<h3><a name="sect_3_33">2.33. ch.3.sta</a></h3>
+<h3>2.33. ch.3.sta</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_3_sta</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x4c0</td></tr>
@@ -3890,7 +4161,7 @@ amp_tflag_r_latch
 <br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.3.ctl"></a>
-<h3><a name="sect_3_34">2.34. ch.3.ctl</a></h3>
+<h3>2.34. ch.3.ctl</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_3_ctl</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x4c4</td></tr>
@@ -3919,7 +4190,7 @@ Channel control register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_start</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -3932,14 +4203,10 @@ Channel control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
+ <td class="td_field" colspan="4">wfm_rate_div[3:0]</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="2">wfm_points[9:8]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -3952,14 +4219,7 @@ Channel control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="8">wfm_points[7:0]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -3972,11 +4232,10 @@ Channel control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_rpt_mode</td>
  <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_field" colspan="3">mode[2:0]</td>
+ <td class="td_field" colspan="4">mode[3:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -3988,18 +4247,34 @@ amp_en
 <li><b>
 mode
 </b>[<i>rw</i>]: Power supply operation mode
-<br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<br>0000: Open loop (voltage) manual control via dac<br>0001: Open loop (voltage) test square wave<br>0010: Closed loop (current) manual control via pi_sp<br>0011: Closed loop (current) test square wave<br>0100: Closed loop (current) external control<br>0101: Open loop (voltage) external control<br>0110: Open loop (voltage) arbitrary waveform<br>0111: Open loop (voltage) arbitrary waveform + external control<br>1000: Closed loop (current) arbitrary waveform<br>1001: Closed loop (current) arbitrary waveform + external control<br>1010 - 1111: Reserved
 <li><b>
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
-<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. When operating in<br>         any arbitrary waveform mode, a trigger will start executing<br>         the waveform. It is ignored when in the test square wave<br>         modes.
 <li><b>
 rst_latch_sts
 </b>[<i>rw</i>]: Reset latched status bits
 <br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
+<li><b>
+wfm_rpt_mode
+</b>[<i>rw</i>]: Repeat the waveform samples
+<br>write 0: Execute the waveform only once<br>write 1: Repeat the waveform
+<li><b>
+wfm_points
+</b>[<i>rw</i>]: Size in samples of the waveform - 1
+<br>This field specifiy the number of samples from 1 to 1024, where<br>0 means 1 sample and 1023 means 1024.
+<li><b>
+wfm_rate_div
+</b>[<i>rw</i>]: Divider for the waveform sample rate
+<br>Waveform sample rate = curr_loop_sample_rate / (2 ^ wfm_rate_div)<br>0: 1<br>1: 2<br>2: 4<br>3: 8<br>...<br>15: 32768<br>Waveform samples will be interpoled if wfm_rate_div > 0
+<li><b>
+wfm_start
+</b>[<i>rw</i>]: Start waveform
+<br>write 0: do nothing<br>write 1: Start executing the waveform (autoclear). This is<br>ignored when the triggered mode is enabled.
 </ul>
 <a name="ch.3.pi_kp"></a>
-<h3><a name="sect_3_35">2.35. ch.3.pi_kp</a></h3>
+<h3>2.35. ch.3.pi_kp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_3_pi_kp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x4c8</td></tr>
@@ -4076,7 +4351,7 @@ data
 <br>PI KP
 </ul>
 <a name="ch.3.pi_ti"></a>
-<h3><a name="sect_3_36">2.36. ch.3.pi_ti</a></h3>
+<h3>2.36. ch.3.pi_ti</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_3_pi_ti</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x4cc</td></tr>
@@ -4153,7 +4428,7 @@ data
 <br>PI TI
 </ul>
 <a name="ch.3.pi_sp"></a>
-<h3><a name="sect_3_37">2.37. ch.3.pi_sp</a></h3>
+<h3>2.37. ch.3.pi_sp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_3_pi_sp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x4d0</td></tr>
@@ -4238,7 +4513,7 @@ data
 <br>PI SP
 </ul>
 <a name="ch.3.dac"></a>
-<h3><a name="sect_3_38">2.38. ch.3.dac</a></h3>
+<h3>2.38. ch.3.dac</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_3_dac</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x4d4</td></tr>
@@ -4323,7 +4598,7 @@ data
 <br>Write DAC data for channel
 </ul>
 <a name="ch.3.lim"></a>
-<h3><a name="sect_3_39">2.39. ch.3.lim</a></h3>
+<h3>2.39. ch.3.lim</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_3_lim</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x4d8</td></tr>
@@ -4398,7 +4673,7 @@ b
 <br>This is used only in Open Loop / Closed Loop test square wave modes.<br>It can represent a current in ADC counts or a voltage in DAC counts.<br>type: SLV
 </ul>
 <a name="ch.3.cnt"></a>
-<h3><a name="sect_3_40">2.40. ch.3.cnt</a></h3>
+<h3>2.40. ch.3.cnt</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_3_cnt</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x4dc</td></tr>
@@ -4477,7 +4752,7 @@ data
 </b>[<i>rw</i>]: Test mode period, in clock ticks
 </ul>
 <a name="ch.3.adc_dac_eff"></a>
-<h3><a name="sect_3_41">2.41. ch.3.adc_dac_eff</a></h3>
+<h3>2.41. ch.3.adc_dac_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_3_adc_dac_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x4e0</td></tr>
@@ -4551,7 +4826,7 @@ dac
 <br>It is the actual value sent to the DAC irrespectively of operation mode
 </ul>
 <a name="ch.3.sp_eff"></a>
-<h3><a name="sect_3_42">2.42. ch.3.sp_eff</a></h3>
+<h3>2.42. ch.3.sp_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_3_sp_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x4e4</td></tr>
@@ -4636,7 +4911,7 @@ sp
 <br>It is the actual value sent to the PI controller irrespectively of operation mode
 </ul>
 <a name="ch.4.sta"></a>
-<h3><a name="sect_3_43">2.43. ch.4.sta</a></h3>
+<h3>2.43. ch.4.sta</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_4_sta</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x500</td></tr>
@@ -4763,7 +5038,7 @@ amp_tflag_r_latch
 <br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.4.ctl"></a>
-<h3><a name="sect_3_44">2.44. ch.4.ctl</a></h3>
+<h3>2.44. ch.4.ctl</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_4_ctl</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x504</td></tr>
@@ -4792,7 +5067,7 @@ Channel control register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_start</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -4805,14 +5080,10 @@ Channel control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
+ <td class="td_field" colspan="4">wfm_rate_div[3:0]</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="2">wfm_points[9:8]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -4825,14 +5096,7 @@ Channel control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="8">wfm_points[7:0]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -4845,11 +5109,10 @@ Channel control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_rpt_mode</td>
  <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_field" colspan="3">mode[2:0]</td>
+ <td class="td_field" colspan="4">mode[3:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -4861,18 +5124,34 @@ amp_en
 <li><b>
 mode
 </b>[<i>rw</i>]: Power supply operation mode
-<br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<br>0000: Open loop (voltage) manual control via dac<br>0001: Open loop (voltage) test square wave<br>0010: Closed loop (current) manual control via pi_sp<br>0011: Closed loop (current) test square wave<br>0100: Closed loop (current) external control<br>0101: Open loop (voltage) external control<br>0110: Open loop (voltage) arbitrary waveform<br>0111: Open loop (voltage) arbitrary waveform + external control<br>1000: Closed loop (current) arbitrary waveform<br>1001: Closed loop (current) arbitrary waveform + external control<br>1010 - 1111: Reserved
 <li><b>
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
-<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. When operating in<br>         any arbitrary waveform mode, a trigger will start executing<br>         the waveform. It is ignored when in the test square wave<br>         modes.
 <li><b>
 rst_latch_sts
 </b>[<i>rw</i>]: Reset latched status bits
 <br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
+<li><b>
+wfm_rpt_mode
+</b>[<i>rw</i>]: Repeat the waveform samples
+<br>write 0: Execute the waveform only once<br>write 1: Repeat the waveform
+<li><b>
+wfm_points
+</b>[<i>rw</i>]: Size in samples of the waveform - 1
+<br>This field specifiy the number of samples from 1 to 1024, where<br>0 means 1 sample and 1023 means 1024.
+<li><b>
+wfm_rate_div
+</b>[<i>rw</i>]: Divider for the waveform sample rate
+<br>Waveform sample rate = curr_loop_sample_rate / (2 ^ wfm_rate_div)<br>0: 1<br>1: 2<br>2: 4<br>3: 8<br>...<br>15: 32768<br>Waveform samples will be interpoled if wfm_rate_div > 0
+<li><b>
+wfm_start
+</b>[<i>rw</i>]: Start waveform
+<br>write 0: do nothing<br>write 1: Start executing the waveform (autoclear). This is<br>ignored when the triggered mode is enabled.
 </ul>
 <a name="ch.4.pi_kp"></a>
-<h3><a name="sect_3_45">2.45. ch.4.pi_kp</a></h3>
+<h3>2.45. ch.4.pi_kp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_4_pi_kp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x508</td></tr>
@@ -4949,7 +5228,7 @@ data
 <br>PI KP
 </ul>
 <a name="ch.4.pi_ti"></a>
-<h3><a name="sect_3_46">2.46. ch.4.pi_ti</a></h3>
+<h3>2.46. ch.4.pi_ti</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_4_pi_ti</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x50c</td></tr>
@@ -5026,7 +5305,7 @@ data
 <br>PI TI
 </ul>
 <a name="ch.4.pi_sp"></a>
-<h3><a name="sect_3_47">2.47. ch.4.pi_sp</a></h3>
+<h3>2.47. ch.4.pi_sp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_4_pi_sp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x510</td></tr>
@@ -5111,7 +5390,7 @@ data
 <br>PI SP
 </ul>
 <a name="ch.4.dac"></a>
-<h3><a name="sect_3_48">2.48. ch.4.dac</a></h3>
+<h3>2.48. ch.4.dac</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_4_dac</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x514</td></tr>
@@ -5196,7 +5475,7 @@ data
 <br>Write DAC data for channel
 </ul>
 <a name="ch.4.lim"></a>
-<h3><a name="sect_3_49">2.49. ch.4.lim</a></h3>
+<h3>2.49. ch.4.lim</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_4_lim</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x518</td></tr>
@@ -5271,7 +5550,7 @@ b
 <br>This is used only in Open Loop / Closed Loop test square wave modes.<br>It can represent a current in ADC counts or a voltage in DAC counts.<br>type: SLV
 </ul>
 <a name="ch.4.cnt"></a>
-<h3><a name="sect_3_50">2.50. ch.4.cnt</a></h3>
+<h3>2.50. ch.4.cnt</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_4_cnt</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x51c</td></tr>
@@ -5350,7 +5629,7 @@ data
 </b>[<i>rw</i>]: Test mode period, in clock ticks
 </ul>
 <a name="ch.4.adc_dac_eff"></a>
-<h3><a name="sect_3_51">2.51. ch.4.adc_dac_eff</a></h3>
+<h3>2.51. ch.4.adc_dac_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_4_adc_dac_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x520</td></tr>
@@ -5424,7 +5703,7 @@ dac
 <br>It is the actual value sent to the DAC irrespectively of operation mode
 </ul>
 <a name="ch.4.sp_eff"></a>
-<h3><a name="sect_3_52">2.52. ch.4.sp_eff</a></h3>
+<h3>2.52. ch.4.sp_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_4_sp_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x524</td></tr>
@@ -5509,7 +5788,7 @@ sp
 <br>It is the actual value sent to the PI controller irrespectively of operation mode
 </ul>
 <a name="ch.5.sta"></a>
-<h3><a name="sect_3_53">2.53. ch.5.sta</a></h3>
+<h3>2.53. ch.5.sta</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_5_sta</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x540</td></tr>
@@ -5636,7 +5915,7 @@ amp_tflag_r_latch
 <br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.5.ctl"></a>
-<h3><a name="sect_3_54">2.54. ch.5.ctl</a></h3>
+<h3>2.54. ch.5.ctl</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_5_ctl</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x544</td></tr>
@@ -5665,7 +5944,7 @@ Channel control register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_start</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -5678,14 +5957,10 @@ Channel control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
+ <td class="td_field" colspan="4">wfm_rate_div[3:0]</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="2">wfm_points[9:8]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -5698,14 +5973,7 @@ Channel control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="8">wfm_points[7:0]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -5718,11 +5986,10 @@ Channel control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_rpt_mode</td>
  <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_field" colspan="3">mode[2:0]</td>
+ <td class="td_field" colspan="4">mode[3:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -5734,18 +6001,34 @@ amp_en
 <li><b>
 mode
 </b>[<i>rw</i>]: Power supply operation mode
-<br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<br>0000: Open loop (voltage) manual control via dac<br>0001: Open loop (voltage) test square wave<br>0010: Closed loop (current) manual control via pi_sp<br>0011: Closed loop (current) test square wave<br>0100: Closed loop (current) external control<br>0101: Open loop (voltage) external control<br>0110: Open loop (voltage) arbitrary waveform<br>0111: Open loop (voltage) arbitrary waveform + external control<br>1000: Closed loop (current) arbitrary waveform<br>1001: Closed loop (current) arbitrary waveform + external control<br>1010 - 1111: Reserved
 <li><b>
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
-<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. When operating in<br>         any arbitrary waveform mode, a trigger will start executing<br>         the waveform. It is ignored when in the test square wave<br>         modes.
 <li><b>
 rst_latch_sts
 </b>[<i>rw</i>]: Reset latched status bits
 <br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
+<li><b>
+wfm_rpt_mode
+</b>[<i>rw</i>]: Repeat the waveform samples
+<br>write 0: Execute the waveform only once<br>write 1: Repeat the waveform
+<li><b>
+wfm_points
+</b>[<i>rw</i>]: Size in samples of the waveform - 1
+<br>This field specifiy the number of samples from 1 to 1024, where<br>0 means 1 sample and 1023 means 1024.
+<li><b>
+wfm_rate_div
+</b>[<i>rw</i>]: Divider for the waveform sample rate
+<br>Waveform sample rate = curr_loop_sample_rate / (2 ^ wfm_rate_div)<br>0: 1<br>1: 2<br>2: 4<br>3: 8<br>...<br>15: 32768<br>Waveform samples will be interpoled if wfm_rate_div > 0
+<li><b>
+wfm_start
+</b>[<i>rw</i>]: Start waveform
+<br>write 0: do nothing<br>write 1: Start executing the waveform (autoclear). This is<br>ignored when the triggered mode is enabled.
 </ul>
 <a name="ch.5.pi_kp"></a>
-<h3><a name="sect_3_55">2.55. ch.5.pi_kp</a></h3>
+<h3>2.55. ch.5.pi_kp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_5_pi_kp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x548</td></tr>
@@ -5822,7 +6105,7 @@ data
 <br>PI KP
 </ul>
 <a name="ch.5.pi_ti"></a>
-<h3><a name="sect_3_56">2.56. ch.5.pi_ti</a></h3>
+<h3>2.56. ch.5.pi_ti</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_5_pi_ti</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x54c</td></tr>
@@ -5899,7 +6182,7 @@ data
 <br>PI TI
 </ul>
 <a name="ch.5.pi_sp"></a>
-<h3><a name="sect_3_57">2.57. ch.5.pi_sp</a></h3>
+<h3>2.57. ch.5.pi_sp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_5_pi_sp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x550</td></tr>
@@ -5984,7 +6267,7 @@ data
 <br>PI SP
 </ul>
 <a name="ch.5.dac"></a>
-<h3><a name="sect_3_58">2.58. ch.5.dac</a></h3>
+<h3>2.58. ch.5.dac</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_5_dac</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x554</td></tr>
@@ -6069,7 +6352,7 @@ data
 <br>Write DAC data for channel
 </ul>
 <a name="ch.5.lim"></a>
-<h3><a name="sect_3_59">2.59. ch.5.lim</a></h3>
+<h3>2.59. ch.5.lim</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_5_lim</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x558</td></tr>
@@ -6144,7 +6427,7 @@ b
 <br>This is used only in Open Loop / Closed Loop test square wave modes.<br>It can represent a current in ADC counts or a voltage in DAC counts.<br>type: SLV
 </ul>
 <a name="ch.5.cnt"></a>
-<h3><a name="sect_3_60">2.60. ch.5.cnt</a></h3>
+<h3>2.60. ch.5.cnt</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_5_cnt</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x55c</td></tr>
@@ -6223,7 +6506,7 @@ data
 </b>[<i>rw</i>]: Test mode period, in clock ticks
 </ul>
 <a name="ch.5.adc_dac_eff"></a>
-<h3><a name="sect_3_61">2.61. ch.5.adc_dac_eff</a></h3>
+<h3>2.61. ch.5.adc_dac_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_5_adc_dac_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x560</td></tr>
@@ -6297,7 +6580,7 @@ dac
 <br>It is the actual value sent to the DAC irrespectively of operation mode
 </ul>
 <a name="ch.5.sp_eff"></a>
-<h3><a name="sect_3_62">2.62. ch.5.sp_eff</a></h3>
+<h3>2.62. ch.5.sp_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_5_sp_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x564</td></tr>
@@ -6382,7 +6665,7 @@ sp
 <br>It is the actual value sent to the PI controller irrespectively of operation mode
 </ul>
 <a name="ch.6.sta"></a>
-<h3><a name="sect_3_63">2.63. ch.6.sta</a></h3>
+<h3>2.63. ch.6.sta</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_6_sta</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x580</td></tr>
@@ -6509,7 +6792,7 @@ amp_tflag_r_latch
 <br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.6.ctl"></a>
-<h3><a name="sect_3_64">2.64. ch.6.ctl</a></h3>
+<h3>2.64. ch.6.ctl</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_6_ctl</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x584</td></tr>
@@ -6538,7 +6821,7 @@ Channel control register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_start</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -6551,14 +6834,10 @@ Channel control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
+ <td class="td_field" colspan="4">wfm_rate_div[3:0]</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="2">wfm_points[9:8]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -6571,14 +6850,7 @@ Channel control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="8">wfm_points[7:0]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -6591,11 +6863,10 @@ Channel control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_rpt_mode</td>
  <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_field" colspan="3">mode[2:0]</td>
+ <td class="td_field" colspan="4">mode[3:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -6607,18 +6878,34 @@ amp_en
 <li><b>
 mode
 </b>[<i>rw</i>]: Power supply operation mode
-<br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<br>0000: Open loop (voltage) manual control via dac<br>0001: Open loop (voltage) test square wave<br>0010: Closed loop (current) manual control via pi_sp<br>0011: Closed loop (current) test square wave<br>0100: Closed loop (current) external control<br>0101: Open loop (voltage) external control<br>0110: Open loop (voltage) arbitrary waveform<br>0111: Open loop (voltage) arbitrary waveform + external control<br>1000: Closed loop (current) arbitrary waveform<br>1001: Closed loop (current) arbitrary waveform + external control<br>1010 - 1111: Reserved
 <li><b>
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
-<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. When operating in<br>         any arbitrary waveform mode, a trigger will start executing<br>         the waveform. It is ignored when in the test square wave<br>         modes.
 <li><b>
 rst_latch_sts
 </b>[<i>rw</i>]: Reset latched status bits
 <br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
+<li><b>
+wfm_rpt_mode
+</b>[<i>rw</i>]: Repeat the waveform samples
+<br>write 0: Execute the waveform only once<br>write 1: Repeat the waveform
+<li><b>
+wfm_points
+</b>[<i>rw</i>]: Size in samples of the waveform - 1
+<br>This field specifiy the number of samples from 1 to 1024, where<br>0 means 1 sample and 1023 means 1024.
+<li><b>
+wfm_rate_div
+</b>[<i>rw</i>]: Divider for the waveform sample rate
+<br>Waveform sample rate = curr_loop_sample_rate / (2 ^ wfm_rate_div)<br>0: 1<br>1: 2<br>2: 4<br>3: 8<br>...<br>15: 32768<br>Waveform samples will be interpoled if wfm_rate_div > 0
+<li><b>
+wfm_start
+</b>[<i>rw</i>]: Start waveform
+<br>write 0: do nothing<br>write 1: Start executing the waveform (autoclear). This is<br>ignored when the triggered mode is enabled.
 </ul>
 <a name="ch.6.pi_kp"></a>
-<h3><a name="sect_3_65">2.65. ch.6.pi_kp</a></h3>
+<h3>2.65. ch.6.pi_kp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_6_pi_kp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x588</td></tr>
@@ -6695,7 +6982,7 @@ data
 <br>PI KP
 </ul>
 <a name="ch.6.pi_ti"></a>
-<h3><a name="sect_3_66">2.66. ch.6.pi_ti</a></h3>
+<h3>2.66. ch.6.pi_ti</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_6_pi_ti</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x58c</td></tr>
@@ -6772,7 +7059,7 @@ data
 <br>PI TI
 </ul>
 <a name="ch.6.pi_sp"></a>
-<h3><a name="sect_3_67">2.67. ch.6.pi_sp</a></h3>
+<h3>2.67. ch.6.pi_sp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_6_pi_sp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x590</td></tr>
@@ -6857,7 +7144,7 @@ data
 <br>PI SP
 </ul>
 <a name="ch.6.dac"></a>
-<h3><a name="sect_3_68">2.68. ch.6.dac</a></h3>
+<h3>2.68. ch.6.dac</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_6_dac</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x594</td></tr>
@@ -6942,7 +7229,7 @@ data
 <br>Write DAC data for channel
 </ul>
 <a name="ch.6.lim"></a>
-<h3><a name="sect_3_69">2.69. ch.6.lim</a></h3>
+<h3>2.69. ch.6.lim</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_6_lim</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x598</td></tr>
@@ -7017,7 +7304,7 @@ b
 <br>This is used only in Open Loop / Closed Loop test square wave modes.<br>It can represent a current in ADC counts or a voltage in DAC counts.<br>type: SLV
 </ul>
 <a name="ch.6.cnt"></a>
-<h3><a name="sect_3_70">2.70. ch.6.cnt</a></h3>
+<h3>2.70. ch.6.cnt</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_6_cnt</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x59c</td></tr>
@@ -7096,7 +7383,7 @@ data
 </b>[<i>rw</i>]: Test mode period, in clock ticks
 </ul>
 <a name="ch.6.adc_dac_eff"></a>
-<h3><a name="sect_3_71">2.71. ch.6.adc_dac_eff</a></h3>
+<h3>2.71. ch.6.adc_dac_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_6_adc_dac_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x5a0</td></tr>
@@ -7170,7 +7457,7 @@ dac
 <br>It is the actual value sent to the DAC irrespectively of operation mode
 </ul>
 <a name="ch.6.sp_eff"></a>
-<h3><a name="sect_3_72">2.72. ch.6.sp_eff</a></h3>
+<h3>2.72. ch.6.sp_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_6_sp_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x5a4</td></tr>
@@ -7255,7 +7542,7 @@ sp
 <br>It is the actual value sent to the PI controller irrespectively of operation mode
 </ul>
 <a name="ch.7.sta"></a>
-<h3><a name="sect_3_73">2.73. ch.7.sta</a></h3>
+<h3>2.73. ch.7.sta</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_7_sta</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x5c0</td></tr>
@@ -7382,7 +7669,7 @@ amp_tflag_r_latch
 <br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.7.ctl"></a>
-<h3><a name="sect_3_74">2.74. ch.7.ctl</a></h3>
+<h3>2.74. ch.7.ctl</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_7_ctl</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x5c4</td></tr>
@@ -7411,7 +7698,7 @@ Channel control register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_start</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -7424,14 +7711,10 @@ Channel control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
+ <td class="td_field" colspan="4">wfm_rate_div[3:0]</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="2">wfm_points[9:8]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -7444,14 +7727,7 @@ Channel control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="8">wfm_points[7:0]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -7464,11 +7740,10 @@ Channel control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_rpt_mode</td>
  <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_field" colspan="3">mode[2:0]</td>
+ <td class="td_field" colspan="4">mode[3:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -7480,18 +7755,34 @@ amp_en
 <li><b>
 mode
 </b>[<i>rw</i>]: Power supply operation mode
-<br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<br>0000: Open loop (voltage) manual control via dac<br>0001: Open loop (voltage) test square wave<br>0010: Closed loop (current) manual control via pi_sp<br>0011: Closed loop (current) test square wave<br>0100: Closed loop (current) external control<br>0101: Open loop (voltage) external control<br>0110: Open loop (voltage) arbitrary waveform<br>0111: Open loop (voltage) arbitrary waveform + external control<br>1000: Closed loop (current) arbitrary waveform<br>1001: Closed loop (current) arbitrary waveform + external control<br>1010 - 1111: Reserved
 <li><b>
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
-<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. When operating in<br>         any arbitrary waveform mode, a trigger will start executing<br>         the waveform. It is ignored when in the test square wave<br>         modes.
 <li><b>
 rst_latch_sts
 </b>[<i>rw</i>]: Reset latched status bits
 <br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
+<li><b>
+wfm_rpt_mode
+</b>[<i>rw</i>]: Repeat the waveform samples
+<br>write 0: Execute the waveform only once<br>write 1: Repeat the waveform
+<li><b>
+wfm_points
+</b>[<i>rw</i>]: Size in samples of the waveform - 1
+<br>This field specifiy the number of samples from 1 to 1024, where<br>0 means 1 sample and 1023 means 1024.
+<li><b>
+wfm_rate_div
+</b>[<i>rw</i>]: Divider for the waveform sample rate
+<br>Waveform sample rate = curr_loop_sample_rate / (2 ^ wfm_rate_div)<br>0: 1<br>1: 2<br>2: 4<br>3: 8<br>...<br>15: 32768<br>Waveform samples will be interpoled if wfm_rate_div > 0
+<li><b>
+wfm_start
+</b>[<i>rw</i>]: Start waveform
+<br>write 0: do nothing<br>write 1: Start executing the waveform (autoclear). This is<br>ignored when the triggered mode is enabled.
 </ul>
 <a name="ch.7.pi_kp"></a>
-<h3><a name="sect_3_75">2.75. ch.7.pi_kp</a></h3>
+<h3>2.75. ch.7.pi_kp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_7_pi_kp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x5c8</td></tr>
@@ -7568,7 +7859,7 @@ data
 <br>PI KP
 </ul>
 <a name="ch.7.pi_ti"></a>
-<h3><a name="sect_3_76">2.76. ch.7.pi_ti</a></h3>
+<h3>2.76. ch.7.pi_ti</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_7_pi_ti</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x5cc</td></tr>
@@ -7645,7 +7936,7 @@ data
 <br>PI TI
 </ul>
 <a name="ch.7.pi_sp"></a>
-<h3><a name="sect_3_77">2.77. ch.7.pi_sp</a></h3>
+<h3>2.77. ch.7.pi_sp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_7_pi_sp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x5d0</td></tr>
@@ -7730,7 +8021,7 @@ data
 <br>PI SP
 </ul>
 <a name="ch.7.dac"></a>
-<h3><a name="sect_3_78">2.78. ch.7.dac</a></h3>
+<h3>2.78. ch.7.dac</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_7_dac</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x5d4</td></tr>
@@ -7815,7 +8106,7 @@ data
 <br>Write DAC data for channel
 </ul>
 <a name="ch.7.lim"></a>
-<h3><a name="sect_3_79">2.79. ch.7.lim</a></h3>
+<h3>2.79. ch.7.lim</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_7_lim</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x5d8</td></tr>
@@ -7890,7 +8181,7 @@ b
 <br>This is used only in Open Loop / Closed Loop test square wave modes.<br>It can represent a current in ADC counts or a voltage in DAC counts.<br>type: SLV
 </ul>
 <a name="ch.7.cnt"></a>
-<h3><a name="sect_3_80">2.80. ch.7.cnt</a></h3>
+<h3>2.80. ch.7.cnt</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_7_cnt</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x5dc</td></tr>
@@ -7969,7 +8260,7 @@ data
 </b>[<i>rw</i>]: Test mode period, in clock ticks
 </ul>
 <a name="ch.7.adc_dac_eff"></a>
-<h3><a name="sect_3_81">2.81. ch.7.adc_dac_eff</a></h3>
+<h3>2.81. ch.7.adc_dac_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_7_adc_dac_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x5e0</td></tr>
@@ -8043,7 +8334,7 @@ dac
 <br>It is the actual value sent to the DAC irrespectively of operation mode
 </ul>
 <a name="ch.7.sp_eff"></a>
-<h3><a name="sect_3_82">2.82. ch.7.sp_eff</a></h3>
+<h3>2.82. ch.7.sp_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_7_sp_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x5e4</td></tr>
@@ -8128,7 +8419,7 @@ sp
 <br>It is the actual value sent to the PI controller irrespectively of operation mode
 </ul>
 <a name="ch.8.sta"></a>
-<h3><a name="sect_3_83">2.83. ch.8.sta</a></h3>
+<h3>2.83. ch.8.sta</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_8_sta</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x600</td></tr>
@@ -8255,7 +8546,7 @@ amp_tflag_r_latch
 <br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.8.ctl"></a>
-<h3><a name="sect_3_84">2.84. ch.8.ctl</a></h3>
+<h3>2.84. ch.8.ctl</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_8_ctl</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x604</td></tr>
@@ -8284,7 +8575,7 @@ Channel control register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_start</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -8297,14 +8588,10 @@ Channel control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
+ <td class="td_field" colspan="4">wfm_rate_div[3:0]</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="2">wfm_points[9:8]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -8317,14 +8604,7 @@ Channel control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="8">wfm_points[7:0]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -8337,11 +8617,10 @@ Channel control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_rpt_mode</td>
  <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_field" colspan="3">mode[2:0]</td>
+ <td class="td_field" colspan="4">mode[3:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -8353,18 +8632,34 @@ amp_en
 <li><b>
 mode
 </b>[<i>rw</i>]: Power supply operation mode
-<br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<br>0000: Open loop (voltage) manual control via dac<br>0001: Open loop (voltage) test square wave<br>0010: Closed loop (current) manual control via pi_sp<br>0011: Closed loop (current) test square wave<br>0100: Closed loop (current) external control<br>0101: Open loop (voltage) external control<br>0110: Open loop (voltage) arbitrary waveform<br>0111: Open loop (voltage) arbitrary waveform + external control<br>1000: Closed loop (current) arbitrary waveform<br>1001: Closed loop (current) arbitrary waveform + external control<br>1010 - 1111: Reserved
 <li><b>
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
-<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. When operating in<br>         any arbitrary waveform mode, a trigger will start executing<br>         the waveform. It is ignored when in the test square wave<br>         modes.
 <li><b>
 rst_latch_sts
 </b>[<i>rw</i>]: Reset latched status bits
 <br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
+<li><b>
+wfm_rpt_mode
+</b>[<i>rw</i>]: Repeat the waveform samples
+<br>write 0: Execute the waveform only once<br>write 1: Repeat the waveform
+<li><b>
+wfm_points
+</b>[<i>rw</i>]: Size in samples of the waveform - 1
+<br>This field specifiy the number of samples from 1 to 1024, where<br>0 means 1 sample and 1023 means 1024.
+<li><b>
+wfm_rate_div
+</b>[<i>rw</i>]: Divider for the waveform sample rate
+<br>Waveform sample rate = curr_loop_sample_rate / (2 ^ wfm_rate_div)<br>0: 1<br>1: 2<br>2: 4<br>3: 8<br>...<br>15: 32768<br>Waveform samples will be interpoled if wfm_rate_div > 0
+<li><b>
+wfm_start
+</b>[<i>rw</i>]: Start waveform
+<br>write 0: do nothing<br>write 1: Start executing the waveform (autoclear). This is<br>ignored when the triggered mode is enabled.
 </ul>
 <a name="ch.8.pi_kp"></a>
-<h3><a name="sect_3_85">2.85. ch.8.pi_kp</a></h3>
+<h3>2.85. ch.8.pi_kp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_8_pi_kp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x608</td></tr>
@@ -8441,7 +8736,7 @@ data
 <br>PI KP
 </ul>
 <a name="ch.8.pi_ti"></a>
-<h3><a name="sect_3_86">2.86. ch.8.pi_ti</a></h3>
+<h3>2.86. ch.8.pi_ti</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_8_pi_ti</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x60c</td></tr>
@@ -8518,7 +8813,7 @@ data
 <br>PI TI
 </ul>
 <a name="ch.8.pi_sp"></a>
-<h3><a name="sect_3_87">2.87. ch.8.pi_sp</a></h3>
+<h3>2.87. ch.8.pi_sp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_8_pi_sp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x610</td></tr>
@@ -8603,7 +8898,7 @@ data
 <br>PI SP
 </ul>
 <a name="ch.8.dac"></a>
-<h3><a name="sect_3_88">2.88. ch.8.dac</a></h3>
+<h3>2.88. ch.8.dac</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_8_dac</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x614</td></tr>
@@ -8688,7 +8983,7 @@ data
 <br>Write DAC data for channel
 </ul>
 <a name="ch.8.lim"></a>
-<h3><a name="sect_3_89">2.89. ch.8.lim</a></h3>
+<h3>2.89. ch.8.lim</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_8_lim</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x618</td></tr>
@@ -8763,7 +9058,7 @@ b
 <br>This is used only in Open Loop / Closed Loop test square wave modes.<br>It can represent a current in ADC counts or a voltage in DAC counts.<br>type: SLV
 </ul>
 <a name="ch.8.cnt"></a>
-<h3><a name="sect_3_90">2.90. ch.8.cnt</a></h3>
+<h3>2.90. ch.8.cnt</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_8_cnt</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x61c</td></tr>
@@ -8842,7 +9137,7 @@ data
 </b>[<i>rw</i>]: Test mode period, in clock ticks
 </ul>
 <a name="ch.8.adc_dac_eff"></a>
-<h3><a name="sect_3_91">2.91. ch.8.adc_dac_eff</a></h3>
+<h3>2.91. ch.8.adc_dac_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_8_adc_dac_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x620</td></tr>
@@ -8916,7 +9211,7 @@ dac
 <br>It is the actual value sent to the DAC irrespectively of operation mode
 </ul>
 <a name="ch.8.sp_eff"></a>
-<h3><a name="sect_3_92">2.92. ch.8.sp_eff</a></h3>
+<h3>2.92. ch.8.sp_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_8_sp_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x624</td></tr>
@@ -9001,7 +9296,7 @@ sp
 <br>It is the actual value sent to the PI controller irrespectively of operation mode
 </ul>
 <a name="ch.9.sta"></a>
-<h3><a name="sect_3_93">2.93. ch.9.sta</a></h3>
+<h3>2.93. ch.9.sta</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_9_sta</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x640</td></tr>
@@ -9128,7 +9423,7 @@ amp_tflag_r_latch
 <br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.9.ctl"></a>
-<h3><a name="sect_3_94">2.94. ch.9.ctl</a></h3>
+<h3>2.94. ch.9.ctl</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_9_ctl</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x644</td></tr>
@@ -9157,7 +9452,7 @@ Channel control register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_start</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -9170,14 +9465,10 @@ Channel control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
+ <td class="td_field" colspan="4">wfm_rate_div[3:0]</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="2">wfm_points[9:8]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -9190,14 +9481,7 @@ Channel control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="8">wfm_points[7:0]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -9210,11 +9494,10 @@ Channel control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_rpt_mode</td>
  <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_field" colspan="3">mode[2:0]</td>
+ <td class="td_field" colspan="4">mode[3:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -9226,18 +9509,34 @@ amp_en
 <li><b>
 mode
 </b>[<i>rw</i>]: Power supply operation mode
-<br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<br>0000: Open loop (voltage) manual control via dac<br>0001: Open loop (voltage) test square wave<br>0010: Closed loop (current) manual control via pi_sp<br>0011: Closed loop (current) test square wave<br>0100: Closed loop (current) external control<br>0101: Open loop (voltage) external control<br>0110: Open loop (voltage) arbitrary waveform<br>0111: Open loop (voltage) arbitrary waveform + external control<br>1000: Closed loop (current) arbitrary waveform<br>1001: Closed loop (current) arbitrary waveform + external control<br>1010 - 1111: Reserved
 <li><b>
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
-<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. When operating in<br>         any arbitrary waveform mode, a trigger will start executing<br>         the waveform. It is ignored when in the test square wave<br>         modes.
 <li><b>
 rst_latch_sts
 </b>[<i>rw</i>]: Reset latched status bits
 <br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
+<li><b>
+wfm_rpt_mode
+</b>[<i>rw</i>]: Repeat the waveform samples
+<br>write 0: Execute the waveform only once<br>write 1: Repeat the waveform
+<li><b>
+wfm_points
+</b>[<i>rw</i>]: Size in samples of the waveform - 1
+<br>This field specifiy the number of samples from 1 to 1024, where<br>0 means 1 sample and 1023 means 1024.
+<li><b>
+wfm_rate_div
+</b>[<i>rw</i>]: Divider for the waveform sample rate
+<br>Waveform sample rate = curr_loop_sample_rate / (2 ^ wfm_rate_div)<br>0: 1<br>1: 2<br>2: 4<br>3: 8<br>...<br>15: 32768<br>Waveform samples will be interpoled if wfm_rate_div > 0
+<li><b>
+wfm_start
+</b>[<i>rw</i>]: Start waveform
+<br>write 0: do nothing<br>write 1: Start executing the waveform (autoclear). This is<br>ignored when the triggered mode is enabled.
 </ul>
 <a name="ch.9.pi_kp"></a>
-<h3><a name="sect_3_95">2.95. ch.9.pi_kp</a></h3>
+<h3>2.95. ch.9.pi_kp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_9_pi_kp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x648</td></tr>
@@ -9314,7 +9613,7 @@ data
 <br>PI KP
 </ul>
 <a name="ch.9.pi_ti"></a>
-<h3><a name="sect_3_96">2.96. ch.9.pi_ti</a></h3>
+<h3>2.96. ch.9.pi_ti</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_9_pi_ti</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x64c</td></tr>
@@ -9391,7 +9690,7 @@ data
 <br>PI TI
 </ul>
 <a name="ch.9.pi_sp"></a>
-<h3><a name="sect_3_97">2.97. ch.9.pi_sp</a></h3>
+<h3>2.97. ch.9.pi_sp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_9_pi_sp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x650</td></tr>
@@ -9476,7 +9775,7 @@ data
 <br>PI SP
 </ul>
 <a name="ch.9.dac"></a>
-<h3><a name="sect_3_98">2.98. ch.9.dac</a></h3>
+<h3>2.98. ch.9.dac</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_9_dac</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x654</td></tr>
@@ -9561,7 +9860,7 @@ data
 <br>Write DAC data for channel
 </ul>
 <a name="ch.9.lim"></a>
-<h3><a name="sect_3_99">2.99. ch.9.lim</a></h3>
+<h3>2.99. ch.9.lim</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_9_lim</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x658</td></tr>
@@ -9636,7 +9935,7 @@ b
 <br>This is used only in Open Loop / Closed Loop test square wave modes.<br>It can represent a current in ADC counts or a voltage in DAC counts.<br>type: SLV
 </ul>
 <a name="ch.9.cnt"></a>
-<h3><a name="sect_3_100">2.100. ch.9.cnt</a></h3>
+<h3>2.100. ch.9.cnt</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_9_cnt</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x65c</td></tr>
@@ -9715,7 +10014,7 @@ data
 </b>[<i>rw</i>]: Test mode period, in clock ticks
 </ul>
 <a name="ch.9.adc_dac_eff"></a>
-<h3><a name="sect_3_101">2.101. ch.9.adc_dac_eff</a></h3>
+<h3>2.101. ch.9.adc_dac_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_9_adc_dac_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x660</td></tr>
@@ -9789,7 +10088,7 @@ dac
 <br>It is the actual value sent to the DAC irrespectively of operation mode
 </ul>
 <a name="ch.9.sp_eff"></a>
-<h3><a name="sect_3_102">2.102. ch.9.sp_eff</a></h3>
+<h3>2.102. ch.9.sp_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_9_sp_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x664</td></tr>
@@ -9874,7 +10173,7 @@ sp
 <br>It is the actual value sent to the PI controller irrespectively of operation mode
 </ul>
 <a name="ch.10.sta"></a>
-<h3><a name="sect_3_103">2.103. ch.10.sta</a></h3>
+<h3>2.103. ch.10.sta</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_10_sta</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x680</td></tr>
@@ -10001,7 +10300,7 @@ amp_tflag_r_latch
 <br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.10.ctl"></a>
-<h3><a name="sect_3_104">2.104. ch.10.ctl</a></h3>
+<h3>2.104. ch.10.ctl</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_10_ctl</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x684</td></tr>
@@ -10030,7 +10329,7 @@ Channel control register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_start</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -10043,14 +10342,10 @@ Channel control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
+ <td class="td_field" colspan="4">wfm_rate_div[3:0]</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="2">wfm_points[9:8]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -10063,14 +10358,7 @@ Channel control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="8">wfm_points[7:0]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -10083,11 +10371,10 @@ Channel control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_rpt_mode</td>
  <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_field" colspan="3">mode[2:0]</td>
+ <td class="td_field" colspan="4">mode[3:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -10099,18 +10386,34 @@ amp_en
 <li><b>
 mode
 </b>[<i>rw</i>]: Power supply operation mode
-<br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<br>0000: Open loop (voltage) manual control via dac<br>0001: Open loop (voltage) test square wave<br>0010: Closed loop (current) manual control via pi_sp<br>0011: Closed loop (current) test square wave<br>0100: Closed loop (current) external control<br>0101: Open loop (voltage) external control<br>0110: Open loop (voltage) arbitrary waveform<br>0111: Open loop (voltage) arbitrary waveform + external control<br>1000: Closed loop (current) arbitrary waveform<br>1001: Closed loop (current) arbitrary waveform + external control<br>1010 - 1111: Reserved
 <li><b>
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
-<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. When operating in<br>         any arbitrary waveform mode, a trigger will start executing<br>         the waveform. It is ignored when in the test square wave<br>         modes.
 <li><b>
 rst_latch_sts
 </b>[<i>rw</i>]: Reset latched status bits
 <br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
+<li><b>
+wfm_rpt_mode
+</b>[<i>rw</i>]: Repeat the waveform samples
+<br>write 0: Execute the waveform only once<br>write 1: Repeat the waveform
+<li><b>
+wfm_points
+</b>[<i>rw</i>]: Size in samples of the waveform - 1
+<br>This field specifiy the number of samples from 1 to 1024, where<br>0 means 1 sample and 1023 means 1024.
+<li><b>
+wfm_rate_div
+</b>[<i>rw</i>]: Divider for the waveform sample rate
+<br>Waveform sample rate = curr_loop_sample_rate / (2 ^ wfm_rate_div)<br>0: 1<br>1: 2<br>2: 4<br>3: 8<br>...<br>15: 32768<br>Waveform samples will be interpoled if wfm_rate_div > 0
+<li><b>
+wfm_start
+</b>[<i>rw</i>]: Start waveform
+<br>write 0: do nothing<br>write 1: Start executing the waveform (autoclear). This is<br>ignored when the triggered mode is enabled.
 </ul>
 <a name="ch.10.pi_kp"></a>
-<h3><a name="sect_3_105">2.105. ch.10.pi_kp</a></h3>
+<h3>2.105. ch.10.pi_kp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_10_pi_kp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x688</td></tr>
@@ -10187,7 +10490,7 @@ data
 <br>PI KP
 </ul>
 <a name="ch.10.pi_ti"></a>
-<h3><a name="sect_3_106">2.106. ch.10.pi_ti</a></h3>
+<h3>2.106. ch.10.pi_ti</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_10_pi_ti</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x68c</td></tr>
@@ -10264,7 +10567,7 @@ data
 <br>PI TI
 </ul>
 <a name="ch.10.pi_sp"></a>
-<h3><a name="sect_3_107">2.107. ch.10.pi_sp</a></h3>
+<h3>2.107. ch.10.pi_sp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_10_pi_sp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x690</td></tr>
@@ -10349,7 +10652,7 @@ data
 <br>PI SP
 </ul>
 <a name="ch.10.dac"></a>
-<h3><a name="sect_3_108">2.108. ch.10.dac</a></h3>
+<h3>2.108. ch.10.dac</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_10_dac</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x694</td></tr>
@@ -10434,7 +10737,7 @@ data
 <br>Write DAC data for channel
 </ul>
 <a name="ch.10.lim"></a>
-<h3><a name="sect_3_109">2.109. ch.10.lim</a></h3>
+<h3>2.109. ch.10.lim</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_10_lim</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x698</td></tr>
@@ -10509,7 +10812,7 @@ b
 <br>This is used only in Open Loop / Closed Loop test square wave modes.<br>It can represent a current in ADC counts or a voltage in DAC counts.<br>type: SLV
 </ul>
 <a name="ch.10.cnt"></a>
-<h3><a name="sect_3_110">2.110. ch.10.cnt</a></h3>
+<h3>2.110. ch.10.cnt</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_10_cnt</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x69c</td></tr>
@@ -10588,7 +10891,7 @@ data
 </b>[<i>rw</i>]: Test mode period, in clock ticks
 </ul>
 <a name="ch.10.adc_dac_eff"></a>
-<h3><a name="sect_3_111">2.111. ch.10.adc_dac_eff</a></h3>
+<h3>2.111. ch.10.adc_dac_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_10_adc_dac_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x6a0</td></tr>
@@ -10662,7 +10965,7 @@ dac
 <br>It is the actual value sent to the DAC irrespectively of operation mode
 </ul>
 <a name="ch.10.sp_eff"></a>
-<h3><a name="sect_3_112">2.112. ch.10.sp_eff</a></h3>
+<h3>2.112. ch.10.sp_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_10_sp_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x6a4</td></tr>
@@ -10747,7 +11050,7 @@ sp
 <br>It is the actual value sent to the PI controller irrespectively of operation mode
 </ul>
 <a name="ch.11.sta"></a>
-<h3><a name="sect_3_113">2.113. ch.11.sta</a></h3>
+<h3>2.113. ch.11.sta</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_11_sta</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x6c0</td></tr>
@@ -10874,7 +11177,7 @@ amp_tflag_r_latch
 <br>read 0: temperature above limit<br>read 1: temperature under limit<br>This flag is a latch, and should be cleared manually by<br>writing '1' to ctl.rst_latch_sts.
 </ul>
 <a name="ch.11.ctl"></a>
-<h3><a name="sect_3_114">2.114. ch.11.ctl</a></h3>
+<h3>2.114. ch.11.ctl</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_11_ctl</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x6c4</td></tr>
@@ -10903,7 +11206,7 @@ Channel control register
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_start</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -10916,14 +11219,10 @@ Channel control register
  <td class="td_bit" colspan="1">16</td>
 </tr>
 <tr>
+ <td class="td_field" colspan="4">wfm_rate_div[3:0]</td>
  <td class="td_unused" colspan="1">-</td>
  <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="2">wfm_points[9:8]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">15</td>
@@ -10936,14 +11235,7 @@ Channel control register
  <td class="td_bit" colspan="1">8</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="8">wfm_points[7:0]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">7</td>
@@ -10956,11 +11248,10 @@ Channel control register
  <td class="td_bit" colspan="1">0</td>
 </tr>
 <tr>
- <td class="td_unused" colspan="1">-</td>
+ <td class="td_field" colspan="1">wfm_rpt_mode</td>
  <td class="td_field" colspan="1">rst_latch_sts</td>
  <td class="td_field" colspan="1">trig_en</td>
- <td class="td_unused" colspan="1">-</td>
- <td class="td_field" colspan="3">mode[2:0]</td>
+ <td class="td_field" colspan="4">mode[3:0]</td>
  <td class="td_field" colspan="1">amp_en</td>
 </tr>
 </table>
@@ -10972,18 +11263,34 @@ amp_en
 <li><b>
 mode
 </b>[<i>rw</i>]: Power supply operation mode
-<br>000: Open loop (voltage) manual control via dac<br>001: Open loop (voltage) test square wave<br>010: Closed loop (current) manual control via pi_sp<br>011: Closed loop (current) test square wave<br>100: Closed loop (current) external control<br>101: reserved<br>110: reserved<br>111: reserved
+<br>0000: Open loop (voltage) manual control via dac<br>0001: Open loop (voltage) test square wave<br>0010: Closed loop (current) manual control via pi_sp<br>0011: Closed loop (current) test square wave<br>0100: Closed loop (current) external control<br>0101: Open loop (voltage) external control<br>0110: Open loop (voltage) arbitrary waveform<br>0111: Open loop (voltage) arbitrary waveform + external control<br>1000: Closed loop (current) arbitrary waveform<br>1001: Closed loop (current) arbitrary waveform + external control<br>1010 - 1111: Reserved
 <li><b>
 trig_en
 </b>[<i>rw</i>]: Triggered mode enable
-<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. It is ignored when in<br>         the test square wave modes.
+<br>write 0: Triggered mode disabled<br>write 1: Triggered mode enabled, all set-points sent when in manual<br>         mode (open loop and closed loop) will only become effective<br>         after an external trigger is received. When operating in<br>         any arbitrary waveform mode, a trigger will start executing<br>         the waveform. It is ignored when in the test square wave<br>         modes.
 <li><b>
 rst_latch_sts
 </b>[<i>rw</i>]: Reset latched status bits
 <br>write 0: do nothing<br>write 1: Reset latched status bits (autoclear)
+<li><b>
+wfm_rpt_mode
+</b>[<i>rw</i>]: Repeat the waveform samples
+<br>write 0: Execute the waveform only once<br>write 1: Repeat the waveform
+<li><b>
+wfm_points
+</b>[<i>rw</i>]: Size in samples of the waveform - 1
+<br>This field specifiy the number of samples from 1 to 1024, where<br>0 means 1 sample and 1023 means 1024.
+<li><b>
+wfm_rate_div
+</b>[<i>rw</i>]: Divider for the waveform sample rate
+<br>Waveform sample rate = curr_loop_sample_rate / (2 ^ wfm_rate_div)<br>0: 1<br>1: 2<br>2: 4<br>3: 8<br>...<br>15: 32768<br>Waveform samples will be interpoled if wfm_rate_div > 0
+<li><b>
+wfm_start
+</b>[<i>rw</i>]: Start waveform
+<br>write 0: do nothing<br>write 1: Start executing the waveform (autoclear). This is<br>ignored when the triggered mode is enabled.
 </ul>
 <a name="ch.11.pi_kp"></a>
-<h3><a name="sect_3_115">2.115. ch.11.pi_kp</a></h3>
+<h3>2.115. ch.11.pi_kp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_11_pi_kp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x6c8</td></tr>
@@ -11060,7 +11367,7 @@ data
 <br>PI KP
 </ul>
 <a name="ch.11.pi_ti"></a>
-<h3><a name="sect_3_116">2.116. ch.11.pi_ti</a></h3>
+<h3>2.116. ch.11.pi_ti</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_11_pi_ti</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x6cc</td></tr>
@@ -11137,7 +11444,7 @@ data
 <br>PI TI
 </ul>
 <a name="ch.11.pi_sp"></a>
-<h3><a name="sect_3_117">2.117. ch.11.pi_sp</a></h3>
+<h3>2.117. ch.11.pi_sp</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_11_pi_sp</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x6d0</td></tr>
@@ -11222,7 +11529,7 @@ data
 <br>PI SP
 </ul>
 <a name="ch.11.dac"></a>
-<h3><a name="sect_3_118">2.118. ch.11.dac</a></h3>
+<h3>2.118. ch.11.dac</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_11_dac</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x6d4</td></tr>
@@ -11307,7 +11614,7 @@ data
 <br>Write DAC data for channel
 </ul>
 <a name="ch.11.lim"></a>
-<h3><a name="sect_3_119">2.119. ch.11.lim</a></h3>
+<h3>2.119. ch.11.lim</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_11_lim</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x6d8</td></tr>
@@ -11382,7 +11689,7 @@ b
 <br>This is used only in Open Loop / Closed Loop test square wave modes.<br>It can represent a current in ADC counts or a voltage in DAC counts.<br>type: SLV
 </ul>
 <a name="ch.11.cnt"></a>
-<h3><a name="sect_3_120">2.120. ch.11.cnt</a></h3>
+<h3>2.120. ch.11.cnt</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_11_cnt</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x6dc</td></tr>
@@ -11461,7 +11768,7 @@ data
 </b>[<i>rw</i>]: Test mode period, in clock ticks
 </ul>
 <a name="ch.11.adc_dac_eff"></a>
-<h3><a name="sect_3_121">2.121. ch.11.adc_dac_eff</a></h3>
+<h3>2.121. ch.11.adc_dac_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_11_adc_dac_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x6e0</td></tr>
@@ -11535,7 +11842,7 @@ dac
 <br>It is the actual value sent to the DAC irrespectively of operation mode
 </ul>
 <a name="ch.11.sp_eff"></a>
-<h3><a name="sect_3_122">2.122. ch.11.sp_eff</a></h3>
+<h3>2.122. ch.11.sp_eff</h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr><td><b>HW prefix:</b></td><td class="td_code">ch_11_sp_eff</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x6e4</td></tr>
@@ -11618,6 +11925,846 @@ Set point instantaneous value (2's complement)<br>
 sp
 </b>[<i>ro</i>]: Set point instantaneous effective data
 <br>It is the actual value sent to the PI controller irrespectively of operation mode
+</ul>
+<a name="wfm_ram.0.wfm_ram.sample_pair"></a>
+<h3>2.123. wfm_ram.0.wfm_ram.sample_pair</h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">wfm_ram_0_wfm_ram_sample_pair</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x800</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">wfm_ram.0.wfm_ram.sample_pair</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[7:0]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+samp_even
+</b>[<i>rw</i>]: Even samples (0, 2, 4, 6...)
+<li><b>
+samp_odd
+</b>[<i>rw</i>]: Odd samples (1, 3, 5, 7...)
+</ul>
+<a name="wfm_ram.1.wfm_ram.sample_pair"></a>
+<h3>2.124. wfm_ram.1.wfm_ram.sample_pair</h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">wfm_ram_1_wfm_ram_sample_pair</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x2800</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">wfm_ram.1.wfm_ram.sample_pair</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[7:0]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+samp_even
+</b>[<i>rw</i>]: Even samples (0, 2, 4, 6...)
+<li><b>
+samp_odd
+</b>[<i>rw</i>]: Odd samples (1, 3, 5, 7...)
+</ul>
+<a name="wfm_ram.2.wfm_ram.sample_pair"></a>
+<h3>2.125. wfm_ram.2.wfm_ram.sample_pair</h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">wfm_ram_2_wfm_ram_sample_pair</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x4800</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">wfm_ram.2.wfm_ram.sample_pair</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[7:0]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+samp_even
+</b>[<i>rw</i>]: Even samples (0, 2, 4, 6...)
+<li><b>
+samp_odd
+</b>[<i>rw</i>]: Odd samples (1, 3, 5, 7...)
+</ul>
+<a name="wfm_ram.3.wfm_ram.sample_pair"></a>
+<h3>2.126. wfm_ram.3.wfm_ram.sample_pair</h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">wfm_ram_3_wfm_ram_sample_pair</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x6800</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">wfm_ram.3.wfm_ram.sample_pair</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[7:0]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+samp_even
+</b>[<i>rw</i>]: Even samples (0, 2, 4, 6...)
+<li><b>
+samp_odd
+</b>[<i>rw</i>]: Odd samples (1, 3, 5, 7...)
+</ul>
+<a name="wfm_ram.4.wfm_ram.sample_pair"></a>
+<h3>2.127. wfm_ram.4.wfm_ram.sample_pair</h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">wfm_ram_4_wfm_ram_sample_pair</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x8800</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">wfm_ram.4.wfm_ram.sample_pair</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[7:0]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+samp_even
+</b>[<i>rw</i>]: Even samples (0, 2, 4, 6...)
+<li><b>
+samp_odd
+</b>[<i>rw</i>]: Odd samples (1, 3, 5, 7...)
+</ul>
+<a name="wfm_ram.5.wfm_ram.sample_pair"></a>
+<h3>2.128. wfm_ram.5.wfm_ram.sample_pair</h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">wfm_ram_5_wfm_ram_sample_pair</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0xa800</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">wfm_ram.5.wfm_ram.sample_pair</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[7:0]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+samp_even
+</b>[<i>rw</i>]: Even samples (0, 2, 4, 6...)
+<li><b>
+samp_odd
+</b>[<i>rw</i>]: Odd samples (1, 3, 5, 7...)
+</ul>
+<a name="wfm_ram.6.wfm_ram.sample_pair"></a>
+<h3>2.129. wfm_ram.6.wfm_ram.sample_pair</h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">wfm_ram_6_wfm_ram_sample_pair</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0xc800</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">wfm_ram.6.wfm_ram.sample_pair</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[7:0]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+samp_even
+</b>[<i>rw</i>]: Even samples (0, 2, 4, 6...)
+<li><b>
+samp_odd
+</b>[<i>rw</i>]: Odd samples (1, 3, 5, 7...)
+</ul>
+<a name="wfm_ram.7.wfm_ram.sample_pair"></a>
+<h3>2.130. wfm_ram.7.wfm_ram.sample_pair</h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">wfm_ram_7_wfm_ram_sample_pair</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0xe800</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">wfm_ram.7.wfm_ram.sample_pair</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[7:0]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+samp_even
+</b>[<i>rw</i>]: Even samples (0, 2, 4, 6...)
+<li><b>
+samp_odd
+</b>[<i>rw</i>]: Odd samples (1, 3, 5, 7...)
+</ul>
+<a name="wfm_ram.8.wfm_ram.sample_pair"></a>
+<h3>2.131. wfm_ram.8.wfm_ram.sample_pair</h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">wfm_ram_8_wfm_ram_sample_pair</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x10800</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">wfm_ram.8.wfm_ram.sample_pair</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[7:0]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+samp_even
+</b>[<i>rw</i>]: Even samples (0, 2, 4, 6...)
+<li><b>
+samp_odd
+</b>[<i>rw</i>]: Odd samples (1, 3, 5, 7...)
+</ul>
+<a name="wfm_ram.9.wfm_ram.sample_pair"></a>
+<h3>2.132. wfm_ram.9.wfm_ram.sample_pair</h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">wfm_ram_9_wfm_ram_sample_pair</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x12800</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">wfm_ram.9.wfm_ram.sample_pair</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[7:0]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+samp_even
+</b>[<i>rw</i>]: Even samples (0, 2, 4, 6...)
+<li><b>
+samp_odd
+</b>[<i>rw</i>]: Odd samples (1, 3, 5, 7...)
+</ul>
+<a name="wfm_ram.10.wfm_ram.sample_pair"></a>
+<h3>2.133. wfm_ram.10.wfm_ram.sample_pair</h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">wfm_ram_10_wfm_ram_sample_pair</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x14800</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">wfm_ram.10.wfm_ram.sample_pair</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[7:0]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+samp_even
+</b>[<i>rw</i>]: Even samples (0, 2, 4, 6...)
+<li><b>
+samp_odd
+</b>[<i>rw</i>]: Odd samples (1, 3, 5, 7...)
+</ul>
+<a name="wfm_ram.11.wfm_ram.sample_pair"></a>
+<h3>2.134. wfm_ram.11.wfm_ram.sample_pair</h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">wfm_ram_11_wfm_ram_sample_pair</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x16800</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">wfm_ram.11.wfm_ram.sample_pair</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x0</td></tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_odd[7:0]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">samp_even[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+samp_even
+</b>[<i>rw</i>]: Even samples (0, 2, 4, 6...)
+<li><b>
+samp_odd
+</b>[<i>rw</i>]: Odd samples (1, 3, 5, 7...)
 </ul>
 
 

@@ -133,17 +133,20 @@ memory-map:
                       write 1: enable amplifier
                 - field:
                     name: mode
-                    range: 3-1
+                    range: 4-1
                     description: Power supply operation mode
                     comment: |
-                      000: Open loop (voltage) manual control via dac
-                      001: Open loop (voltage) test square wave
-                      010: Closed loop (current) manual control via pi_sp
-                      011: Closed loop (current) test square wave
-                      100: Closed loop (current) external control
-                      101: reserved
-                      110: reserved
-                      111: reserved
+                      0000: Open loop (voltage) manual control via dac
+                      0001: Open loop (voltage) test square wave
+                      0010: Closed loop (current) manual control via pi_sp
+                      0011: Closed loop (current) test square wave
+                      0100: Closed loop (current) external control
+                      0101: Open loop (voltage) external control
+                      0110: Open loop (voltage) arbitrary waveform
+                      0111: Open loop (voltage) arbitrary waveform + external control
+                      1000: Closed loop (current) arbitrary waveform
+                      1001: Closed loop (current) arbitrary waveform + external control
+                      1010 - 1111: Reserved
                 - field:
                     name: trig_en
                     range: 5
@@ -152,8 +155,10 @@ memory-map:
                       write 0: Triggered mode disabled
                       write 1: Triggered mode enabled, all set-points sent when in manual
                                mode (open loop and closed loop) will only become effective
-                               after an external trigger is received. It is ignored when in
-                               the test square wave modes.
+                               after an external trigger is received. When operating in
+                               any arbitrary waveform mode, a trigger will start executing
+                               the waveform. It is ignored when in the test square wave
+                               modes.
                 - field:
                     name: rst_latch_sts
                     range: 6
@@ -163,6 +168,43 @@ memory-map:
                     comment: |
                       write 0: do nothing
                       write 1: Reset latched status bits (autoclear)
+                - field:
+                    name: wfm_rpt_mode
+                    range: 7
+                    description: Repeat the waveform samples
+                    comment: |
+                      write 0: Execute the waveform only once
+                      write 1: Repeat the waveform
+                - field:
+                    name: wfm_points
+                    range: 17-8
+                    description: Size in samples of the waveform - 1
+                    comment: |
+                      This field specifiy the number of samples from 1 to 1024, where
+                      0 means 1 sample and 1023 means 1024.
+                - field:
+                    name: wfm_rate_div
+                    range: 23-20
+                    description: Divider for the waveform sample rate
+                    comment: |
+                      Waveform sample rate = curr_loop_sample_rate / (2 ^ wfm_rate_div)
+                      0: 1
+                      1: 2
+                      2: 4
+                      3: 8
+                      ...
+                      15: 32768
+                      Waveform samples will be interpoled if wfm_rate_div > 0
+                - field:
+                    name: wfm_start
+                    range: 24
+                    x-hdl:
+                      type: autoclear
+                    description: Start waveform
+                    comment: |
+                      write 0: do nothing
+                      write 1: Start executing the waveform (autoclear). This is
+                      ignored when the triggered mode is enabled.
           - reg:
               name: pi_kp
               width: 32
@@ -289,3 +331,27 @@ memory-map:
                     description: Set point instantaneous effective data
                     comment: |
                       It is the actual value sent to the PI controller irrespectively of operation mode
+    - repeat:
+        name: wfm_ram
+        count: 12
+        size: 8192
+        align: False
+        children:
+          - memory:
+              name: wfm_ram
+              memsize: 2k
+              description: Waveform data, each word holds two 16 bits samples in two's complement, little endian
+              children:
+                - reg:
+                    name: sample_pair
+                    width: 32
+                    access: rw
+                    children:
+                      - field:
+                          name: samp_even
+                          range: 15-0
+                          description: Even samples (0, 2, 4, 6...)
+                      - field:
+                          name: samp_odd
+                          range: 31-16
+                          description: Odd samples (1, 3, 5, 7...)
