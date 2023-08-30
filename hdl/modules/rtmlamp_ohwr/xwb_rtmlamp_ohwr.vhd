@@ -395,7 +395,7 @@ begin
             when c_WB_CH_CTL_MODE_OL_TEST_SQR => ch_ctrl_in(i).mode <= OL_TEST_SQR_MODE;
             when c_WB_CH_CTL_MODE_CL          => ch_ctrl_in(i).mode <= CL_MODE;
             when c_WB_CH_CTL_MODE_CL_TEST_SQR => ch_ctrl_in(i).mode <= CL_TEST_SQR_MODE;
-            when c_WB_CH_CTL_MODE_CL_EXT      => ch_ctrl_in(i).mode <= CL_MODE;
+            when c_WB_CH_CTL_MODE_CL_EXT      => ch_ctrl_in(i).mode <= OL_MODE;
             when others                       => ch_ctrl_in(i).mode <= OL_MODE;
           end case;
 
@@ -403,10 +403,13 @@ begin
           -- when receiving an external trigger. Otherwise, always write.
           if wb_regs_slv_in(i).ctl_trig_en = '0' or
              (wb_regs_slv_in(i).ctl_trig_en = '1' and trig_i(i) = '1') then
-            ch_ctrl_in(i).dac_data <= wb_regs_slv_in(i).dac_data;
             case wb_regs_slv_in(i).ctl_mode is
-              when c_WB_CH_CTL_MODE_CL_EXT => ch_ctrl_in(i).pi_sp <= pi_sp_ext_i(i);
-              when others                  => ch_ctrl_in(i).pi_sp <= wb_regs_slv_in(i).pi_sp_data;
+              when c_WB_CH_CTL_MODE_CL_EXT =>
+                ch_ctrl_in(i).pi_sp <= pi_sp_ext_i(i);
+                ch_ctrl_in(i).dac_data <= pi_sp_ext_i(i);
+              when others =>
+                ch_ctrl_in(i).pi_sp <= wb_regs_slv_in(i).pi_sp_data;
+                ch_ctrl_in(i).dac_data <= wb_regs_slv_in(i).dac_data;
             end case;
           end if;
 
