@@ -141,9 +141,9 @@ memory-map:
                       010: Closed loop (current) manual control via pi_sp
                       011: Closed loop (current) test square wave
                       100: Closed loop (current) external control
-                      101: reserved
-                      110: reserved
-                      111: reserved
+                      101: Open loop (voltage) arbitrary waveform
+                      110: Closed loop (current) arbitrary waveform
+                      111: Closed loop (current) arbitrary waveform + external control
                 - field:
                     name: trig_en
                     range: 5
@@ -163,6 +163,33 @@ memory-map:
                     comment: |
                       write 0: do nothing
                       write 1: Reset latched status bits (autoclear)
+                - field:
+                    name: wmf_rpt_mode
+                    range: 7
+                    description: Repeat the waveform samples
+                    comment: |
+                      write 0: Execute the wveform only once
+                      write 1: Repeat the waveform
+                - field:
+                    name: wmf_points
+                    range: 17-8
+                    description: Size in samples of the waveform - 1
+                    comment: |
+                      This field specifiy the number of samples from 1 to 1024, where
+                      0 means 1 sample and 1023 means 1024.
+                - field:
+                    name: wmf_rate_div
+                    range: 23-20
+                    description: Divider for the waveform sample rate
+                    comment: |
+                      Waveform sample rate = curr_loop_sample_rate / (2 ^ wmf_rate_div)
+                      0: 1
+                      1: 2
+                      2: 4
+                      3: 8
+                      ...
+                      15: 32768
+                      Waveform samples will be interpoled if wmf_rate_div > 0
           - reg:
               name: pi_kp
               width: 32
@@ -289,3 +316,18 @@ memory-map:
                     description: Set point instantaneous effective data
                     comment: |
                       It is the actual value sent to the PI controller irrespectively of operation mode
+    - repeat:
+        name: wfm_ram
+        count: 12
+        size: 4096
+        align: False
+        children:
+          - memory:
+              name: wfm_ram
+              memsize: 2k
+              description: Waveform data, each word holds two 16 bits samples in two's complement, little endian
+              children:
+                - reg:
+                    name: sample
+                    width: 16
+                    access: rw

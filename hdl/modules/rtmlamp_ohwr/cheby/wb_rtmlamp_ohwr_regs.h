@@ -1,6 +1,6 @@
 #ifndef __CHEBY__WB_RTMLAMP_OHWR_REGS__H__
 #define __CHEBY__WB_RTMLAMP_OHWR_REGS__H__
-#define WB_RTMLAMP_OHWR_REGS_SIZE 2048 /* 0x800 = 2KB */
+#define WB_RTMLAMP_OHWR_REGS_SIZE 53248 /* 0xd000 = 52KB */
 
 /* General RTM status register */
 #define WB_RTMLAMP_OHWR_REGS_STA 0x0UL
@@ -34,6 +34,11 @@
 #define WB_RTMLAMP_OHWR_REGS_CH_CTL_MODE_SHIFT 1
 #define WB_RTMLAMP_OHWR_REGS_CH_CTL_TRIG_EN 0x20UL
 #define WB_RTMLAMP_OHWR_REGS_CH_CTL_RST_LATCH_STS 0x40UL
+#define WB_RTMLAMP_OHWR_REGS_CH_CTL_WMF_RPT_MODE 0x80UL
+#define WB_RTMLAMP_OHWR_REGS_CH_CTL_WMF_POINTS_MASK 0x3ff00UL
+#define WB_RTMLAMP_OHWR_REGS_CH_CTL_WMF_POINTS_SHIFT 8
+#define WB_RTMLAMP_OHWR_REGS_CH_CTL_WMF_RATE_DIV_MASK 0xf00000UL
+#define WB_RTMLAMP_OHWR_REGS_CH_CTL_WMF_RATE_DIV_SHIFT 20
 
 /* PI KP parameter */
 #define WB_RTMLAMP_OHWR_REGS_CH_PI_KP 0x8UL
@@ -81,6 +86,17 @@
 #define WB_RTMLAMP_OHWR_REGS_CH_SP_EFF 0x24UL
 #define WB_RTMLAMP_OHWR_REGS_CH_SP_EFF_SP_MASK 0xffffUL
 #define WB_RTMLAMP_OHWR_REGS_CH_SP_EFF_SP_SHIFT 0
+
+/* None */
+#define WB_RTMLAMP_OHWR_REGS_WFM_RAM 0x1000UL
+#define WB_RTMLAMP_OHWR_REGS_WFM_RAM_SIZE 4096 /* 0x1000 = 4KB */
+
+/* Waveform data, each word holds two 16 bits samples in two's complement, little endian */
+#define WB_RTMLAMP_OHWR_REGS_WFM_RAM_WFM_RAM 0x0UL
+#define WB_RTMLAMP_OHWR_REGS_WFM_RAM_WFM_RAM_SIZE 2 /* 0x2 */
+
+/* None */
+#define WB_RTMLAMP_OHWR_REGS_WFM_RAM_WFM_RAM_SAMPLE 0x0UL
 
 #ifndef __ASSEMBLER__
 struct wb_rtmlamp_ohwr_regs {
@@ -134,6 +150,21 @@ struct wb_rtmlamp_ohwr_regs {
 
   /* padding to: 256 words */
   uint32_t __padding_1[64];
+
+  /* padding to: 1024 words */
+  uint32_t __padding_2[512];
+
+  /* [0x1000]: REPEAT (no description) */
+  struct wfm_ram {
+    /* [0x0]: MEMORY Waveform data, each word holds two 16 bits samples in two's complement, little endian */
+    struct wfm_ram {
+      /* [0x0]: REG (rw) (no description) */
+      uint16_t sample;
+    } wfm_ram[1024];
+
+    /* padding to: 0 words */
+    uint32_t __padding_0[512];
+  } wfm_ram[12];
 };
 #endif /* !__ASSEMBLER__*/
 

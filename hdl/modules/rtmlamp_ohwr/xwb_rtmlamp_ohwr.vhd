@@ -155,6 +155,14 @@ end xwb_rtmlamp_ohwr;
 
 architecture rtl of xwb_rtmlamp_ohwr is
 
+  type t_wfm_ram_iface is record
+    addr: std_logic_vector(9 downto 0);
+    rd:   std_logic;
+    data: std_logic_vector(15 downto 0);
+  end record;
+
+  type t_wfm_ram_iface_arr is array(natural range <>) of t_wfm_ram_iface;
+
   -----------------------------
   -- General Constants
   -----------------------------
@@ -176,6 +184,12 @@ architecture rtl of xwb_rtmlamp_ohwr is
   signal ch_ctrl_out                         : t_rtmlamp_ch_ctrl_out_array(g_CHANNELS-1 downto 0);
   signal wb_regs_slv_in                      : t_rtmlamp_ohwr_ch_regs_slave_in_array(c_MAX_CHANNELS-1 downto 0);
   signal wb_regs_slv_out                     : t_rtmlamp_ohwr_ch_regs_slave_out_array(c_MAX_CHANNELS-1 downto 0);
+  signal wfm_ram_iface                       : t_wfm_ram_iface_arr(c_MAX_CHANNELS-1 downto 0) :=
+    (others =>
+     (rd => '0',
+      data => (others => '0'),
+      addr => (others =>'0')
+     ));
 
   -----------------------------
   -- Wishbone slave adapter signals/structures
@@ -324,7 +338,43 @@ begin
       sta_reserved_i                         => (others => '0'),
       ctl_reserved_o                         => open,
       rtmlamp_ohwr_ch_regs_i                 => wb_regs_slv_out,
-      rtmlamp_ohwr_ch_regs_o                 => wb_regs_slv_in
+      rtmlamp_ohwr_ch_regs_o                 => wb_regs_slv_in,
+      wfm_ram_0_wfm_ram_adr_i                => wfm_ram_iface(0).addr,
+      wfm_ram_0_wfm_ram_sample_rd_i          => wfm_ram_iface(0).rd,
+      wfm_ram_0_wfm_ram_sample_dat_o         => wfm_ram_iface(0).data,
+      wfm_ram_1_wfm_ram_adr_i                => wfm_ram_iface(1).addr,
+      wfm_ram_1_wfm_ram_sample_rd_i          => wfm_ram_iface(1).rd,
+      wfm_ram_1_wfm_ram_sample_dat_o         => wfm_ram_iface(1).data,
+      wfm_ram_2_wfm_ram_adr_i                => wfm_ram_iface(2).addr,
+      wfm_ram_2_wfm_ram_sample_rd_i          => wfm_ram_iface(2).rd,
+      wfm_ram_2_wfm_ram_sample_dat_o         => wfm_ram_iface(2).data,
+      wfm_ram_3_wfm_ram_adr_i                => wfm_ram_iface(3).addr,
+      wfm_ram_3_wfm_ram_sample_rd_i          => wfm_ram_iface(3).rd,
+      wfm_ram_3_wfm_ram_sample_dat_o         => wfm_ram_iface(3).data,
+      wfm_ram_4_wfm_ram_adr_i                => wfm_ram_iface(4).addr,
+      wfm_ram_4_wfm_ram_sample_rd_i          => wfm_ram_iface(4).rd,
+      wfm_ram_4_wfm_ram_sample_dat_o         => wfm_ram_iface(4).data,
+      wfm_ram_5_wfm_ram_adr_i                => wfm_ram_iface(5).addr,
+      wfm_ram_5_wfm_ram_sample_rd_i          => wfm_ram_iface(5).rd,
+      wfm_ram_5_wfm_ram_sample_dat_o         => wfm_ram_iface(5).data,
+      wfm_ram_6_wfm_ram_adr_i                => wfm_ram_iface(6).addr,
+      wfm_ram_6_wfm_ram_sample_rd_i          => wfm_ram_iface(6).rd,
+      wfm_ram_6_wfm_ram_sample_dat_o         => wfm_ram_iface(6).data,
+      wfm_ram_7_wfm_ram_adr_i                => wfm_ram_iface(7).addr,
+      wfm_ram_7_wfm_ram_sample_rd_i          => wfm_ram_iface(7).rd,
+      wfm_ram_7_wfm_ram_sample_dat_o         => wfm_ram_iface(7).data,
+      wfm_ram_8_wfm_ram_adr_i                => wfm_ram_iface(8).addr,
+      wfm_ram_8_wfm_ram_sample_rd_i          => wfm_ram_iface(8).rd,
+      wfm_ram_8_wfm_ram_sample_dat_o         => wfm_ram_iface(8).data,
+      wfm_ram_9_wfm_ram_adr_i                => wfm_ram_iface(9).addr,
+      wfm_ram_9_wfm_ram_sample_rd_i          => wfm_ram_iface(9).rd,
+      wfm_ram_9_wfm_ram_sample_dat_o         => wfm_ram_iface(9).data,
+      wfm_ram_10_wfm_ram_adr_i               => wfm_ram_iface(10).addr,
+      wfm_ram_10_wfm_ram_sample_rd_i         => wfm_ram_iface(10).rd,
+      wfm_ram_10_wfm_ram_sample_dat_o        => wfm_ram_iface(10).data,
+      wfm_ram_11_wfm_ram_adr_i               => wfm_ram_iface(11).addr,
+      wfm_ram_11_wfm_ram_sample_rd_i         => wfm_ram_iface(11).rd,
+      wfm_ram_11_wfm_ram_sample_dat_o        => wfm_ram_iface(11).data
     );
 
   -- Detect strobe edge to indicate that the amplifier flags were
