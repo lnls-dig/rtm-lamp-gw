@@ -138,6 +138,7 @@ architecture rtl of rtmlamp_ohwr is
   signal dac_ldac_n                          : std_logic;
 
   signal adc_start                           : std_logic;
+  signal adc_ready_prev                      : std_logic := '0';
   signal adc_ready                           : std_logic;
   signal adc_data                            : t_16b_word_array(g_CHANNELS-1 downto 0);
   signal adc_valid                           : std_logic_vector(g_CHANNELS-1 downto 0);
@@ -505,8 +506,10 @@ begin
       if rst_n_i = '0' then
         adc_start <= '0';
       else
-        adc_start <=  adc_ready; -- FIXME: ADC conversions should start after
-                                 -- a integer number of clk_ref_i edges
+        -- FIXME: ADC conversions should start after
+        -- a integer number of clk_ref_i edges
+        adc_start <= '1' when (adc_ready_prev = '0' and adc_ready = '1') else '0';
+        adc_ready_prev <= adc_ready;
       end if;
     end if;
   end process;
@@ -733,8 +736,8 @@ begin
     );
   end generate;
 
-  dac_start <= adc_ready; -- FIXME: dac_valid(0);
-  data_valid_o <= adc_ready;
+  dac_start <= adc_start; -- FIXME: dac_valid(0);
+  data_valid_o <= adc_start;
 
   gen_conn_channels : for i in 0 to g_CHANNELS-1 generate
     -- Raw DAC data to be written
