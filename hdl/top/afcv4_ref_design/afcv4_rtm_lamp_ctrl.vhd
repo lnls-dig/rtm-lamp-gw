@@ -53,7 +53,12 @@ use work.rtm_lamp_pkg.all;
 entity afcv4_rtm_lamp_ctrl is
 generic (
   -- Number of rtm-lamp channels
-  g_RTMLAMP_CHANNELS                         : natural := 12
+  g_RTMLAMP_CHANNELS                         : natural := 12;
+  -- Bench mode (disable PCIe reset signal)
+  g_BENCH_MODE                               : boolean := true;
+  -- Wishbone UART master interface
+  g_WITH_UART_MASTER                         : boolean := true;
+  g_UART_MASTER_BAUD                         : integer := 115200
 );
 port (
   ---------------------------------------------------------------------------
@@ -236,9 +241,9 @@ architecture top of afcv4_rtm_lamp_ctrl is
 
   constant c_AFC_SI57x_I2C_FREQ              : natural := 400000;
   constant c_AFC_SI57x_INIT_OSC              : boolean := true;
-  constant c_AFC_SI57x_INIT_RFREQ_VALUE      : std_logic_vector(37 downto 0) := "00" & x"2bc0af3b8";
-  constant c_AFC_SI57x_INIT_N1_VALUE         : std_logic_vector(6 downto 0) := "0000111";
-  constant c_AFC_SI57x_INIT_HS_VALUE         : std_logic_vector(2 downto 0) := "000";
+  constant c_AFC_SI57x_INIT_RFREQ_VALUE      : std_logic_vector(37 downto 0) := "00" & x"2a81b2117";
+  constant c_AFC_SI57x_INIT_N1_VALUE         : std_logic_vector(6 downto 0) := "0001001";
+  constant c_AFC_SI57x_INIT_HS_VALUE         : std_logic_vector(2 downto 0) := "011";
 
   -----------------------------------------------------------------------------
   -- RTM signals
@@ -432,6 +437,8 @@ begin
       g_CLK1_DIVIDE                            => 6,    -- Must be 200 MHz
       g_CLK2_DIVIDE                            => 6,    -- 200 MHz
       g_SYS_CLOCK_FREQ                         => c_SYS_CLOCK_FREQ,
+      g_UART_MASTER_BAUD                       => g_UART_MASTER_BAUD,
+      g_BENCH_MODE                             => g_BENCH_MODE,
       -- AFC Si57x parameters
       g_AFC_SI57x_I2C_FREQ                     => c_AFC_SI57x_I2C_FREQ,
       -- Whether or not to initialize oscilator with the specified values
@@ -442,7 +449,7 @@ begin
       g_AFC_SI57x_INIT_HS_VALUE                => c_AFC_SI57x_INIT_HS_VALUE,
       --  If true, instantiate a VIC/UART/SPI.
       g_WITH_VIC                               => true,
-      g_WITH_UART_MASTER                       => true,
+      g_WITH_UART_MASTER                       => g_WITH_UART_MASTER,
       g_WITH_TRIGGER                           => true,
       g_WITH_SPI                               => false,
       g_WITH_AFC_SI57x                         => true,
