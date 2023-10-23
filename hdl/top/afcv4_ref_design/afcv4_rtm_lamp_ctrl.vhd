@@ -430,7 +430,7 @@ begin
       g_CLKBOUT_MULT_F                         => 48,
       g_CLK0_DIVIDE_F                          => 12,   -- 100 MHz
       g_CLK1_DIVIDE                            => 6,    -- Must be 200 MHz
-      g_CLK2_DIVIDE                            => 3,    -- 400 MHz
+      g_CLK2_DIVIDE                            => 6,    -- 200 MHz
       g_SYS_CLOCK_FREQ                         => c_SYS_CLOCK_FREQ,
       -- AFC Si57x parameters
       g_AFC_SI57x_I2C_FREQ                     => c_AFC_SI57x_I2C_FREQ,
