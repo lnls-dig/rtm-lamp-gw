@@ -58,7 +58,7 @@ generic (
   g_BENCH_MODE                               : boolean := true;
   -- Wishbone UART master interface
   g_WITH_UART_MASTER                         : boolean := true;
-  g_UART_MASTER_BAUD                         : integer := 115200
+  g_UART_MASTER_BAUD                         : integer := 500000
 );
 port (
   ---------------------------------------------------------------------------
