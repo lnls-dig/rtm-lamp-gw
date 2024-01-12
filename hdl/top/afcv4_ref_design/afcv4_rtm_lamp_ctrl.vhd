@@ -260,7 +260,8 @@ architecture top of afcv4_rtm_lamp_ctrl is
   signal rtmlamp_dbg_dac_start               : std_logic;
   signal rtmlamp_dbg_dac_data                : t_16b_word_array(g_RTMLAMP_CHANNELS-1 downto 0);
   signal rtmlamp_dbg_pi_ctrl_sp              : t_pi_sp_word_array(g_RTMLAMP_CHANNELS-1 downto 0);
-  signal rtmlamp_triggers                    : std_logic_vector(g_RTMLAMP_CHANNELS-1 downto 0);
+  signal rtmlamp_trig_in                    : std_logic_vector(g_RTMLAMP_CHANNELS-1 downto 0);
+  signal rtmlamp_trig_out                   : std_logic_vector(g_RTMLAMP_CHANNELS-1 downto 0);
 
   -----------------------------------------------------------------------------
   -- AFC Si57x signals
@@ -799,7 +800,12 @@ begin
     ---------------------------------------------------------------------------
     -- FPGA interface
     ---------------------------------------------------------------------------
-    trig_i                                     => rtmlamp_triggers,
+    trig_i                                     => rtmlamp_trig_in,
+
+    ---------------------------------------------------------------------------
+    -- Output triggers for over-current/temperature detection. Clock domain: clk_i
+    ---------------------------------------------------------------------------
+    trig_o                                     => rtmlamp_trig_out,
 
     ---------------------------------------------------------------------------
     -- FPGA interface
@@ -880,7 +886,8 @@ begin
   ----------------------------------------------------------------------
 
   -- RTM-LAMP external trigger for triggered mode
-  rtmlamp_triggers <= (others => trig_pulse_rcv(c_TRIG_MUX_0_ID, c_RTM_LAMP_TRIG_ID).pulse);
+  rtmlamp_trig_in <= (others => trig_pulse_rcv(c_TRIG_MUX_0_ID, c_RTM_LAMP_TRIG_ID).pulse);
+  trig_rcv_intern(c_TRIG_MUX_0_ID, 0).pulse <= or(rtmlamp_trig_out);
 
   ----------------------------------------------------------------------
   --                          VIO                                     --

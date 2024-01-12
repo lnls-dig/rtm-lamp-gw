@@ -163,6 +163,34 @@ memory-map:
                     comment: |
                       write 0: do nothing
                       write 1: Reset latched status bits (autoclear)
+                - field:
+                    name: amp_iflag_l_trig_mask
+                    range: 25
+                    description: Left Amplifier Over-Current Trigger Mask
+                    comment: |
+                      write 0: Trigger generation disabled
+                      write 1: Generate a trigger event if the flag is asserted
+                - field:
+                    name: amp_tflag_l_trig_mask
+                    range: 26
+                    description: Left Amplifier Over-Temperature Trigger Mask
+                    comment: |
+                      write 0: Trigger generation disabled
+                      write 1: Generate a trigger event if the flag is asserted
+                - field:
+                    name: amp_iflag_r_trig_mask
+                    range: 27
+                    description: Right Amplifier Over-Current Trigger Mask
+                    comment: |
+                      write 0: Trigger generation disabled
+                      write 1: Generate a trigger event if the flag is asserted
+                - field:
+                    name: amp_tflag_r_trig_mask
+                    range: 28
+                    description: Right Amplifier Over-Temperature Trigger Mask
+                    comment: |
+                      write 0: Trigger generation disabled
+                      write 1: Generate a trigger event if the flag is asserted
           - reg:
               name: pi_kp
               width: 32

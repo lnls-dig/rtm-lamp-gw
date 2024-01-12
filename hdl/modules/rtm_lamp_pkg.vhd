@@ -454,6 +454,11 @@ package rtm_lamp_pkg is
     trig_i                                     : in  std_logic_vector(g_CHANNELS-1 downto 0);
 
     ---------------------------------------------------------------------------
+    -- Output triggers for over-current/temperature detection. Clock domain: clk_i
+    ---------------------------------------------------------------------------
+    trig_o                                     : out std_logic_vector(g_CHANNELS-1 downto 0);
+
+    ---------------------------------------------------------------------------
     -- PI parameters
     ---------------------------------------------------------------------------
     -- External PI setpoint data. It is used when ch.x.ctl.mode (wishbone
@@ -484,7 +489,7 @@ package rtm_lamp_pkg is
   constant c_xwb_rtm_lamp_regs_sdb : t_sdb_device := (
     abi_class     => x"0000",                   -- undocumented device
     abi_ver_major => x"02",
-    abi_ver_minor => x"02",
+    abi_ver_minor => x"03",
     wbd_endian    => c_sdb_endian_big,
     wbd_width     => x"4",                      -- 32-bit port granularity (0100)
     sdb_component => (

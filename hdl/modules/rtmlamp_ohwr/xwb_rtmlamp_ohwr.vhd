@@ -130,6 +130,10 @@ port (
   ---------------------------------------------------------------------------
   trig_i                                     : in  std_logic_vector(g_CHANNELS-1 downto 0);
   ---------------------------------------------------------------------------
+  -- Output triggers for over-current/temperature detection. Clock domain: clk_i
+  ---------------------------------------------------------------------------
+  trig_o                                     : out std_logic_vector(g_CHANNELS-1 downto 0);
+  ---------------------------------------------------------------------------
   -- PI parameters
   ---------------------------------------------------------------------------
   -- External PI setpoint data. It is used when ch.x.ctl.mode (wishbone
@@ -341,6 +345,16 @@ begin
       data_i => amp_shift_str_o,
       pulse_o => intr_amp_flags_update_o
     );
+
+  -- Configurable trigger outputs for each channel (over-current /
+  -- over-temperature detection)
+  gen_amp_flags_trig:
+    for i in 0 to g_CHANNELS-1 generate
+      trig_o(i) <= (wb_regs_slv_in(i).ctl_amp_iflag_l_trig_mask and ch_ctrl_out(i).amp_iflag_l) or
+                   (wb_regs_slv_in(i).ctl_amp_tflag_l_trig_mask and ch_ctrl_out(i).amp_tflag_l) or
+                   (wb_regs_slv_in(i).ctl_amp_iflag_r_trig_mask and ch_ctrl_out(i).amp_iflag_r) or
+                   (wb_regs_slv_in(i).ctl_amp_iflag_r_trig_mask and ch_ctrl_out(i).amp_tflag_r);
+    end generate;
 
   process(clk_i)
   begin
